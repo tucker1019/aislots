@@ -72,9 +72,11 @@ export class GameApi {
             request ||
             (async <T>(path: string, body?: object, token?: string) => {
                 const config = { headers: token ? { Authorization: 'Bearer ' + token } : {} };
+                const once = path.includes('/bet-records');
+                const requestConfig = { ...config, ...(once ? { retry: false } : {}) };
                 const res = body
-                    ? await client.post<any>(path, body, config)
-                    : await client.get<any>(path, config);
+                    ? await client.post<any>(path, body, requestConfig)
+                    : await client.get<any>(path, requestConfig);
                 if (res.data?.code !== 'OK') throw new Error(res.data?.message || '服务端响应无效');
                 return res.data.data as T;
             });

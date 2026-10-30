@@ -572,9 +572,14 @@ export class slots_base extends Component {
             '<div style="height:1px;background:#e5e7eb;"></div>';
         const button = document.createElement('button');
         button.type = 'button';
-        button.textContent = '退出';
+        button.textContent = '重试';
         button.style.cssText = 'display:block;width:100%;border:0;background:#fff;color:#c88719;padding:4%;font-size:clamp(12px,3.6cqw,18px);font-weight:600;cursor:pointer;';
-        button.addEventListener('click', () => { root.remove(); this.failureDialog = null; });
+        button.addEventListener('click', () => {
+            root.remove();
+            this.failureDialog = null;
+            this.error = '';
+            this.connect();
+        });
         content.appendChild(button);
         root.appendChild(content);
         const game = document.getElementById('GameDiv');

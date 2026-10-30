@@ -12,10 +12,7 @@ import {
 
 const DEFAULT_TIMEOUT = 10000;
 const RETRY_DELAYS = [2000, 4000, 6000, 8000, 16000];
-
-function wait(milliseconds: number) {
-    return new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
-}
+const wait = (milliseconds: number) => new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
 
 function buildQuery(params?: HttpParams): string {
     if (!params) {
@@ -151,19 +148,12 @@ export class HttpClient {
         try {
             let response: HttpResponse<T>;
             for (let attempt = 0; ; attempt++) {
-                try {
-                    response = await this.send<T>(finalConfig);
-                    break;
-                } catch (error) {
-                    const retryable = error instanceof HttpError && (error.status === 0 || error.status >= 500);
+                try { response = await this.send<T>(finalConfig); break; }
+                catch (error) {
+                    const retryable = finalConfig.retry !== false && error instanceof HttpError && (error.status === 0 || error.status >= 500);
                     const delay = retryable ? RETRY_DELAYS[attempt] : undefined;
-                    if (delay === undefined) {
-                        if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('aislots-retry-end'));
-                        throw error;
-                    }
-                    if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('aislots-retry', {
-                        detail: { attempt: attempt + 1, delay },
-                    }));
+                    if (delay === undefined) throw error;
+                    if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('aislots-retry', { detail: { attempt: attempt + 1, delay } }));
                     await wait(delay);
                 }
             }

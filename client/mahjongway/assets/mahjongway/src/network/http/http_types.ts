@@ -11,6 +11,7 @@ export interface HttpRequestConfig {
     data?: unknown;
     headers?: Record<string, string>;
     timeout?: number;
+    retry?: boolean;
     responseType?: XMLHttpRequestResponseType;
 }
 
