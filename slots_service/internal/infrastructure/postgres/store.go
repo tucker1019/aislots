@@ -246,6 +246,15 @@ func (t *transaction) SaveFrame(ctx context.Context, value play.Frame) error {
 	_, err = t.tx.Exec(ctx, `INSERT INTO spin_steps(bet_id,spin_index,step_index,response) VALUES($1,$2,$3,$4)`, value.BetID, value.SpinIndex, value.StepIndex, raw)
 	return err
 }
+
+func (t *transaction) EnqueueOutbox(ctx context.Context, key, eventType, aggregateID string, payload any) error {
+	raw, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+	_, err = t.tx.Exec(ctx, `INSERT INTO outbox_events(event_key,event_type,aggregate_id,payload) VALUES($1,$2,$3,$4) ON CONFLICT(event_key) DO NOTHING`, key, eventType, aggregateID, raw)
+	return err
+}
 func readJSON[T any](ctx context.Context, tx pgx.Tx, sql string, args ...any) (T, bool, error) {
 	var value T
 	var raw []byte

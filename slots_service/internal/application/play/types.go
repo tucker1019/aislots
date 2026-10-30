@@ -130,6 +130,7 @@ type Tx interface {
 	SaveSpin(context.Context, string, int, StoredSpin) error
 	Frame(context.Context, string, int, int) (Frame, bool, error)
 	SaveFrame(context.Context, Frame) error
+	EnqueueOutbox(context.Context, string, string, string, any) error
 	// Wallet posts one uniquely keyed operation and returns the new test balance.
 	Wallet(context.Context, string, string, int64) (int64, error)
 }

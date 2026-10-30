@@ -318,6 +318,9 @@ func (s *Service) advanceTx(ctx context.Context, tx Tx, session Session, gameID,
 		if err = tx.SaveFrame(ctx, frame); err != nil {
 			return err
 		}
+		if err = tx.EnqueueOutbox(ctx, fmt.Sprintf("spin-frame:%s:%d:%d", id, cursor.SpinIndex, cursor.StepIndex), "spin.frame.settled", id, frame); err != nil {
+			return err
+		}
 		response = frame
 		return nil
 	}()
