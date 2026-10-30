@@ -20,6 +20,8 @@ type Policy struct {
 	AmountScale int     `json:"amountScale"`
 	Amounts     []int64 `json:"amounts"`
 	Default     int64   `json:"default"`
+	LineCount   int     `json:"lineCount"`
+	BetLevel    int     `json:"betLevel"`
 }
 type key struct{ appName, appKey, gameID, country, currency string }
 type Service struct{ policies map[key]Policy }
@@ -27,7 +29,13 @@ type Service struct{ policies map[key]Policy }
 func New(policies []Policy) (*Service, error) {
 	s := &Service{policies: map[key]Policy{}}
 	for _, p := range policies {
-		if p.GameID == "" || p.Country == "" || p.Currency == "" || (p.AppName == "") != (p.AppKey == "") || p.AmountScale < 0 || p.AmountScale > 9 || len(p.Amounts) == 0 {
+		if p.LineCount == 0 {
+			p.LineCount = 1
+		}
+		if p.BetLevel == 0 {
+			p.BetLevel = 1
+		}
+		if p.GameID == "" || p.Country == "" || p.Currency == "" || (p.AppName == "") != (p.AppKey == "") || p.AmountScale < 0 || p.AmountScale > 9 || len(p.Amounts) == 0 || p.LineCount < 1 || p.BetLevel < 1 {
 			return nil, fmt.Errorf("invalid bet policy")
 		}
 		seen := map[int64]bool{}

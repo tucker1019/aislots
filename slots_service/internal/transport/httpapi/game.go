@@ -57,7 +57,7 @@ func NewGameRouter(ready func() bool, service *play.Service, origins []string, l
 		for _, amount := range policy.Amounts {
 			amounts = append(amounts, strconv.FormatInt(amount, 10))
 		}
-		success(w, map[string]any{"gameId": policy.GameID, "country": policy.Country, "currency": policy.Currency, "amountScale": policy.AmountScale, "betOptions": amounts, "defaultBet": strconv.FormatInt(policy.Default, 10)})
+		success(w, map[string]any{"gameId": policy.GameID, "country": policy.Country, "currency": policy.Currency, "amountScale": policy.AmountScale, "lineCount": policy.LineCount, "betLevel": policy.BetLevel, "betOptions": amounts, "defaultBet": strconv.FormatInt(policy.Default, 10)})
 		return nil
 	})
 
@@ -68,15 +68,25 @@ func NewGameRouter(ready func() bool, service *play.Service, origins []string, l
 		}
 		var input struct {
 			RequestID string `json:"requestId"`
-			BetAmount string `json:"betAmount"`
+			Bet       string `json:"bet"`
+			BetLevel  int    `json:"betLevel"`
 		}
 		if err = decode(w, r, &input); err != nil {
 			return err
 		}
-		amount, err := strconv.ParseInt(input.BetAmount, 10, 64)
-		if err != nil || amount < 0 {
+		bet, err := strconv.ParseInt(input.Bet, 10, 64)
+		if err != nil || bet < 1 || input.BetLevel < 1 {
 			return play.ErrInvalid
 		}
+		policy, err := service.Bets(r.Context(), session, r.PathValue("gameId"))
+		if err != nil || input.BetLevel > policy.BetLevel {
+			return play.ErrInvalid
+		}
+		amount, err := strconv.ParseInt(input.Bet, 10, 64)
+		if err != nil || amount > (int64(^uint64(0)>>1))/int64(policy.LineCount)/int64(input.BetLevel) {
+			return play.ErrInvalid
+		}
+		amount *= int64(policy.LineCount) * int64(input.BetLevel)
 		out, err := service.Spin(r.Context(), session, r.PathValue("gameId"), input.RequestID, amount)
 		if err != nil {
 			return err

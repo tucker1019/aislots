@@ -109,7 +109,22 @@ func (e *Engine) fill(ctx context.Context, reference Round, mode Mode, target in
 					return err
 				}
 				freeAdded, hasHoles := false, false
-				for row := range board[c] {
+				// Do not always place the scatter in the first empty row. The
+				// previous top-to-bottom traversal made every trigger icon appear
+				// in the first visible cell of its reel. Shuffle candidate rows per
+				// reel while retaining the one-scatter-per-reel rule below.
+				rows := make([]int, len(board[c]))
+				for row := range rows {
+					rows[row] = row
+				}
+				for i := len(rows) - 1; i > 0; i-- {
+					j := rng.index(i + 1)
+					if rng.err != nil {
+						return rng.err
+					}
+					rows[i], rows[j] = rows[j], rows[i]
+				}
+				for _, row := range rows {
 					cell := &board[c][row]
 					if cell.Symbol != 0 {
 						continue

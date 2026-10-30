@@ -1,3 +1,3 @@
 [
- {"gameId":"AG1","country":"ID","currency":"IDR","amountScale":0,"amounts":[100,200,500,1000,2000],"default":200}
+ {"gameId":"AG1","country":"ID","currency":"IDR","amountScale":2,"lineCount":20,"betLevel":10,"amounts":[50,200,500,1000,2000],"default":50}
 ]
