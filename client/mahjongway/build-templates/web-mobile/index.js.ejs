@@ -1,0 +1,36 @@
+import { Application } from '<%= applicationJS %>';
+
+// 监听必须早于场景启动，避免状态接口很快返回时漏掉首屏完成信号。
+const firstBoardReady = new Promise(resolve => {
+    window.addEventListener('aislots-board-ready', resolve, { once: true });
+});
+
+const canvas = document.getElementById('GameCanvas');
+const $p = canvas.parentElement;
+const bcr = $p.getBoundingClientRect();
+canvas.width = bcr.width;
+canvas.height = bcr.height;
+
+function topLevelImport (url) {
+    return System.import(url);
+}
+
+const application = new Application();
+
+topLevelImport('cc')
+.then((engine) => {
+    engine.macro.ENABLE_TRANSPARENT_CANVAS = true;
+    return application.init(engine);
+}).then(() => {
+    return application.start();
+}).then(() => firstBoardReady).then(() => {
+    const loadingScreen = document.getElementById('LoadingScreen');
+    const startButton = document.getElementById('StartButton');
+    if (!loadingScreen || !startButton) return;
+    startButton.hidden = false;
+    startButton.addEventListener('click', () => {
+        loadingScreen.remove();
+    }, { once: true });
+}).catch((err) => {
+    console.error(err);
+});

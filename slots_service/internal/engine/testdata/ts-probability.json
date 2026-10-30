@@ -1,0 +1,569 @@
+[
+  {
+    "parameters": {
+      "lineCount": 20,
+      "baseSpinWinProbability": 0.3,
+      "freeSpinWinProbability": 0.5,
+      "freeSpinTriggerProbability": 0.01,
+      "freeSpinGuaranteedWin": true,
+      "lossStreakRtpCompensation": true,
+      "freeTriggerRtpCompensation": true,
+      "freeSpinAwardWeights": [
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "freeRetriggerLimit": 0,
+      "lossStreakRule": {
+        "enabled": true,
+        "start": 3,
+        "probability": 0.4,
+        "interval": 2,
+        "step": 0.02,
+        "cap": 9
+      },
+      "winStreakRule": {
+        "enabled": true,
+        "start": 2,
+        "probability": 0.25,
+        "interval": 1,
+        "step": 0.02,
+        "cap": 5
+      },
+      "freeTriggerRule": {
+        "enabled": true,
+        "start": 10,
+        "probability": 0.0102,
+        "interval": 5,
+        "step": 0.0002,
+        "cap": 30
+      }
+    },
+    "base": [
+      [
+        0,
+        2
+      ],
+      [
+        2,
+        8
+      ],
+      [
+        20,
+        3
+      ],
+      [
+        200,
+        1
+      ]
+    ],
+    "free": [
+      [
+        0,
+        2
+      ],
+      [
+        4,
+        8
+      ],
+      [
+        40,
+        3
+      ]
+    ],
+    "spins": 3.5,
+    "baseChecks": [
+      {
+        "streak": 0,
+        "probability": 0.3,
+        "mean": 0.9857142857142855
+      },
+      {
+        "streak": -1,
+        "probability": 0.3,
+        "mean": 0.9857142857142855
+      },
+      {
+        "streak": -3,
+        "probability": 0.4,
+        "mean": 0.7392857142857141
+      },
+      {
+        "streak": -5,
+        "probability": 0.42000000000000004,
+        "mean": 0.7040816326530609
+      },
+      {
+        "streak": -9,
+        "probability": 0.46,
+        "mean": 0.6428571428571427
+      },
+      {
+        "streak": 2,
+        "probability": 0.25,
+        "mean": 0.9857142857142855
+      },
+      {
+        "streak": 5,
+        "probability": 0.19,
+        "mean": 0.9857142857142855
+      }
+    ],
+    "freeChecks": [
+      {
+        "misses": 0,
+        "trigger": 0.01,
+        "probability": 0.5,
+        "mean": 1.2574821629169122
+      },
+      {
+        "misses": 10,
+        "trigger": 0.0102,
+        "probability": 0.4829484757022252,
+        "mean": 1.2328256499185413
+      },
+      {
+        "misses": 15,
+        "trigger": 0.010400000000000001,
+        "probability": 0.4663540702806328,
+        "mean": 1.2091174643431843
+      },
+      {
+        "misses": 30,
+        "trigger": 0.011000000000000001,
+        "probability": 0.4190597832743085,
+        "mean": 1.1431656026517383
+      }
+    ]
+  },
+  {
+    "parameters": {
+      "lineCount": 20,
+      "baseSpinWinProbability": 0.3,
+      "freeSpinWinProbability": 0.5,
+      "freeSpinTriggerProbability": 0.01,
+      "freeSpinGuaranteedWin": true,
+      "lossStreakRtpCompensation": true,
+      "freeTriggerRtpCompensation": true,
+      "freeSpinAwardWeights": [
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "freeRetriggerLimit": 1,
+      "lossStreakRule": {
+        "enabled": true,
+        "start": 3,
+        "probability": 0.4,
+        "interval": 2,
+        "step": 0.02,
+        "cap": 9
+      },
+      "winStreakRule": {
+        "enabled": true,
+        "start": 2,
+        "probability": 0.25,
+        "interval": 1,
+        "step": 0.02,
+        "cap": 5
+      },
+      "freeTriggerRule": {
+        "enabled": true,
+        "start": 10,
+        "probability": 0.0102,
+        "interval": 5,
+        "step": 0.0002,
+        "cap": 30
+      }
+    },
+    "base": [
+      [
+        0,
+        2
+      ],
+      [
+        2,
+        8
+      ],
+      [
+        20,
+        3
+      ],
+      [
+        200,
+        1
+      ]
+    ],
+    "free": [
+      [
+        0,
+        2
+      ],
+      [
+        4,
+        8
+      ],
+      [
+        40,
+        3
+      ]
+    ],
+    "spins": 3.6208488313375,
+    "baseChecks": [
+      {
+        "streak": 0,
+        "probability": 0.3,
+        "mean": 0.9857142857142855
+      },
+      {
+        "streak": -1,
+        "probability": 0.3,
+        "mean": 0.9857142857142855
+      },
+      {
+        "streak": -3,
+        "probability": 0.4,
+        "mean": 0.7392857142857141
+      },
+      {
+        "streak": -5,
+        "probability": 0.42000000000000004,
+        "mean": 0.7040816326530609
+      },
+      {
+        "streak": -9,
+        "probability": 0.46,
+        "mean": 0.6428571428571427
+      },
+      {
+        "streak": 2,
+        "probability": 0.25,
+        "mean": 0.9857142857142855
+      },
+      {
+        "streak": 5,
+        "probability": 0.19,
+        "mean": 0.9857142857142855
+      }
+    ],
+    "freeChecks": [
+      {
+        "misses": 0,
+        "trigger": 0.01,
+        "probability": 0.5,
+        "mean": 1.2928072059232583
+      },
+      {
+        "misses": 10,
+        "trigger": 0.0102,
+        "probability": 0.4832880001522982,
+        "mean": 1.2674580450228021
+      },
+      {
+        "misses": 15,
+        "trigger": 0.010400000000000001,
+        "probability": 0.467037115993043,
+        "mean": 1.2430838518492864
+      },
+      {
+        "misses": 30,
+        "trigger": 0.011000000000000001,
+        "probability": 0.4208007491818825,
+        "mean": 1.175279278112053
+      }
+    ]
+  },
+  {
+    "parameters": {
+      "lineCount": 20,
+      "baseSpinWinProbability": 0.3,
+      "freeSpinWinProbability": 0.5,
+      "freeSpinTriggerProbability": 0.01,
+      "freeSpinGuaranteedWin": true,
+      "lossStreakRtpCompensation": true,
+      "freeTriggerRtpCompensation": true,
+      "freeSpinAwardWeights": [
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "freeRetriggerLimit": 2,
+      "lossStreakRule": {
+        "enabled": true,
+        "start": 3,
+        "probability": 0.4,
+        "interval": 2,
+        "step": 0.02,
+        "cap": 9
+      },
+      "winStreakRule": {
+        "enabled": true,
+        "start": 2,
+        "probability": 0.25,
+        "interval": 1,
+        "step": 0.02,
+        "cap": 5
+      },
+      "freeTriggerRule": {
+        "enabled": true,
+        "start": 10,
+        "probability": 0.0102,
+        "interval": 5,
+        "step": 0.0002,
+        "cap": 30
+      }
+    },
+    "base": [
+      [
+        0,
+        2
+      ],
+      [
+        2,
+        8
+      ],
+      [
+        20,
+        3
+      ],
+      [
+        200,
+        1
+      ]
+    ],
+    "free": [
+      [
+        0,
+        2
+      ],
+      [
+        4,
+        8
+      ],
+      [
+        40,
+        3
+      ]
+    ],
+    "spins": 3.626604787193312,
+    "baseChecks": [
+      {
+        "streak": 0,
+        "probability": 0.3,
+        "mean": 0.9857142857142855
+      },
+      {
+        "streak": -1,
+        "probability": 0.3,
+        "mean": 0.9857142857142855
+      },
+      {
+        "streak": -3,
+        "probability": 0.4,
+        "mean": 0.7392857142857141
+      },
+      {
+        "streak": -5,
+        "probability": 0.42000000000000004,
+        "mean": 0.7040816326530609
+      },
+      {
+        "streak": -9,
+        "probability": 0.46,
+        "mean": 0.6428571428571427
+      },
+      {
+        "streak": 2,
+        "probability": 0.25,
+        "mean": 0.9857142857142855
+      },
+      {
+        "streak": 5,
+        "probability": 0.19,
+        "mean": 0.9857142857142855
+      }
+    ],
+    "freeChecks": [
+      {
+        "misses": 0,
+        "trigger": 0.01,
+        "probability": 0.5,
+        "mean": 1.2944897160964957
+      },
+      {
+        "misses": 10,
+        "trigger": 0.0102,
+        "probability": 0.48330337775050913,
+        "mean": 1.269107564800486
+      },
+      {
+        "misses": 15,
+        "trigger": 0.010400000000000001,
+        "probability": 0.46706802993394914,
+        "mean": 1.2447016500927839
+      },
+      {
+        "misses": 30,
+        "trigger": 0.011000000000000001,
+        "probability": 0.42087936248561053,
+        "mean": 1.176808832814996
+      }
+    ]
+  },
+  {
+    "parameters": {
+      "lineCount": 20,
+      "baseSpinWinProbability": 0.3,
+      "freeSpinWinProbability": 0.5,
+      "freeSpinTriggerProbability": 0.01,
+      "freeSpinGuaranteedWin": true,
+      "lossStreakRtpCompensation": true,
+      "freeTriggerRtpCompensation": true,
+      "freeSpinAwardWeights": [
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "lossStreakRule": {
+        "enabled": true,
+        "start": 3,
+        "probability": 0.4,
+        "interval": 2,
+        "step": 0.02,
+        "cap": 9
+      },
+      "winStreakRule": {
+        "enabled": true,
+        "start": 2,
+        "probability": 0.25,
+        "interval": 1,
+        "step": 0.02,
+        "cap": 5
+      },
+      "freeTriggerRule": {
+        "enabled": true,
+        "start": 10,
+        "probability": 0.0102,
+        "interval": 5,
+        "step": 0.0002,
+        "cap": 30
+      }
+    },
+    "base": [
+      [
+        0,
+        2
+      ],
+      [
+        2,
+        8
+      ],
+      [
+        20,
+        3
+      ],
+      [
+        200,
+        1
+      ]
+    ],
+    "free": [
+      [
+        0,
+        2
+      ],
+      [
+        4,
+        8
+      ],
+      [
+        40,
+        3
+      ]
+    ],
+    "spins": 3.626943005181347,
+    "baseChecks": [
+      {
+        "streak": 0,
+        "probability": 0.3,
+        "mean": 0.9857142857142855
+      },
+      {
+        "streak": -1,
+        "probability": 0.3,
+        "mean": 0.9857142857142855
+      },
+      {
+        "streak": -3,
+        "probability": 0.4,
+        "mean": 0.7392857142857141
+      },
+      {
+        "streak": -5,
+        "probability": 0.42000000000000004,
+        "mean": 0.7040816326530609
+      },
+      {
+        "streak": -9,
+        "probability": 0.46,
+        "mean": 0.6428571428571427
+      },
+      {
+        "streak": 2,
+        "probability": 0.25,
+        "mean": 0.9857142857142855
+      },
+      {
+        "streak": 5,
+        "probability": 0.19,
+        "mean": 0.9857142857142855
+      }
+    ],
+    "freeChecks": [
+      {
+        "misses": 0,
+        "trigger": 0.01,
+        "probability": 0.5,
+        "mean": 1.2945885798160752
+      },
+      {
+        "misses": 10,
+        "trigger": 0.0102,
+        "probability": 0.48330427919858854,
+        "mean": 1.26920449001576
+      },
+      {
+        "misses": 15,
+        "trigger": 0.010400000000000001,
+        "probability": 0.46706984207657154,
+        "mean": 1.2447967113616103
+      },
+      {
+        "misses": 30,
+        "trigger": 0.011000000000000001,
+        "probability": 0.42088397023488344,
+        "mean": 1.1768987089237044
+      }
+    ]
+  }
+]

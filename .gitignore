@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+__pycache__/
+*.pyc
+.idea/
+.claude/
+*.log
+.env
+.env.*
+!.env.example
+client/mahjongway/*-check.png

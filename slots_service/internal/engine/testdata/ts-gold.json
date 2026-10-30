@@ -1,0 +1,284 @@
+{
+  "board": {
+    "scatterWeightIncrement": 0,
+    "fillWeightIncrement": 0,
+    "gold": {
+      "columns": [
+        2,
+        3,
+        4
+      ],
+      "baseProbability": 0,
+      "freeProbability": 0,
+      "wildSymbolId": "10"
+    },
+    "columnHeights": [
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cascadeFactors": [
+      1,
+      2,
+      3,
+      5
+    ],
+    "freeCascadeFactors": [
+      2,
+      4,
+      6,
+      10
+    ],
+    "symbols": [
+      {
+        "id": "1",
+        "name": "1",
+        "role": "normal",
+        "weight": 1,
+        "color": "#547cbb",
+        "payouts": {
+          "3": 2
+        }
+      },
+      {
+        "id": "3",
+        "name": "3",
+        "role": "normal",
+        "weight": 1,
+        "color": "#547cbb",
+        "payouts": {
+          "3": 1
+        }
+      },
+      {
+        "id": "2",
+        "name": "2",
+        "role": "normal",
+        "weight": 1,
+        "color": "#547cbb",
+        "payouts": {}
+      },
+      {
+        "id": "10",
+        "name": "10",
+        "role": "wild",
+        "weight": 0,
+        "color": "#547cbb",
+        "payouts": {}
+      }
+    ],
+    "version": 1
+  },
+  "cases": [
+    {
+      "mode": "base",
+      "interior": false,
+      "skeleton": [
+        3,
+        0,
+        1,
+        2,
+        1001,
+        4,
+        1,
+        2,
+        0,
+        3,
+        4,
+        3,
+        0
+      ],
+      "key": "4",
+      "wins": [
+        [
+          {
+            "symbolId": 1,
+            "cellIds": [
+              1,
+              3,
+              5
+            ],
+            "ways": 1,
+            "columns": 3
+          }
+        ],
+        [
+          {
+            "symbolId": 3,
+            "cellIds": [
+              11,
+              3,
+              12
+            ],
+            "ways": 1,
+            "columns": 3
+          }
+        ]
+      ],
+      "transformed": [
+        [
+          3
+        ],
+        []
+      ]
+    },
+    {
+      "mode": "base",
+      "interior": true,
+      "skeleton": [
+        5,
+        0,
+        1,
+        1,
+        3,
+        2,
+        1001,
+        4,
+        1,
+        5,
+        3,
+        0,
+        0
+      ],
+      "key": "4",
+      "wins": [
+        [
+          {
+            "symbolId": 1,
+            "cellIds": [
+              1,
+              3,
+              5
+            ],
+            "ways": 1,
+            "columns": 3
+          }
+        ],
+        [
+          {
+            "symbolId": 3,
+            "cellIds": [
+              2,
+              3,
+              6
+            ],
+            "ways": 1,
+            "columns": 3
+          }
+        ]
+      ],
+      "transformed": [
+        [
+          3
+        ],
+        []
+      ]
+    },
+    {
+      "mode": "free",
+      "interior": false,
+      "skeleton": [
+        3,
+        0,
+        1,
+        2,
+        1001,
+        4,
+        1,
+        2,
+        0,
+        3,
+        4,
+        3,
+        0
+      ],
+      "key": "8",
+      "wins": [
+        [
+          {
+            "symbolId": 1,
+            "cellIds": [
+              1,
+              3,
+              5
+            ],
+            "ways": 1,
+            "columns": 3
+          }
+        ],
+        [
+          {
+            "symbolId": 3,
+            "cellIds": [
+              11,
+              3,
+              12
+            ],
+            "ways": 1,
+            "columns": 3
+          }
+        ]
+      ],
+      "transformed": [
+        [
+          3
+        ],
+        []
+      ]
+    },
+    {
+      "mode": "free",
+      "interior": true,
+      "skeleton": [
+        5,
+        0,
+        1,
+        1,
+        3,
+        2,
+        1001,
+        4,
+        1,
+        5,
+        3,
+        0,
+        0
+      ],
+      "key": "8",
+      "wins": [
+        [
+          {
+            "symbolId": 1,
+            "cellIds": [
+              1,
+              3,
+              5
+            ],
+            "ways": 1,
+            "columns": 3
+          }
+        ],
+        [
+          {
+            "symbolId": 3,
+            "cellIds": [
+              2,
+              3,
+              6
+            ],
+            "ways": 1,
+            "columns": 3
+          }
+        ]
+      ],
+      "transformed": [
+        [
+          3
+        ],
+        []
+      ]
+    }
+  ]
+}

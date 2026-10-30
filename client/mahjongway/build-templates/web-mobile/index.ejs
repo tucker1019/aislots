@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <title>Cocos Creator | <%= projectName %></title>
+
+  <!--http://www.html5rocks.com/en/mobile/mobifying/-->
+  <meta name="viewport"
+        content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true"/>
+
+  <!--https://developer.apple.com/library/safari/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- force webkit on 360 -->
+  <meta name="renderer" content="webkit"/>
+  <meta name="force-rendering" content="webkit"/>
+  <!-- force edge on IE -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="msapplication-tap-highlight" content="no">
+
+  <!-- force full screen on some browser -->
+  <meta name="full-screen" content="yes"/>
+  <meta name="x5-fullscreen" content="true"/>
+  <meta name="360-fullscreen" content="true"/>
+
+  <!--fix fireball/issues/3568 -->
+  <!--<meta name="browsermode" content="application">-->
+  <meta name="x5-page-mode" content="app">
+
+  <!--<link rel="apple-touch-icon" href=".png" />-->
+  <!--<link rel="apple-touch-icon-precomposed" href=".png" />-->
+
+  <link rel="stylesheet" type="text/css" href="<%= cssUrl %>"/>
+  <style>
+    #GameCanvas { background: transparent !important; }
+    body { background: #000; }
+    #LoadingScreen {
+      position: absolute;
+      top: 50%; left: 50%; width: min(100vw, calc(53.5714vh + 4px)); height: min(100vh, calc(186.6667vw + 4px)); transform: translate(-50%, -50%); aspect-ratio: 750 / 1400; z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: transparent;
+    }
+    #LoadingScreen img { display: block; width: 100%; height: auto; max-width: none; object-fit: initial; }
+    #LoadingScreen .start-button { position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%); width: 42%; padding: 3% 0; border: 2px solid #ffd96a; border-radius: 8px; color: #6b2100; background: linear-gradient(#ffe89a, #f6a51a); box-shadow: 0 4px 0 #9b3f05, 0 8px 18px rgba(75, 20, 0, .35); font: 700 min(5vw, 28px)/1 Helvetica, Arial, sans-serif; letter-spacing: 1px; cursor: pointer; }
+    #LoadingScreen .start-button:active { transform: translate(-50%, 2px); }
+  </style>
+
+</head>
+<body>
+  <div id="GameDiv" cc_exact_fit_screen="true">
+    <div id="LoadingScreen" aria-label="Loading">
+      <img src="loading/1025.jpg" alt="" />
+      <button id="StartButton" class="start-button" type="button" hidden>START</button>
+    </div>
+    <div id="Cocos3dGameContainer">
+      <canvas id="GameCanvas" oncontextmenu="event.preventDefault()" tabindex="99"></canvas>
+    </div>
+  <%- include(cocosTemplate, {}) %>
+</body>
+</html>

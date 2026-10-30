@@ -1,0 +1,4 @@
+/bin/
+/coverage.out
+/configs/server.local.json
+.idea/

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1510" viewBox="0 0 1000 1510"><defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6" fill="none" stroke="#475569"/></marker></defs><rect width="1000" height="1510" fill="#fff"/><style>text{font-family:"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033;font-size:18px}.edge{fill:none;stroke:#475569;stroke-width:2;marker-end:url(#arrow)}</style>
+<text x="500" y="40" text-anchor="middle" style="font-size:26px;font-weight:600">Slots 开奖流程</text>
+<rect x="330" y="70" width="340" height="80" rx="14" fill="#eaf2ff" stroke="#5681be" stroke-width="2"/>
+<text x="500.0" y="105" text-anchor="middle">普通局开始</text>
+<path d="M500.0,190 L670,230 L500.0,270 L330,230 Z" fill="#fff3d6" stroke="#d59924" stroke-width="2"/>
+<text x="500.0" y="225" text-anchor="middle">普通局是否中奖？</text>
+<path class="edge" d="M500 150 V190"/>
+<rect x="60" y="320" width="340" height="80" rx="14" fill="#eaf2ff" stroke="#5681be" stroke-width="2"/>
+<text x="230.0" y="355" text-anchor="middle">从普通倍率表按权重抽取倍率</text>
+<text x="230.0" y="379" text-anchor="middle">记录普通局奖金</text>
+<rect x="600" y="320" width="300" height="80" rx="14" fill="#eaf2ff" stroke="#5681be" stroke-width="2"/>
+<text x="750.0" y="355" text-anchor="middle">普通局奖金为 0</text>
+<path class="edge" d="M330 230 H230 V320"/>
+<text x="270" y="215" text-anchor="middle">是</text>
+<path class="edge" d="M670 230 H750 V320"/>
+<text x="710" y="215" text-anchor="middle">否</text>
+<path d="M500.0,450 L670,490 L500.0,530 L330,490 Z" fill="#fff3d6" stroke="#d59924" stroke-width="2"/>
+<text x="500.0" y="485" text-anchor="middle">是否触发免费？</text>
+<path class="edge" d="M230 400 V490 H330"/>
+<path class="edge" d="M750 400 V490 H670"/>
+<rect x="330" y="580" width="340" height="80" rx="14" fill="#eaf2ff" stroke="#5681be" stroke-width="2"/>
+<text x="500.0" y="615" text-anchor="middle">按权重抽取赠送免费局数</text>
+<path class="edge" d="M500 530 V580"/>
+<text x="520" y="560" text-anchor="middle">是</text>
+<rect x="330" y="710" width="340" height="80" rx="14" fill="#eaf2ff" stroke="#5681be" stroke-width="2"/>
+<text x="500.0" y="745" text-anchor="middle">开始一局免费</text>
+<text x="500.0" y="769" text-anchor="middle">剩余次数减 1</text>
+<path class="edge" d="M500 660 V710"/>
+<path d="M500.0,840 L670,880 L500.0,920 L330,880 Z" fill="#fff3d6" stroke="#d59924" stroke-width="2"/>
+<text x="500.0" y="875" text-anchor="middle">免费局是否中奖？</text>
+<path class="edge" d="M500 790 V840"/>
+<rect x="60" y="970" width="340" height="80" rx="14" fill="#eaf2ff" stroke="#5681be" stroke-width="2"/>
+<text x="230.0" y="1005" text-anchor="middle">从免费倍率表按权重抽取倍率</text>
+<text x="230.0" y="1029" text-anchor="middle">记录本局免费奖金</text>
+<rect x="600" y="970" width="300" height="80" rx="14" fill="#eaf2ff" stroke="#5681be" stroke-width="2"/>
+<text x="750.0" y="1005" text-anchor="middle">本局免费奖金为 0</text>
+<path class="edge" d="M330 880 H230 V970"/>
+<text x="270" y="865" text-anchor="middle">是</text>
+<path class="edge" d="M670 880 H750 V970"/>
+<text x="710" y="865" text-anchor="middle">否</text>
+<path d="M500.0,1100 L670,1140 L500.0,1180 L330,1140 Z" fill="#fff3d6" stroke="#d59924" stroke-width="2"/>
+<text x="500.0" y="1135" text-anchor="middle">是否再次触发免费？</text>
+<path class="edge" d="M230 1050 V1140 H330"/>
+<path class="edge" d="M750 1050 V1140 H670"/>
+<rect x="50" y="1230" width="300" height="80" rx="14" fill="#eaf2ff" stroke="#5681be" stroke-width="2"/>
+<text x="200.0" y="1265" text-anchor="middle">剩余次数增加</text>
+<text x="200.0" y="1289" text-anchor="middle">本次抽取的免费局数</text>
+<path class="edge" d="M330 1140 H200 V1230"/>
+<text x="250" y="1125" text-anchor="middle">是</text>
+<path d="M580.0,1230 L760,1270 L580.0,1310 L400,1270 Z" fill="#fff3d6" stroke="#d59924" stroke-width="2"/>
+<text x="580.0" y="1265" text-anchor="middle">剩余免费次数大于 0？</text>
+<path class="edge" d="M500 1180 V1230"/>
+<text x="520" y="1210" text-anchor="middle">否</text>
+<path class="edge" d="M350 1270 H400"/>
+<path class="edge" d="M760 1270 H950 V750 H670"/>
+<text x="925" y="1000" text-anchor="middle">是</text>
+<rect x="400" y="1380" width="360" height="80" rx="14" fill="#eaf2ff" stroke="#5681be" stroke-width="2"/>
+<text x="580.0" y="1415" text-anchor="middle">汇总奖金，结束</text>
+<path class="edge" d="M580 1310 V1380"/>
+<text x="600" y="1350" text-anchor="middle">否</text>
+<path class="edge" d="M670 490 H980 V1420 H760"/>
+<text x="940" y="475" text-anchor="middle">否</text>
+<text x="40" y="1490" style="font-size:15px;fill:#64748b">中奖与免费触发独立判断；普通、免费共用免费触发概率。</text></svg>

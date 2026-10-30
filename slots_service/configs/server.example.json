@@ -1,0 +1,11 @@
+{
+  "http": {
+    "address": "127.0.0.1:8080",
+    "readHeaderTimeoutSeconds": 5,
+    "readTimeoutSeconds": 15,
+    "writeTimeoutSeconds": 30,
+    "idleTimeoutSeconds": 60,
+    "shutdownTimeoutSeconds": 15
+  },
+  "games": []
+}
