@@ -71,3 +71,22 @@ Verified in Creator preview: row count 20 -> 40, scrollTop 496 -> 496, previous 
 - Browser verified 8 payout cards, all images loaded, scroll content and close restoring canvas input. Scroll widths both 386 px; no reserved scrollbar gutter.
 - Validation: TypeScript and 54 client tests passed; regenerated art passed all 6 history tests. Final web-mobile build completed successfully.
 - Evidence: `paytable-page-check.png`.
+
+## Independent Web Audio — 2026-10-30
+
+- Replaced GameEffects AudioSource/AudioClip playback with WebAudioMixer and game-specific GameAudio rules. Static reference MP3s ship in preview and web-mobile templates.
+- Covers normal/free music, reel start/stop, actual-symbol award voices (second at 0.6s), combined voices, gold/Wild at 0.3s, multiplier voices, and popup loops/end cues. Sound toggles all buses and persists preference.
+- Automated checks: 62 tests pass, including stale-load cancellation, decoded-buffer reuse, delayed-source cancellation, destruction, symbol-ID mapping, music transitions, unlock/mute and asset availability. TypeScript and final web-mobile build pass.
+- Browser verification: before START `web-audio / suspended`; after START `running`; Sound toggles muted true/false and speaker icon. No warnings or errors captured. Preview MP3 returns HTTP 200; final build includes 66 MP3 files.
+- Evidence: `audio-web-check.png`. Subjective listening comparison was not performed by the automation.
+
+### Symbol voice interruption fix — 2026-10-30
+
+- Symbol voices shared `voice:main` with multiplier announcements and were cancelled again when entering popups or another award. Symbol playback now uses independent one-shot sources, matching the reference; multiplier announcements have their own slot.
+- Regression test confirms both symbol sources (including the delayed second voice) remain alive across multiplier, popup and subsequent award events. All 63 tests and TypeScript passed. Final web-mobile output contains the updated separate multiplier slot.
+
+### Confirmed missing-symbol-voice root cause — 2026-10-30
+
+- Actual browser award `[4,7]` produced shrink/prize sounds but zero payout voice requests. Inspecting the generated Cocos bundle showed `[...new Set(...)]` compiled into `[].concat(new Set(...))`; filtering this array returned no valid symbol IDs.
+- Replaced spread with `Array.from(new Set(...))`. Added a regression test using Creator's Babel loose spread transformation, in addition to the existing TypeScript tests. All 64 tests passed, including the same `[4,7]` symbol pair.
+- AudioDebug provides bounded DOM diagnostics to verify actual browser requests/start events instead of relying solely on source tests.

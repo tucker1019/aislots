@@ -63,3 +63,17 @@ python3 -m http.server 5180 --bind 127.0.0.1 --directory client/mahjongway/build
 Big/Mega/Super Win now count through each presentation tier instead of opening directly at the final tier. Big upgrades at 15x stake, Mega at 50x, and the final tier finishes at the settled win. The existing 8-second count duration is shared across tiers; displayed integer money never resets on upgrade. Clicking to skip still shows the final tier and total immediately. Threshold progression is in effects/big_win_progression.ts; native title, pile and VFX transitions are in effects/big_win_visuals.ts.
 
 Rule opens an in-game HTML rules overlay using the history theme and floating scrollbar. The supplied Indonesian rules are translated into Chinese in rules/rules_content.ts. Per explicit content approval, the reference rule of 3 scatters awarding 12 free spins (+2 per additional scatter) is preserved; this static documentation does not change the server award mapping. Closing the page restores game input without sending gameplay requests.
+
+### 独立 Web Audio
+
+浏览器音频由 `src/audio/web_audio.ts` 管理，不通过 Cocos `AudioSource` / `AudioClip`。
+`game_audio.ts` 将当前游戏符号 ID 映射到参考项目的语音，并管理普通/免费背景音乐、转轴、中奖、倍率和弹窗通道。
+点击 START 或首次操作时解锁；页面进入后台暂停，回来尝试恢复。底部 Sound 控制全部通道并保存静音偏好。
+
+静态 MP3 位于 `preview-template/audio/`，构建镜像位于 `build-templates/web-mobile/audio/`。
+更新后运行 `python3 tools/sync_audio.py`，再构建。部署时需保留输出根目录的 `audio/`。
+页面根节点的 `data-audio-backend`、`data-audio-state`、`data-audio-muted` 可用于检查解锁和静音状态。
+
+排查语音时可使用 `?audioDebug=1`：页面根节点 `data-audio-award` 显示实际中奖图标，
+`data-audio-events` 保留最近的请求、启动和停止记录（文件名、通道、音量与 AudioContext 状态）。
+图标去重使用 `Array.from(new Set(...))`，避免 Cocos loose spread 把 Set 当成单个数组元素。

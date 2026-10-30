@@ -21,7 +21,7 @@ export interface Frame {
     mode: 'base' | 'free';
     nextAction: 'continue' | 'start_free' | 'complete';
     board: Cell[][];
-    wins: Array<{ cellIds: number[] }>;
+    wins: Array<{ symbolId: number; cellIds: number[] }>;
     removedIds: number[];
     transformedIds: number[];
     balance: string;

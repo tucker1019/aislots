@@ -1,6 +1,5 @@
 import {
     Animation,
-    AudioClip,
     instantiate,
     Node,
     Prefab,
@@ -37,7 +36,6 @@ export const symbolPaths: Record<number, string> = {
 };
 export class EffectLibrary {
     static prefabs = new Map<string, Prefab>();
-    static sounds = new Map<string, AudioClip>();
     static async load() {
         await Promise.all(
             [...NAMES, 'control_spin', 'control_stop', 'control_turbo'].map(
@@ -55,33 +53,7 @@ export class EffectLibrary {
                 },
             ),
         );
-        await Promise.all(
-            [
-                'symbolShrink',
-                'symbolWild',
-                'symbolCollapse',
-                'multiplierA',
-                'multiplierB',
-                'multiplierC',
-                'symbolScatter',
-                'fastspinStart',
-                'fastspinEnd',
-                'bgmBonusIntro',
-                'uiStart',
-                'uiCollect',
-                'bgmBigwinMain',
-                'bgmBigwinEnd',
-                'bgmTotalwinMain',
-                'bgmTotalwinEnd',
-            ].map(async (name) => {
-                await new Promise<void>((resolve) =>
-                    resources.load(ROOT + 'sound/games/' + name, AudioClip, (error, clip) => {
-                        if (!error) this.sounds.set(name, clip);
-                        resolve();
-                    }),
-                );
-            }),
-        );
+
     }
     static create(name: string, parent: Node) {
         const prefab = this.prefabs.get(name);

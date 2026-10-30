@@ -259,7 +259,7 @@ test('reconnect of a completed bet restores static board and total without spinn
    wins:[],removedIds:[],transformedIds:[],balance:'old-snapshot',betAmount:'100',winAmount:'0',
    totalWinAmount:'130',freeRemaining:0,nextAction:'complete',spinWinAmount:'99999'}}),
   spin:async()=>assert.fail('completed recovery must not send a bet')};
- f.effects={multiplier(){},freeEnd:async()=>assert.fail('must not replay free summary'),bigWin:async()=>assert.fail('must not replay big win')};
+ f.effects={setAudioMode(){},multiplier(){},freeEnd:async()=>assert.fail('must not replay free summary'),bigWin:async()=>assert.fail('must not replay big win')};
  await f.connect();
  assert.equal(shown,5);assert.equal(f.balance,'500030');assert.equal(f.winAmount,'130');assert.equal(f.state,0);
 });

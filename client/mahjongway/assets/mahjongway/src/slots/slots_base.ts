@@ -223,7 +223,7 @@ export class slots_base extends Component {
         this.click_stop = false;
         this.error = '';
         this.hideAwardShade();
-        if (!this.activeBet) this.effects?.resetMultiplier();
+        if (!this.activeBet) { this.effects?.resetMultiplier(); this.effects?.spinSound(); }
         this.notifyFlowChanged();
         this.reels.forEach((r) => r.startRoll());
         try {
@@ -334,6 +334,8 @@ export class slots_base extends Component {
     }
 
     /** 服务端决定中奖和余额；这里只安排停轴、消除及下一轮的展示顺序。 */
+    reelStopped(quick: boolean) { this.effects?.reelStopped(quick); }
+
     private async play(frame: Frame, restore = false) {
         let first = true;
         while (this.alive) {
@@ -348,6 +350,7 @@ export class slots_base extends Component {
                 (c) => this.picks[c](),
                 cascade || (restore && first) ? this.boards : undefined,
             );
+            this.effects?.setAudioMode(frame.mode === 'free');
             this.current = frame;
             this.boards = strips;
             this.activeBet = frame.nextAction !== 'complete';
@@ -357,6 +360,8 @@ export class slots_base extends Component {
                 this.state = 2;
             } else if (cascade) {
                 this.anticipation?.clear();
+                this.effects?.multiplier(frame.cascadeFactors, frame.cascadeIndex ?? 0, frame.mode === 'free');
+                this.effects?.sound('symbolCollapse');
                 const sources = gravitySources(previous.board, frame.board);
                 const delays = cascadeDropDelays(sources, DROP_COLUMN_DELAY);
                 this.reels.forEach((reel, c) => {
@@ -382,6 +387,7 @@ export class slots_base extends Component {
                     frame.mode === 'free',
                 );
                 if (!this.reels.some((r) => r.state !== 0)) {
+                    this.effects?.spinSound();
                     this.reels.forEach((r) => r.startRoll());
                 }
                 this.reels.forEach((r, c) => r.stopRoll(strips[c]));
@@ -419,13 +425,13 @@ export class slots_base extends Component {
                 await this.pause(ROUND_TRANSITION_DELAY);
                 if (!this.alive) return;
                 this.showAwardShade();
-                this.effects?.sound('symbolShrink');
+                this.effects?.awardSound(frame.wins.map(win => win.symbolId), frame.transformedIds.length > 0);
                 await this.playColumnAwards(frame, winning);
                 await this.until(() => this.reels.every((reel) => !reel.isAwardPlaying));
                 this.hideAwardShade();
                 await this.pause(ROUND_TRANSITION_DELAY);
                 if (!this.alive) return;
-                this.effects?.sound('symbolCollapse');
+
             } else {
                 await this.pause(0.2);
             }
@@ -442,7 +448,10 @@ export class slots_base extends Component {
                 if (type > 0) await this.effects?.bigWin(frame.spinWinAmount, type, frame.betAmount);
             }
             if (frame.nextAction === 'complete') {
-                if (frame.mode === 'free') await this.effects?.freeEnd(frame.totalWinAmount);
+                if (frame.mode === 'free') {
+                    await this.effects?.freeEnd(frame.totalWinAmount);
+                    this.effects?.setAudioMode(false);
+                }
                 this.finish();
                 return;
             }

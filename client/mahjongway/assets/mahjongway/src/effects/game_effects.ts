@@ -1,9 +1,9 @@
+import { GameAudio } from '../audio/game_audio';
 import { bigWinFrame, BIG_WIN_COUNT_SECONDS } from './big_win_progression';
 import { applyBigWinTier } from './big_win_visuals';
 import {
     _decorator,
     Animation,
-    AudioSource,
     Component,
     Node,
     Label,
@@ -24,8 +24,7 @@ const { ccclass } = _decorator;
 /** 弹窗只负责演出，不发送确认、不决定中奖或改变服务端结算顺序。 */
 @ccclass('GameEffects')
 export class GameEffects extends Component {
-    private audio: AudioSource;
-    private music: AudioSource;
+    private audio = new GameAudio();
     private popupName = '';
     private endingSoundPlayed = false;
     private overlay: Node;
@@ -59,18 +58,21 @@ export class GameEffects extends Component {
     private wasRolling = false;
     private previousMultiplier = -1;
     private previousFactors = '';
+    private previousFree = false;
     private baseFactors: string[] = [];
 
     /** 新的付费旋转立即回到普通首档，不沿用上一局的消除倍率。 */
     resetMultiplier() {
+        this.audio.setMode(false);
         this.previousMultiplier = -1;
         this.multiplier(this.baseFactors, 0, false);
     }
 
     async initialize() {
         await EffectLibrary.load();
-        this.audio = this.node.addComponent(AudioSource);
-        this.music = this.node.addComponent(AudioSource);
+        this.audio.initialize();
+        this.find(this.node, 'btn_sound')?.on(Node.EventType.TOUCH_END, this.toggleSound, this);
+        this.refreshSoundButton();
         this.overlay = new Node('effect_overlay');
         this.node.addChild(this.overlay);
         this.overlay.addComponent(UITransform).setContentSize(750, 1400);
@@ -120,20 +122,22 @@ export class GameEffects extends Component {
             turbo.node.getChildByPath('txt_turbo_on/turbo_lightning').active = flow.fast;
         }
     }
-    private playMusic(name: string) {
-        const clip = EffectLibrary.sounds.get(name);
-        if (clip) {
-            this.music.stop();
-            this.music.clip = clip;
-            this.music.loop = true;
-            this.music.volume = 0.6;
-            this.music.play();
-        }
+    private refreshSoundButton() {
+        const button = this.find(this.node, 'btn_sound');
+        const on = button?.getChildByName('ic_soundon'), off = button?.getChildByName('ic_soundoff');
+        if (on) on.active = !this.audio.isMuted;
+        if (off) off.active = this.audio.isMuted;
     }
+    private toggleSound() { this.audio.toggleMuted(); this.refreshSoundButton(); }
+    setAudioMode(free: boolean) { this.audio.setMode(free); }
+    spinSound() { this.audio.startSpin(); }
+    reelStopped(quick: boolean) { this.audio.stopReel(quick); }
+    awardSound(symbols: number[], hasGold: boolean) { this.audio.award(symbols, hasGold); }
+    private playMusic(name: string) { this.audio.popupLoop(name); }
     private endMusic() {
         if (this.endingSoundPlayed) return;
         this.endingSoundPlayed = true;
-        this.music?.stop();
+        this.audio.stopPopup();
         if (this.popupName === 'big_win') this.sound('bgmBigwinEnd');
         else if (this.popupName === 'pop_free_end') this.sound('bgmTotalwinEnd');
     }
@@ -145,10 +149,8 @@ export class GameEffects extends Component {
         }
         return null;
     }
-    sound(name: string) {
-        const clip = EffectLibrary.sounds.get(name);
-        if (clip && this.audio) this.audio.playOneShot(clip, 0.7);
-    }
+    sound(name: string) { this.audio.sound(name); }
+
     multiplier(factors: string[], index: number, free: boolean) {
         if (!free && factors?.length) this.baseFactors = [...factors];
         if (!this.multipliers || !factors?.length) return;
@@ -211,10 +213,12 @@ export class GameEffects extends Component {
             if (changed && i - 1 === index && anim) {
                 anim.active = true;
                 anim.getComponent(Animation)?.play();
-                if (index > 0 && index <= 3)
-                    this.sound(['multiplierA', 'multiplierB', 'multiplierC'][index - 1]);
+
             }
         }
+        if (changed || (free && !this.previousFree && this.previousMultiplier >= 0))
+            this.audio.multiplier(index, factors[index]);
+        this.previousFree = free;
         this.previousMultiplier = index;
         this.previousFactors = factors.join(',');
     }
@@ -255,6 +259,7 @@ export class GameEffects extends Component {
         this.popupAge = 0;
         this.lastDismissAge = -1;
         this.popupName = name;
+        this.audio.beginPopup();
         this.endingSoundPlayed = false;
         this.coinAge = 0;
         this.popupTimeout = seconds;
@@ -266,7 +271,7 @@ export class GameEffects extends Component {
             (resolve) =>
                 (this.popupFinish = () => {
                     this.popupFinish = null;
-                    this.music?.stop();
+                    this.audio.stopPopup();
                     this.popupTick = null;
                     this.coinMode = null;
                     this.coinParent = null;
@@ -343,6 +348,8 @@ export class GameEffects extends Component {
                 if (subtitle) subtitle.enabled = false;
                 effect.play('pop_tri_free', 'panel');
                 this.sound('bgmBonusIntro');
+                this.sound('maJiangHuLe');
+                this.sound('fastspinSuccess');
             },
             8,
         );
@@ -357,6 +364,8 @@ export class GameEffects extends Component {
                 label.getComponent(Label).string = String(count);
                 effect.play('pop_tri_free_again', 'panel');
                 this.sound('bgmBonusIntro');
+                this.sound('maJiangHuLe');
+                this.sound('fastspinSuccess');
             },
             2,
         );
@@ -464,7 +473,8 @@ export class GameEffects extends Component {
     }
     onDestroy() {
         this.popupFinish?.();
-        this.node.getComponents(AudioSource).forEach((source) => source.stop());
+        this.find(this.node, 'btn_sound')?.off(Node.EventType.TOUCH_END, this.toggleSound, this);
+        this.audio.destroy();
     }
 }
 /** 只累计已结算金额，使用整数运算避免大额计数精度损失。 */

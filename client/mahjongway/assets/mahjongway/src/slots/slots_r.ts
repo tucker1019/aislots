@@ -131,6 +131,7 @@ export class slots_r extends Component {
 
     /** 直接落位供恢复、异常处理和满足最短滚动时间后的停止使用。 */
     stop() {
+        const wasRolling = this.state !== 0 && this.state !== 5;
         this.dropDelay = 0;
         const board = this.result.length ? this.result : this.slots.boards[this.index];
         this.stopPending = false;
@@ -150,6 +151,7 @@ export class slots_r extends Component {
         }
         this.refreshCellZOrder();
         this.state = 0;
+        if (wasRolling) this.slots.reelStopped?.(true);
     }
     private resetScrollSpeed() {
         this.scrollSpeed = this.speed;
@@ -448,6 +450,7 @@ export class slots_r extends Component {
         if (t >= 1) {
             this.correctToInitY();
             this.state = 0;
+            this.slots.reelStopped?.(false);
         }
     }
 
