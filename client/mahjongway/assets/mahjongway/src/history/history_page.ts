@@ -64,6 +64,7 @@ export class HistoryPage {
             return;
         }
         if (!this.root) this.mount();
+        this.root.classList.remove('is-visible');
         this.root.hidden = false;
         this.focused =
             document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -71,6 +72,7 @@ export class HistoryPage {
         this.canvas.style.pointerEvents = 'none';
         this.root.focus();
         this.resize();
+        requestAnimationFrame(() => this.root?.classList.add('is-visible'));
         window.addEventListener('resize', this.resize);
         if (typeof ResizeObserver !== 'undefined') {
             this.observer = new ResizeObserver(this.resize);
@@ -89,6 +91,7 @@ export class HistoryPage {
         if (!this.isOpen) return;
         this.epoch++;
         this.root.hidden = true;
+        this.root.classList.remove('is-visible');
         this.data = null;
         this.detail = null;
         this.loading = false;
@@ -150,6 +153,7 @@ export class HistoryPage {
                     this.dateScreen();
                     return;
                 }
+                if (this.mode === id) return;
                 this.mode = id;
                 this.dates = recentDates(id === 'today' ? 1 : 7);
                 this.scrollTop = 0;

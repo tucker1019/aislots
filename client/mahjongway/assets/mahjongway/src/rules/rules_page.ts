@@ -83,7 +83,9 @@ export class RulesPage {
         scroll.append(copy); root.append(floatingScroll(scroll));
         for (const type of ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'click'])
             root.addEventListener(type, event => event.stopPropagation());
-        document.body.append(root); this.resize(); root.focus();
+        document.body.append(root); this.resize();
+        requestAnimationFrame(() => this.root?.classList.add('is-visible'));
+        root.focus();
         window.addEventListener('resize', this.resize);
         this.observer = new ResizeObserver(this.resize); this.observer.observe(this.canvas);
         document.addEventListener('keydown', this.keydown, true);
