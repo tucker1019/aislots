@@ -134,10 +134,12 @@ export class GameEffects extends Component {
     reelStopped(quick: boolean) { this.audio.stopReel(quick); }
     awardSound(symbols: number[], hasGold: boolean) { this.audio.award(symbols, hasGold); }
     private playMusic(name: string) { this.audio.popupLoop(name); }
-    private endMusic() {
+    private endMusic(playEnd = true) {
+        // Always stop the looping popup track, even when the ending cue was already started.
+        this.audio.stopPopup();
         if (this.endingSoundPlayed) return;
         this.endingSoundPlayed = true;
-        this.audio.stopPopup();
+        if (!playEnd) return;
         if (this.popupName === 'big_win') this.sound('bgmBigwinEnd');
         else if (this.popupName === 'pop_free_end') this.sound('bgmTotalwinEnd');
     }
@@ -150,8 +152,9 @@ export class GameEffects extends Component {
         return null;
     }
     sound(name: string) { this.audio.sound(name); }
+    stopTransientAudio() { this.audio.stopTransient(); }
 
-    multiplier(factors: string[], index: number, free: boolean) {
+    multiplier(factors: string[], index: number, free: boolean, repeatSound = false) {
         if (!free && factors?.length) this.baseFactors = [...factors];
         if (!this.multipliers || !factors?.length) return;
         const root = this.multipliers.node,
@@ -216,7 +219,7 @@ export class GameEffects extends Component {
 
             }
         }
-        if (changed || (free && !this.previousFree && this.previousMultiplier >= 0))
+        if (changed || repeatSound || (free && !this.previousFree && this.previousMultiplier >= 0))
             this.audio.multiplier(index, factors[index]);
         this.previousFree = free;
         this.previousMultiplier = index;
@@ -271,6 +274,7 @@ export class GameEffects extends Component {
             (resolve) =>
                 (this.popupFinish = () => {
                     this.popupFinish = null;
+                    this.audio.stopTransient();
                     this.audio.stopPopup();
                     this.popupTick = null;
                     this.coinMode = null;
@@ -294,7 +298,8 @@ export class GameEffects extends Component {
         this.popupExit = () => {
             const finish = this.popupFinish;
             this.popupClosing = true;
-            this.endMusic();
+            this.audio.stopTransient();
+            this.endMusic(false);
             if (name === 'pop_free_end') this.sound('uiCollect');
             if (name === 'pop_free_tri') {
                 this.sound('uiStart');
@@ -328,6 +333,7 @@ export class GameEffects extends Component {
         this.lastDismissAge = this.popupAge;
         if (this.completeCount) {
             this.completeCount();
+            // Skipping the count shows the final amount and starts the ending cue.
             this.endMusic();
             this.completeCount = null;
             this.popupTick = null;
@@ -479,10 +485,13 @@ export class GameEffects extends Component {
 }
 /** 只累计已结算金额，使用整数运算避免大额计数精度损失。 */
 export function rollMoney(amount: string, progress: number) {
-    return (
+    const minor = (
         (BigInt(amount) * BigInt(Math.floor(Math.max(0, Math.min(1, progress)) * 10000))) /
         BigInt(10000)
-    ).toLocaleString();
+    );
+    const negative = minor < 0n;
+    const value = negative ? -minor : minor;
+    return (negative ? '-' : '') + (Number(value) / 100).toFixed(2);
 }
 export function bigWinType(amount: string, bet: string) {
     const win = BigInt(amount),

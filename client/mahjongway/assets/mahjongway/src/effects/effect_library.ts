@@ -21,6 +21,9 @@ const NAMES = [
     'bw_particle_a',
     'bw_particle_b',
 ];
+function reportLoadingProgress(value: number) {
+    if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('aislots-loading-progress', { detail: { progress: value } }));
+}
 /** 旧场景美术ID→原特效节点。两份工程的图标顺序不同，不能直接拼接编号。 */
 export const symbolPaths: Record<number, string> = {
     1: 'symbol_bg/c4',
@@ -37,8 +40,11 @@ export const symbolPaths: Record<number, string> = {
 export class EffectLibrary {
     static prefabs = new Map<string, Prefab>();
     static async load() {
+        const names = [...NAMES, 'control_spin', 'control_stop', 'control_turbo'];
+        let loaded = 0;
+        reportLoadingProgress(44);
         await Promise.all(
-            [...NAMES, 'control_spin', 'control_stop', 'control_turbo'].map(
+            names.map(
                 async (name) => {
                     const path =
                         name.startsWith('control_')
@@ -50,6 +56,8 @@ export class EffectLibrary {
                         ),
                     );
                     this.prefabs.set(name, asset);
+                    loaded++;
+                    reportLoadingProgress(44 + Math.round(34 * loaded / names.length));
                 },
             ),
         );

@@ -110,7 +110,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 375,
+      "x": 375.00000000000006,
       "y": 700,
       "z": 0
     },
@@ -334,7 +334,10 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_useGrayscale": false,
-    "_atlas": null,
+    "_atlas": {
+      "__uuid__": "fb9e9f9c-1b96-4b86-a78e-669e7b2f6288",
+      "__expectedType__": "cc.SpriteAtlas"
+    },
     "_id": "e6mnpi1gVGvqGWQ6rJGb5U"
   },
   {
@@ -905,7 +908,7 @@
         "__id__": 71
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 114
@@ -6148,7 +6151,10 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_useGrayscale": false,
-    "_atlas": null,
+    "_atlas": {
+      "__uuid__": "5036baf3-f646-491e-acaa-1c84c4c91941",
+      "__expectedType__": "cc.SpriteAtlas"
+    },
     "_id": "3e6Oy/0VZIP56pHs+uWOTQ"
   },
   {
@@ -6257,7 +6263,10 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_useGrayscale": false,
-    "_atlas": null,
+    "_atlas": {
+      "__uuid__": "5036baf3-f646-491e-acaa-1c84c4c91941",
+      "__expectedType__": "cc.SpriteAtlas"
+    },
     "_id": "c4q7yHbHNL9L6xXWsiwaOA"
   },
   {
@@ -6366,7 +6375,10 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_useGrayscale": false,
-    "_atlas": null,
+    "_atlas": {
+      "__uuid__": "5036baf3-f646-491e-acaa-1c84c4c91941",
+      "__expectedType__": "cc.SpriteAtlas"
+    },
     "_id": "0aLwFV7ipPOa4CDyJLwuNz"
   },
   {
@@ -6475,7 +6487,10 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_useGrayscale": false,
-    "_atlas": null,
+    "_atlas": {
+      "__uuid__": "5036baf3-f646-491e-acaa-1c84c4c91941",
+      "__expectedType__": "cc.SpriteAtlas"
+    },
     "_id": "05Dq4KFulAcbsDH8TElZJy"
   },
   {
@@ -6584,7 +6599,10 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_useGrayscale": false,
-    "_atlas": null,
+    "_atlas": {
+      "__uuid__": "5036baf3-f646-491e-acaa-1c84c4c91941",
+      "__expectedType__": "cc.SpriteAtlas"
+    },
     "_id": "c2lYqmv89DmrJAes7HPi//"
   },
   {
@@ -6693,7 +6711,10 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_useGrayscale": false,
-    "_atlas": null,
+    "_atlas": {
+      "__uuid__": "a682338f-81ce-4e95-a0a9-df12d9046e4a",
+      "__expectedType__": "cc.SpriteAtlas"
+    },
     "_id": "04pmBzJK1NTZ/fN41GEGBr"
   },
   {
@@ -6817,7 +6838,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 750,
+      "width": 750.0000000000001,
       "height": 1400
     },
     "_anchorPoint": {
@@ -8667,7 +8688,10 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_useGrayscale": false,
-    "_atlas": null,
+    "_atlas": {
+      "__uuid__": "0fa8fb77-afbb-446e-9452-cf8c16b3709c",
+      "__expectedType__": "cc.SpriteAtlas"
+    },
     "_id": "0eLRg0cKhPpJg7xyJXvWdh"
   },
   {
@@ -8728,7 +8752,10 @@
     "_fillRange": 0,
     "_isTrimmedMode": false,
     "_useGrayscale": false,
-    "_atlas": null,
+    "_atlas": {
+      "__uuid__": "0fa8fb77-afbb-446e-9452-cf8c16b3709c",
+      "__expectedType__": "cc.SpriteAtlas"
+    },
     "_id": "bdojWGF+NL9pSqyPMQfTyl"
   },
   {
@@ -8959,7 +8986,10 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_useGrayscale": false,
-    "_atlas": null,
+    "_atlas": {
+      "__uuid__": "0fa8fb77-afbb-446e-9452-cf8c16b3709c",
+      "__expectedType__": "cc.SpriteAtlas"
+    },
     "_id": "edOUFhPXBJp4++qgNbVFfQ"
   },
   {
@@ -9020,7 +9050,10 @@
     "_fillRange": 0,
     "_isTrimmedMode": false,
     "_useGrayscale": false,
-    "_atlas": null,
+    "_atlas": {
+      "__uuid__": "0fa8fb77-afbb-446e-9452-cf8c16b3709c",
+      "__expectedType__": "cc.SpriteAtlas"
+    },
     "_id": "24pLCA4stBuLdKfsQrL6h4"
   },
   {
@@ -12650,7 +12683,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 750,
+      "width": 750.0000000000001,
       "height": 1400
     },
     "_anchorPoint": {
@@ -12720,7 +12753,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 750,
+      "width": 750.0000000000001,
       "height": 1400
     },
     "_anchorPoint": {

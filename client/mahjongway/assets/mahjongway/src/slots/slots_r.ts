@@ -55,8 +55,9 @@ export class slots_r extends Component {
     }
 
     private resetDelays() {
-        this.delay_start_time = this.index * 0.08;
-        this.delay_end_time = this.index * 0.06;
+        // Turbo mode starts and stops every reel together.
+        this.delay_start_time = this.slots?.fast ? 0 : this.index * 0.08;
+        this.delay_end_time = this.slots?.fast ? 0 : this.index * 0.06;
     }
 
     // 保存固定逻辑索引；后续 setSiblingIndex 只改绘制层级，不改变逻辑编号。
@@ -112,7 +113,7 @@ export class slots_r extends Component {
         this.landed = new Array(this.cellNodes.length).fill(false);
         this.stopInitY = [];
         this.settleAnchor = -1;
-        this.delay_end_time = 2 + this.index * 0.3;
+        this.delay_end_time = this.slots?.fast ? 0.5 : 2 + this.index * 0.3;
         this.stopPending = true;
         this.stopDelayDone = false;
         this.resetScrollSpeed();

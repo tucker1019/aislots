@@ -10,7 +10,12 @@ import {
     HttpResponseInterceptor,
 } from './http_types';
 
-const DEFAULT_TIMEOUT = 15000;
+const DEFAULT_TIMEOUT = 10000;
+const RETRY_DELAYS = [2000, 4000, 6000, 8000, 16000];
+
+function wait(milliseconds: number) {
+    return new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
+}
 
 function buildQuery(params?: HttpParams): string {
     if (!params) {
@@ -144,7 +149,25 @@ export class HttpClient {
             finalConfig = await interceptor(finalConfig);
         }
         try {
-            let response = await this.send<T>(finalConfig);
+            let response: HttpResponse<T>;
+            for (let attempt = 0; ; attempt++) {
+                try {
+                    response = await this.send<T>(finalConfig);
+                    break;
+                } catch (error) {
+                    const retryable = error instanceof HttpError && (error.status === 0 || error.status >= 500);
+                    const delay = retryable ? RETRY_DELAYS[attempt] : undefined;
+                    if (delay === undefined) {
+                        if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('aislots-retry-end'));
+                        throw error;
+                    }
+                    if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('aislots-retry', {
+                        detail: { attempt: attempt + 1, delay },
+                    }));
+                    await wait(delay);
+                }
+            }
+            if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('aislots-retry-end'));
             for (const interceptor of this.responseInterceptors) {
                 response = await interceptor(response);
             }

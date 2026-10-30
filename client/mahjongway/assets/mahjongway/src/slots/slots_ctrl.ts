@@ -52,7 +52,7 @@ export class slots_ctrl extends Component {
     }
     private toggleFast() {
         // 原生按钮预制体由 GameEffects 同步表现，避免重新点亮旧美术。
-        this.slots.fast = !this.slots.fast;
+        this.slots.setFastMode(!this.slots.fast);
     }
     private addBet() {
         this.slots.changeBet(1);

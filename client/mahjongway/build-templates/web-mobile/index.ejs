@@ -48,6 +48,9 @@
       background: transparent;
     }
     #LoadingScreen img { display: block; width: 100%; height: auto; max-width: none; object-fit: initial; }
+    #LoadingScreen .loading-progress { position: absolute; left: 50%; bottom: 17%; width: 60%; aspect-ratio: 447 / 28; transform: translateX(-50%); background: url('loading/jdt.png') center/100% 100% no-repeat; }
+    #LoadingScreen .loading-progress-fill { height: 100%; width: 0; overflow: hidden; transition: width .2s ease; }
+    #LoadingScreen .loading-progress-fill::before { content: ''; display: block; width: 100%; height: 100%; background: url('loading/jdt1.png') left center/auto 78.5714% no-repeat; }
     #LoadingScreen .start-button { position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%); width: 42%; padding: 3% 0; border: 2px solid #ffd96a; border-radius: 8px; color: #6b2100; background: linear-gradient(#ffe89a, #f6a51a); box-shadow: 0 4px 0 #9b3f05, 0 8px 18px rgba(75, 20, 0, .35); font: 700 min(5vw, 28px)/1 Helvetica, Arial, sans-serif; letter-spacing: 1px; cursor: pointer; }
     #LoadingScreen .start-button:active { transform: translate(-50%, 2px); }
   </style>
@@ -57,6 +60,7 @@
   <div id="GameDiv" cc_exact_fit_screen="true">
     <div id="LoadingScreen" aria-label="Loading">
       <img src="loading/1025.jpg" alt="" />
+      <div class="loading-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="loading-progress-fill"></div></div>
       <button id="StartButton" class="start-button" type="button" hidden>START</button>
     </div>
     <div id="Cocos3dGameContainer">

@@ -34,6 +34,8 @@ export interface Frame {
 export interface BetConfig {
     betOptions: string[];
     defaultBet: string;
+    lineCount: number;
+    betLevel: number;
 }
 export interface Progress {
     lastFrame?: Frame;
@@ -47,7 +49,7 @@ export class GameApi {
     private token = '';
     private next = '';
     // 超时不代表下注失败：保留同一请求标识和金额，重试时避免重复扣款。
-    private pending: { requestId: string; betAmount: string } = null;
+    private pending: { requestId: string; bet: string; betLevel: number } = null;
     private request: Request;
     private route: string;
     constructor(
@@ -64,7 +66,7 @@ export class GameApi {
         this.route = '/games/' + encodeURIComponent(identity.gameId);
         const client = new HttpClient({
             baseURL: base.replace(/\/$/, '') + '/api/v1',
-            timeout: 15000,
+            timeout: 10000,
         });
         this.request =
             request ||
@@ -115,9 +117,9 @@ export class GameApi {
     }
 
     /** 普通旋转、连续消除和免费旋转共用同一个接口。 */
-    async spin(betAmount: string) {
+    async spin(bet: string, betLevel: number) {
         if (!this.next && !this.pending) await this.state();
-        this.pending = this.pending || { requestId: this.next, betAmount };
+        this.pending = this.pending || { requestId: this.next, bet, betLevel };
         let frame: Frame;
         try {
             frame = await this.request<Frame>(this.route + '/spin', this.pending, this.token);

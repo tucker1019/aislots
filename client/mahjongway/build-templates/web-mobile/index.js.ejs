@@ -16,19 +16,34 @@ function topLevelImport (url) {
 }
 
 const application = new Application();
+const loadingScreen = document.getElementById('LoadingScreen');
+const progressBar = loadingScreen?.querySelector('.loading-progress');
+const progressFill = loadingScreen?.querySelector('.loading-progress-fill');
+function setLoadingProgress(value) {
+    const current = Number(progressBar?.getAttribute('aria-valuenow') || 0);
+    const percent = Math.max(current, Math.max(0, Math.min(100, value)));
+    if (progressFill) progressFill.style.width = `${percent}%`;
+    if (progressBar) progressBar.setAttribute('aria-valuenow', String(percent));
+}
+setLoadingProgress(8);
+window.addEventListener('aislots-board-ready', () => setLoadingProgress(100), { once: true });
+window.addEventListener('aislots-loading-progress', event => setLoadingProgress(event.detail?.progress || 0));
 
 topLevelImport('cc')
 .then((engine) => {
+    setLoadingProgress(22);
     engine.macro.ENABLE_TRANSPARENT_CANVAS = true;
     return application.init(engine);
 }).then(() => {
+    setLoadingProgress(38);
     return application.start();
-}).then(() => firstBoardReady).then(() => {
-    const loadingScreen = document.getElementById('LoadingScreen');
+}).then(() => { setLoadingProgress(42); return firstBoardReady; }).then(() => {
+    setLoadingProgress(100);
     const startButton = document.getElementById('StartButton');
     if (!loadingScreen || !startButton) return;
     startButton.hidden = false;
     startButton.addEventListener('click', () => {
+        window.dispatchEvent(new Event('aislots-started'));
         loadingScreen.remove();
     }, { once: true });
 }).catch((err) => {

@@ -41,6 +41,22 @@ function game(){
  const calls=[];const mixer={play(...args){calls.push(args);},stop(){},setVolume(){},destroy(){},attach(){},setMuted(){},preload(names){calls.push([names,'preload']);}};
  return {audio:new GameAudio(mixer),calls};
 }
+test('background music starts only after the start event',()=>{
+ const {audio,calls}=game();
+ audio.initialize();
+ assert.equal(calls.filter(c=>c[1]==='music').length,0);
+ audio.start?.();
+ assert.equal(calls.filter(c=>c[1]==='music').map(c=>c[0]),['bgm_mg']);
+});
+test('stop sound is emitted once for all reel stop callbacks',()=>{
+ const {audio,calls}=game();
+ audio.startSpin();
+ for (let i=0;i<5;i++) audio.stopReel(false);
+ assert.deepEqual(calls.filter(c=>c[0]==='games/reelStopSingle').length,1);
+ audio.startSpin();
+ audio.stopReel(true);
+ assert.deepEqual(calls.filter(c=>c[0]==='games/reelQuickstop').length,1);
+});
 test('award maps our symbol IDs to reference voices and delays the second voice by 0.6 seconds',()=>{
  const {audio,calls}=game();audio.award([8,1009,8],true);
  assert.deepEqual(calls.filter(c=>c[1]==='voice'),[

@@ -56,7 +56,7 @@ python3 -m http.server 5180 --bind 127.0.0.1 --directory client/mahjongway/build
 
 ## 预览首屏封面
 
-`preview-template/index.ejs` 使用 Creator 自定义预览模板。`preview-template/loading/1025.jpg` 由 HTML 直接加载，位于 assets 之外，不等待 Cocos 引擎或资源系统；图片与 web-mobile 的封面一致。`preview-cover.js` 等待场景启动及首帧绘制后自动移除封面；预览发生错误时移除封面以显示编辑器错误信息。刷新预览即可生效，原有工具栏保留。构建版的 START 按钮流程保持原样。
+`preview-template/index.ejs` 使用 Creator 自定义预览模板。`preview-template/loading/1025.jpg` 由 HTML 直接加载，位于 assets 之外，不等待 Cocos 引擎或资源系统；加载条使用 `jdt.png` 底槽与 `jdt1.png` 填充图。加载进度覆盖引擎启动、特效预制体预加载、登录、配置、状态和首屏盘面初始化。预览和 web-mobile 均在盘面准备完成后显示 START，点击后等首帧绘制再揭开游戏；预览发生错误时移除封面以显示编辑器错误信息。刷新预览即可生效，原有工具栏保留。
 
 首屏 cell 延迟至登录、投注列表和状态接口返回后创建：有 lastFrame 就直接使用其盘面，无历史记录则使用 slots/initial_board.ts 的固定展示牌面（不参与开奖）。HTML 封面等待 aislots-board-ready 通知后的首帧才揭开；build 的 START 也在初始盘面准备好后显示。
 

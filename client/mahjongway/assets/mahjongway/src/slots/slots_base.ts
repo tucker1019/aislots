@@ -30,12 +30,17 @@ export class slots_base extends Component {
     state = 0;
     fase = 0;
     boards: number[][] = [];
-    fast = false;
+    fast = this.loadFastMode();
     click_stop = false;
     balance = '0';
-    betAmount = '200';
+    betAmount = '0';
+    bet = '0';
+    betLevel = 1;
+    lineCount = 20;
+    maxBetLevel = 1;
     winAmount = '0';
     betOptions: string[] = [];
+    private betChoices: Array<{ display: string; bet: string; level: number }> = [];
     ready = false;
     error = '';
     private performanceCapture: RuntimePerformance = null;
@@ -52,13 +57,29 @@ export class slots_base extends Component {
     private awardShade: Graphics = null;
     private awardEffects: Node = null;
     private anticipation: Anticipation = null;
+    private failureDialog: HTMLDivElement = null;
+    private retryBanner: HTMLDivElement = null;
+    private retryTimer = 0;
     private timers: Array<{
         left: number;
         resolve: () => void;
     }> = [];
 
+    private loadFastMode() {
+        try { return localStorage.getItem('aislots-fast-mode') === 'true'; } catch { return false; }
+    }
+
+    setFastMode(value: boolean) {
+        this.fast = value;
+        try { localStorage.setItem('aislots-fast-mode', String(value)); } catch {}
+    }
+
     /** 先建立连接和特效资源，收到状态前不创建任何 cell。 */
     protected start() {
+        if (typeof window !== 'undefined') {
+            window.addEventListener('aislots-retry', this.showRetryBanner);
+            window.addEventListener('aislots-retry-end', this.hideRetryBanner);
+        }
         this.reels = this.node.children.map((n) => n.getComponent(slots_r)).filter(Boolean);
         if (this.reels.length !== 5) {
             throw new Error('场景必须配置5个转轴');
@@ -111,6 +132,8 @@ export class slots_base extends Component {
         });
         // HTML封面在这批牌真正完成首帧绘制后再关闭。
         if (typeof window !== 'undefined')
+            window.dispatchEvent(new CustomEvent('aislots-loading-progress', { detail: { progress: 100 } }));
+        if (typeof window !== 'undefined')
             window.dispatchEvent(new Event('aislots-board-ready'));
     }
 
@@ -124,13 +147,13 @@ export class slots_base extends Component {
     private labels() {
         for (const label of this.node.parent.getComponentsInChildren(Label)) {
             if (label.node.name === 'lab_coin') {
-                label.string = this.balance;
+                label.string = formatMoney(this.balance);
             }
             if (label.node.name === 'lab_bet') {
-                label.string = this.betAmount;
+                label.string = formatMoney(this.betAmount);
             }
             if (label.node.name === 'lab_win') {
-                label.string = this.winAmount;
+                label.string = formatMoney(this.winAmount);
             }
         }
     }
@@ -140,11 +163,20 @@ export class slots_base extends Component {
         this.state = 1;
         this.notifyFlowChanged();
         try {
+            this.reportLoadingProgress(78);
             const login = await this.api.login();
             this.balance = login.balance;
+            this.reportLoadingProgress(83);
             const config = await this.api.config();
-            this.betOptions = config.betOptions;
-            this.betAmount = config.defaultBet;
+            this.betChoices = buildBetChoices(config.betOptions, config.lineCount, config.betLevel);
+            this.betOptions = this.betChoices.map(choice => choice.display);
+            this.lineCount = config.lineCount;
+            this.maxBetLevel = config.betLevel;
+            const defaultChoice = this.betChoices.find(choice => choice.bet === config.defaultBet && choice.level === 1) || this.betChoices[0];
+            this.bet = defaultChoice?.bet || config.defaultBet;
+            this.betLevel = defaultChoice?.level || 1;
+            this.betAmount = this.totalBet(this.bet, this.betLevel);
+            this.reportLoadingProgress(88);
             const state = await this.api.state();
             if (!this.alive) {
                 return;
@@ -159,19 +191,26 @@ export class slots_base extends Component {
             if (!state.lastFrame) this.effects?.multiplier(['1', '2', '3', '5'], 0, false);
             if (state.lastFrame) {
                 this.betAmount = state.lastFrame.betAmount;
+                this.restoreBetChoice(this.betAmount);
                 this.winAmount = state.lastFrame.totalWinAmount;
                 this.click_stop = false;
                 this.labels();
                 await this.play({ ...state.lastFrame, balance: state.balance }, true);
             } else if (state.hasNext) {
                 this.betAmount = state.betAmount || this.betAmount;
-                await this.play(await this.api.spin(this.betAmount));
+                this.restoreBetChoice(this.betAmount);
+                await this.play(await this.api.spin(this.bet, this.betLevel));
             } else {
                 this.finish();
             }
         } catch (e) {
             this.fail(e);
         }
+    }
+
+    private reportLoadingProgress(progress: number) {
+        if (typeof window !== 'undefined')
+            window.dispatchEvent(new CustomEvent('aislots-loading-progress', { detail: { progress } }));
     }
 
     /** HTML记录页复用当前会话，不参与游戏结算或修改盘面。 */
@@ -227,7 +266,7 @@ export class slots_base extends Component {
         this.notifyFlowChanged();
         this.reels.forEach((r) => r.startRoll());
         try {
-            await this.play(await this.api.spin(this.betAmount));
+            await this.play(await this.api.spin(this.bet, this.betLevel));
         } catch (e) {
             this.fail(e);
         }
@@ -297,6 +336,7 @@ export class slots_base extends Component {
         if (this.reels.some((reel) => reel.state === 5)) return;
         if (this.effects?.dismiss()) return;
         this.anticipation?.clear();
+        this.effects?.stopTransientAudio();
         this.click_stop = true;
         if (this.state === 2) {
             this.stopReelsWithEffects();
@@ -305,6 +345,7 @@ export class slots_base extends Component {
 
     /** 手动停止不会经过 tick 的停轴状态转换，需要在落位后主动补上演出。 */
     private stopReelsWithEffects() {
+        this.effects?.stopTransientAudio();
         // 门槛统一取最后一列，满足前任何列都不能响应这次手动停止。
         const last = this.reels[this.reels.length - 1];
         if (last?.canManualStop === false) return;
@@ -326,11 +367,21 @@ export class slots_base extends Component {
         if (this.state !== 0 || this.activeBet || !this.ready) {
             return;
         }
-        const i = this.betOptions.indexOf(this.betAmount);
-        this.betAmount =
-            this.betOptions[Math.max(0, Math.min(this.betOptions.length - 1, i + delta))] ||
-            this.betAmount;
+        const i = this.betChoices.findIndex(choice => choice.bet === this.bet && choice.level === this.betLevel);
+        const choice = this.betChoices[Math.max(0, Math.min(this.betChoices.length - 1, i + delta))];
+        if (choice) { this.bet = choice.bet; this.betLevel = choice.level; }
+        this.betAmount = this.totalBet(this.bet, this.betLevel);
         this.labels();
+    }
+
+    private totalBet(bet: string, level: number) {
+        try { return (BigInt(bet) * BigInt(level) * BigInt(this.lineCount)).toString(); }
+        catch { return '0'; }
+    }
+
+    private restoreBetChoice(total: string) {
+        const choice = this.betChoices.find(item => this.totalBet(item.bet, item.level) === total);
+        if (choice) { this.bet = choice.bet; this.betLevel = choice.level; }
     }
 
     /** 服务端决定中奖和余额；这里只安排停轴、消除及下一轮的展示顺序。 */
@@ -360,7 +411,7 @@ export class slots_base extends Component {
                 this.state = 2;
             } else if (cascade) {
                 this.anticipation?.clear();
-                this.effects?.multiplier(frame.cascadeFactors, frame.cascadeIndex ?? 0, frame.mode === 'free');
+                this.effects?.multiplier(frame.cascadeFactors, frame.cascadeIndex ?? 0, frame.mode === 'free', true);
                 this.effects?.sound('symbolCollapse');
                 const sources = gravitySources(previous.board, frame.board);
                 const delays = cascadeDropDelays(sources, DROP_COLUMN_DELAY);
@@ -462,7 +513,7 @@ export class slots_base extends Component {
             }
             if (!this.alive) return;
             this.notifyFlowChanged();
-            frame = await this.api.spin(frame.betAmount);
+                frame = await this.api.spin(this.bet, this.betLevel);
             first = false;
         }
     }
@@ -502,11 +553,71 @@ export class slots_base extends Component {
             this.labels();
         }
         this.hideAwardShade();
-        this.reels.forEach((r) => r.stop());
-        this.state = 0;
+        // No server frame means no authoritative result. Keep reels moving; only
+        // the retry banner/dialog changes, and STOP remains an intent for a later frame.
+        this.state = 1;
         this.error = e instanceof Error ? e.message : String(e);
+        this.showFailureDialog();
         this.notifyFlowChanged();
     }
+
+    private showFailureDialog() {
+        if (typeof document === 'undefined' || this.failureDialog) return;
+        const root = document.createElement('div');
+        root.style.cssText = 'position:absolute;inset:0;z-index:10000;container-type:size;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;color:#202124;';
+        const content = document.createElement('div');
+        content.style.cssText = 'width:84%;background:#fff;border:1px solid #d9dce1;border-radius:1%;box-shadow:0 2% 6% rgba(0,0,0,.24);padding:0;text-align:center;overflow:hidden;';
+        content.innerHTML = '<div style="padding:4% 4% 2%;font-size:clamp(14px,4.8cqw,24px);font-weight:700;color:#202124;">请求失败</div>' +
+            '<div style="padding:0 6% 4%;line-height:1.6;font-size:clamp(11px,3.2cqw,16px);color:#5f6368;">暂时无法连接游戏服务，请检查网络后重试。</div>' +
+            '<div style="height:1px;background:#e5e7eb;"></div>';
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = '退出';
+        button.style.cssText = 'display:block;width:100%;border:0;background:#fff;color:#c88719;padding:4%;font-size:clamp(12px,3.6cqw,18px);font-weight:600;cursor:pointer;';
+        button.addEventListener('click', () => { root.remove(); this.failureDialog = null; });
+        content.appendChild(button);
+        root.appendChild(content);
+        const game = document.getElementById('GameDiv');
+        if (!game) return;
+        if (getComputedStyle(game).position === 'static') game.style.position = 'relative';
+        game.appendChild(root);
+        this.failureDialog = root;
+    }
+
+    private showRetryBanner = (event: Event) => {
+        const detail = (event as CustomEvent).detail || {};
+        const game = document.getElementById('GameDiv');
+        if (!game) return;
+        if (!this.retryBanner) {
+            const style = document.createElement('style');
+            style.textContent = '@keyframes aislotRetryDot { 0%,60%,100% { transform:translateY(0); opacity:.35 } 30% { transform:translateY(-.28em); opacity:1 } } .retry-dots { display:inline-flex; gap:.08em; margin-left:.12em; vertical-align:baseline } .retry-dots i { font-style:normal; animation:aislotRetryDot 1.05s infinite; } .retry-dots i:nth-child(2) { animation-delay:.14s } .retry-dots i:nth-child(3) { animation-delay:.28s }';
+            document.head.appendChild(style);
+            this.retryBanner = document.createElement('div');
+            this.retryBanner.style.cssText = 'position:absolute;left:10%;bottom:3%;z-index:10001;width:80%;box-sizing:border-box;background:rgba(28,28,32,.94);border:1px solid rgba(255,255,255,.16);border-radius:.75em;box-shadow:0 2% 5% rgba(0,0,0,.3);color:#eee;text-align:center;padding:2% 3%;font-size:clamp(11px,3.2cqw,16px);line-height:1.4;white-space:nowrap;pointer-events:none;';
+            if (getComputedStyle(game).position === 'static') game.style.position = 'relative';
+            game.appendChild(this.retryBanner);
+        }
+        let remaining = Math.ceil(Number(detail.delay || 0) / 1000);
+        const attempt = Number(detail.attempt || 1);
+        this.retryBanner.innerHTML = `第 ${attempt} 次重试中，${remaining} 秒后重试 <span class="retry-dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>`;
+        window.clearInterval(this.retryTimer);
+        this.retryTimer = window.setInterval(() => {
+            remaining -= 1;
+            if (remaining <= 0) {
+                window.clearInterval(this.retryTimer);
+                this.retryTimer = 0;
+                return;
+            }
+            if (this.retryBanner) this.retryBanner.innerHTML = `第 ${attempt} 次重试中，${remaining} 秒后重试 <span class="retry-dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>`;
+        }, 1000);
+    };
+
+    private hideRetryBanner = () => {
+        if (this.retryTimer) window.clearInterval(this.retryTimer);
+        this.retryTimer = 0;
+        this.retryBanner?.remove();
+        this.retryBanner = null;
+    };
 
     protected onDestroy() {
         this.historyPage?.destroy();
@@ -514,6 +625,12 @@ export class slots_base extends Component {
         this.paytablePage?.destroy();
         this.performanceCapture?.destroy();
         this.alive = false;
+        this.failureDialog?.remove();
+        this.hideRetryBanner();
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('aislots-retry', this.showRetryBanner);
+            window.removeEventListener('aislots-retry-end', this.hideRetryBanner);
+        }
         for (const timer of this.timers) {
             timer.resolve();
         }
@@ -568,4 +685,26 @@ export class slots_base extends Component {
             }
         }
     }
+}
+
+function formatMoney(raw: string): string {
+    try {
+        const value = BigInt(raw);
+        const negative = value < 0n;
+        const absolute = negative ? -value : value;
+        return (negative ? '-' : '') + (Number(absolute) / 100).toFixed(2);
+    } catch { return '—'; }
+}
+
+function buildBetChoices(bets: string[], lineCount: number, maxLevel: number) {
+    const result = new Map<string, { display: string; bet: string; level: number }>();
+    for (const bet of bets) {
+        for (let level = 1; level <= Math.max(1, maxLevel); level++) {
+            try {
+                const display = (BigInt(bet) * BigInt(lineCount) * BigInt(level)).toString();
+                if (!result.has(display)) result.set(display, { display, bet, level });
+            } catch { /* invalid server data is ignored until config validation reports it */ }
+        }
+    }
+    return [...result.values()].sort((a, b) => BigInt(a.display) < BigInt(b.display) ? -1 : 1);
 }

@@ -16,12 +16,20 @@ export class GameAudio {
     private popup = false;
     private multiVoice = 0;
     private muted = false;
+    private started = false;
+    private stopSoundPlayed = false;
     initialize() {
         try { this.muted = localStorage.getItem('aislots-audio-muted') === 'true'; } catch {}
         this.mixer.setMuted(this.muted); this.mixer.attach();
         this.mixer.preload(['bgm_mg', 'bgm_bonus_loop', ...EFFECTS.map(name => 'games/' + name)]);
-        this.setMode(false);
+        if (typeof window !== 'undefined') window.addEventListener('aislots-started', this.start, { once: true });
     }
+    private start = () => {
+        this.started = true;
+        this.mode = '';
+        (this.mixer as any).unlock?.();
+        this.setMode(false);
+    };
     get isMuted() { return this.muted; }
     toggleMuted() {
         this.muted = !this.muted; this.mixer.setMuted(this.muted);
@@ -30,15 +38,27 @@ export class GameAudio {
     }
     setMode(free: boolean) {
         const mode = free ? 'bgm_bonus_loop' : 'bgm_mg';
+        if (!this.started) { this.mode = mode; return; }
         if (mode === this.mode) return;
         this.mode = mode; this.mixer.play(mode, 'music', { slot: 'bgm', loop: true });
         if (free) {
             this.sound('fsMultiplyRefresh');
         }
     }
-    sound(name: string, delay = 0) { this.mixer.play('games/' + name, 'effects', { delay }); }
-    startSpin() { this.sound('spinBtn'); this.sound('reelLoop'); }
-    stopReel(quick: boolean) { this.sound(quick ? 'reelQuickstop' : 'reelStopSingle'); }
+    sound(name: string, delay = 0) { this.mixer.play('games/' + name, 'effects', { delay, slot: 'effect:' + name }); }
+    stopTransient() {
+        for (const name of ['fastspinStart', 'fastspinEnd', 'fastspinSuccess', 'bgmBonusIntro', 'maJiangHuLe', 'uiStart', 'uiCollect', 'bgmBigwinEnd', 'bgmTotalwinEnd'])
+            this.mixer.stop('effect:' + name);
+    }
+    startSpin() {
+        this.stopSoundPlayed = false;
+        this.sound('spinBtn'); this.sound('reelLoop');
+    }
+    stopReel(quick: boolean) {
+        if (this.stopSoundPlayed) return;
+        this.stopSoundPlayed = true;
+        this.sound(quick ? 'reelQuickstop' : 'reelStopSingle');
+    }
     award(symbols: number[], hasGold: boolean) {
         document.documentElement?.setAttribute('data-audio-award', JSON.stringify(symbols));
         // 对齐参考项目的短音效：独立播放至结束，不能被倍率升级或弹窗截断。
@@ -73,5 +93,8 @@ export class GameAudio {
         this.mixer.stop('popup');
         if (this.popup) { this.popup = false; this.mixer.setVolume('music', 1); }
     }
-    destroy() { this.mixer.destroy(); }
+    destroy() {
+        if (typeof window !== 'undefined') window.removeEventListener('aislots-started', this.start);
+        this.mixer.destroy();
+    }
 }
