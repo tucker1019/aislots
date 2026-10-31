@@ -88,3 +88,20 @@ func (s *Service) Allowed(ctx context.Context, player identity.Context, gameID s
 	}
 	return ErrNotAllowed
 }
+
+// AllowedTotal validates the total minor-unit stake produced by the public
+// bet + betLevel + lineCount protocol.
+func (s *Service) AllowedTotal(ctx context.Context, player identity.Context, gameID string, total int64) error {
+	p, err := s.List(ctx, player, gameID)
+	if err != nil {
+		return err
+	}
+	for _, base := range p.Amounts {
+		for level := 1; level <= p.BetLevel; level++ {
+			if base > 0 && int64(p.LineCount) <= (int64(^uint64(0)>>1))/base/int64(level) && base*int64(p.LineCount)*int64(level) == total {
+				return nil
+			}
+		}
+	}
+	return ErrNotAllowed
+}

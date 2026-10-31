@@ -109,7 +109,7 @@ func (s *Service) Spin(ctx context.Context, session Session, gameID, requestID s
 			if amount <= 0 {
 				return ErrInvalid
 			}
-			if err := s.bets.Allowed(ctx, session.Player, gameID, amount); err != nil {
+			if err := s.bets.AllowedTotal(ctx, session.Player, gameID, amount); err != nil {
 				return err
 			}
 			// Reuse a still-valid legacy preparation; no prepare call is needed by new clients.
