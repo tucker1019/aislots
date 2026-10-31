@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"math/big"
+	"strconv"
 	"time"
 )
 
@@ -202,9 +203,9 @@ func (s *Service) BetReplay(ctx context.Context, session Session, gameID, betID 
 func decorateHistoryFrame(frame *ReplayFrame) {
 	frame.ChargeAmount = "0"
 	if frame.SpinIndex == 0 && frame.StepIndex == 1 {
-		frame.ChargeAmount = frame.BetAmount
+		frame.ChargeAmount = strconv.FormatInt(frame.BetAmount, 10)
 	}
-	win, _ := new(big.Int).SetString(frame.WinAmount, 10)
+	win, _ := new(big.Int).SetString(strconv.FormatInt(frame.WinAmount, 10), 10)
 	charge, _ := new(big.Int).SetString(frame.ChargeAmount, 10)
 	if win != nil && charge != nil {
 		frame.ProfitAmount = new(big.Int).Sub(win, charge).String()
@@ -239,7 +240,7 @@ func decorateHistoryFrame(frame *ReplayFrame) {
 		frame.Payouts = append(frame.Payouts, row)
 	}
 	if frame.LineCount == 0 && unit.Sign() > 0 {
-		if bet, ok := new(big.Rat).SetString(frame.BetAmount); ok {
+		if bet, ok := new(big.Rat).SetString(strconv.FormatInt(frame.BetAmount, 10)); ok {
 			lines := new(big.Rat).Quo(bet, unit)
 			if lines.IsInt() && lines.Num().IsInt64() {
 				frame.LineCount = int(lines.Num().Int64())

@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"math"
 	"math/big"
-	"strconv"
 	"time"
 )
 
@@ -246,7 +245,7 @@ func (s *Service) advanceTx(ctx context.Context, tx Tx, session Session, gameID,
 		if cursor.StepIndex > n+1 {
 			return ErrConflict
 		}
-		frame := Frame{BetID: id, SpinIndex: cursor.SpinIndex, StepIndex: cursor.StepIndex, Mode: result.Mode, Status: "ready", BetAmount: money(result.BetMinorUnits), WinAmount: "0", Wins: []engine.Win{}, RemovedIDs: []int{}, TransformedIDs: []int{}, TriggeredFree: result.TriggeredFree}
+		frame := Frame{BetID: id, SpinIndex: cursor.SpinIndex, StepIndex: cursor.StepIndex, Mode: result.Mode, Status: "ready", BetAmount: money(result.BetMinorUnits), WinAmount: 0, Wins: []engine.Win{}, RemovedIDs: []int{}, TransformedIDs: []int{}, TriggeredFree: result.TriggeredFree}
 		if result.NextState.Free != nil {
 			frame.FreeRemaining = result.NextState.Free.Remaining
 		}
@@ -401,7 +400,7 @@ func (s *Service) Recover(ctx context.Context, session Session, gameID string) (
 	})
 	return response, err
 }
-func money(n int64) string { return strconv.FormatInt(n, 10) }
+func money(n int64) int64 { return n }
 
 // Inspect returns only the latest delivered frame for a known bet, including a completed bet.
 // This resolves a lost final response without reopening a new wager.

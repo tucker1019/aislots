@@ -141,7 +141,7 @@ func (s *Store) ReadBetReplay(ctx context.Context, player identity.Context, game
 			}
 		}
 		if frame.PayoutUnit == "" && frame.LineCount > 0 {
-			if bet, ok := new(big.Rat).SetString(frame.BetAmount); ok {
+			if bet, ok := new(big.Rat).SetString(strconv.FormatInt(frame.BetAmount, 10)); ok {
 				frame.PayoutUnit = new(big.Rat).Quo(bet, big.NewRat(int64(frame.LineCount), 1)).RatString()
 			}
 		}

@@ -48,7 +48,7 @@ type LoginResponse struct {
 	AccessToken string           `json:"accessToken"`
 	ExpiresAt   time.Time        `json:"expiresAt"`
 	Player      identity.Context `json:"player"`
-	Balance     string           `json:"balance"`
+	Balance     int64            `json:"balance"`
 }
 type Ticket struct {
 	ID                      string
@@ -64,7 +64,7 @@ type Cursor struct {
 	StepIndex int `json:"stepIndex"`
 }
 type Frame struct {
-	SpinWinAmount    string       `json:"spinWinAmount,omitempty"`
+	SpinWinAmount    int64        `json:"spinWinAmount,omitempty"`
 	AwardedFreeSpins int          `json:"awardedFreeSpins,omitempty"`
 	CascadeFactors   []string     `json:"cascadeFactors,omitempty"`
 	CascadeIndex     int          `json:"cascadeIndex"`
@@ -82,16 +82,16 @@ type Frame struct {
 	Wins             []engine.Win `json:"wins"`
 	RemovedIDs       []int        `json:"removedIds"`
 	TransformedIDs   []int        `json:"transformedIds"`
-	WinAmount        string       `json:"winAmount"`
-	TotalWinAmount   string       `json:"totalWinAmount"`
-	BetAmount        string       `json:"betAmount"`
-	Balance          string       `json:"balance"`
+	WinAmount        int64        `json:"winAmount"`
+	TotalWinAmount   int64        `json:"totalWinAmount"`
+	BetAmount        int64        `json:"betAmount"`
+	Balance          int64        `json:"balance"`
 	FreeRemaining    int          `json:"freeRemaining"`
 	TriggeredFree    bool         `json:"triggeredFree"`
 }
 type Prepared struct {
 	BetID     string    `json:"betId"`
-	BetAmount string    `json:"betAmount"`
+	BetAmount int64     `json:"betAmount"`
 	ExpiresAt time.Time `json:"expiresAt"`
 }
 type Recovery struct {
@@ -99,7 +99,7 @@ type Recovery struct {
 	Status   string    `json:"status"`
 	Prepared *Prepared `json:"prepared,omitempty"`
 	Frame    *Frame    `json:"frame,omitempty"`
-	Balance  string    `json:"balance"`
+	Balance  int64     `json:"balance"`
 }
 type StoredSpin struct {
 	Result      engine.SpinResult
@@ -143,7 +143,7 @@ type SpinReceipt struct {
 type Status struct {
 	LastFrame *Frame `json:"lastFrame,omitempty"`
 	RequestID string `json:"requestId"`
-	Balance   string `json:"balance"`
+	Balance   int64  `json:"balance"`
 	HasNext   bool   `json:"hasNext"`
-	BetAmount string `json:"betAmount,omitempty"`
+	BetAmount int64  `json:"betAmount,omitempty"`
 }
