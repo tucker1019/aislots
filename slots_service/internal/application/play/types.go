@@ -5,7 +5,10 @@ import (
 	"aislots/slots_service/internal/domain/identity"
 	"aislots/slots_service/internal/engine"
 	"context"
+	"encoding/json"
 	"errors"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -89,6 +92,46 @@ type Frame struct {
 	FreeRemaining    int          `json:"freeRemaining"`
 	TriggeredFree    bool         `json:"triggeredFree"`
 }
+
+// UnmarshalJSON accepts legacy database frames whose monetary fields were
+// stored as decimal strings; marshaling continues to emit numeric int64s.
+func (f *Frame) UnmarshalJSON(data []byte) error {
+	type frameAlias Frame
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for _, key := range []string{"spinWinAmount", "winAmount", "totalWinAmount", "betAmount", "balance"} {
+		value, ok := raw[key]
+		if !ok || len(value) == 0 || value[0] != '"' {
+			continue
+		}
+		var text string
+		if err := json.Unmarshal(value, &text); err != nil {
+			return err
+		}
+		text = strings.TrimSpace(text)
+		if text == "" {
+			text = "0"
+		}
+		n, err := strconv.ParseInt(text, 10, 64)
+		if err != nil {
+			return err
+		}
+		raw[key], _ = json.Marshal(n)
+	}
+	var decoded frameAlias
+	encoded, err := json.Marshal(raw)
+	if err != nil {
+		return err
+	}
+	if err = json.Unmarshal(encoded, &decoded); err != nil {
+		return err
+	}
+	*f = Frame(decoded)
+	return nil
+}
+
 type Prepared struct {
 	BetID     string    `json:"betId"`
 	BetAmount int64     `json:"betAmount"`

@@ -174,7 +174,7 @@ func TestPostgresProgressiveIdempotencyAndRestart(t *testing.T) {
 	g := &spinner{}
 	s := service(t, store, g)
 	session, u := login(t, s)
-	if u.Balance != "500000" {
+	if u.Balance != 500000 {
 		t.Fatal(u.Balance)
 	}
 	p := prepare(t, s, session)
@@ -207,7 +207,7 @@ func TestPostgresProgressiveIdempotencyAndRestart(t *testing.T) {
 			t.Fatal("duplicate returned different result")
 		}
 	}
-	if g.calls.Load() != 1 || first.WinAmount != "10" || first.Balance != "499910" || first.NextAction != "continue" {
+	if g.calls.Load() != 1 || first.WinAmount != 10 || first.Balance != 499910 || first.NextAction != "continue" {
 		t.Fatal(first, g.calls.Load())
 	}
 	raw, _ := json.Marshal(first)
@@ -236,7 +236,7 @@ func TestPostgresProgressiveIdempotencyAndRestart(t *testing.T) {
 		t.Fatal("progress lost", recovery, err)
 	}
 	second := next(t, s, session, first)
-	if second.WinAmount != "20" || second.Balance != "499930" {
+	if second.WinAmount != 20 || second.Balance != 499930 {
 		t.Fatal(second)
 	}
 	duplicate, err := s.Continue(context.Background(), session, "AG1", p.BetID, *first.Next)
@@ -244,11 +244,11 @@ func TestPostgresProgressiveIdempotencyAndRestart(t *testing.T) {
 		t.Fatal("duplicate step changed")
 	}
 	last := next(t, s, session, second)
-	if last.NextAction != "complete" || last.Board[0][0].ID != 7 || last.WinAmount != "0" {
+	if last.NextAction != "complete" || last.Board[0][0].ID != 7 || last.WinAmount != 0 {
 		t.Fatal(last)
 	}
 	_, relogin := login(t, s)
-	if relogin.Balance != "499930" {
+	if relogin.Balance != 499930 {
 		t.Fatal("login reset wallet", relogin)
 	}
 	inspected, err := s.Inspect(context.Background(), session, "AG1", p.BetID)
@@ -277,7 +277,7 @@ func TestPostgresFreeSpinsAndCumulativeRounding(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if fraction && f.WinAmount != "0" {
+			if fraction && f.WinAmount != 0 {
 				t.Fatal("rounded each step independently")
 			}
 			for n := 0; n < 20 && f.Next != nil; n++ {
@@ -286,10 +286,10 @@ func TestPostgresFreeSpinsAndCumulativeRounding(t *testing.T) {
 			if f.NextAction != "complete" {
 				t.Fatal("free did not finish")
 			}
-			want := "499990"
+			want := int64(499990)
 			calls := int64(3)
 			if fraction {
-				want = "499901"
+				want = 499901
 				calls = 1
 			}
 			if f.Balance != want || g.calls.Load() != calls {
@@ -308,7 +308,7 @@ func TestPostgresErrorsRollbackAndOwnership(t *testing.T) {
 		t.Fatal(err)
 	}
 	_, u := login(t, s)
-	if u.Balance != "500000" {
+	if u.Balance != 500000 {
 		t.Fatal("failed spin deducted")
 	}
 	g.fail = false
@@ -383,7 +383,7 @@ func TestRealEngineProgressiveFreeChain(t *testing.T) {
 			t.Fatal("expected preview plus four active cells")
 		}
 	}
-	if len(f.Board) != 5 || f.WinAmount != "10" || !f.TriggeredFree {
+	if len(f.Board) != 5 || f.WinAmount != 10 || !f.TriggeredFree {
 		t.Fatal("first real frame", f)
 	}
 	frames := 1
@@ -426,7 +426,7 @@ func TestRealEngineProgressiveFreeChain(t *testing.T) {
 			t.Fatal("free loop did not end")
 		}
 	}
-	if f.NextAction != "complete" || f.Balance != "500050" || f.TotalWinAmount != "150" || frames != 9 {
+	if f.NextAction != "complete" || f.Balance != 500050 || f.TotalWinAmount != 150 || frames != 9 {
 		t.Fatal("real free settlement mismatch", f, frames)
 	}
 }

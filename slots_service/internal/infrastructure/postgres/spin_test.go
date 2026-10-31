@@ -50,10 +50,10 @@ func TestSingleSpinConcurrentRetryRestartAndReconnect(t *testing.T) {
 			t.Fatal("duplicate request changed result")
 		}
 	}
-	if first.SpinWinAmount != "10" {
+	if first.SpinWinAmount != 10 {
 		t.Fatal("future spin award exposed", first.SpinWinAmount)
 	}
-	if first.Balance != "499910" || first.StepIndex != 1 || first.Next != nil || g.calls.Load() != 1 {
+	if first.Balance != 499910 || first.StepIndex != 1 || first.Next != nil || g.calls.Load() != 1 {
 		t.Fatal(first, g.calls.Load())
 	}
 	if _, err := s.Spin(ctx, session, "AG1", state.RequestID, 101); !errors.Is(err, play.ErrConflict) {
@@ -87,11 +87,11 @@ func TestSingleSpinConcurrentRetryRestartAndReconnect(t *testing.T) {
 		t.Fatal("changed active stake accepted", err)
 	}
 	second, err := s.Spin(ctx, session, "AG1", state.RequestID, 100)
-	if err != nil || second.StepIndex != 2 || second.Balance != "499930" {
+	if err != nil || second.StepIndex != 2 || second.Balance != 499930 {
 		t.Fatal(second, err)
 	}
 	recovered, err := s.Status(ctx, session, "AG1")
-	if err != nil || recovered.LastFrame == nil || recovered.LastFrame.TotalWinAmount != "30" || recovered.LastFrame.WinAmount != "20" || recovered.Balance != "499930" || recovered.RequestID != second.NextRequestID {
+	if err != nil || recovered.LastFrame == nil || recovered.LastFrame.TotalWinAmount != 30 || recovered.LastFrame.WinAmount != 20 || recovered.Balance != 499930 || recovered.RequestID != second.NextRequestID {
 		t.Fatal("a+b recovery lost cumulative win or changed wallet", recovered, err)
 	}
 	final, err := s.Spin(ctx, session, "AG1", second.NextRequestID, 100)
@@ -99,7 +99,7 @@ func TestSingleSpinConcurrentRetryRestartAndReconnect(t *testing.T) {
 		t.Fatal(final, err)
 	}
 	state, err = s.Status(ctx, session, "AG1")
-	if err != nil || state.HasNext || state.Balance != "499930" {
+	if err != nil || state.HasNext || state.Balance != 499930 {
 		t.Fatal(state, err)
 	}
 	if state.LastFrame == nil || !reflect.DeepEqual(*state.LastFrame, final) {
@@ -111,7 +111,7 @@ func TestSingleSpinConcurrentRetryRestartAndReconnect(t *testing.T) {
 	}
 	// Completed retry cannot debit a second bet. Only a fresh token starts another stake.
 	next, err := s.Spin(ctx, session, "AG1", state.RequestID, 100)
-	if err != nil || next.BetID == first.BetID || next.Balance != "499840" {
+	if err != nil || next.BetID == first.BetID || next.Balance != 499840 {
 		t.Fatal(next, err)
 	}
 }
@@ -148,7 +148,7 @@ func TestSingleSpinFreeAndRollback(t *testing.T) {
 			t.Fatal("endless free")
 		}
 	}
-	if frames != 9 || last.Balance != "499990" || g.calls.Load() != 3 {
+	if frames != 9 || last.Balance != 499990 || g.calls.Load() != 3 {
 		t.Fatal(frames, last, g.calls.Load())
 	}
 	g.fail = true
@@ -185,7 +185,7 @@ func TestSingleSpinContinuesExistingLegacyBet(t *testing.T) {
 		t.Fatal(status, err)
 	}
 	next, err := s.Spin(ctx, session, "AG1", status.RequestID, 100)
-	if err != nil || next.BetID != first.BetID || next.StepIndex != 2 || next.Balance != "499930" || g.calls.Load() != 1 {
+	if err != nil || next.BetID != first.BetID || next.StepIndex != 2 || next.Balance != 499930 || g.calls.Load() != 1 {
 		t.Fatal(next, err)
 	}
 }
