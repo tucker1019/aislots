@@ -11,14 +11,8 @@ export function header(
     subtitle = '',
 ) {
     const bar = el('header', 'history-header');
-    const control = button('', back, 'history-back');
+    const control = button('返回', back, 'history-back');
     control.setAttribute('aria-label', '返回');
-    const icon = el('img');
-    if (art.arrow) icon.src = art.arrow;
-    icon.alt = '';
-    icon.style.cssText = 'width:1.25em;transform:rotate(-90deg)';
-    if (art.arrow) control.append(icon);
-    else control.textContent = '返回';
     bar.append(control, el('h1', '', title));
     if (subtitle) bar.append(el('div', 'history-subtitle', subtitle));
     host.append(bar);
@@ -48,10 +42,8 @@ export function listRows(
             'history-amount' + (record.profitAmount.startsWith('-') ? ' history-loss' : ''),
             money(record.profitAmount, data.amountScale, record.currency),
         );
-        const arrow = el('img', 'history-chevron');
-        arrow.src = art.arrow;
-        arrow.alt = '';
-        arrow.style.cssText = 'width:.7em;transform:rotate(90deg)';
+        const arrow = el('span', 'history-chevron');
+        arrow.setAttribute('aria-hidden', 'true');
         row.append(
             el('span', 'history-time', dateText(record.createdAt)),
             id,
@@ -89,6 +81,7 @@ export function detailBody(
     previous: () => void,
     next: () => void,
     loading: boolean,
+    direction = 0,
 ) {
     const round = detail.frames[index],
         record = detail.bet;
@@ -185,9 +178,8 @@ export function detailBody(
             money(payout.amount, detail.amountScale, record.currency),
         );
         amount.append(el('div', 'raw', '倍率 x' + (payout.multiplier || factor)));
-        const expand = el('img', 'history-expand');
-        expand.src = art.arrow;
-        expand.alt = '';
+        const expand = el('span', 'history-expand');
+        expand.setAttribute('aria-hidden', 'true');
         summary.append(icon, label, amount, expand);
         const formula = el(
             'div',
@@ -217,6 +209,8 @@ export function detailBody(
     // 导航悬浮在详情视口上，滚动盘面或赔付明细时保持位置，不占内容宽高。
     const viewport = floatingScroll(scroll);
     viewport.classList.add('history-detail-viewport');
+    if (direction > 0) viewport.classList.add('history-round-enter-next');
+    if (direction < 0) viewport.classList.add('history-round-enter-previous');
     viewport.append(left, right);
     host.append(viewport);
     return scroll;

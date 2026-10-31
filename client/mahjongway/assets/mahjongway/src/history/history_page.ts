@@ -269,7 +269,7 @@ export class HistoryPage {
         this.loading = false;
         this.listScreen();
     }
-    private detailScreen() {
+    private detailScreen(direction = 0) {
         if (!this.detail) return;
         const round = this.detail.frames[this.index];
         this.clearContent();
@@ -288,24 +288,25 @@ export class HistoryPage {
             () => {
                 if (this.index > 0) {
                     this.index--;
-                    this.detailScreen();
+                    this.detailScreen(-1);
                 }
             },
-            () => void this.nextRound(),
+            () => void this.nextRound(1),
             this.loading,
+            direction,
         );
     }
-    private async nextRound() {
+    private async nextRound(direction = 1) {
         if (this.loading || !this.detail) return;
         if (this.index < this.detail.frames.length - 1) {
             this.index++;
-            this.detailScreen();
+            this.detailScreen(direction);
             return;
         }
         if (!this.detail.nextCursor) return;
         const epoch = this.epoch;
         this.loading = true;
-        this.detailScreen();
+        this.detailScreen(direction);
         try {
             const page = await this.api.historyReplay(
                 this.detail.bet.betId,
@@ -315,11 +316,11 @@ export class HistoryPage {
             this.detail = { ...page, frames: [...this.detail.frames, ...page.frames] };
             if (page.frames.length) this.index++;
             this.loading = false;
-            this.detailScreen();
+            this.detailScreen(direction);
         } catch (reason) {
             if (epoch !== this.epoch || !this.isOpen) return;
             this.loading = false;
-            this.detailScreen();
+            this.detailScreen(direction);
             notice(this.content, errorText(reason), () => void this.nextRound());
         }
     }
