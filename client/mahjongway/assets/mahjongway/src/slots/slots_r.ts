@@ -113,7 +113,8 @@ export class slots_r extends Component {
         this.landed = new Array(this.cellNodes.length).fill(false);
         this.stopInitY = [];
         this.settleAnchor = -1;
-        this.delay_end_time = this.slots?.fast ? 0.5 : 2 + this.index * 0.3;
+        // 普通模式保留逐列停轴层次，但缩短等待，避免整局转轴拖得过久。
+        this.delay_end_time = this.slots?.fast ? 0.3 : 0.8 + this.index * 0.12;
         this.stopPending = true;
         this.stopDelayDone = false;
         this.resetScrollSpeed();

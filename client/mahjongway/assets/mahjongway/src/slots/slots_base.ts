@@ -1,4 +1,5 @@
 import { PaytablePage } from '../rules/paytable_page';
+import { AutoSpinPage } from './auto_spin_page';
 import { RulesPage } from '../rules/rules_page';
 import { initialStrips } from './initial_board';
 import { HistoryPage } from '../history/history_page';
@@ -61,6 +62,8 @@ export class slots_base extends Component {
     private retryBanner: HTMLDivElement = null;
     private retryTimer = 0;
     private betOptionsOverlay: HTMLDivElement = null;
+    private autoSpinPage: AutoSpinPage = null;
+    private autoSpinsRemaining = 0;
     private timers: Array<{
         left: number;
         resolve: () => void;
@@ -230,7 +233,11 @@ export class slots_base extends Component {
         if (!(canvas instanceof HTMLCanvasElement)) return;
         this.historyPage?.close();
         this.paytablePage?.close();
-        if (!this.rulesPage) this.rulesPage = new RulesPage(canvas);
+        if (!this.rulesPage) this.rulesPage = new RulesPage(canvas, undefined, () => ({
+            bets: [...new Set(this.betChoices.map(choice => choice.bet))],
+            levels: [...new Set(this.betChoices.map(choice => choice.level))],
+            lineCount: this.lineCount,
+        }));
         this.rulesPage.open();
     }
 
@@ -251,19 +258,19 @@ export class slots_base extends Component {
     }
 
     /** 总流程忙碌时忽略重复点击，网络异常则保留请求用于重试。 */
-    async spin() {
+    async spin(): Promise<boolean> {
         if (!this.alive || this.state !== 0) {
-            return;
+            return false;
         }
         if (!this.ready) {
             void this.connect();
-            return;
+            return false;
         }
         const balance = Number(this.balance);
         const stake = Number(this.bet) * this.betLevel * this.lineCount;
         if (Number.isFinite(balance) && Number.isFinite(stake) && balance < stake) {
             this.showInsufficientFundsDialog();
-            return;
+            return false;
         }
         this.state = 1;
         this.click_stop = false;
@@ -274,9 +281,50 @@ export class slots_base extends Component {
         this.reels.forEach((r) => r.startRoll());
         try {
             await this.play(await this.api.spin(this.bet, this.betLevel));
+            return true;
         } catch (e) {
             this.fail(e);
+            return false;
         }
+    }
+
+    openAutoSpin() {
+        if (typeof document === 'undefined' || !this.ready || this.state !== 0) return;
+        const canvas = document.getElementById('GameCanvas');
+        if (!(canvas instanceof HTMLCanvasElement)) return;
+        if (!this.autoSpinPage) this.autoSpinPage = new AutoSpinPage(
+            canvas,
+            count => this.startAutoSpin(count),
+            () => ({ balance: formatMoney(this.balance), bet: formatMoney(this.betAmount) }),
+        );
+        this.autoSpinPage.open();
+    }
+
+    private startAutoSpin(count: number) {
+        if (this.state !== 0 || count < 1) return;
+        this.autoSpinsRemaining = count;
+        void this.runAutoSpins();
+    }
+
+    private async runAutoSpins() {
+        while (this.alive && this.autoSpinsRemaining > 0 && this.state === 0) {
+            const balance = Number(this.balance);
+            const stake = Number(this.bet) * this.betLevel * this.lineCount;
+            if (Number.isFinite(balance) && Number.isFinite(stake) && balance < stake) {
+                this.autoSpinsRemaining = 0;
+                this.showInsufficientFundsDialog();
+                break;
+            }
+            const completed = await this.spin();
+            if (!completed) {
+                this.autoSpinsRemaining = 0;
+                break;
+            }
+            if (this.state !== 0) break;
+            this.autoSpinsRemaining--;
+            if (this.autoSpinsRemaining > 0) await this.pause(0.25);
+        }
+        if (this.state === 0) this.autoSpinsRemaining = 0;
     }
 
     /** 层级：普通盘面 → 整张黑底 → 中奖动画。 */
@@ -339,6 +387,7 @@ export class slots_base extends Component {
         if (this.state === 0) {
             return;
         }
+        this.autoSpinsRemaining = 0;
         // 补落（含列间等待和落地回弹）不接受 Stop，也不记录停止意图。
         if (this.reels.some((reel) => reel.state === 5)) return;
         if (this.effects?.dismiss()) return;
@@ -394,6 +443,7 @@ export class slots_base extends Component {
         const choices = this.betChoices.length ? this.betChoices : [{ bet: this.bet, level: this.betLevel, display: this.betAmount }];
         const values = [...new Set(choices.map(item => item.bet))];
         const levels = [...new Set(choices.map(item => item.level))];
+        const totals = choices.map(item => item.display);
         let selectedBet = this.bet, selectedLevel = this.betLevel;
         const render = () => {
             const fill = (selector: string, items: Array<string | number>, selected: string | number, pick: (v: string) => void, format: (v: string) => string) => {
@@ -401,20 +451,28 @@ export class slots_base extends Component {
                 column.replaceChildren();
                 items.forEach(value => { const row = document.createElement('button'); row.textContent = format(String(value)); row.className = String(value) === String(selected) ? 'active' : ''; row.onclick = () => { pick(String(value)); render(); }; column.append(row); });
                 const active = column.querySelector('.active') as HTMLElement;
-                if (active) column.scrollTop = active.offsetTop - (column.clientHeight - active.offsetHeight) / 2;
+                if (active) requestAnimationFrame(() => {
+                    column.dataset.syncing = '1';
+                    column.scrollTop = active.offsetTop - (column.clientHeight - active.offsetHeight) / 2;
+                    requestAnimationFrame(() => delete column.dataset.syncing);
+                });
                 column.onscroll = () => {
+                    if (column.dataset.syncing) return;
                     const center = column.scrollTop + column.clientHeight / 2;
                     const index = Math.max(0, Math.min(items.length - 1, Math.round((center - 64 - 16) / 32)));
                     const value = String(items[index]);
-                    if (value !== String(selected)) { pick(value); updateTotal(); }
+                    if (value !== String(selected)) { pick(value); render(); }
                 };
             };
             const updateTotal = () => {
-                (panel.querySelector('.bet-wheel-total') as HTMLElement).textContent = 'Rp' + formatMoney(this.totalBet(selectedBet, selectedLevel)) + 'K';
                 (panel.querySelector('.bet-footer-amount') as HTMLElement).textContent = formatMoney(this.totalBet(selectedBet, selectedLevel));
             };
-            fill('.bet-wheel-bet', values, selectedBet, value => selectedBet = value, value => 'Rp' + formatMoney(value) + 'K');
+            fill('.bet-wheel-bet', values, selectedBet, value => selectedBet = value, value => formatMoney(value));
             fill('.bet-wheel-level', levels, selectedLevel, value => selectedLevel = Number(value), value => value);
+            fill('.bet-wheel-total', totals, this.totalBet(selectedBet, selectedLevel), value => {
+                const match = choices.find(item => item.display === value);
+                if (match) { selectedBet = match.bet; selectedLevel = match.level; }
+            }, value => formatMoney(value));
             updateTotal();
             (panel.querySelector('.bet-confirm') as HTMLButtonElement).onclick = () => {
                 this.bet = selectedBet; this.betLevel = selectedLevel; this.betAmount = this.totalBet(selectedBet, selectedLevel); this.labels(); close();
@@ -428,7 +486,7 @@ export class slots_base extends Component {
         if (!document.getElementById('aislot-bet-options-style')) {
             const style = document.createElement('style'); style.id = 'aislot-bet-options-style';
             style.textContent = `.aislot-bet-options{position:fixed;z-index:13000;background:rgba(20,20,30,.18);font-family:Nunito,Arial,sans-serif;color:#f5f4f7;overflow:hidden}.bet-options-panel{position:absolute;left:0;right:0;bottom:0;background:#30303c;border-radius:20px 20px 0 0;padding-bottom:7px;transform:translate3d(0,100%,0);transition:transform .25s cubic-bezier(.25,.1,.25,1)}.aislot-bet-options.visible .bet-options-panel{transform:translate3d(0,0,0)}.bet-options-header{height:53px;display:flex;align-items:center;justify-content:center;position:relative}.bet-options-panel h2{margin:8px 0 0;font-size:16px;font-weight:400}.bet-options-close{position:absolute;right:18px;top:11px;border:0;border-radius:50%;width:32px;height:32px;background:#50505d;color:#fff;font-size:25px;line-height:25px}.bet-options-content{position:relative;background:#282833;padding:0 5% 10px;overflow:hidden}.bet-options-head,.bet-wheel{display:grid;grid-template-columns:22.32% 5% 18.855% 5% 17.67% 5% 23.715%;align-items:center;justify-content:space-between;text-align:center;gap:0}.bet-options-head{height:34px;color:#fff;font-size:11px}.bet-options-head span{opacity:.3}.bet-options-head strong{color:#b47850;font-weight:400}.bet-options-head i,.bet-wheel>i{font-style:normal;opacity:.3}.bet-selector-bg{position:absolute;left:4px;right:4px;top:60px;height:36px;background:#30303d;border:1px solid #262633;border-radius:30px}.bet-wheel{height:160px;position:relative;z-index:1}.bet-wheel-column{height:160px;overflow:auto;scrollbar-width:none}.bet-wheel-column::-webkit-scrollbar{display:none}.bet-wheel-column button{display:block;width:100%;height:32px;border:0;background:transparent;color:#fff;font:inherit;font-size:16px;line-height:32px;white-space:nowrap}.bet-wheel-column button.active{color:#fff}.bet-wheel-lines span,.bet-wheel-total{font-size:16px;font-weight:400;color:#fff}.bet-wheel-total{color:#b47850}.bet-gradient{position:absolute;left:5%;right:5%;height:55px;z-index:2;pointer-events:none}.bet-gradient.top{top:30px;background:linear-gradient(#282833 8%,rgba(40,40,51,0))}.bet-gradient.bottom{bottom:8px;background:linear-gradient(0deg,#282833 8%,rgba(40,40,51,0))}.bet-options-actions{display:flex;justify-content:space-between;gap:10px;margin:24px 10px}.bet-options-actions button{height:36px;border-radius:30px;padding:0 12px;font:inherit;font-size:14px}.bet-options-actions .bet-max{width:30%;border:1px solid #b47850;background:#30303d;color:#b47850}.bet-options-actions .bet-confirm{width:67%;border:1px solid #b47850;background:#b47850;color:rgba(255,255,255,.85)}.bet-options-footer{display:flex;justify-content:space-between;align-items:center;margin:0 10px;background:rgba(48,48,60,.7);font-size:12px;color:#aaa;padding:6px 12px;border-radius:16px}.bet-options-footer b{color:#b47850;font-weight:400}`;
-            style.textContent += '.bet-wheel-column{scroll-snap-type:y mandatory;scroll-padding:64px 0;padding:64px 0}.bet-wheel-column button{scroll-snap-align:center}.bet-wheel-column::-webkit-scrollbar{display:none}';
+            style.textContent += '.bet-wheel-column,.bet-wheel-total{height:160px;overflow:auto;scrollbar-width:none;scroll-snap-type:y mandatory;scroll-padding:64px 0;padding:64px 0}.bet-wheel-column button,.bet-wheel-total button{display:block;width:100%;height:32px;scroll-snap-align:center;border:0;background:transparent;color:#777782;font:inherit;font-size:16px;line-height:32px;white-space:nowrap}.bet-wheel-column button.active,.bet-wheel-total button.active{color:#fff}.bet-wheel-column::-webkit-scrollbar,.bet-wheel-total::-webkit-scrollbar{display:none}.bet-selector-bg{top:96px;height:32px}.bet-wheel-lines{height:160px;display:flex;align-items:center;justify-content:center;transform:none}.bet-wheel-lines span{display:block;height:32px;line-height:32px}.bet-wheel-total{color:#b47850;font-weight:400;transform:none}.bet-wheel-total button{color:#777782}.bet-wheel-total button.active{color:#fff}';
             document.head.append(style);
         }
         document.body.append(root); this.betOptionsOverlay = root; requestAnimationFrame(() => root.classList.add('visible'));
@@ -737,6 +795,7 @@ export class slots_base extends Component {
         this.historyPage?.destroy();
         this.rulesPage?.destroy();
         this.paytablePage?.destroy();
+        this.autoSpinPage?.close();
         this.performanceCapture?.destroy();
         this.alive = false;
         this.failureDialog?.remove();

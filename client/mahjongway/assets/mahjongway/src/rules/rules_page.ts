@@ -1,5 +1,5 @@
 import { el, placeOverlay, trapTab } from '../history/history_dom';
-import { dateText, gameBounds } from '../history/history_model';
+import { gameBounds } from '../history/history_model';
 import { HISTORY_CSS } from '../history/history_styles';
 import { floatingScroll, disposeFloatingScroll } from '../history/history_scroll';
 import { header } from '../history/history_views';
@@ -19,6 +19,15 @@ function section(parent: HTMLElement, value: RuleSection, level: 'h2' | 'h3') {
     block.append(el(level, '', value.title), list);
     value.items.forEach(text => list.append(el('li', '', text)));
     parent.append(block);
+    return block;
+}
+function formatRuleAmount(raw: string) {
+    try {
+        const value = BigInt(raw);
+        const whole = value / 100n;
+        const fraction = (value % 100n).toString().padStart(2, '0');
+        return whole.toLocaleString('en-US') + '.' + fraction;
+    } catch { return raw; }
 }
 export interface RulePageContent {
     title: string;
@@ -26,14 +35,22 @@ export interface RulePageContent {
     css: string;
     build(parent: HTMLElement): void;
 }
+export interface RuleBetConfig {
+    bets: string[];
+    levels: number[];
+    lineCount: number;
+}
 /** 规则只读展示；复用记录页的主题、游戏区域定位和悬浮滚动条。 */
 export class RulesPage {
     private root: HTMLElement = null;
-    private timer: ReturnType<typeof setInterval> = null;
     private observer: ResizeObserver = null;
     private previousPointer = '';
     private focused: HTMLElement = null;
-    constructor(private canvas: HTMLCanvasElement, private content?: RulePageContent) {}
+    constructor(
+        private canvas: HTMLCanvasElement,
+        private content?: RulePageContent,
+        private betConfig?: () => RuleBetConfig,
+    ) {}
     private resize = () => {
         if (this.root) placeOverlay(this.root, gameBounds(this.canvas.getBoundingClientRect()));
     };
@@ -63,9 +80,6 @@ export class RulesPage {
         root.id = this.content?.id || 'slot-rules'; root.tabIndex = -1;
         root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true');
         root.setAttribute('aria-label', this.content?.title || '游戏规则');
-        const caption = el('div', 'history-caption'), clock = el('span');
-        const tick = () => clock.textContent = dateText(new Date().toISOString()).split('\n')[0];
-        tick(); caption.append(el('span', '', 'Mahjong Ways'), clock); root.append(caption);
         header(root, this.content?.title || '游戏规则', () => this.close(), {});
         const scroll = el('div', 'history-scroll'), copy = el('article', 'rules-copy');
         if (this.content) this.content.build(copy);
@@ -73,7 +87,21 @@ export class RulesPage {
             RULE_SECTIONS.forEach(value => section(copy, value, 'h2'));
             const controls = el('section', 'rules-section');
             controls.append(el('h2', '', '主游戏与按钮说明'));
-            CONTROL_SECTIONS.forEach(value => section(controls, value, 'h3'));
+            CONTROL_SECTIONS.forEach(value => {
+                const block = section(controls, value, 'h3');
+                if (value.title === '总投注') {
+                    const config = this.betConfig?.();
+                    if (config?.bets.length && config.levels.length) {
+                        const low = Math.min(...config.bets.map(Number));
+                        const high = Math.max(...config.bets.map(Number));
+                        const lowText = formatRuleAmount(String(low));
+                        const highText = formatRuleAmount(String(high));
+                        block.querySelector('ul')?.append(el('li', '',
+                            `当前可选投注额：${lowText} 至 ${highText}；投注级别：${Math.min(...config.levels)} 至 ${Math.max(...config.levels)}；线路：${config.lineCount}。`,
+                        ));
+                    }
+                }
+            });
             copy.append(controls);
             const extra = el('section', 'rules-section');
             extra.append(el('h2', '', '补充说明'));
@@ -89,12 +117,10 @@ export class RulesPage {
         window.addEventListener('resize', this.resize);
         this.observer = new ResizeObserver(this.resize); this.observer.observe(this.canvas);
         document.addEventListener('keydown', this.keydown, true);
-        this.timer = setInterval(tick, 1000);
     }
     close() {
         if (!this.root) return;
         disposeFloatingScroll(this.root); this.observer?.disconnect(); this.observer = null;
-        if (this.timer) clearInterval(this.timer); this.timer = null;
         window.removeEventListener('resize', this.resize);
         document.removeEventListener('keydown', this.keydown, true);
         this.root.remove(); this.root = null;

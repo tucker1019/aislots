@@ -3,7 +3,7 @@
 function decimalUnit(digits: number): bigint {
     return BigInt('1' + '0'.repeat(Math.max(0, Math.min(20, Math.trunc(digits)))));
 }
-export function money(raw: string, scale = 0, currency = 'IDR') {
+export function money(raw: string, scale = 0, _currency = 'IDR') {
     let value: bigint;
     try {
         value = BigInt(raw);
@@ -15,9 +15,7 @@ export function money(raw: string, scale = 0, currency = 'IDR') {
     const unit = decimalUnit(Math.max(0, Math.min(9, scale)));
     const integer = (value / unit).toLocaleString('en-US');
     const decimals = scale ? '.' + (value % unit).toString().padStart(scale, '0') : '';
-    const prefix =
-        ({ IDR: 'Rp', USD: '$', MXN: 'MX$' } as Record<string, string>)[currency] || currency + ' ';
-    return (negative ? '−' : '') + prefix + integer + decimals;
+    return (negative ? '−' : '') + integer + decimals;
 }
 export function fraction(raw: string, decimals = 4, scale = 0) {
     const [a, b = '1'] = raw.split('/');

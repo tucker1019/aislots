@@ -49,6 +49,8 @@ export class slots_ctrl extends Component {
         find(canvas, 'btn_add')?.on(Node.EventType.TOUCH_END, this.addBet, this);
         find(canvas, 'turbo')?.on(Node.EventType.TOUCH_END, this.toggleFast, this);
         find(canvas, 'btn_sub')?.on(Node.EventType.TOUCH_END, this.subBet, this);
+        find(canvas, 'info_panel-001')?.on(Node.EventType.TOUCH_END, this.openBetOptions, this);
+        find(canvas, 'txt_auto')?.on(Node.EventType.TOUCH_END, this.openAutoSpin, this);
     }
     private toggleFast() {
         // 原生按钮预制体由 GameEffects 同步表现，避免重新点亮旧美术。
@@ -59,6 +61,12 @@ export class slots_ctrl extends Component {
     }
     private subBet() {
         this.slots.changeBet(-1);
+    }
+    private openBetOptions() {
+        this.slots.openBetOptions();
+    }
+    private openAutoSpin() {
+        this.slots.openAutoSpin();
     }
     onDestroy() {
         this.node.off('open-history', this.openHistory, this);

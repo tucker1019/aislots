@@ -18,8 +18,6 @@ type Bounds = { left: number; top: number; width: number; height: number };
 export class HistoryPage {
     private root: HTMLElement = null;
     private content: HTMLElement = null;
-    private clock: HTMLElement = null;
-    private timer: ReturnType<typeof setInterval> = null;
     private observer: ResizeObserver = null;
     private epoch = 0;
     private art: HistoryArt = {};
@@ -79,9 +77,6 @@ export class HistoryPage {
             this.observer.observe(this.canvas);
         }
         document.addEventListener('keydown', this.keydown, true);
-        this.timer = setInterval(() => {
-            this.clock.textContent = dateText(new Date().toISOString()).split('\n')[0];
-        }, 1000);
         this.mode = 'today';
         this.dates = recentDates(1);
         this.scrollTop = 0;
@@ -101,8 +96,6 @@ export class HistoryPage {
         document.removeEventListener('keydown', this.keydown, true);
         this.observer?.disconnect();
         this.observer = null;
-        if (this.timer) clearInterval(this.timer);
-        this.timer = null;
         if (this.focused?.isConnected) this.focused.focus();
     }
     destroy() {
@@ -125,11 +118,8 @@ export class HistoryPage {
         this.root.setAttribute('aria-modal', 'true');
         this.root.setAttribute('aria-label', '游戏记录');
         this.root.tabIndex = -1;
-        const caption = el('div', 'history-caption');
-        this.clock = el('span', '', dateText(new Date().toISOString()).split('\n')[0]);
-        caption.append(el('span', '', 'Mahjong Ways'), this.clock);
         this.content = el('div', 'history-main');
-        this.root.append(caption, this.content);
+        this.root.append(this.content);
         document.body.append(this.root);
         for (const type of ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'click'])
             this.root.addEventListener(type, (event) => event.stopPropagation());
@@ -278,7 +268,6 @@ export class HistoryPage {
             round.mode === 'free' ? '免费旋转' : '普通旋转',
             () => this.backToList(),
             this.art,
-            dateText(round.settledAt, true) + ' (GMT+8)',
         );
         detailBody(
             this.content,
