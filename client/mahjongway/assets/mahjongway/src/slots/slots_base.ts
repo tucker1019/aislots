@@ -60,6 +60,7 @@ export class slots_base extends Component {
     private failureDialog: HTMLDivElement = null;
     private retryBanner: HTMLDivElement = null;
     private retryTimer = 0;
+    private betOptionsOverlay: HTMLDivElement = null;
     private timers: Array<{
         left: number;
         resolve: () => void;
@@ -258,6 +259,12 @@ export class slots_base extends Component {
             void this.connect();
             return;
         }
+        const balance = Number(this.balance);
+        const stake = Number(this.bet) * this.betLevel * this.lineCount;
+        if (Number.isFinite(balance) && Number.isFinite(stake) && balance < stake) {
+            this.showInsufficientFundsDialog();
+            return;
+        }
         this.state = 1;
         this.click_stop = false;
         this.error = '';
@@ -374,6 +381,59 @@ export class slots_base extends Component {
         this.labels();
     }
 
+    openBetOptions() {
+        if (typeof document === 'undefined' || !this.ready || this.state !== 0) return;
+        this.betOptionsOverlay?.remove();
+        const canvas = document.getElementById('GameCanvas');
+        if (!(canvas instanceof HTMLCanvasElement)) return;
+        const bounds = canvas.getBoundingClientRect();
+        const root = document.createElement('div');
+        root.className = 'aislot-bet-options';
+        root.innerHTML = `<div class="bet-options-panel"><div class="bet-options-header"><h2>投注选项</h2><button class="bet-options-close" aria-label="关闭">×</button></div><div class="bet-options-content"><div class="bet-options-head"><span>投注额</span><i>×</i><span>投注级别</span><i>×</i><span>线路</span><i>=</i><strong>投注总额</strong></div><div class="bet-selector-bg"></div><div class="bet-wheel"><div class="bet-wheel-column bet-wheel-bet"></div><i>×</i><div class="bet-wheel-column bet-wheel-level"></div><i>×</i><div class="bet-wheel-column bet-wheel-lines"><span>${this.lineCount}</span></div><i>=</i><strong class="bet-wheel-total"></strong></div><div class="bet-gradient top"></div><div class="bet-gradient bottom"></div></div><div class="bet-options-actions"><button class="bet-max">最大投注</button><button class="bet-confirm">确认</button></div><div class="bet-options-footer"><span>钱包余额</span><b>${formatMoney(this.balance)}</b><span>投注额</span><b class="bet-footer-amount">${formatMoney(this.betAmount)}</b></div></div>`;
+        const panel = root.firstElementChild as HTMLDivElement;
+        const choices = this.betChoices.length ? this.betChoices : [{ bet: this.bet, level: this.betLevel, display: this.betAmount }];
+        const values = [...new Set(choices.map(item => item.bet))];
+        const levels = [...new Set(choices.map(item => item.level))];
+        let selectedBet = this.bet, selectedLevel = this.betLevel;
+        const render = () => {
+            const fill = (selector: string, items: Array<string | number>, selected: string | number, pick: (v: string) => void, format: (v: string) => string) => {
+                const column = panel.querySelector(selector) as HTMLElement;
+                column.replaceChildren();
+                items.forEach(value => { const row = document.createElement('button'); row.textContent = format(String(value)); row.className = String(value) === String(selected) ? 'active' : ''; row.onclick = () => { pick(String(value)); render(); }; column.append(row); });
+                const active = column.querySelector('.active') as HTMLElement;
+                if (active) column.scrollTop = active.offsetTop - (column.clientHeight - active.offsetHeight) / 2;
+                column.onscroll = () => {
+                    const center = column.scrollTop + column.clientHeight / 2;
+                    const index = Math.max(0, Math.min(items.length - 1, Math.round((center - 64 - 16) / 32)));
+                    const value = String(items[index]);
+                    if (value !== String(selected)) { pick(value); updateTotal(); }
+                };
+            };
+            const updateTotal = () => {
+                (panel.querySelector('.bet-wheel-total') as HTMLElement).textContent = 'Rp' + formatMoney(this.totalBet(selectedBet, selectedLevel)) + 'K';
+                (panel.querySelector('.bet-footer-amount') as HTMLElement).textContent = formatMoney(this.totalBet(selectedBet, selectedLevel));
+            };
+            fill('.bet-wheel-bet', values, selectedBet, value => selectedBet = value, value => 'Rp' + formatMoney(value) + 'K');
+            fill('.bet-wheel-level', levels, selectedLevel, value => selectedLevel = Number(value), value => value);
+            updateTotal();
+            (panel.querySelector('.bet-confirm') as HTMLButtonElement).onclick = () => {
+                this.bet = selectedBet; this.betLevel = selectedLevel; this.betAmount = this.totalBet(selectedBet, selectedLevel); this.labels(); close();
+            };
+        };
+        const close = () => { root.classList.remove('visible'); window.setTimeout(() => root.remove(), 220); this.betOptionsOverlay = null; };
+        (panel.querySelector('.bet-options-close') as HTMLButtonElement).onclick = close;
+        (panel.querySelector('.bet-max') as HTMLButtonElement).onclick = () => { selectedBet = values[values.length - 1]; selectedLevel = levels[levels.length - 1]; render(); };
+        render();
+        root.style.left = `${bounds.left}px`; root.style.top = `${bounds.top}px`; root.style.width = `${bounds.width}px`; root.style.height = `${bounds.height}px`;
+        if (!document.getElementById('aislot-bet-options-style')) {
+            const style = document.createElement('style'); style.id = 'aislot-bet-options-style';
+            style.textContent = `.aislot-bet-options{position:fixed;z-index:13000;background:rgba(20,20,30,.18);font-family:Nunito,Arial,sans-serif;color:#f5f4f7;overflow:hidden}.bet-options-panel{position:absolute;left:0;right:0;bottom:0;background:#30303c;border-radius:20px 20px 0 0;padding-bottom:7px;transform:translate3d(0,100%,0);transition:transform .25s cubic-bezier(.25,.1,.25,1)}.aislot-bet-options.visible .bet-options-panel{transform:translate3d(0,0,0)}.bet-options-header{height:53px;display:flex;align-items:center;justify-content:center;position:relative}.bet-options-panel h2{margin:8px 0 0;font-size:16px;font-weight:400}.bet-options-close{position:absolute;right:18px;top:11px;border:0;border-radius:50%;width:32px;height:32px;background:#50505d;color:#fff;font-size:25px;line-height:25px}.bet-options-content{position:relative;background:#282833;padding:0 5% 10px;overflow:hidden}.bet-options-head,.bet-wheel{display:grid;grid-template-columns:22.32% 5% 18.855% 5% 17.67% 5% 23.715%;align-items:center;justify-content:space-between;text-align:center;gap:0}.bet-options-head{height:34px;color:#fff;font-size:11px}.bet-options-head span{opacity:.3}.bet-options-head strong{color:#b47850;font-weight:400}.bet-options-head i,.bet-wheel>i{font-style:normal;opacity:.3}.bet-selector-bg{position:absolute;left:4px;right:4px;top:60px;height:36px;background:#30303d;border:1px solid #262633;border-radius:30px}.bet-wheel{height:160px;position:relative;z-index:1}.bet-wheel-column{height:160px;overflow:auto;scrollbar-width:none}.bet-wheel-column::-webkit-scrollbar{display:none}.bet-wheel-column button{display:block;width:100%;height:32px;border:0;background:transparent;color:#fff;font:inherit;font-size:16px;line-height:32px;white-space:nowrap}.bet-wheel-column button.active{color:#fff}.bet-wheel-lines span,.bet-wheel-total{font-size:16px;font-weight:400;color:#fff}.bet-wheel-total{color:#b47850}.bet-gradient{position:absolute;left:5%;right:5%;height:55px;z-index:2;pointer-events:none}.bet-gradient.top{top:30px;background:linear-gradient(#282833 8%,rgba(40,40,51,0))}.bet-gradient.bottom{bottom:8px;background:linear-gradient(0deg,#282833 8%,rgba(40,40,51,0))}.bet-options-actions{display:flex;justify-content:space-between;gap:10px;margin:24px 10px}.bet-options-actions button{height:36px;border-radius:30px;padding:0 12px;font:inherit;font-size:14px}.bet-options-actions .bet-max{width:30%;border:1px solid #b47850;background:#30303d;color:#b47850}.bet-options-actions .bet-confirm{width:67%;border:1px solid #b47850;background:#b47850;color:rgba(255,255,255,.85)}.bet-options-footer{display:flex;justify-content:space-between;align-items:center;margin:0 10px;background:rgba(48,48,60,.7);font-size:12px;color:#aaa;padding:6px 12px;border-radius:16px}.bet-options-footer b{color:#b47850;font-weight:400}`;
+            style.textContent += '.bet-wheel-column{scroll-snap-type:y mandatory;scroll-padding:64px 0;padding:64px 0}.bet-wheel-column button{scroll-snap-align:center}.bet-wheel-column::-webkit-scrollbar{display:none}';
+            document.head.append(style);
+        }
+        document.body.append(root); this.betOptionsOverlay = root; requestAnimationFrame(() => root.classList.add('visible'));
+    }
+
     private totalBet(bet: string, level: number) {
         try { return (BigInt(bet) * BigInt(level) * BigInt(this.lineCount)).toString(); }
         catch { return '0'; }
@@ -466,9 +526,16 @@ export class slots_base extends Component {
                 frame.mode === 'free',
             );
             this.state = 3;
-            this.balance = frame.balance;
+            // 先展示本轮中奖前的余额（服务端余额扣除了本轮 win）。
+            // 后续在中奖动画结束后，再把余额和累计赢分滚到当前轮的最终值。
+            const beforeWinBalance = subtractAmount(frame.balance, frame.winAmount);
+            if (first && !restore) {
+                this.balance = beforeWinBalance;
+                this.winAmount = '0';
+            } else if (cascade) {
+                this.balance = beforeWinBalance;
+            }
             this.betAmount = frame.betAmount;
-            this.winAmount = frame.totalWinAmount;
             this.labels();
             this.notifyFlowChanged();
             const winning = new Set(frame.wins.flatMap((w) => w.cellIds));
@@ -489,6 +556,8 @@ export class slots_base extends Component {
             if (!this.alive) {
                 return;
             }
+            await this.rollSettlement(frame);
+            if (!this.alive) return;
             // 已结束的下注只恢复静态结果，不在每次刷新时重播大奖或免费结算弹窗。
             if (restore && first && frame.nextAction === 'complete') {
                 this.finish();
@@ -516,6 +585,24 @@ export class slots_base extends Component {
                 frame = await this.api.spin(this.bet, this.betLevel);
             first = false;
         }
+    }
+
+    /** 中奖阶段结束后，将本轮余额和累计赢分平滑滚动到服务端结果。 */
+    private async rollSettlement(frame: Frame) {
+        const startBalance = this.balance;
+        const startWin = this.winAmount;
+        const endBalance = frame.balance;
+        const endWin = frame.totalWinAmount;
+        const steps = 8;
+        for (let i = 1; i <= steps && this.alive; i++) {
+            this.balance = interpolateAmount(startBalance, endBalance, i, steps);
+            this.winAmount = interpolateAmount(startWin, endWin, i, steps);
+            this.labels();
+            await this.pause(0.02);
+        }
+        this.balance = endBalance;
+        this.winAmount = endWin;
+        this.labels();
     }
 
     // 使用引擎 update 计时，暂停或销毁场景时不会遗留独立的 JS 定时器。
@@ -580,6 +667,28 @@ export class slots_base extends Component {
             this.error = '';
             this.connect();
         });
+        content.appendChild(button);
+        root.appendChild(content);
+        const game = document.getElementById('GameDiv');
+        if (!game) return;
+        if (getComputedStyle(game).position === 'static') game.style.position = 'relative';
+        game.appendChild(root);
+        this.failureDialog = root;
+    }
+
+    private showInsufficientFundsDialog() {
+        if (typeof document === 'undefined' || this.failureDialog) return;
+        const root = document.createElement('div');
+        root.style.cssText = 'position:absolute;inset:0;z-index:10000;container-type:size;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;color:#fff;';
+        const content = document.createElement('div');
+        content.style.cssText = 'width:84%;background:rgba(40,40,52,.96);border-radius:4%;padding:7% 7% 5%;text-align:center;overflow:hidden;';
+        content.innerHTML = '<div style="font-size:clamp(18px,6cqw,30px);font-weight:500;margin-bottom:7%;">余额不足</div>' +
+            '<div style="line-height:1.55;font-size:clamp(12px,3.8cqw,19px);color:#bdbbc3;">请充值后再试。</div>';
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = '确定';
+        button.style.cssText = 'display:block;width:70%;margin:8% auto 0;border:0;border-radius:2em;background:#c8874f;color:#202124;padding:3.5%;font-size:clamp(13px,4cqw,20px);cursor:pointer;';
+        button.addEventListener('click', () => { root.remove(); this.failureDialog = null; });
         content.appendChild(button);
         root.appendChild(content);
         const game = document.getElementById('GameDiv');
@@ -699,6 +808,19 @@ function formatMoney(raw: string): string {
         const absolute = negative ? -value : value;
         return (negative ? '-' : '') + (Number(absolute) / 100).toFixed(2);
     } catch { return '—'; }
+}
+
+function subtractAmount(value: string, amount: string): string {
+    try { return (BigInt(value || '0') - BigInt(amount || '0')).toString(); }
+    catch { return value || '0'; }
+}
+
+function interpolateAmount(from: string, to: string, step: number, steps: number): string {
+    try {
+        const start = BigInt(from || '0');
+        const end = BigInt(to || '0');
+        return (start + ((end - start) * BigInt(step)) / BigInt(steps)).toString();
+    } catch { return step >= steps ? to : from; }
 }
 
 function buildBetChoices(bets: string[], lineCount: number, maxLevel: number) {
