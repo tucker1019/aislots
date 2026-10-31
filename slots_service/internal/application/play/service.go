@@ -180,7 +180,7 @@ func (s *Service) advanceTx(ctx context.Context, tx Tx, session Session, gameID,
 			if time.Now().After(t.ExpiresAt) {
 				return ErrExpired
 			}
-			if err = s.bets.Allowed(ctx, session.Player, gameID, t.Amount); err != nil {
+			if err = s.bets.AllowedTotal(ctx, session.Player, gameID, t.Amount); err != nil {
 				return err
 			}
 			if _, err = tx.Wallet(ctx, id+":debit", "debit", -t.Amount); err != nil {
