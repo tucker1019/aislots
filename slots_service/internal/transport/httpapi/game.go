@@ -4,6 +4,7 @@ import (
 	"aislots/slots_service/internal/application/bet"
 	"aislots/slots_service/internal/application/betlist"
 	"aislots/slots_service/internal/application/play"
+	"aislots/slots_service/internal/trace"
 	"context"
 	"encoding/json"
 	"errors"
@@ -17,7 +18,7 @@ import (
 
 // NewGameRouter exposes our client API. The supplied play service is explicitly test-only.
 func NewGameRouter(ready func() bool, service *play.Service, origins []string, logger *slog.Logger) http.Handler {
-	mux := NewRouter(ready).(*http.ServeMux)
+	mux := newHealthMux(ready)
 	handle := func(pattern string, fn func(http.ResponseWriter, *http.Request) error) {
 		mux.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
 			if err := fn(w, r); err != nil {
@@ -180,7 +181,7 @@ func NewGameRouter(ready func() bool, service *play.Service, origins []string, l
 	for _, origin := range origins {
 		allowed[origin] = true
 	}
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return trace.Middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "no-store")
 		origin := r.Header.Get("Origin")
 		if origin != "" {
@@ -198,7 +199,7 @@ func NewGameRouter(ready func() bool, service *play.Service, origins []string, l
 			return
 		}
 		mux.ServeHTTP(w, r)
-	})
+	}), logger)
 }
 func decode(w http.ResponseWriter, r *http.Request, target any) error {
 	r.Body = http.MaxBytesReader(w, r.Body, 16*1024)
@@ -258,7 +259,7 @@ func writeError(w http.ResponseWriter, r *http.Request, err error, logger *slog.
 		status = 503
 	}
 	if status >= 500 {
-		logger.Error("game request failed", "path", r.URL.Path, "error", err)
+		trace.Logger(r.Context(), logger).ErrorContext(r.Context(), "game request failed", "path", r.URL.Path, "error", err)
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)

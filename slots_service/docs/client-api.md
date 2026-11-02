@@ -175,3 +175,9 @@ curl -H 'Authorization: Bearer <accessToken>' \
 `GET /api/v1/games/AG1/shared-replays/{betId}?share=<shareToken>&limit=100&cursor=...`：无需登录，只能读取凭据绑定的游戏和交易，分页结构与本人 replay 相同。无效凭据或不匹配的交易统一返回404。不会读取未来未结算盘面，不修改钱包、状态或下一下注标识；响应不包含登录身份、请求标识与内部推进信息。`balance` 固定为占位0，分享客户端必须隐藏余额，不能作为真实钱包余额展示。
 
 客户端分享链接使用本站游戏路径：`?replay=<betId>&share=<shareToken>`。链接不能携带 appname/appkey/uid 或登录token；分享凭据不能用于登录或下注。公开页面仅运行回放，不调用 login、bets、state、spin。生产默认同源 `/api/v1`，开发环境继续连接本机8080。
+
+## 请求追踪
+
+所有响应头返回 `X-Trace-Id`，包括健康检查、业务错误、404、跨域预检和来源拒绝。编号由服务端为每次HTTP请求独立生成，为32位十六进制字符串；请求完成日志和服务端错误日志的 `traceId` 与响应头一致。可使用它关联日志，日志不记录含身份凭据的查询串。
+
+响应包含 `Access-Control-Expose-Headers: X-Trace-Id`，在已允许的跨域来源上可通过 `response.headers.get('X-Trace-Id')` 读取。业务幂等仍使用requestId，Trace ID不替代requestId。
