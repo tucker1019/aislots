@@ -90,3 +90,31 @@ Verified in Creator preview: row count 20 -> 40, scrollTop 496 -> 496, previous 
 - Actual browser award `[4,7]` produced shrink/prize sounds but zero payout voice requests. Inspecting the generated Cocos bundle showed `[...new Set(...)]` compiled into `[].concat(new Set(...))`; filtering this array returned no valid symbol IDs.
 - Replaced spread with `Array.from(new Set(...))`. Added a regression test using Creator's Babel loose spread transformation, in addition to the existing TypeScript tests. All 64 tests passed, including the same `[4,7]` symbol pair.
 - AudioDebug provides bounded DOM diagnostics to verify actual browser requests/start events instead of relying solely on source tests.
+
+## Native auto-stop control and lifecycle — 2026-11-02
+
+- Imported the reference auto-stop art and bitmap digits as editable `resources/mahjong_effects/control_autostop.prefab`. Runtime reuses a scene `btn_autostop` if present; otherwise creates it inside panel1 and binds the current controller. No original business callbacks were copied.
+- Auto mode shows this button instead of normal Spin/Stop, including the 0.25-second interval. The count includes the current complete paid/free chain and decreases only on completion. Auto-stop cancels future paid games and leaves the current chain running.
+- Generation isolation prevents stopped jobs from decrementing below zero or overwriting a replacement job. Manual spin and duplicate AUTO starts are blocked while the runner is active.
+- Browser verified reference-style counter decrement, cancel restoring normal Stop while reels still move, then idle Spin with no subsequent automatic spin. Observed free-entry timeout continuing without manual confirmation; no console warnings/errors.
+- Five runner/prefab tests plus two focused client tests passed. TypeScript and web-mobile build passed. Full-suite failures were reproduced with pre-change HEAD sources (7 explicit failures plus cascading cancelled tests); those pulled-code failures were not introduced here.
+- Evidence: `autospin-button-check.png`.
+
+### Auto-stop prefab editor ownership fix — 2026-11-02
+
+- Scene extraction omitted node PrefabInfo and component CompPrefabInfo and retained scene-only object flags. Repaired current asset in place, preserving UUID/layout; importer now uses the same repair helper. Repair is idempotent.
+- Six focused tests passed, including editor ownership links for every node/component.
+- Native Cocos Creator 3.8.8 verified: cleared old console messages, double-clicked control_autostop, and selected its root. Editor title switched to control_autostop.prefab; tree contains auto_spin/lab_autoNum; inspector shows UITransform/Button/Widget; console remained empty.
+- Evidence: `autostop-prefab-editor-check.png`.
+
+## Free-spin remaining panel — 2026-11-02
+
+- Imported reference panel_free as an editable prefab with full editor ownership metadata. Current freeRemaining drives the counter; zero selects last_fs throughout the final free round/cascades. Restoring a completed historic frame does not reopen the panel.
+- Normal/menu controls are hidden during free play; the money footer shifts down once and restores its original positions at feature completion. Panel placement leaves room for the reference double-line caption and large bitmap digits.
+- Five focused tests and TypeScript passed; final web-mobile build completed. Browser display tested against an isolated temporary API fixture: remaining count visible, money footer separated, normal controls/footer restored after completion. Fixture did not touch actual wallet/records; temporary server and tabs were stopped.
+- Evidence: free-panel-check.png.
+
+## Same-column winning-effect depth — 2026-11-02
+
+- Reused cell win anchors in the shared award layer retained old sibling order, while logical cell indices can wrap after rolling. Reel award now sorts anchors by actual world Y, top first/bottom last, so lower tiles cover upper tiles.
+- Three ordering tests and two focused reel/highlight integration tests passed. TypeScript passed; web-mobile build completed.

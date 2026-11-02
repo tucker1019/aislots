@@ -4,17 +4,8 @@ import { symbolNames } from '../history/history_model';
 import { RulesPage } from './rules_page';
 import { RULE_SECTIONS } from './rules_content';
 
-// 按用户提供的赔率表原文展示，不改写数值配置或服务端结算。
-const PAYOUTS = [
-    { symbol: 9, values: [100, 60, 15] },
-    { symbol: 8, values: [80, 40, 10] },
-    { symbol: 7, values: [60, 20, 8] },
-    { symbol: 6, values: [40, 15, 6] },
-    { symbol: 5, values: [20, 10, 4] },
-    { symbol: 4, values: [20, 10, 4] },
-    { symbol: 3, values: [10, 5, 2] },
-    { symbol: 2, values: [10, 5, 2] },
-];
+import { PAYOUTS } from './paytable_data';
+
 const CSS = `
 .slot-paytable .rules-copy{padding:1em 1.5em 2.5em}
 .slot-paytable .pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:1em .8em;margin:1.5em 0}

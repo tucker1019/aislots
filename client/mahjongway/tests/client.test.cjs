@@ -2,7 +2,7 @@ const {test}=require('node:test');const assert=require('node:assert/strict');con
 const ts=require('../../../slot_math/node_modules/typescript');
 const root=path.join(__dirname,'../assets/mahjongway/src');
 require.extensions['.ts']=(module,file)=>module._compile(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020,experimentalDecorators:true}}).outputText,file);
-const original=Module._load;Module._load=function(id,...args){if(id==='cc')return {Component:class{},_decorator:{ccclass:()=>c=>c,property:()=>{}},Color:{YELLOW:{}},Node:class{},UIOpacity:class{}};if(id==='cc/env')return {DEBUG:false,DEV:false};return original.call(this,id,...args)};
+const original=Module._load;Module._load=function(id,...args){if(id==='cc')return {Component:class{},_decorator:{ccclass:()=>c=>c,property:()=>{}},Color:{YELLOW:{}},Node:class{static EventType={TOUCH_END:'touch-end'}},UIOpacity:class{}};if(id==='cc/env')return {DEBUG:false,DEV:false};return original.call(this,id,...args)};
 const {GameApi}=require(path.join(root,'network/game/game_api.ts'));
 const {serverStrips,gravitySources}=require(path.join(root,'slots/server_board.ts'));
 const {slots_r:Reel}=require(path.join(root,'slots/slots_r.ts'));
@@ -378,4 +378,47 @@ test('big-win popup starts Big, upgrades at thresholds and preserves accumulated
   effect.popupTick(16/3);assert.deepEqual(tiers,[1,2,3]);assert.equal(label.string,'5,000');
   effect.completeCount();assert.equal(label.string,'8,000');
  } finally {visuals.applyBigWinTier=saved;}
+});
+
+test('manual spin is blocked during auto mode and idle STOP cancels auto before returning',async()=>{
+ const f=flow();let stopped=0;
+ f.autoRunner={active:true,remaining:2,stop(){stopped++;this.active=false;this.remaining=0;}};
+ f.state=0;assert.equal(await f.spin(),false);f.stop();assert.equal(stopped,1);assert.equal(f.autoSpinsRemaining,0);
+});
+test('popup timeout exits without manual confirmation',()=>{
+ const {GameEffects}=require(path.join(root,'effects/game_effects.ts'));
+ const effect=new GameEffects();let exits=0;
+ effect.updateControls=()=>{};effect.popupFinish=()=>{};effect.popupTimeout=0.3;
+ effect.popupExit=()=>{exits++;effect.popupClosing=true;};
+ for(let i=0;i<10;i++)effect.update(0.1);
+ assert.equal(exits,1);
+});
+test('reel award reorders reused anchors so the lower cell covers the upper one',()=>{
+ const {r,cells}=makeReel(0),layer={children:[]},called=[];
+ const makeAnchor=y=>({worldPosition:{y},setSiblingIndex(index){const old=layer.children.indexOf(this);layer.children.splice(old,1);layer.children.splice(index,0,this);}});
+ const top=makeAnchor(100),bottom=makeAnchor(0);layer.children=[bottom,top];
+ cells.forEach((cell,index)=>cell.component.playWin=()=>called.push(index));
+ r.award([0,1],[],layer);
+ assert.deepEqual(called,[1,2]);assert.deepEqual(layer.children,[top,bottom]);
+});
+test('symbol inspection ignores preview/decoration rows and is disabled during play/auto',()=>{
+ const {r,cells}=makeReel(0);assert.equal(r.activeRowForCell(cells[0]),-1);assert.equal(r.activeRowForCell(cells[1]),-1);
+ assert.equal(r.activeRowForCell(cells[2]),0);assert.equal(r.activeRowForCell(cells[5]),3);assert.equal(r.activeRowForCell(cells[6]),-1);
+ const f=flow();f.ready=true;f.state=2;assert.equal(f.showSymbolTooltip(cells[2],2),false);
+ f.state=0;f.autoRunner={active:true};assert.equal(f.showSymbolTooltip(cells[2],2),false);
+});
+test('symbol tooltip expires after five seconds and closes when play becomes busy',()=>{
+ const {SymbolTooltip}=require(path.join(root,'effects/symbol_tooltip.ts'));
+ const tip=Object.create(SymbolTooltip.prototype);tip.layer={active:true};tip.age=0;
+ tip.update(4.9,true);assert.equal(tip.layer.active,true);tip.update(0.1,true);assert.equal(tip.layer.active,false);
+ tip.layer.active=true;tip.update(0,false);assert.equal(tip.layer.active,false);
+});
+
+test('clickable cells receive a UITransform before touch registration',()=>{
+ const {slots_cell:Cell}=require(path.join(root,'slots/slots_cell.ts'));
+ const cell=new Cell();let ready=false,dimensions;
+ const transform={setContentSize(w,h){dimensions=[w,h];}};
+ cell.node={parent:{parent:{getComponent:()=>({})}},getComponent:()=>ready?transform:null,
+  addComponent:()=>{ready=true;return transform;},on:()=>assert.equal(ready,true)};
+ cell.onLoad();assert.deepEqual(dimensions,[150,165]);
 });

@@ -7,7 +7,7 @@ const EFFECTS = ['symbolShrink', 'symbolWild', 'symbolCollapse', 'symbolScatter'
     'multiplierC', 'fastspinStart', 'fastspinEnd', 'fastspinSuccess', 'bgmBonusIntro', 'uiStart', 'uiCollect',
     'bgmBigwinMain', 'bgmBigwinEnd', 'bgmTotalwinMain', 'bgmTotalwinEnd', 'spinBtn', 'reelLoop',
     'reelStopSingle', 'reelQuickstop', 'prizeMedwin', 'prizeSmallwin', 'maJiangHuLe', 'fsMultiplyRefresh',
-    'menu_icon_press', 'voxPayoutMultiSym01', 'voxPayoutMultiSym02',
+    'menu_icon_press', 'slider_effect', 'voxPayoutMultiSym01', 'voxPayoutMultiSym02',
     ...Object.values(VOICES), ...[2, 3, 4, 5, 6, 10].map(n => `voxMultiply${n}x`)];
 /** 游戏事件到音频的唯一映射。符号使用本项目 ID，不套用参考项目的 ID。 */
 export class GameAudio {

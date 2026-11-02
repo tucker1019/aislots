@@ -1,6 +1,6 @@
 import { WinAnimationEvents } from '../effects/win_animation_events';
 import { EffectLibrary, NativeEffect } from '../effects/effect_library';
-import { _decorator, Component, Node, Animation, UIOpacity, Label, Color } from 'cc';
+import { _decorator, Component, Node, EventTouch, Animation, UIOpacity, UITransform, Label, Color } from 'cc';
 import { slots_base } from './slots_base';
 import { printDebug } from '../com/utils';
 const { ccclass, property } = _decorator;
@@ -28,7 +28,14 @@ export class slots_cell extends Component {
     private _displayNormalBg: boolean = null;
     protected onLoad(): void {
         this.slots_base = this.node.parent.parent.getComponent(slots_base);
+        // 旧 cell 根节点只有脚本；触摸节点必须有 UITransform，否则 Cocos 无法排序事件。
+        if (!this.node.getComponent(UITransform)) this.node.addComponent(UITransform).setContentSize(150,165);
+        this.node.on(Node.EventType.TOUCH_END, this.inspectSymbol, this);
     }
+    private inspectSymbol(event: EventTouch) {
+        if (this.slots_base.showSymbolTooltip(this.node, this.v_value)) event.propagationStopped = true;
+    }
+    protected onDestroy() { this.node.off(Node.EventType.TOUCH_END, this.inspectSymbol, this); }
     private effect: NativeEffect = null;
     private winning = false;
     private winAnchor: Node = null;

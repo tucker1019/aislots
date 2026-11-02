@@ -1,3 +1,4 @@
+import { AutoSpinRunner } from './auto_spin_runner';
 import { PaytablePage } from '../rules/paytable_page';
 import { AutoSpinPage } from './auto_spin_page';
 import { RulesPage } from '../rules/rules_page';
@@ -63,7 +64,13 @@ export class slots_base extends Component {
     private retryTimer = 0;
     private betOptionsOverlay: HTMLDivElement = null;
     private autoSpinPage: AutoSpinPage = null;
-    private autoSpinsRemaining = 0;
+    private autoRunner: AutoSpinRunner = null;
+    private freePanelShown = false;
+    private freeSpinsLeft = 0;
+    get freePanelActive() { return this.freePanelShown; }
+    get freeSpinsRemaining() { return this.freeSpinsLeft; }
+    get autoSpinRunning() { return this.autoRunner?.active || false; }
+    get autoSpinsRemaining() { return this.autoRunner?.remaining || 0; }
     private timers: Array<{
         left: number;
         resolve: () => void;
@@ -258,7 +265,8 @@ export class slots_base extends Component {
     }
 
     /** 总流程忙碌时忽略重复点击，网络异常则保留请求用于重试。 */
-    async spin(): Promise<boolean> {
+    async spin(fromAuto = false): Promise<boolean> {
+        if (this.autoSpinRunning && !fromAuto) return false;
         if (!this.alive || this.state !== 0) {
             return false;
         }
@@ -289,7 +297,7 @@ export class slots_base extends Component {
     }
 
     openAutoSpin() {
-        if (typeof document === 'undefined' || !this.ready || this.state !== 0) return;
+        if (typeof document === 'undefined' || !this.ready || this.state !== 0 || this.autoSpinRunning) return;
         const canvas = document.getElementById('GameCanvas');
         if (!(canvas instanceof HTMLCanvasElement)) return;
         if (!this.autoSpinPage) this.autoSpinPage = new AutoSpinPage(
@@ -301,31 +309,17 @@ export class slots_base extends Component {
     }
 
     private startAutoSpin(count: number) {
-        if (this.state !== 0 || count < 1) return;
-        this.autoSpinsRemaining = count;
-        void this.runAutoSpins();
+        if (!this.autoRunner) this.autoRunner = new AutoSpinRunner(
+            () => this.spin(true),
+            () => this.pause(0.25),
+            () => this.alive && this.ready && this.state === 0,
+            () => this.notifyFlowChanged(),
+        );
+        this.autoRunner.start(count);
     }
 
-    private async runAutoSpins() {
-        while (this.alive && this.autoSpinsRemaining > 0 && this.state === 0) {
-            const balance = Number(this.balance);
-            const stake = Number(this.bet) * this.betLevel * this.lineCount;
-            if (Number.isFinite(balance) && Number.isFinite(stake) && balance < stake) {
-                this.autoSpinsRemaining = 0;
-                this.showInsufficientFundsDialog();
-                break;
-            }
-            const completed = await this.spin();
-            if (!completed) {
-                this.autoSpinsRemaining = 0;
-                break;
-            }
-            if (this.state !== 0) break;
-            this.autoSpinsRemaining--;
-            if (this.autoSpinsRemaining > 0) await this.pause(0.25);
-        }
-        if (this.state === 0) this.autoSpinsRemaining = 0;
-    }
+    /** 自动停止不快停当前转轴、不跳过弹窗，也不改变当前局结算。 */
+    stopAutoSpin() { this.autoRunner?.stop(); }
 
     /** 层级：普通盘面 → 整张黑底 → 中奖动画。 */
     private showAwardShade() {
@@ -384,10 +378,10 @@ export class slots_base extends Component {
 
     /** 响应尚未到达时只记录停止意图，不能把客户端随机盘面当成结果。 */
     stop() {
+        this.stopAutoSpin();
         if (this.state === 0) {
             return;
         }
-        this.autoSpinsRemaining = 0;
         // 补落（含列间等待和落地回弹）不接受 Stop，也不记录停止意图。
         if (this.reels.some((reel) => reel.state === 5)) return;
         if (this.effects?.dismiss()) return;
@@ -503,6 +497,14 @@ export class slots_base extends Component {
     }
 
     /** 服务端决定中奖和余额；这里只安排停轴、消除及下一轮的展示顺序。 */
+    showSymbolTooltip(cell: Node, value: number) {
+        if (!this.ready || this.state !== 0 || this.autoSpinRunning || value <= 0) return false;
+        const column = this.reels.findIndex(reel => reel.node === cell.parent);
+        if (column < 0 || this.reels[column].activeRowForCell(cell) < 0) return false;
+        this.effects?.showSymbolTooltip(cell, value, column);
+        return true;
+    }
+
     reelStopped(quick: boolean) { this.effects?.reelStopped(quick); }
 
     private async play(frame: Frame, restore = false) {
@@ -520,6 +522,10 @@ export class slots_base extends Component {
                 cascade || (restore && first) ? this.boards : undefined,
             );
             this.effects?.setAudioMode(frame.mode === 'free');
+            if (frame.mode === 'free' && !(restore && first && frame.nextAction === 'complete')) {
+                this.freePanelShown = true;
+                this.freeSpinsLeft = frame.freeRemaining;
+            }
             this.current = frame;
             this.boards = strips;
             this.activeBet = frame.nextAction !== 'complete';
@@ -637,6 +643,8 @@ export class slots_base extends Component {
                 if (frame.mode === 'base') await this.effects?.intro(frame.freeRemaining);
                 else if (frame.triggeredFree)
                     await this.effects?.retrigger(frame.awardedFreeSpins ?? frame.freeRemaining);
+                this.freePanelShown = true;
+                this.freeSpinsLeft = frame.freeRemaining;
             }
             if (!this.alive) return;
             this.notifyFlowChanged();
@@ -675,6 +683,8 @@ export class slots_base extends Component {
     }
 
     private finish() {
+        this.freePanelShown = false;
+        this.freeSpinsLeft = 0;
         this.anticipation?.clear();
         this.state = 0;
         this.click_stop = false;
@@ -792,6 +802,7 @@ export class slots_base extends Component {
     };
 
     protected onDestroy() {
+        this.stopAutoSpin();
         this.historyPage?.destroy();
         this.rulesPage?.destroy();
         this.paytablePage?.destroy();

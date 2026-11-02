@@ -1,3 +1,5 @@
+import { SymbolTooltip } from './symbol_tooltip';
+import { FreePanelView } from './free_panel';
 import { GameAudio } from '../audio/game_audio';
 import { bigWinFrame, BIG_WIN_COUNT_SECONDS } from './big_win_progression';
 import { applyBigWinTier } from './big_win_visuals';
@@ -56,6 +58,8 @@ export class GameEffects extends Component {
     private tier = 0;
     private controls = new Map<string, NativeEffect>();
     private wasRolling = false;
+    private freePanelView: FreePanelView = null;
+    private symbolTooltip: SymbolTooltip = null;
     private previousMultiplier = -1;
     private previousFactors = '';
     private previousFree = false;
@@ -79,6 +83,30 @@ export class GameEffects extends Component {
         this.overlay.addComponent(BlockInputEvents);
         this.overlay.active = false;
         this.installControls();
+        // 使用原项目独立的自动停止美术；场景已有节点时直接复用。
+        if (!this.find(this.node, 'btn_autostop')) {
+            const panel = this.find(this.node, 'panel1');
+            if (panel) EffectLibrary.create('control_autostop', panel).node.name = 'btn_autostop';
+        }
+        const layout = this.find(this.node, 'layout_bottom');
+        const normal = layout?.getChildByName('panel1'), menu = layout?.getChildByName('panel2');
+        if (layout && normal && menu) {
+            let panel = layout.getChildByName('panel_free');
+            if (!panel) {
+                panel = EffectLibrary.create('panel_free', layout).node;
+                panel.name = 'panel_free';
+                // 适配当前金额栏：给原版双行提示和 150 高度数字留出空间。
+                panel.setPosition(normal.position.x, normal.position.y + 75, normal.position.z);
+            }
+            this.freePanelView = new FreePanelView({ root: panel, normal, menu,
+                remaining: panel.getChildByName('remaining_fs'), last: panel.getChildByName('last_fs'),
+                counter: panel.getChildByPath('remaining_fs/fnt_1').getComponent(Label),
+                footer: ['info', 'lab_coin', 'lab_bet', 'lab_win'].map(name => this.find(this.node, name)).filter(Boolean),
+            });
+        }
+        const board = this.find(this.node, 'roll');
+        if (board) this.symbolTooltip = new SymbolTooltip(board, () => this.sound('slider_effect'));
+        board?.emit('flow-changed');
         // 倍率条由场景配置，直接绑定现有节点，保持编辑器设置的位置和层级。
         const multipliers = this.find(this.node, 'multipliers');
         if (!multipliers) throw new Error('场景缺少 multipliers 倍率条节点');
@@ -107,8 +135,13 @@ export class GameEffects extends Component {
         const flow = this.node.getChildByName('roll')?.getComponent('slots_base') as Component & {
             state: number;
             fast: boolean;
+            autoSpinRunning: boolean;
+            freePanelActive: boolean;
+            freeSpinsRemaining: number;
         };
         if (!flow) return;
+        this.symbolTooltip?.update(0, flow.state === 0 && !flow.autoSpinRunning);
+        this.freePanelView?.update(!!flow.freePanelActive, flow.freeSpinsRemaining || 0);
         const rolling = flow.state === 1 || flow.state === 2;
         if (rolling && !this.wasRolling) {
             const stop = this.controls.get('control_stop');
@@ -129,6 +162,7 @@ export class GameEffects extends Component {
         if (off) off.active = this.audio.isMuted;
     }
     private toggleSound() { this.audio.toggleMuted(); this.refreshSoundButton(); }
+    showSymbolTooltip(cell: Node, value: number, column: number) { this.symbolTooltip?.show(cell,value,column); }
     setAudioMode(free: boolean) { this.audio.setMode(free); }
     spinSound() { this.audio.startSpin(); }
     reelStopped(quick: boolean) { this.audio.stopReel(quick); }
@@ -429,6 +463,7 @@ export class GameEffects extends Component {
     update(dt: number) {
         this.updateControls();
         dt = Math.min(dt, 0.1);
+        this.symbolTooltip?.update(dt, true);
         if (this.popupFinish) {
             this.popupAge += dt;
             this.popupTick?.(this.popupAge);
@@ -478,6 +513,7 @@ export class GameEffects extends Component {
         });
     }
     onDestroy() {
+        this.symbolTooltip?.destroy();
         this.popupFinish?.();
         this.find(this.node, 'btn_sound')?.off(Node.EventType.TOUCH_END, this.toggleSound, this);
         this.audio.destroy();

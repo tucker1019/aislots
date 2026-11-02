@@ -1,3 +1,4 @@
+import { sortAwardLayer } from '../effects/award_layer';
 import { _decorator, Component, Node } from 'cc';
 import { slots_base } from './slots_base';
 import { slots_cell } from './slots_cell';
@@ -206,6 +207,14 @@ export class slots_r extends Component {
             if (rows.includes(row))
                 this.cellComponents[i].playWin(transformed.includes(row), effectLayer);
         });
+        // 逻辑索引会循环，旧锚点的 sibling 顺序也会保留，不能据此决定谁盖住谁。
+        if (effectLayer) sortAwardLayer(effectLayer);
+    }
+    activeRowForCell(node: Node) {
+        const index = this.cellNodes.indexOf(node);
+        if (index < 0) return -1;
+        const rank = this.settleAnchor < 0 ? index : this.getResultRank(index);
+        return rank >= 2 && rank <= 5 ? rank - 2 : -1;
     }
     restoreWinLayers() {
         this.cellComponents.forEach((cell) => cell.restoreWinLayer());
