@@ -54,11 +54,24 @@
       "freeLibraryDir": "../../game_libraries/AG1/free/2026-10-23T09-45-17-045Z-b8fedfe4",
       "triggerSymbolCount": 3,
       "maxFillAttempts": 64,
-      "current": true,
+      "current": false,
       "freeAwardSymbolCounts": {
         "8": 3,
         "10": 4,
         "12": 5
+      }
+    },
+    {
+      "configDir": "../testdata/deployments/2026-11-02-gold/AG1",
+      "baseLibraryDir": "../../game_libraries/AG1/base/2026-11-02T07-13-22-448Z-0545a1f5",
+      "freeLibraryDir": "../../game_libraries/AG1/free/2026-11-02T07-13-28-703Z-37a5ac02",
+      "triggerSymbolCount": 3,
+      "maxFillAttempts": 64,
+      "current": true,
+      "freeAwardSymbolCounts": {
+        "10": 3,
+        "12": 4,
+        "14": 5
       }
     }
   ]

@@ -130,3 +130,12 @@ node slots_service/scripts/generate-fixtures.mjs
 两者均使用登录身份隔离并支持游标分页。参数和响应见 [客户端协议](docs/client-api.md)。
 
 The mapping participates in the engine version. The test server configuration keeps the previous deployment as a non-current entry and adds the mapped entry as current. New bets use the mapping; existing bets remain pinned to their original rules and stored replay data is never rewritten. Restart the Go server after updating.
+
+### AG1 金底联调数据（2026-11-02）
+
+当前测试配置使用 `testdata/deployments/2026-11-02-gold/AG1` 快照。
+百搭 ID 为 `10`、权重为 `0`；第 2、3、4 轴可出金底，普通概率 8.3%，免费概率 11%。
+普通库生成 1,000,000 局、保留 66,882 条，免费库生成 100,000 局、保留 21,106 条；每个倍率最多保留 100 条。
+两套库均覆盖快照中所有正权重倍率，并通过数值工具骨架重放校验。
+当前数值配置赠送免费局数为 10/12/14，对应 3/4/5 个胡。
+旧配置和旧库保留为非当前版本，供已开始的下注继续使用；新下注使用新的金底版本。

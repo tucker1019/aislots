@@ -3,10 +3,14 @@
   "fillWeightIncrement": 1000,
   "scatterWeightIncrement": 500,
   "gold": {
-    "columns": [],
+    "columns": [
+      2,
+      3,
+      4
+    ],
     "baseProbability": 0.083,
     "freeProbability": 0.11,
-    "wildSymbolId": null
+    "wildSymbolId": "10"
   },
   "columnHeights": [
     4,
@@ -118,6 +122,14 @@
       "weight": 300,
       "role": "scatter",
       "color": "#b47868",
+      "payouts": {}
+    },
+    {
+      "id": "10",
+      "name": "百搭",
+      "weight": 0,
+      "role": "wild",
+      "color": "#9680b8",
       "payouts": {}
     }
   ],

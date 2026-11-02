@@ -4,22 +4,22 @@
   "parameters": {
     "lineCount": 20,
     "baseSpinWinProbability": 0.39,
-    "freeSpinWinProbability": 0.51,
+    "freeSpinWinProbability": 0.44,
     "freeSpinTriggerProbability": 0.0065,
     "freeSpinGuaranteedWin": true,
     "lossStreakRtpCompensation": true,
     "freeTriggerRtpCompensation": true,
     "freeSpinAwardWeights": [
       [
-        8,
+        10,
         300
       ],
       [
-        10,
+        12,
         75
       ],
       [
-        12,
+        14,
         15
       ]
     ],

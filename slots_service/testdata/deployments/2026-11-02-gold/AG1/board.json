@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "fillWeightIncrement": 1000,
+  "scatterWeightIncrement": 500,
+  "gold": {
+    "columns": [
+      2,
+      3,
+      4
+    ],
+    "baseProbability": 0.083,
+    "freeProbability": 0.11,
+    "wildSymbolId": "10"
+  },
+  "columnHeights": [
+    4,
+    4,
+    4,
+    4,
+    4
+  ],
+  "symbols": [
+    {
+      "id": "2",
+      "name": "二条",
+      "weight": 1300,
+      "role": "normal",
+      "color": "#448f7d",
+      "payouts": {
+        "3": 1,
+        "4": 3,
+        "5": 6
+      }
+    },
+    {
+      "id": "3",
+      "name": "二饼",
+      "weight": 1260,
+      "role": "normal",
+      "color": "#6296ab",
+      "payouts": {
+        "3": 1,
+        "4": 3,
+        "5": 6
+      }
+    },
+    {
+      "id": "4",
+      "name": "五条",
+      "weight": 1180,
+      "role": "normal",
+      "color": "#448f7d",
+      "payouts": {
+        "3": 3,
+        "4": 5,
+        "5": 12
+      }
+    },
+    {
+      "id": "5",
+      "name": "五饼",
+      "weight": 1140,
+      "role": "normal",
+      "color": "#547cbb",
+      "payouts": {
+        "3": 3,
+        "4": 5,
+        "5": 12
+      }
+    },
+    {
+      "id": "6",
+      "name": "八万",
+      "weight": 1100,
+      "role": "normal",
+      "color": "#b47868",
+      "payouts": {
+        "3": 5,
+        "4": 10,
+        "5": 15
+      }
+    },
+    {
+      "id": "7",
+      "name": "白板",
+      "weight": 1060,
+      "role": "normal",
+      "color": "#9680b8",
+      "payouts": {
+        "3": 6,
+        "4": 15,
+        "5": 30
+      }
+    },
+    {
+      "id": "8",
+      "name": "中",
+      "weight": 1020,
+      "role": "normal",
+      "color": "#b47868",
+      "payouts": {
+        "3": 8,
+        "4": 20,
+        "5": 40
+      }
+    },
+    {
+      "id": "9",
+      "name": "发",
+      "weight": 980,
+      "role": "normal",
+      "color": "#448f7d",
+      "payouts": {
+        "3": 10,
+        "4": 25,
+        "5": 50
+      }
+    },
+    {
+      "id": "11",
+      "name": "分散",
+      "weight": 300,
+      "role": "scatter",
+      "color": "#b47868",
+      "payouts": {}
+    },
+    {
+      "id": "10",
+      "name": "百搭",
+      "weight": 0,
+      "role": "wild",
+      "color": "#9680b8",
+      "payouts": {}
+    }
+  ],
+  "cascadeFactors": [
+    1,
+    2,
+    3,
+    5
+  ],
+  "freeCascadeFactors": [
+    2,
+    4,
+    6,
+    10
+  ],
+  "seed": 42
+}
