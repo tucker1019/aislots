@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: aislots_lobby
+      POSTGRES_USER: lobby
+      POSTGRES_PASSWORD: lobby-local-only
+    ports:
+      - "127.0.0.1:55433:5432"
+    volumes:
+      - lobby-postgres:/var/lib/postgresql
+volumes:
+  lobby-postgres:

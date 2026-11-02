@@ -1,0 +1,41 @@
+syntax = "proto3";
+package apis.lobby.api.v1;
+option go_package = "apps/pb/apis/lobby/api/v1;v1";
+import "google/api/annotations.proto";
+// @Desc: 大厅用户账号
+service UserService {
+ // @Desc: 创建游客
+ rpc VisitorLogin(UserRequest) returns (IdentityReply) { option (google.api.http) = { post: "/api/user/account/visitor/login" body: "*" }; }
+ // @Desc: 恢复会话并续期
+ rpc SessionRenewal(UserRequest) returns (IdentityReply) { option (google.api.http) = { post: "/api/user/account/session/renewal" body: "*" }; }
+ // @Desc: 注册独立账号
+ rpc UniqueCodeRegister(UserRequest) returns (IdentityReply) { option (google.api.http) = { post: "/api/user/account/uniquecode/register" body: "*" }; }
+ // @Desc: 使用当前身份登录目标账号
+ rpc UniqueCodeLogin(UserRequest) returns (IdentityReply) { option (google.api.http) = { post: "/api/user/account/uniquecode/login" body: "*" }; }
+ // @Desc: 当前游客绑定账号
+ rpc UniqueCodeBind(UserRequest) returns (IdentityReply) { option (google.api.http) = { post: "/api/user/account/uniquecode/bind" body: "*" }; }
+ // @Desc: 查询当前用户资料
+ rpc ProfileInfo(UserRequest) returns (ProfileReply) { option (google.api.http) = { get: "/api/user/user/info" }; }
+ // @Desc: 修改当前用户资料
+ rpc ProfileUpdate(UserRequest) returns (ProfileReply) { option (google.api.http) = { post: "/api/user/user/update" body: "*" }; }
+}
+message UserRequest {
+ optional int64 uid = 1;
+ optional string sid = 2;
+ string account = 3;
+ string password = 4;
+ optional string nickname = 5;
+ optional int32 avatar_id = 6 [json_name = "avatarId"];
+}
+message IdentityReply {
+ int64 uid = 1;
+ string sid = 2;
+ string expires_at = 3 [json_name = "expiresAt"];
+}
+
+message ProfileReply {
+ int64 uid = 1;
+ string nickname = 2;
+ int32 avatar_id = 3 [json_name = "avatarId"];
+ int64 coins = 4;
+}

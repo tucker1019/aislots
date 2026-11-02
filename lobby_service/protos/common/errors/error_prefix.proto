@@ -1,0 +1,7 @@
+syntax = "proto3";
+package common.errors;
+option go_package = "apps/pb/common/errors;errors";
+enum ErrorPrefix {
+ ERROR_PREFIX_UNSPECIFIED = 0;
+ ERROR_PREFIX_APIS_LOBBY_API = 1001;
+}

@@ -1,0 +1,58 @@
+syntax = "proto3";
+package apis.lobby.api.v1;
+option go_package = "apps/pb/apis/lobby/api/v1;v1";
+import "google/api/annotations.proto";
+// @Desc: 大厅充值订单
+service RechargeService {
+ // @Desc: 获取当前充值档位
+ rpc RechargeList(RechargeRequest) returns (RechargeListReply) { option (google.api.http) = { get: "/api/recharge/list" }; }
+ // @Desc: 创建待付款订单，requestId重试复用
+ rpc RechargeCreate(RechargeRequest) returns (RechargeCreateReply) { option (google.api.http) = { post: "/api/recharge/create" body: "*" }; }
+ // @Desc: 查询当前用户充值订单状态
+ rpc RechargeOrderInfo(RechargeRequest) returns (RechargeReply) { option (google.api.http) = { get: "/api/recharge/order/info" }; }
+ // @Desc: 分页查询当前用户历史充值订单
+ rpc RechargeOrderList(RechargeRequest) returns (RechargeOrdersReply) { option (google.api.http) = { get: "/api/recharge/order/list" }; }
+}
+message RechargeRequest {
+ optional int64 uid = 1;
+ optional string sid = 2;
+ string tier_id = 3 [json_name = "tierId"];
+ string request_id = 4 [json_name = "requestId"];
+ string order_id = 5 [json_name = "orderId"];
+ string status = 6;
+ int32 limit = 7;
+ string cursor = 8;
+}
+message RechargeTier {
+ string id = 1;
+ int64 amount = 2;
+ int64 bonus = 3;
+ int64 fee = 4;
+ int64 credit_amount = 5 [json_name = "creditAmount"];
+}
+message RechargeListReply { repeated RechargeTier items = 1; }
+message RechargeReply {
+ string order_id = 1 [json_name = "orderId"];
+ string request_id = 2 [json_name = "requestId"];
+ string tier_id = 3 [json_name = "tierId"];
+ int64 amount = 4;
+ int64 bonus = 5;
+ int64 fee = 6;
+ int64 credit_amount = 7 [json_name = "creditAmount"];
+ int64 coins = 8;
+ string status = 9;
+ string payment_url = 10 [json_name = "paymentUrl"];
+ int32 failure_code = 11 [json_name = "failureCode"];
+ string created_at = 12 [json_name = "createdAt"];
+ string settled_at = 13 [json_name = "settledAt"];
+}
+
+message RechargeCreateReply {
+ string order_id = 1 [json_name = "orderId"];
+ string payment_url = 2 [json_name = "paymentUrl"];
+ string status = 3;
+}
+message RechargeOrdersReply {
+ repeated RechargeReply items = 1;
+ string next_cursor = 2 [json_name = "nextCursor"];
+}

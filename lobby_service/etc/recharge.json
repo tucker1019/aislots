@@ -1,0 +1,74 @@
+[
+  {
+    "id": "recharge_10",
+    "amount": 1000,
+    "bonus": 0,
+    "fee": 20
+  },
+  {
+    "id": "recharge_20",
+    "amount": 2000,
+    "bonus": 0,
+    "fee": 40
+  },
+  {
+    "id": "recharge_50",
+    "amount": 5000,
+    "bonus": 0,
+    "fee": 0
+  },
+  {
+    "id": "recharge_100",
+    "amount": 10000,
+    "bonus": 0,
+    "fee": 0
+  },
+  {
+    "id": "recharge_200",
+    "amount": 20000,
+    "bonus": 400,
+    "fee": 0
+  },
+  {
+    "id": "recharge_300",
+    "amount": 30000,
+    "bonus": 600,
+    "fee": 0
+  },
+  {
+    "id": "recharge_500",
+    "amount": 50000,
+    "bonus": 1000,
+    "fee": 0
+  },
+  {
+    "id": "recharge_1000",
+    "amount": 100000,
+    "bonus": 2000,
+    "fee": 0
+  },
+  {
+    "id": "recharge_2000",
+    "amount": 200000,
+    "bonus": 10000,
+    "fee": 0
+  },
+  {
+    "id": "recharge_3000",
+    "amount": 300000,
+    "bonus": 15000,
+    "fee": 0
+  },
+  {
+    "id": "recharge_5000",
+    "amount": 500000,
+    "bonus": 25000,
+    "fee": 0
+  },
+  {
+    "id": "recharge_10000",
+    "amount": 1000000,
+    "bonus": 50000,
+    "fee": 0
+  }
+]

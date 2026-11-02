@@ -1,0 +1,21 @@
+syntax="proto3";
+package apis.lobby.api.v1;
+option go_package="apps/pb/apis/lobby/api/v1;v1";
+import "google/api/annotations.proto";
+// @Desc: 新用户限时累计充值奖励
+service NewbieRechargeService {
+ // @Desc: 查询活动期限、累计充值及各档进度
+ rpc NewbieRechargeInfo(NewbieRechargeRequest) returns (NewbieRechargeInfoReply) {option (google.api.http)={get:"/api/activity/newbie-recharge/info"};}
+ // @Desc: 一次领取全部已达标未领取档位
+ rpc NewbieRechargeClaim(NewbieRechargeRequest) returns (NewbieRechargeClaimReply) {option (google.api.http)={post:"/api/activity/newbie-recharge/claim" body:"*"};}
+}
+message NewbieRechargeRequest {optional int64 uid=1;optional string sid=2;string request_id=3 [json_name="requestId"];}
+message NewbieRechargeTier {
+ string id=1;int64 required_recharge=2 [json_name="requiredRecharge"];int64 reward=3;int64 progress=4;int64 remaining=5;string status=6;
+}
+message NewbieRechargeInfoReply {
+ string starts_at=1 [json_name="startsAt"];string ends_at=2 [json_name="endsAt"];int32 duration_days=3 [json_name="durationDays"];
+ string status=4;int64 recharge_amount=5 [json_name="rechargeAmount"];int64 claimable_total=6 [json_name="claimableTotal"];repeated NewbieRechargeTier items=7;
+ string config_version=8 [json_name="configVersion"];bool expire_unclaimed=9 [json_name="expireUnclaimed"];int64 remaining_seconds=10 [json_name="remainingSeconds"];
+}
+message NewbieRechargeClaimReply {string claim_id=1 [json_name="claimId"];int64 total_reward=2 [json_name="totalReward"];int64 coins=3;repeated NewbieRechargeTier items=4;}

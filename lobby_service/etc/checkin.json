@@ -1,0 +1,13 @@
+{
+  "version": "checkin-v1",
+  "timezone": "Asia/Jakarta",
+  "days": [
+    {"requiredBet": 10000, "requiredRecharge": 1000, "reward": 100},
+    {"requiredBet": 20000, "requiredRecharge": 1000, "reward": 200},
+    {"requiredBet": 30000, "requiredRecharge": 2000, "reward": 300},
+    {"requiredBet": 40000, "requiredRecharge": 2000, "reward": 400},
+    {"requiredBet": 50000, "requiredRecharge": 5000, "reward": 500},
+    {"requiredBet": 60000, "requiredRecharge": 5000, "reward": 600},
+    {"requiredBet": 70000, "requiredRecharge": 10000, "reward": 1000}
+  ]
+}

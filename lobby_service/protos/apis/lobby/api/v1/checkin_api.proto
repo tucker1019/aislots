@@ -1,0 +1,38 @@
+syntax = "proto3";
+package apis.lobby.api.v1;
+option go_package = "apps/pb/apis/lobby/api/v1;v1";
+import "google/api/annotations.proto";
+service CheckinService {
+ rpc CheckinInfo(CheckinRequest) returns (CheckinInfoReply) { option (google.api.http) = { get: "/api/activity/checkin/info" }; }
+ rpc CheckinClaim(CheckinRequest) returns (CheckinClaimReply) { option (google.api.http) = { post: "/api/activity/checkin/claim" body: "*" }; }
+}
+message CheckinRequest {
+ optional int64 uid = 1;
+ optional string sid = 2;
+ string activity_date = 3 [json_name="activityDate"];
+}
+message CheckinDay {
+ int32 day = 1;
+ int64 required_bet = 2 [json_name="requiredBet"];
+ int64 required_recharge = 3 [json_name="requiredRecharge"];
+ int64 reward = 4;
+}
+message CheckinInfoReply {
+ string activity_date = 1 [json_name="activityDate"];
+ string timezone = 2;
+ string next_reset_at = 3 [json_name="nextResetAt"];
+ int32 current_day = 4 [json_name="currentDay"];
+ bool claimed = 5;
+ bool can_claim = 6 [json_name="canClaim"];
+ int64 valid_bet = 7 [json_name="validBet"];
+ int64 recharge_amount = 8 [json_name="rechargeAmount"];
+ repeated CheckinDay days = 9;
+ CheckinDay current = 10;
+}
+message CheckinClaimReply {
+ string claim_id = 1 [json_name="claimId"];
+ string activity_date = 2 [json_name="activityDate"];
+ int32 day = 3;
+ int64 reward = 4;
+ int64 coins = 5;
+}

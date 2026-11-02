@@ -1,0 +1,6 @@
+{
+  "dailyRateBps": 80,
+  "weeklyRateBps": 10,
+  "monthlyRateBps": 10,
+  "loserReturnRateBps": 1000
+}

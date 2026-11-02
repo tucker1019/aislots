@@ -1,0 +1,10 @@
+{
+  "version": "newbie-recharge-v1",
+  "durationDays": 3,
+  "expireUnclaimed": false,
+  "tiers": [
+    {"id": "recharge_100", "requiredRecharge": 10000, "reward": 1000},
+    {"id": "recharge_500", "requiredRecharge": 50000, "reward": 5000},
+    {"id": "recharge_1000", "requiredRecharge": 100000, "reward": 10000}
+  ]
+}

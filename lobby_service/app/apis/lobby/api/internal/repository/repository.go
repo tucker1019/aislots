@@ -1,0 +1,50 @@
+package repository
+
+import (
+	"time"
+
+	"apps/app/apis/lobby/api/internal/config"
+
+	"apps/app/apis/lobby/api/internal/repository/model"
+
+	"gorm.io/gorm"
+)
+
+type Repository struct {
+	Users    UserStore
+	Recharge RechargeStore
+	Checkin  CheckinStore
+	Returns  ReturnStore
+	Activity *model.ActivityModel
+	VIP      VIPStore
+	Newbie   NewbieStore
+}
+
+func New(db *gorm.DB, locations ...*time.Location) *Repository {
+	loc := time.UTC
+	if len(locations) > 0 {
+		loc = locations[0]
+	}
+	return &Repository{Users: &model.UserModel{DB: db}, Recharge: &model.RechargeModel{DB: db, ActivityLocation: loc}, Checkin: &model.CheckinModel{DB: db}, Returns: &model.ReturnModel{DB: db}, Activity: &model.ActivityModel{DB: db, Location: loc}}
+}
+
+// ConfigureVIP wires the same engine into user creation, recharge and game event transactions.
+func (r *Repository) ConfigureVIP(db *gorm.DB, c config.VIPConfig, loc *time.Location) {
+	engine := &model.VIPModel{DB: db, Config: c, Location: loc}
+	r.VIP = engine
+	r.Activity.VIP = engine
+	if users, ok := r.Users.(*model.UserModel); ok {
+		users.VIP = engine
+	}
+	if recharge, ok := r.Recharge.(*model.RechargeModel); ok {
+		recharge.VIP = engine
+	}
+}
+
+func (r *Repository) ConfigureNewbie(db *gorm.DB, c config.NewbieConfig) {
+	engine := &model.NewbieModel{DB: db, Config: c}
+	r.Newbie = engine
+	if users, ok := r.Users.(*model.UserModel); ok {
+		users.Newbie = engine
+	}
+}

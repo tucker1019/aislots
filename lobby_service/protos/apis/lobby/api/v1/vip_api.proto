@@ -1,0 +1,39 @@
+syntax="proto3";
+package apis.lobby.api.v1;
+option go_package="apps/pb/apis/lobby/api/v1;v1";
+import "google/api/annotations.proto";
+// @Desc: VIP等级、保级、升级礼金与工资
+service VIPService {
+ // @Desc: VIP完整配置、当前状态、待领奖励及工资
+ rpc VipInfo(VipRequest) returns (VipInfoReply) {option (google.api.http)={get:"/api/vip/info"};}
+ // @Desc: 一次领取全部待领升级礼金
+ rpc VipUpgradeClaim(VipRequest) returns (VipClaimReply) {option (google.api.http)={post:"/api/vip/upgrade/claim" body:"*"};}
+ // @Desc: 领取服务端已结算的周工资
+ rpc VipWeeklyClaim(VipRequest) returns (VipClaimReply) {option (google.api.http)={post:"/api/vip/weekly/claim" body:"*"};}
+ // @Desc: 领取服务端已结算的月工资
+ rpc VipMonthlyClaim(VipRequest) returns (VipClaimReply) {option (google.api.http)={post:"/api/vip/monthly/claim" body:"*"};}
+}
+message VipRequest { optional int64 uid=1;optional string sid=2;string request_id=3 [json_name="requestId"];string activity_date=4 [json_name="activityDate"]; }
+message VipLevel {
+ int32 level=1;int64 upgrade_bet=2 [json_name="upgradeBet"];int64 upgrade_recharge=3 [json_name="upgradeRecharge"];
+ int64 keep_bet=4 [json_name="keepBet"];int64 keep_recharge=5 [json_name="keepRecharge"];
+ int64 upgrade_reward=6 [json_name="upgradeReward"];int64 weekly_reward=7 [json_name="weeklyReward"];int64 monthly_reward=8 [json_name="monthlyReward"];int64 birthday_reward=9 [json_name="birthdayReward"];
+ int64 weekly_bet=10 [json_name="weeklyBet"];int64 weekly_recharge=11 [json_name="weeklyRecharge"];int64 monthly_bet=12 [json_name="monthlyBet"];int64 monthly_recharge=13 [json_name="monthlyRecharge"];
+}
+// 进入保级清零升级进度，任务累计不封顶；成功后全部转入升级进度，失败降级归零。
+message VipState {
+ int32 level=1;int32 highest_level=2 [json_name="highestLevel"];int64 upgrade_bet=3 [json_name="upgradeBet"];int64 upgrade_recharge=4 [json_name="upgradeRecharge"];
+ string status=5;string idle_since=6 [json_name="idleSince"];string protection_start=7 [json_name="protectionStart"];string protection_end=8 [json_name="protectionEnd"];
+ int64 protection_bet=9 [json_name="protectionBet"];int64 protection_recharge=10 [json_name="protectionRecharge"];int64 protection_required_bet=11 [json_name="protectionRequiredBet"];int64 protection_required_recharge=12 [json_name="protectionRequiredRecharge"];
+}
+message VipReward {
+ string reward_id=1 [json_name="rewardId"];string kind=2;int32 level=3;int64 amount=4;string status=5;
+ string period_start=6 [json_name="periodStart"];string period_end=7 [json_name="periodEnd"];string available_at=8 [json_name="availableAt"];string expires_at=9 [json_name="expiresAt"];
+ int64 required_bet=10 [json_name="requiredBet"];int64 required_recharge=11 [json_name="requiredRecharge"];int64 actual_bet=12 [json_name="actualBet"];int64 actual_recharge=13 [json_name="actualRecharge"];
+}
+message VipInfoReply {
+ string activity_date=1 [json_name="activityDate"];string timezone=2;int32 idle_days=3 [json_name="idleDays"];int32 protection_days=4 [json_name="protectionDays"];
+ repeated VipLevel levels=5;VipState state=6;repeated VipReward upgrade_rewards=7 [json_name="upgradeRewards"];int64 upgrade_claimable_total=8 [json_name="upgradeClaimableTotal"];
+ VipReward weekly=9;VipReward monthly=10;VipReward weekly_preview=11 [json_name="weeklyPreview"];VipReward monthly_preview=12 [json_name="monthlyPreview"];
+}
+message VipClaimReply {string claim_id=1 [json_name="claimId"];int64 total_reward=2 [json_name="totalReward"];int64 coins=3;repeated VipReward items=4;}
