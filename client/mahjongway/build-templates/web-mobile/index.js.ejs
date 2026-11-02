@@ -41,11 +41,14 @@ topLevelImport('cc')
     setLoadingProgress(100);
     const startButton = document.getElementById('StartButton');
     if (!loadingScreen || !startButton) return;
-    startButton.hidden = false;
-    startButton.addEventListener('click', () => {
+    const begin = () => {
         window.dispatchEvent(new Event('aislots-started'));
         loadingScreen.remove();
-    }, { once: true });
+    };
+    const params = new URLSearchParams(location.search);
+    if (params.has('replay') || params.has('share')) { begin(); return; }
+    startButton.hidden = false;
+    startButton.addEventListener('click', begin, { once: true });
 }).catch((err) => {
     console.error(err);
 });

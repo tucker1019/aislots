@@ -15,6 +15,8 @@ export class BottomPanelTransition {
     private current: 1 | 2 = 1;
     private busy = false;
     private disposed = false;
+    private revision = 0;
+    get selected(): 1 | 2 { return this.current; }
 
     constructor(
         private panel1: Panel,
@@ -33,6 +35,7 @@ export class BottomPanelTransition {
     show(target: 1 | 2) {
         if (this.disposed || this.busy || target === this.current) return;
         this.busy = true;
+        const revision = ++this.revision;
         const panels = [this.panel1, this.panel2];
         const outgoing = panels[this.current - 1];
         const incoming = panels[target - 1];
@@ -40,15 +43,28 @@ export class BottomPanelTransition {
         const inHome = this.homes[target - 1];
         // 参考工程的可见y=-111、隐藏y=-320，相对下移209；保留当前场景配置的坐标。
         this.animate(outgoing, { ...outHome, y: outHome.y - 209 }, 0.08, () => {
-            if (this.disposed) return;
+            if (this.disposed || revision !== this.revision) return;
             outgoing.active = false;
             incoming.setPosition(inHome.x, inHome.y - 209, inHome.z);
             incoming.active = true;
             this.animate(incoming, inHome, 0.08, () => {
-                if (this.disposed) return;
+                if (this.disposed || revision !== this.revision) return;
                 this.current = target;
                 this.busy = false;
             });
+        });
+    }
+
+    /** 回放借用操作区时直接落位，避免菜单切换动画与免费面板争用。 */
+    showImmediately(target: 1 | 2) {
+        if (this.disposed) return;
+        this.revision++;
+        this.busy = false;
+        this.current = target;
+        [this.panel1, this.panel2].forEach((panel, index) => {
+            const home = this.homes[index];
+            panel.setPosition(home.x, home.y, home.z);
+            panel.active = index === target - 1;
         });
     }
 
@@ -95,6 +111,19 @@ export class BottomPanels extends Component {
         this.paytableButton = this.panel2.getChildByName('btn_paytable');
         this.paytableButton?.on(Node.EventType.TOUCH_END, this.openPaytable, this);
         // 其他按钮不绑定原工程业务。
+    }
+
+    /** 返回恢复函数，供回放退出时还原进入前的菜单状态。 */
+    beginReplay(): () => void {
+        const previous = this.transition.selected;
+        this.setImmediately(1);
+        return () => this.setImmediately(previous);
+    }
+
+    private setImmediately(target: 1 | 2) {
+        Tween.stopAllByTarget(this.panel1);
+        Tween.stopAllByTarget(this.panel2);
+        this.transition.showImmediately(target);
     }
 
     openMenu() {

@@ -118,3 +118,35 @@ Verified in Creator preview: row count 20 -> 40, scrollTop 496 -> 496, previous 
 
 - Reused cell win anchors in the shared award layer retained old sibling order, while logical cell indices can wrap after rolling. Reel award now sorts anchors by actual world Y, top first/bottom last, so lower tiles cover upper tiles.
 - Three ordering tests and two focused reel/highlight integration tests passed. TypeScript passed; web-mobile build completed.
+
+## 2026-11-02 游戏动画回放
+
+- History 行与加载更多追加的行均提供独立「回放」按钮，没有嵌套 button。
+- 实测真实交易 NTXSM2CJF5SIS76DCSXS6UIQIM：首转、中奖和补落到第2轮，显示回放结束，无控制台错误。
+- 实测真实交易 TGR5U5SAWGGQHBPEXJLB5XASGO：共17轮，正常进入免费并播至免费结算弹窗。
+- 退出后保留40条已加载记录与非零滚动位置；关闭列表后，原始盘面、2697.75余额、2.00投注与0.10赢分恢复。
+- 新增分页、跨交易拦截、取消、只读API与 nonce、免费链、补落、退出恢复及中奖回调移除测试。回放相关11项通过；相关现有独立模块18项通过。
+- 原有 history.test.cjs 有3项旧断言与当前货币显示/下注参数不一致；本次未修改这些实现，也未声称全量客户端套件通过。
+- 截图：game-replay-check.png、game-replay-free-check.png。
+
+### 回放底部面板修正
+
+回放开始立即切到 panel1，普通控制按钮保留样式但由回放遮挡层与逻辑门禁阻止下注。退出先同步免费面板状态，再恢复进入前的菜单与坐标，取消旧的面板 Tween 回调以避免覆盖。
+实测 JPMVDRNRZ44PFENQO7YPPBIWPE 回放显示 panel1，退出返回原 panel2，盘面及2728.75余额恢复。6项面板测试和2项回放状态测试通过，类型检查及web-mobile构建通过。截图 replay-panel1-check.png。
+
+## 2026-11-02 分享回放
+
+- 真实交易 ONQW5MONE2SLRFU5L5RUBVZHM3 的回放左侧分享按钮成功生成链接，显示已复制。
+- 新窗口直接打开 JPMVDRNRZ44PFENQO7YPPBIWPE 的分享链接，START前没有开始回放，点击后从第1/5轮播至结束，显示panel1和历史赢分47.20，余额隐藏为“—”，支持再次分享与重新播放。
+- 实测链接只含replay与share参数，没有平台身份或登录token。公开HTTP接口在不提供Authorization时返回结果，钱包与推进标识已脱敏。
+- PostgreSQL独立schema测试通过：本人创建、非本人拒绝、匿名读取、完整免费9轮分页、交易/游戏绑定、伪造凭据拒绝、不能当登录token使用、服务重建仍可读取、钱包和nonce不变。
+- 27项相关客户端测试、类型检查、Go应用/HTTP测试、go vet、web-mobile构建通过。全量真实数据库测试另有两项原有协议断言失败（旧下注参数、历史金额字符串），本次未修改这些协议实现。
+- IAB一个后台实例截图未绘制WebGL，前台真实窗口正常完成回放；截图 shared-replay-check.png 为前台验证。
+
+### 分享交互调整
+
+- 分享页余额为六个 ASCII 星号 `******`；预览及 web-mobile 分享入口资源就绪后自动移除封面，不显示 START，普通游戏保留 START。
+- 重新播放复用已取全的历史数据和现有场景/控制栏，先取消旧动画，再从第一轮播放。实测重播后封面/START均不存在，分享按钮的已复制状态与链接仍保留，证明没有重载文档。
+- 顶部分享按钮由“分享”变“已复制”前后均为47.3125×28.3125px；列表按钮均为35.671875×24.15625px，回放按钮位置不变。
+- 列表分享位于回放左侧；直接分享不打开详情或回放。加载更多后40条记录同时有40个分享和40个回放按钮。
+- 32项相关测试、类型检查、web-mobile构建通过；截图 shared-replay-refined-check.png、history-share-buttons-check.png。

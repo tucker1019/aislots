@@ -2,7 +2,7 @@ const {test}=require('node:test');const assert=require('node:assert/strict');con
 const ts=require('../../../slot_math/node_modules/typescript');
 const root=path.join(__dirname,'../assets/mahjongway/src');
 require.extensions['.ts']=(module,file)=>module._compile(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020,experimentalDecorators:true}}).outputText,file);
-const original=Module._load;Module._load=function(id,...args){if(id==='cc')return {Component:class{},_decorator:{ccclass:()=>c=>c,property:()=>{}},Color:{YELLOW:{}},Node:class{static EventType={TOUCH_END:'touch-end'}},UIOpacity:class{}};if(id==='cc/env')return {DEBUG:false,DEV:false};return original.call(this,id,...args)};
+const original=Module._load;Module._load=function(id,...args){if(id==='cc')return {Component:class{},_decorator:{ccclass:()=>c=>c,property:()=>{}},Color:{YELLOW:{}},Node:class{static EventType={TOUCH_END:'touch-end'}},UIOpacity:class{},Animation:class{static EventType={FINISHED:'finished'}}};if(id==='cc/env')return {DEBUG:false,DEV:false};return original.call(this,id,...args)};
 const {GameApi}=require(path.join(root,'network/game/game_api.ts'));
 const {serverStrips,gravitySources}=require(path.join(root,'slots/server_board.ts'));
 const {slots_r:Reel}=require(path.join(root,'slots/slots_r.ts'));
@@ -259,7 +259,7 @@ test('reconnect of a completed bet restores static board and total without spinn
    wins:[],removedIds:[],transformedIds:[],balance:'old-snapshot',betAmount:'100',winAmount:'0',
    totalWinAmount:'130',freeRemaining:0,nextAction:'complete',spinWinAmount:'99999'}}),
   spin:async()=>assert.fail('completed recovery must not send a bet')};
- f.effects={setAudioMode(){},multiplier(){},freeEnd:async()=>assert.fail('must not replay free summary'),bigWin:async()=>assert.fail('must not replay big win')};
+ f.effects={refreshControls(){},setAudioMode(){},multiplier(){},freeEnd:async()=>assert.fail('must not replay free summary'),bigWin:async()=>assert.fail('must not replay big win')};
  await f.connect();
  assert.equal(shown,5);assert.equal(f.balance,'500030');assert.equal(f.winAmount,'130');assert.equal(f.state,0);
 });
@@ -421,4 +421,90 @@ test('clickable cells receive a UITransform before touch registration',()=>{
  cell.node={parent:{parent:{getComponent:()=>({})}},getComponent:()=>ready?transform:null,
   addComponent:()=>{ready=true;return transform;},on:()=>assert.equal(ready,true)};
  cell.onLoad();assert.deepEqual(dimensions,[150,165]);
+});
+
+function replayFrame(spinIndex,stepIndex,overrides={}) {
+ return {betId:'replay-trade',spinIndex,stepIndex,mode:'base',nextAction:'complete',board:Array.from({length:5},(_,c)=>Array.from({length:5},(_,r)=>({id:c*5+r+1,symbolId:2}))),previewRows:1,wins:[],removedIds:[],transformedIds:[],balance:'499000',betAmount:'1000',winAmount:'0',spinWinAmount:'0',totalWinAmount:'0',freeRemaining:0,cascadeFactors:['1','2','3','5'],cascadeIndex:0,...overrides};
+}
+function replayFlow() {
+ const f=flow(),events=[];f.pause=async()=>{};f.hideAwardShade=()=>{};f.showAwardShade=()=>{};
+ f.reels.forEach(r=>{r.dropTo=()=>events.push('drop');r.award=()=>{};r.isAwardPlaying=false;r.startRoll=()=>events.push('spin');r.stopRoll=()=>{r.state=0}});
+ f.effects={refreshControls(){},setAudioMode(){},multiplier(){},sound(){},spinSound(){},intro:async()=>events.push('intro'),freeEnd:async()=>events.push('free-end')};
+ f.api={spin(){assert.fail('replay called live spin')}};return {f,events};
+}
+test('historical animation plays base plus every free spin without live requests',async()=>{
+ const {ReplaySession}=require(path.join(root,'history/replay_session.ts'));
+ const {f,events}=replayFlow();const frames=[replayFrame(0,1,{nextAction:'start_free',freeRemaining:2}),replayFrame(1,2,{mode:'free',nextAction:'continue',freeRemaining:1}),replayFrame(2,3,{mode:'free'})];
+ const session=new ReplaySession(frames);await f.play(session.current,false,session);
+ assert.equal(events.filter(x=>x==='spin').length,15);assert.equal(events.filter(x=>x==='intro').length,1);assert.equal(events.filter(x=>x==='free-end').length,1);assert.equal(session.index,2);assert.equal(f.freePanelActive,false);
+});
+test('historical cascade uses drop animation; missing future history never falls back to betting',async()=>{
+ const {ReplaySession}=require(path.join(root,'history/replay_session.ts'));const {f,events}=replayFlow();
+ const session=new ReplaySession([replayFrame(0,1,{nextAction:'continue'}),replayFrame(0,2,{nextAction:'continue'})]);
+ await f.play(session.current,false,session);assert.equal(events.filter(x=>x==='drop').length,5);assert.equal(events.filter(x=>x==='spin').length,5);
+});
+test('exit during a historical highlight delay prevents stale awards and further frames',async()=>{
+ const {ReplaySession}=require(path.join(root,'history/replay_session.ts'));const {f}=replayFlow();let release,awards=0;
+ f.pause=()=>new Promise(resolve=>release=resolve);f.playColumnAwards=async()=>awards++;
+ const session=new ReplaySession([replayFrame(0,1,{wins:[{symbolId:2,cellIds:[2,7,12]}],nextAction:'continue'}),replayFrame(0,2)]);
+ const playing=f.play(session.current,false,session);await Promise.resolve();await Promise.resolve();session.cancel();release();await playing;
+ assert.equal(awards,0);assert.equal(session.index,0);
+});
+test('replay locks spin, bet changes and stop even after the final historical frame',async()=>{
+ const {f}=replayFlow();f.replayLoading=true;f.bet='5';f.betAmount='1000';f.state=0;
+ assert.equal(await f.spin(),false);f.changeBet(1);f.stop();assert.equal(f.bet,'5');assert.equal(f.betAmount,'1000');assert.equal(f.click_stop,false);
+});
+test('exiting replay restores the live board, money and choice, then resumes the existing history list',async()=>{
+ const controls=require(path.join(root,'history/replay_controls.ts'));const Original=controls.ReplayControls;let exit,opened;
+ const entered=new Promise(resolve=>opened=resolve);controls.ReplayControls=class{constructor(_canvas,id,close){assert.equal(id,'replay-trade');exit=close;opened()}progress(){}done(){}destroy(){}};
+ const oldDocument=global.document;global.document={getElementById:()=>({})};
+ try {
+  const {f}=replayFlow();const board=Array.from({length:5},()=>[1,2,3,4,5,6,7]);f.boards=board;f.current=replayFrame(9,10);const original=f.current;
+  const panels=[];f.node.parent.getComponentInChildren=()=>({beginReplay(){panels.push('panel1');return()=>panels.push('restore-menu')}});f.effects.refreshControls=()=>panels.push('free-reset');
+  f.balance='500000';f.betAmount='200';f.winAmount='80';f.bet='5';f.betLevel=2;
+  f.historyPage={isOpen:true,suspend(){this.isOpen=false},resume(){this.isOpen=true;this.resumed=true}};
+  f.api={historyReplay:async()=>({bet:{betId:'replay-trade',status:'complete'},frames:[replayFrame(0,1)]}),spin(){assert.fail('must not bet')}};
+  f.effects.cancelPresentation=()=>{};f.reels.forEach(r=>{r.cancelPresentation=()=>{};r.showBoard=()=>{}});
+  f.play=async(frame)=>{f.current=frame;f.balance='100';f.betAmount='900';f.winAmount='0';f.state=3;};
+  const running=f.playHistory('replay-trade');await entered;assert.equal(f.replayActive,true);assert.equal(f.historyPage.isOpen,false);exit();await running;
+  assert.equal(f.replayActive,false);assert.equal(f.boards,board);assert.equal(f.current,original);assert.equal(f.balance,'500000');assert.equal(f.betAmount,'200');assert.equal(f.winAmount,'80');assert.equal(f.bet,'5');assert.equal(f.betLevel,2);assert.equal(f.state,0);assert.equal(f.historyPage.resumed,true);assert.deepEqual(panels,['panel1','free-reset','restore-menu']);
+ } finally {controls.ReplayControls=Original;global.document=oldDocument;}
+});
+test('replay exit detaches a winning cell callback before restoring its live symbol',()=>{
+ const {slots_cell:Cell}=require(path.join(root,'slots/slots_cell.ts'));const cell=new Cell();let removed,reset=0,hidden=0,parent;
+ const callback=()=>assert.fail('stale award');const events={onHighlightEnd:()=>{}};
+ const animation={off(event,fn){assert.equal(event,'finished');removed=fn}};
+ cell.node={active:false};cell.winning=true;cell.awardFinished=callback;
+ cell.effect={reset(){reset++},hide(){hidden++},node:{getComponent(type){return type?.name==='WinAnimationEvents'?events:animation},setParent(node){parent=node}}};cell.refreshEffect=()=>{};
+ cell.cancelAward();assert.equal(removed,callback);assert.equal(cell.awardFinished,null);assert.equal(events.onHighlightEnd,null);assert.equal(cell.isAwardPlaying,false);assert.equal(parent,cell.node);assert.equal(cell.node.active,true);assert.equal(reset,1);assert.equal(hidden,1);
+});
+test('shared replay entry reads only public history and never logs in or resumes a live bet',async()=>{
+ const {f}=replayFlow();let read=0,shown=0,cover=true,waited=0;const oldDocument=global.document;global.document={getElementById:id=>id==='GameCanvas'?{}:(id==='LoadingScreen'&&cover?{}:null)};
+ try{f.pause=async()=>{assert.equal(shown,0);waited++;cover=false};f.sharedReplay=true;f.api={sharedReplay:async(id,token)=>{assert.equal(id,'replay-trade');assert.equal(token,'share-only');read++;return {bet:{betId:id},frames:[replayFrame(0,1)]}},login(){assert.fail('shared login')},state(){assert.fail('shared state')},spin(){assert.fail('shared bet')}};f.presentReplay=async(data)=>{shown=data.frames.length};
+ await f.connectSharedReplay('replay-trade','share-only');assert.equal(read,1);assert.equal(waited,1);assert.equal(shown,1);assert.equal(f.replayActive,true);assert.equal(await f.spin(),false);
+ }finally{global.document=oldDocument}
+});
+test('invalid shared links remain read-only instead of falling back to login or live state',async()=>{
+ const controls=require(path.join(root,'history/replay_controls.ts'));const Original=controls.ReplayControls;let message;
+ controls.ReplayControls=class{constructor(_canvas,_id,_retry,options){assert.equal(options.exitLabel,'重试')}done(text){message=text}};
+ const oldDocument=global.document;global.document={getElementById:id=>id==='GameCanvas'?{}:null};
+ try{const {f}=replayFlow();f.sharedReplay=true;f.api={sharedReplay:async()=>{throw Error('not found')},login(){assert.fail('login fallback')},state(){assert.fail('state fallback')},spin(){assert.fail('bet fallback')}};
+ await f.connectSharedReplay('invalid','invalid');assert.match(message,/分享链接/);assert.equal(f.replayActive,true);assert.equal(await f.spin(),false);
+ }finally{global.document=oldDocument;controls.ReplayControls=Original}
+});
+test('shared wallet always shows exactly six stars',()=>{
+ const {f}=replayFlow();const label={node:{name:'lab_coin'},string:''};f.node.parent.getComponentsInChildren=()=>[label];f.sharedReplay=true;f.balance='987654';f.labels();assert.equal(label.string,'******');
+});
+test('shared restart reuses loaded history, scene cells and controls without refreshing',async()=>{
+ const controls=require(path.join(root,'history/replay_controls.ts'));const Original=controls.ReplayControls;let restart,entered,constructs=0;
+ const ready=new Promise(resolve=>entered=resolve);controls.ReplayControls=class{constructor(_canvas,_id,action){constructs++;restart=action;entered()}progress(){}done(){}destroy(){}};
+ const oldDocument=global.document;global.document={getElementById:id=>id==='GameCanvas'?{}:null};
+ try{const {f}=replayFlow();let reads=0,initializations=0,plays=0;
+ f.sharedReplay=true;f.initializeCells=()=>initializations++;f.effects.cancelPresentation=()=>{};f.reels.forEach(r=>{r.cancelPresentation=()=>{};r.showBoard=()=>{}});
+ f.api={sharedReplay:async()=>{reads++;return {bet:{betId:'replay-trade',status:'complete'},frames:[replayFrame(0,1)]}},spin(){assert.fail('shared spin')}};
+ f.play=async(frame,restore,session)=>{plays++;assert.equal(session.index,0)};
+ const pending=f.connectSharedReplay('replay-trade','share-only');await ready;await new Promise(setImmediate);restart();await new Promise(setImmediate);
+ assert.equal(plays,2);assert.equal(reads,1);assert.equal(initializations,1);assert.equal(constructs,1);assert.equal(f.replayActive,true);
+ f.replayExit();await pending;
+ }finally{global.document=oldDocument;controls.ReplayControls=Original}
 });

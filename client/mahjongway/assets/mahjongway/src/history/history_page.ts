@@ -30,6 +30,7 @@ export class HistoryPage {
     private scrollTop = 0;
     private focused: HTMLElement = null;
     private previousPointer = '';
+    private replayLoading = false;
     private resize = () => {
         if (!this.isOpen) return;
         placeOverlay(this.root, this.bounds());
@@ -51,12 +52,14 @@ export class HistoryPage {
         private bounds: () => Bounds,
         private assets: () => Promise<HistoryArt>,
         private currency = 'IDR',
+        private replay?: (record: HistoryRecord) => Promise<void>,
+        private share?: (record: HistoryRecord) => Promise<string>,
     ) {}
     get isOpen() {
         return !!this.root && !this.root.hidden;
     }
 
-    open() {
+    open(preserve = false) {
         if (this.isOpen) {
             this.root.focus();
             return;
@@ -77,20 +80,35 @@ export class HistoryPage {
             this.observer.observe(this.canvas);
         }
         document.addEventListener('keydown', this.keydown, true);
+        if (preserve && this.data) return;
         this.mode = 'today';
         this.dates = recentDates(1);
         this.scrollTop = 0;
         void this.loadList(false);
     }
-    close() {
+    close() { this.hide(true); }
+    suspend() {
+        const scroll = this.content.querySelector<HTMLElement>('.history-scroll');
+        if (scroll) this.scrollTop = scroll.scrollTop;
+        this.hide(false);
+    }
+    resume() {
+        this.open(true);
+        const scroll = this.content.querySelector<HTMLElement>('.history-scroll');
+        if (scroll) scroll.scrollTop = this.scrollTop;
+        // 隐藏时会废弃在途分页；保留原行和滚动位置，同时恢复加载更多按钮。
+        const more = this.content.querySelector<HTMLButtonElement>('.history-more');
+        if (more && this.data?.nextCursor) { more.disabled = false; more.textContent = '加载更多'; }
+    }
+    private hide(clear: boolean) {
         if (!this.isOpen) return;
         this.epoch++;
         this.root.hidden = true;
         this.root.classList.remove('is-visible');
-        this.data = null;
-        this.detail = null;
+        this.root.querySelector('.history-replay-error')?.remove();
+        this.root.querySelectorAll('.replay-copy-overlay').forEach(node => node.remove());
+        if (clear) { this.data = null; this.detail = null; this.clearContent(); }
         this.loading = false;
-        this.clearContent();
         this.canvas.style.pointerEvents = this.previousPointer;
         window.removeEventListener('resize', this.resize);
         document.removeEventListener('keydown', this.keydown, true);
@@ -154,7 +172,7 @@ export class HistoryPage {
             tabs.append(tab);
         }
         const scroll = el('div', 'history-scroll');
-        scroll.addEventListener('scroll', () => (this.scrollTop = scroll.scrollTop));
+        scroll.addEventListener('scroll', () => { if (this.isOpen) this.scrollTop = scroll.scrollTop; });
         this.content.append(tabs, scroll);
         if (this.data) {
             listRows(
@@ -164,6 +182,9 @@ export class HistoryPage {
                 (record) => void this.showDetail(record),
                 () => void this.loadList(true),
                 this.loading,
+                false,
+                this.replay ? record => void this.playRecord(record) : undefined,
+                this.share,
             );
             listFooter(this.content, this.data, this.data.items[0]?.currency || this.currency);
         } else notice(scroll, this.loading ? '加载中…' : '暂无记录');
@@ -183,6 +204,8 @@ export class HistoryPage {
                 isCurrent: () => epoch === this.epoch && this.isOpen,
                 select: record => void this.showDetail(record),
                 more: () => void this.loadList(true),
+                replay: this.replay ? record => void this.playRecord(record) : undefined,
+                share: this.share,
             });
             if (epoch === this.epoch && this.isOpen) {
                 this.loading = false;
@@ -232,6 +255,30 @@ export class HistoryPage {
             () => this.listScreen(),
         );
     }
+    private async playRecord(record: HistoryRecord) {
+        if (this.replayLoading || !this.replay) return;
+        this.replayLoading = true;
+        this.root.querySelector('.history-replay-error')?.remove();
+        this.root.setAttribute('aria-busy','true');
+        const controls = Array.from(this.root.querySelectorAll<HTMLButtonElement>('.history-replay'));
+        controls.forEach(control => { control.disabled = true; });
+        const selected = controls.find(control => control.getAttribute('aria-label') === '回放交易 ' + record.betId);
+        if (selected) selected.textContent = '加载…';
+        try { await this.replay(record); }
+        catch (reason) {
+            if (this.isOpen) {
+                const error = el('div', 'history-replay-error', errorText(reason));
+                error.setAttribute('role', 'alert');
+                error.addEventListener('click', () => error.remove());
+                this.root.append(error);
+            }
+        } finally {
+            this.replayLoading = false;
+            this.root?.removeAttribute('aria-busy');
+            controls.forEach(control => { control.disabled = false; control.textContent = '回放'; });
+        }
+    }
+
     private async showDetail(record: HistoryRecord) {
         const epoch = ++this.epoch;
         this.loading = false;

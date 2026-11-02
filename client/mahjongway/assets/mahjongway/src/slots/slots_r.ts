@@ -122,6 +122,11 @@ export class slots_r extends Component {
     }
 
     /** 重连快照直接落位，不经过起转、停轴或落地动画。 */
+    cancelPresentation() {
+        this.cellComponents.forEach(cell => cell.cancelAward());
+        this.state = 0;
+    }
+
     showBoard(result: number[]) {
         this.result = result;
         this.stop();

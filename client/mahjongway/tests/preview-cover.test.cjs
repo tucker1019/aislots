@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 const source = fs.readFileSync(require.resolve('../preview-template/preview-cover.js'),'utf8');
-function fixture(scene = null) {
+function fixture(scene = null, search = '') {
     const listeners = new Map(), events = new Map();
     const buttonListeners = new Map();
     let removed = 0;
@@ -14,7 +14,8 @@ function fixture(scene = null) {
     const director = {getScene:()=>scene,once:(name,fn)=>events.set(name,fn)};
     vm.runInNewContext(source, {
         document:{getElementById:id=>id==='PreviewStartButton'?button:cover,querySelector:selector=>selector==='.preview-loading'?progress:fill},
-        window:{addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name),dispatchEvent:()=>{}},
+        URLSearchParams,
+        window:{location:{search},addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name),dispatchEvent:()=>{}},
         Event:function(name){this.type=name},
         System:{import:async()=>({director,Director:{EVENT_AFTER_DRAW:'draw',EVENT_AFTER_SCENE_LAUNCH:'scene'}})},
         console,
@@ -44,4 +45,14 @@ test('fast state response is retained before engine loads; errors reveal diagnos
     assert.equal(f.removed(),0);
     f.listeners.get('error')();
     assert.equal(f.removed(),1);
+});
+
+test('shared preview skips START but still waits for the first board draw', async () => {
+    const f=fixture(null,'?replay=bet&share=token');
+    f.listeners.get('load')();await Promise.resolve();
+    assert.equal(f.events.has('draw'),false);
+    f.listeners.get('aislots-board-ready')();
+    assert.equal(f.button.hidden,true);
+    assert.equal(f.events.has('draw'),true);
+    f.events.get('draw')();assert.equal(f.removed(),1);
 });

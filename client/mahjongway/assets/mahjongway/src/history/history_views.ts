@@ -1,3 +1,4 @@
+import { replayShareButton } from './replay_share';
 import { floatingScroll } from './history_scroll';
 import { button, el, notice } from './history_dom';
 import { dateText, fraction, money, symbolNames } from './history_model';
@@ -25,8 +26,10 @@ export function listRows(
     more: () => void,
     loading: boolean,
     append = false,
+    replay?: (record: HistoryRecord) => void,
+    share?: (record: HistoryRecord) => Promise<string>,
 ) {
-    const headings = el('div', 'history-columns');
+    const headings = el('div', 'history-columns' + (replay ? ' has-replay' : '') + (share ? ' has-share' : ''));
     for (const text of ['时间\n(GMT+8)', '交易', '投注', '盈亏', ''])
         headings.append(el('span', '', text));
     if (!append) host.append(headings);
@@ -55,7 +58,22 @@ export function listRows(
             profit,
             arrow,
         );
-        host.append(row);
+        if (replay) {
+            const wrapper = el('div', 'history-record-wrap');
+            const play = button('回放', () => replay(record), 'history-replay');
+            play.setAttribute('aria-label', '回放交易 ' + record.betId);
+            row.classList.add('has-replay');
+            const actions = el('div', 'history-record-actions');
+            if (share) {
+                row.classList.add('has-share');
+                const control = replayShareButton(() => share(record),
+                    () => host.closest<HTMLElement>('.slot-history') || host, 'history-share');
+                control.setAttribute('aria-label', '分享交易 ' + record.betId);
+                actions.append(control);
+            }
+            actions.append(play);
+            wrapper.append(row, actions); host.append(wrapper);
+        } else host.append(row);
     }
     if (!append && !data.items.length) notice(host, '这个时间段暂无游戏记录');
     if (data.nextCursor) {

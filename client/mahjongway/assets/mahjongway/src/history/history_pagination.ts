@@ -11,6 +11,8 @@ export async function appendHistoryPage(options: {
     isCurrent: () => boolean;
     select: (record: HistoryRecord) => void;
     more: () => void;
+    replay?: (record: HistoryRecord) => void;
+    share?: (record: HistoryRecord) => Promise<string>;
 }): Promise<HistoryList | null> {
     const scroll = options.host.querySelector<HTMLElement>('.history-scroll');
     const content = scroll?.querySelector<HTMLElement>('.history-scroll-content');
@@ -26,7 +28,7 @@ export async function appendHistoryPage(options: {
         const top = scroll.scrollTop;
         const oldCount = content.querySelectorAll('.history-record').length;
         button.remove();
-        listRows(content, page, options.art, options.select, options.more, false, true);
+        listRows(content, page, options.art, options.select, options.more, false, true, options.replay, options.share);
         content.querySelectorAll('.history-record')[oldCount]?.classList.add('history-new-page');
         options.host.querySelector('.history-footer')?.remove();
         listFooter(options.host, page, options.current.items[0]?.currency || 'IDR');

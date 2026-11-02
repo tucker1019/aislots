@@ -131,6 +131,8 @@ export class GameEffects extends Component {
             this.controls.set(name, effect);
         }
     }
+    refreshControls() { this.updateControls(); }
+
     private updateControls() {
         const flow = this.node.getChildByName('roll')?.getComponent('slots_base') as Component & {
             state: number;
@@ -360,6 +362,13 @@ export class GameEffects extends Component {
         setup(effect);
         return result;
     }
+    /** 回放退出/切入时立即释放弹窗，不等待点击门槛或退出动画。 */
+    cancelPresentation() {
+        this.popupFinish?.();
+        this.symbolTooltip?.update(0, false);
+        this.stopTransientAudio();
+    }
+
     dismiss() {
         if (!this.popupFinish) return false;
         if (this.popupAge < 0.5 || this.popupClosing || this.lastDismissAge === this.popupAge)

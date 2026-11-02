@@ -5,7 +5,9 @@
     var closed = false;
     var boardReady = false;
     var engineReady = null;
-    var started = false;
+    var params = new URLSearchParams(window.location.search);
+    var sharedReplay = params.has('replay') || params.has('share');
+    var started = sharedReplay;
     var progress = document.querySelector ? document.querySelector('.preview-loading') : null;
     var fill = document.querySelector ? document.querySelector('.preview-loading-fill') : null;
     var startButton = document.getElementById('PreviewStartButton');
@@ -23,7 +25,8 @@
     window.addEventListener('aislots-board-ready', function () {
         boardReady = true;
         setProgress(100);
-        if (startButton) startButton.hidden = false;
+        if (sharedReplay) window.dispatchEvent(new Event('aislots-started'));
+        else if (startButton) startButton.hidden = false;
         revealAfterDraw();
     }, { once: true });
     window.addEventListener('aislots-loading-progress', function (event) {

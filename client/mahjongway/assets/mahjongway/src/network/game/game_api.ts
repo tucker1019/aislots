@@ -118,6 +118,17 @@ export class GameApi {
         ));
     }
 
+    async createReplayShare(betId: string) {
+        return this.request<{ betId: string; shareToken: string }>(
+            this.route + '/bet-records/' + encodeURIComponent(betId) + '/share', {}, this.token);
+    }
+    async sharedReplay(betId: string, share: string, cursor?: string) {
+        const params = new URLSearchParams({ share, limit: '100' });
+        if (cursor) params.set('cursor', cursor);
+        return historyReplayResponse(await this.request<unknown>(
+            this.route + '/shared-replays/' + encodeURIComponent(betId) + '?' + params));
+    }
+
     /** 普通旋转、连续消除和免费旋转共用同一个接口。 */
     async spin(bet: string, betLevel: number) {
         if (!this.next && !this.pending) await this.state();

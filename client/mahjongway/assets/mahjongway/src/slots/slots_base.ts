@@ -1,3 +1,8 @@
+import { replayShareURL, defaultApiBase } from '../history/replay_share';
+import type { HistoryReplay } from '../history/history_types';
+import { BottomPanels } from './bottom_panels';
+import { loadReplay, ReplaySession } from '../history/replay_session';
+import { ReplayControls } from '../history/replay_controls';
 import { AutoSpinRunner } from './auto_spin_runner';
 import { PaytablePage } from '../rules/paytable_page';
 import { AutoSpinPage } from './auto_spin_page';
@@ -53,6 +58,11 @@ export class slots_base extends Component {
     private rulesPage: RulesPage = null;
     private paytablePage: PaytablePage = null;
     private current: Frame = null;
+    private replaySession: ReplaySession = null;
+    private replayLoading = false;
+    private sharedReplay = false;
+    private replayExit: () => void = null;
+    get replayActive() { return this.sharedReplay || this.replayLoading || !!this.replaySession; }
     private activeBet = false;
     private alive = true;
     private effects: GameEffects = null;
@@ -81,6 +91,7 @@ export class slots_base extends Component {
     }
 
     setFastMode(value: boolean) {
+        if (this.replayActive) return;
         this.fast = value;
         try { localStorage.setItem('aislots-fast-mode', String(value)); } catch {}
     }
@@ -100,9 +111,10 @@ export class slots_base extends Component {
             this.picks[c] = createSpinCellPicker(c);
         });
         const params = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
+        this.sharedReplay = params.has('replay') || params.has('share');
         if (params.get('perf') === '1')
             this.performanceCapture = new RuntimePerformance(this.node.parent);
-        this.api = new GameApi(params.get('api') || 'http://127.0.0.1:8080', {
+        this.api = new GameApi(params.get('api') || defaultApiBase(typeof location === 'undefined' ? 'http://127.0.0.1/' : location.href), {
             appname: params.get('appname') || 'test-platform',
             appkey: params.get('appkey') || 'test-app',
             uid: params.get('uid') || 'test-user',
@@ -119,7 +131,8 @@ export class slots_base extends Component {
             .initialize()
             .then(() => {
                 if (this.alive) {
-                    void this.connect();
+                    if (this.sharedReplay) void this.connectSharedReplay(params.get('replay'), params.get('share'));
+                    else void this.connect();
                 }
             })
             .catch((error) => this.fail(error));
@@ -158,7 +171,7 @@ export class slots_base extends Component {
     private labels() {
         for (const label of this.node.parent.getComponentsInChildren(Label)) {
             if (label.node.name === 'lab_coin') {
-                label.string = formatMoney(this.balance);
+                label.string = this.sharedReplay ? '******' : formatMoney(this.balance);
             }
             if (label.node.name === 'lab_bet') {
                 label.string = formatMoney(this.betAmount);
@@ -226,6 +239,7 @@ export class slots_base extends Component {
 
     /** HTML记录页复用当前会话，不参与游戏结算或修改盘面。 */
     openPaytable() {
+        if (this.replayActive) return;
         if (typeof document === 'undefined') return;
         const canvas = document.getElementById('GameCanvas');
         if (!(canvas instanceof HTMLCanvasElement)) return;
@@ -235,6 +249,7 @@ export class slots_base extends Component {
     }
 
     openRules() {
+        if (this.replayActive) return;
         if (typeof document === 'undefined') return;
         const canvas = document.getElementById('GameCanvas');
         if (!(canvas instanceof HTMLCanvasElement)) return;
@@ -249,6 +264,7 @@ export class slots_base extends Component {
     }
 
     openHistory() {
+        if (this.replayActive) return;
         if (!this.ready || typeof document === 'undefined') return;
         const canvas = document.getElementById('GameCanvas');
         if (!(canvas instanceof HTMLCanvasElement)) return;
@@ -258,14 +274,180 @@ export class slots_base extends Component {
                 canvas,
                 () => gameBounds(canvas.getBoundingClientRect()),
                 loadHistoryArt,
+                'IDR',
+                record => this.playHistory(record.betId),
+                record => this.replayShareLink(record.betId),
             );
         this.rulesPage?.close();
         this.paytablePage?.close();
         this.historyPage.open();
     }
 
+    private replayControls: ReplayControls = null;
+
+    /** 临时借用场景播放历史；退出前等待所有旧异步演出停止，再恢复实时状态。 */
+    private async playHistory(betId: string) {
+        if (!this.alive || !this.ready || this.replayActive || this.state !== 0 || this.activeBet || this.autoSpinRunning)
+            throw new Error('请先等待当前游戏结束，再回放记录');
+        const canvas = document.getElementById('GameCanvas') as HTMLCanvasElement;
+        this.replayLoading = true;
+        this.notifyFlowChanged();
+        try {
+            const data = await loadReplay(this.api, betId, () => this.alive && this.historyPage.isOpen);
+            if (!this.alive || !this.historyPage.isOpen) return;
+            await this.presentReplay(data, canvas);
+
+        } catch (reason) {
+            if (this.alive && this.historyPage.isOpen) throw reason;
+        } finally { this.replayLoading = false;this.notifyFlowChanged(); }
+    }
+
+    private shareLinks = new Map<string, Promise<string>>();
+    private replayShareLink(betId: string): Promise<string> {
+        let link = this.shareLinks.get(betId);
+        if (!link) {
+            link = (this.sharedReplay
+                ? Promise.resolve(new URLSearchParams(location.search).get('share'))
+                : this.api.createReplayShare(betId).then(result => result.shareToken))
+                .then(token => replayShareURL(location.href, betId, token))
+                .catch(reason => { this.shareLinks.delete(betId); throw reason; });
+            this.shareLinks.set(betId, link);
+        }
+        return link;
+    }
+
+    /** 分享页仅加载公开历史，不登录、不读实时state、不恢复任何待结算下注。 */
+    private async connectSharedReplay(betId: string, token: string) {
+        this.replayLoading = true;
+        try {
+            if (!betId || !token) throw new Error('分享链接不完整');
+            const data = await loadReplay({ historyReplay: (id, cursor) =>
+                this.api.sharedReplay(id, token, cursor) }, betId, () => this.alive);
+            if (!this.alive) return;
+            this.initializeCells(initialStrips());
+            this.ready = true;
+            // 等待 HTML 首屏封面自动移除，避免在封面后提前播放。
+            await this.until(() => !document.getElementById('LoadingScreen') && !document.getElementById('PreviewCover'));
+            if (!this.alive) return;
+            const canvas = document.getElementById('GameCanvas') as HTMLCanvasElement;
+            await this.presentReplay(data, canvas);
+        } catch (reason) {
+            if (!this.alive) return;
+            this.initializeCells(initialStrips());
+            this.state = 0;
+            this.labels();
+            const canvas = document.getElementById('GameCanvas') as HTMLCanvasElement;
+            this.replayControls = new ReplayControls(canvas, betId || '', () => {
+                this.replayControls?.destroy();
+                this.replayControls = null;
+                void this.connectSharedReplay(betId, token);
+            }, { exitLabel: '重试' });
+            this.replayControls.done('分享链接无效或暂时无法加载，请重试');
+        } finally { this.replayLoading = false; this.notifyFlowChanged(); }
+    }
+
+    private async presentReplay(data: HistoryReplay, canvas: HTMLCanvasElement) {
+        const betId = data.bet.betId;
+        const snapshot = {
+            boards: this.boards, current: this.current, balance: this.balance,
+            betAmount: this.betAmount, winAmount: this.winAmount, activeBet: this.activeBet,
+            freePanelShown: this.freePanelShown, freeSpinsLeft: this.freeSpinsLeft,
+            fast: this.fast, click_stop: this.click_stop, state: this.state,
+        };
+        let session = new ReplaySession(data.frames);
+        this.replaySession = session;
+        if (!this.sharedReplay) this.historyPage.suspend();
+        const restorePanels = this.node.parent.getComponentInChildren?.(BottomPanels)?.beginReplay();
+        this.fast = false;
+        this.click_stop = false;
+        this.winAmount = '0';
+        this.balance = subtractAmount(data.frames[0].balance, data.frames[0].winAmount);
+        this.betAmount = data.frames[0].betAmount;
+        this.labels();
+        this.activeBet = false;
+        this.freePanelShown = false;
+        this.freeSpinsLeft = 0;
+        this.hideAwardShade();
+        this.effects?.cancelPresentation();
+        let exit: () => void;
+        const exited = new Promise<void>(resolve => { exit = resolve; });
+        let closing = false;
+        const cancel = () => {
+            session.cancel();
+            this.anticipation?.clear();
+            this.effects?.cancelPresentation();
+            this.hideAwardShade();
+            this.reels.forEach(reel => reel.cancelPresentation());
+        };
+        this.replayExit = () => { closing = true; cancel(); exit(); };
+        try {
+            let playback: Promise<void>;
+            let restarting = false;
+            const restart = async () => {
+                if (restarting || closing || !this.alive) return;
+                restarting = true;
+                cancel();
+                await playback;
+                if (closing || !this.alive) return;
+                this.freePanelShown = false;
+                this.freeSpinsLeft = 0;
+                this.effects?.refreshControls();
+                this.current = null;
+                this.boards = initialStrips();
+                this.reels.forEach((reel, column) => reel.showBoard(this.boards[column]));
+                this.click_stop = false;
+                this.winAmount = '0';
+                this.balance = subtractAmount(data.frames[0].balance, data.frames[0].winAmount);
+                this.betAmount = data.frames[0].betAmount;
+                this.labels();
+                session = new ReplaySession(data.frames);
+                this.replaySession = session;
+                playback = run();
+                restarting = false;
+            };
+            this.replayControls = new ReplayControls(canvas, betId,
+                this.sharedReplay ? () => void restart() : this.replayExit,
+                { share: () => this.replayShareLink(betId), exitLabel: this.sharedReplay ? '重新播放' : '退出回放' });
+            const run = () => this.play(session.current, false, session)
+                .then(() => {
+                    if (session.active) this.replayControls?.done(data.bet.status === 'complete'
+                        ? '回放结束' : '已播放当前已结算部分');
+                })
+                .catch(reason => {
+                    this.effects?.cancelPresentation();
+                    this.reels.forEach(reel => reel.cancelPresentation());
+                    if (session.active) {
+                        this.replayControls?.done('回放失败：' + (reason instanceof Error ? reason.message : String(reason)));
+                        session.cancel();
+                    }
+                });
+            playback = run();
+            await exited;
+            await playback;
+        } finally {
+            session.cancel();
+            this.replayControls?.destroy();
+            this.replayControls = null;
+            this.replayExit = null;
+            this.replaySession = null;
+            if (this.alive && !this.sharedReplay) {
+                Object.assign(this, snapshot);
+                this.reels.forEach((reel, c) => reel.showBoard(this.boards[c]));
+                this.effects?.setAudioMode(this.current?.mode === 'free' && this.activeBet);
+                this.effects?.multiplier(this.current?.cascadeFactors || ['1','2','3','5'],
+                    this.current?.cascadeIndex || 0, this.current?.mode === 'free');
+                this.labels();
+                // 先释放免费面板缓存的可见状态，再恢复回放前的菜单。
+                this.effects?.refreshControls();
+                restorePanels?.();
+                this.historyPage.resume();
+            }
+        }
+    }
+
     /** 总流程忙碌时忽略重复点击，网络异常则保留请求用于重试。 */
     async spin(fromAuto = false): Promise<boolean> {
+        if (this.replayActive) return false;
         if (this.autoSpinRunning && !fromAuto) return false;
         if (!this.alive || this.state !== 0) {
             return false;
@@ -297,6 +479,7 @@ export class slots_base extends Component {
     }
 
     openAutoSpin() {
+        if (this.replayActive) return;
         if (typeof document === 'undefined' || !this.ready || this.state !== 0 || this.autoSpinRunning) return;
         const canvas = document.getElementById('GameCanvas');
         if (!(canvas instanceof HTMLCanvasElement)) return;
@@ -351,7 +534,7 @@ export class slots_base extends Component {
     }
 
     /** 按实际列号错峰，同列同步；等待所有列启动后才检查整段消除是否结束。 */
-    private async playColumnAwards(frame: Frame, winning: Set<number>) {
+    private async playColumnAwards(frame: Frame, winning: Set<number>, running = () => this.alive) {
         await Promise.all(
             this.reels.map(async (reel, column) => {
                 const rows = frame.board[column].flatMap((cell, row) =>
@@ -359,7 +542,7 @@ export class slots_base extends Component {
                 );
                 if (!rows.length) return;
                 if (column > 0) await this.pause(column * AWARD_COLUMN_DELAY);
-                if (!this.alive) return;
+                if (!running()) return;
                 reel.award(
                     rows,
                     frame.board[column].flatMap((cell, row) =>
@@ -378,6 +561,7 @@ export class slots_base extends Component {
 
     /** 响应尚未到达时只记录停止意图，不能把客户端随机盘面当成结果。 */
     stop() {
+        if (this.replayActive) return;
         this.stopAutoSpin();
         if (this.state === 0) {
             return;
@@ -414,7 +598,7 @@ export class slots_base extends Component {
     }
 
     changeBet(delta: number) {
-        if (this.state !== 0 || this.activeBet || !this.ready) {
+        if (this.replayActive || this.state !== 0 || this.activeBet || !this.ready) {
             return;
         }
         const i = this.betChoices.findIndex(choice => choice.bet === this.bet && choice.level === this.betLevel);
@@ -425,6 +609,7 @@ export class slots_base extends Component {
     }
 
     openBetOptions() {
+        if (this.replayActive) return;
         if (typeof document === 'undefined' || !this.ready || this.state !== 0) return;
         this.betOptionsOverlay?.remove();
         const canvas = document.getElementById('GameCanvas');
@@ -498,7 +683,7 @@ export class slots_base extends Component {
 
     /** 服务端决定中奖和余额；这里只安排停轴、消除及下一轮的展示顺序。 */
     showSymbolTooltip(cell: Node, value: number) {
-        if (!this.ready || this.state !== 0 || this.autoSpinRunning || value <= 0) return false;
+        if (this.replayActive || !this.ready || this.state !== 0 || this.autoSpinRunning || value <= 0) return false;
         const column = this.reels.findIndex(reel => reel.node === cell.parent);
         if (column < 0 || this.reels[column].activeRowForCell(cell) < 0) return false;
         this.effects?.showSymbolTooltip(cell, value, column);
@@ -507,9 +692,11 @@ export class slots_base extends Component {
 
     reelStopped(quick: boolean) { this.effects?.reelStopped(quick); }
 
-    private async play(frame: Frame, restore = false) {
+    private async play(frame: Frame, restore = false, replay?: ReplaySession) {
+        const running = () => this.alive && (!replay || replay.active);
         let first = true;
-        while (this.alive) {
+        while (running()) {
+            if (replay) this.replayControls?.progress(replay.index, replay.frames.length, frame.mode === 'free');
             const previous = this.current,
                 cascade =
                     !first &&
@@ -579,8 +766,8 @@ export class slots_base extends Component {
                     this.stopReelsWithEffects();
                 }
             }
-            await this.until(() => this.reels.every((r) => r.state === 0));
-            if (!this.alive) {
+            await this.until(() => this.reels.every((r) => r.state === 0), running);
+            if (!running()) {
                 return;
             }
             this.anticipation?.clear();
@@ -605,23 +792,24 @@ export class slots_base extends Component {
             const winning = new Set(frame.wins.flatMap((w) => w.cellIds));
             if (winning.size) {
                 await this.pause(ROUND_TRANSITION_DELAY);
-                if (!this.alive) return;
+                if (!running()) return;
                 this.showAwardShade();
                 this.effects?.awardSound(frame.wins.map(win => win.symbolId), frame.transformedIds.length > 0);
-                await this.playColumnAwards(frame, winning);
-                await this.until(() => this.reels.every((reel) => !reel.isAwardPlaying));
+                await this.playColumnAwards(frame, winning, running);
+                await this.until(() => this.reels.every((reel) => !reel.isAwardPlaying), running);
+                if (!running()) return;
                 this.hideAwardShade();
                 await this.pause(ROUND_TRANSITION_DELAY);
-                if (!this.alive) return;
+                if (!running()) return;
 
             } else {
                 await this.pause(0.2);
             }
-            if (!this.alive) {
+            if (!running()) {
                 return;
             }
-            await this.rollSettlement(frame);
-            if (!this.alive) return;
+            await this.rollSettlement(frame, running);
+            if (!running()) return;
             // 已结束的下注只恢复静态结果，不在每次刷新时重播大奖或免费结算弹窗。
             if (restore && first && frame.nextAction === 'complete') {
                 this.finish();
@@ -631,9 +819,11 @@ export class slots_base extends Component {
                 const type = bigWinType(frame.spinWinAmount, frame.betAmount);
                 if (type > 0) await this.effects?.bigWin(frame.spinWinAmount, type, frame.betAmount);
             }
+            if (!running()) return;
             if (frame.nextAction === 'complete') {
                 if (frame.mode === 'free') {
                     await this.effects?.freeEnd(frame.totalWinAmount);
+                    if (!running()) return;
                     this.effects?.setAudioMode(false);
                 }
                 this.finish();
@@ -643,29 +833,33 @@ export class slots_base extends Component {
                 if (frame.mode === 'base') await this.effects?.intro(frame.freeRemaining);
                 else if (frame.triggeredFree)
                     await this.effects?.retrigger(frame.awardedFreeSpins ?? frame.freeRemaining);
+                if (!running()) return;
                 this.freePanelShown = true;
                 this.freeSpinsLeft = frame.freeRemaining;
             }
-            if (!this.alive) return;
+            if (!running()) return;
             this.notifyFlowChanged();
-                frame = await this.api.spin(this.bet, this.betLevel);
+            // 回放永远从历史队列取帧，禁止退回实时开奖接口。
+            frame = replay ? replay.advance() : await this.api.spin(this.bet, this.betLevel);
+            if (!frame) { this.finish(); return; }
             first = false;
         }
     }
 
     /** 中奖阶段结束后，将本轮余额和累计赢分平滑滚动到服务端结果。 */
-    private async rollSettlement(frame: Frame) {
+    private async rollSettlement(frame: Frame, running = () => this.alive) {
         const startBalance = this.balance;
         const startWin = this.winAmount;
         const endBalance = frame.balance;
         const endWin = frame.totalWinAmount;
         const steps = 8;
-        for (let i = 1; i <= steps && this.alive; i++) {
+        for (let i = 1; i <= steps && running(); i++) {
             this.balance = interpolateAmount(startBalance, endBalance, i, steps);
             this.winAmount = interpolateAmount(startWin, endWin, i, steps);
             this.labels();
             await this.pause(0.02);
         }
+        if (!running()) return;
         this.balance = endBalance;
         this.winAmount = endWin;
         this.labels();
@@ -676,8 +870,8 @@ export class slots_base extends Component {
         return new Promise<void>((resolve) => this.timers.push({ left: seconds, resolve }));
     }
 
-    private async until(test: () => boolean) {
-        while (this.alive && !test()) {
+    private async until(test: () => boolean, running = () => this.alive) {
+        while (running() && !test()) {
             await this.pause(0.016);
         }
     }
@@ -733,7 +927,8 @@ export class slots_base extends Component {
             root.remove();
             this.failureDialog = null;
             this.error = '';
-            this.connect();
+            if (this.sharedReplay) location.reload();
+            else this.connect();
         });
         content.appendChild(button);
         root.appendChild(content);
@@ -802,6 +997,7 @@ export class slots_base extends Component {
     };
 
     protected onDestroy() {
+        this.replayExit?.();
         this.stopAutoSpin();
         this.historyPage?.destroy();
         this.rulesPage?.destroy();

@@ -120,3 +120,18 @@ test('scene panels retain current spin handlers and contain no source-project me
  walk(panel2);
  assert.ok(child(panel1,'btn_menu'));assert.ok(child(panel2,'btn_close'));
 });
+test('replay switches directly to panel1 and restores the menu without coordinate drift', () => {
+    const f = fixture();f.controller.show(2);f.advance();f.advance();
+    const previous = f.controller.selected;
+    f.controller.showImmediately(1);
+    assert.equal(f.panel1.active,true);assert.equal(f.panel2.active,false);
+    assert.equal(f.panel1.position.y,-111);
+    f.controller.showImmediately(previous);
+    assert.equal(f.panel1.active,false);assert.equal(f.panel2.active,true);
+    f.controller.show(1);f.advance();f.advance();assert.equal(f.panel1.active,true);
+});
+test('forcing the replay panel invalidates in-flight menu callbacks', () => {
+    const f = fixture();f.controller.show(2);const stale=f.pending.shift();
+    f.controller.showImmediately(1);stale.done();
+    assert.equal(f.panel1.active,true);assert.equal(f.panel2.active,false);assert.equal(f.pending.length,0);
+});

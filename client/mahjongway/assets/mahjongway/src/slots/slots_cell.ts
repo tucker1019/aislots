@@ -38,6 +38,7 @@ export class slots_cell extends Component {
     protected onDestroy() { this.node.off(Node.EventType.TOUCH_END, this.inspectSymbol, this); }
     private effect: NativeEffect = null;
     private winning = false;
+    private awardFinished: () => void = null;
     private winAnchor: Node = null;
     private stopFinished: () => void = null;
     get isAwardPlaying() {
@@ -117,6 +118,7 @@ export class slots_cell extends Component {
         const finished = () => {
             animation.off(Animation.EventType.FINISHED, finished);
             this.winning = false;
+            this.awardFinished = null;
             events.onHighlightEnd = null;
             this.effect.hide();
             this.effect.node.setParent(this.node, false);
@@ -125,6 +127,7 @@ export class slots_cell extends Component {
                 this.refreshEffect();
             } else this.node.active = false;
         };
+        this.awardFinished = finished;
         animation.once(Animation.EventType.FINISHED, finished);
         this.effect.play(
             transforms
@@ -133,6 +136,19 @@ export class slots_cell extends Component {
                   ? 'cell_win_wild'
                   : 'cell_win_mj',
         );
+    }
+
+    /** 回放退出时解除中奖完成回调，避免旧动画随后隐藏已恢复的真实图标。 */
+    cancelAward() {
+        if (!this.winning || !this.effect) return;
+        this.effect.node.getComponent(Animation).off(Animation.EventType.FINISHED, this.awardFinished);
+        this.awardFinished = null;
+        this.effect.node.getComponent(WinAnimationEvents).onHighlightEnd = null;
+        this.effect.reset(); this.effect.hide();
+        this.effect.node.setParent(this.node, false);
+        this.winning = false;
+        this.node.active = true;
+        this.refreshEffect();
     }
 
     /** 黑底撤掉后恢复原格子绘制顺序，翻转牌不再跨层压住相邻牌边。 */
