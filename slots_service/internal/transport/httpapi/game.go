@@ -150,6 +150,32 @@ func NewGameRouter(ready func() bool, service *play.Service, origins []string, l
 		success(w, out)
 		return nil
 	})
+	handle("POST /api/v1/games/{gameId}/bet-records/{betId}/share", func(w http.ResponseWriter, r *http.Request) error {
+		session, err := auth(r)
+		if err != nil {
+			return err
+		}
+		out, err := service.CreateReplayShare(r.Context(), session, r.PathValue("gameId"), r.PathValue("betId"))
+		if err != nil {
+			return err
+		}
+		w.Header().Set("Cache-Control", "no-store")
+		success(w, out)
+		return nil
+	})
+	handle("GET /api/v1/games/{gameId}/shared-replays/{betId}", func(w http.ResponseWriter, r *http.Request) error {
+		limit, err := historyLimit(r)
+		if err != nil {
+			return err
+		}
+		out, err := service.SharedReplay(r.Context(), r.PathValue("gameId"), r.PathValue("betId"), r.URL.Query().Get("share"), limit, r.URL.Query().Get("cursor"))
+		if err != nil {
+			return err
+		}
+		w.Header().Set("Cache-Control", "no-store")
+		success(w, out)
+		return nil
+	})
 	allowed := map[string]bool{}
 	for _, origin := range origins {
 		allowed[origin] = true

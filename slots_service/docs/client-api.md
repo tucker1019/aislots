@@ -167,3 +167,11 @@ curl -H 'Authorization: Bearer <accessToken>' \
 curl -H 'Authorization: Bearer <accessToken>' \
   'http://127.0.0.1:8080/api/v1/games/AG1/bet-records/<betId>/replay?limit=100'
 ```
+
+## 分享回放
+
+`POST /api/v1/games/AG1/bet-records/{betId}/share`：需要当前登录 Bearer token，验证该交易属于当前用户。返回 `data: { betId, shareToken }`，分享凭据持久化保存，服务重启后继续可用。
+
+`GET /api/v1/games/AG1/shared-replays/{betId}?share=<shareToken>&limit=100&cursor=...`：无需登录，只能读取凭据绑定的游戏和交易，分页结构与本人 replay 相同。无效凭据或不匹配的交易统一返回404。不会读取未来未结算盘面，不修改钱包、状态或下一下注标识；响应不包含登录身份、请求标识与内部推进信息。`balance` 固定为占位0，分享客户端必须隐藏余额，不能作为真实钱包余额展示。
+
+客户端分享链接使用本站游戏路径：`?replay=<betId>&share=<shareToken>`。链接不能携带 appname/appkey/uid 或登录token；分享凭据不能用于登录或下注。公开页面仅运行回放，不调用 login、bets、state、spin。生产默认同源 `/api/v1`，开发环境继续连接本机8080。
