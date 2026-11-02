@@ -102,6 +102,13 @@ export class slots_base extends Component {
             window.addEventListener('aislots-retry', this.showRetryBanner);
             window.addEventListener('aislots-retry-end', this.hideRetryBanner);
         }
+        // 转轴父节点也需要完整命中区域，覆盖牌间空隙和滚动时露出的背景。
+        const boardTouch = this.node.getComponent(UITransform) || this.node.addComponent(UITransform);
+        boardTouch.setContentSize(720, 990);
+        boardTouch.setAnchorPoint(0.5, 506.5 / 990);
+        // 捕获阶段接收棋盘输入，避免滚动中的子节点吞掉事件。
+        this.node.on(Node.EventType.TOUCH_END, this.onBoardStop, this, true);
+        this.node.on(Node.EventType.MOUSE_UP, this.onBoardStop, this, true);
         this.reels = this.node.children.map((n) => n.getComponent(slots_r)).filter(Boolean);
         if (this.reels.length !== 5) {
             throw new Error('场景必须配置5个转轴');
@@ -559,9 +566,21 @@ export class slots_base extends Component {
         if (this.awardEffects) this.awardEffects.active = false;
     }
 
+    private lastBoardInput = '';
+    private lastBoardInputAt = -Infinity;
+
+    private onBoardStop(event: { type: string; getButton?: () => number }) {
+        if (event.getButton && event.getButton() !== 0) return;
+        const now = performance.now();
+        // 桌面预览可能同时派发鼠标和模拟触摸；一次点击只能执行一次 Stop。
+        if (event.type !== this.lastBoardInput && now - this.lastBoardInputAt < 100) return;
+        this.lastBoardInput = event.type;
+        this.lastBoardInputAt = now;
+        this.stop();
+    }
+
     /** 响应尚未到达时只记录停止意图，不能把客户端随机盘面当成结果。 */
     stop() {
-        if (this.replayActive) return;
         this.stopAutoSpin();
         if (this.state === 0) {
             return;
@@ -997,6 +1016,8 @@ export class slots_base extends Component {
     };
 
     protected onDestroy() {
+        this.node.off(Node.EventType.TOUCH_END, this.onBoardStop, this, true);
+        this.node.off(Node.EventType.MOUSE_UP, this.onBoardStop, this, true);
         this.replayExit?.();
         this.stopAutoSpin();
         this.historyPage?.destroy();
