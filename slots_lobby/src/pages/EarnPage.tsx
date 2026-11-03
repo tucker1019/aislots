@@ -1,3 +1,4 @@
+import {RebateForecast} from '../features/earn/RebateForecast';
 import {InviteChests} from '../features/invite/InviteChests';
 import { t } from '../i18n';
 import {useClaimToast} from '../features/rewards/useClaimToast';
@@ -17,7 +18,7 @@ export function EarnPage(){
  return <>{holder}<section className="earn-page" aria-label={t('copy.earn')}><h1>{t('copy.earn')}</h1><InviteChests/><article className="rebate-card"><header><h2>{t('copy.rebateAmount')}</h2><button type="button" disabled={!info} onClick={()=>navigateLobby('earn-rules')}>{t('copy.viewRules')}</button></header>
  {query.isPending?<p className="rebate-feedback" role="status">{t('copy.loadingRebateInformation')}</p>:!info?<div className="rebate-feedback" role="alert"><p>{t('copy.rebateInformationFailedToLoad')}</p><button type="button" disabled={query.isFetching} onClick={()=>void query.refetch()}>{t('copy.retry')}</button></div>:<>
  <div className="rebate-claim-row"><span>{t('copy.claimableRebate')} <strong>{betMoney(info.claimableTotal)}</strong></span><button type="button" disabled={claim.isPending||query.isFetching||info.claimableTotal===0} onClick={()=>claim.mutate(info.activityDate)}>{claim.isPending?t('copy.claiming'):t('copy.claim')}</button></div>
- <div className="rebate-preview">{([{key:'daily',label:t('copy.availableTomorrow')},{key:'weekly',label:t('copy.availableNextMonday')},{key:'monthly',label:t('copy.availableOnThe1StOfNextMonth')}] as const).map(item=><div key={item.key}><span>{item.label}</span><strong>{betMoney(info[item.key].reward)}</strong></div>)}</div>
+ <RebateForecast items={([{key:'daily',label:t('copy.availableTomorrow')},{key:'weekly',label:t('copy.availableNextMonday')},{key:'monthly',label:t('copy.availableOnThe1StOfNextMonth')}] as const).map(item=>({id:item.key,label:item.label,amount:info[item.key].reward}))}/>
  <div className="rebate-platforms" aria-label={t('copy.providerRebateRates')}>{info.platforms.length?info.platforms.map(p=><div key={p.name}><span>{p.name}</span><strong>{(p.dailyRateBps+p.weeklyRateBps+p.monthlyRateBps)/100}%</strong></div>):<p>{t('copy.noProvidersAvailable')}</p>}</div>
  {claim.isError&&<p className="rebate-error" role="alert">{claim.error.message}</p>}{success!==null&&<p className="rebate-success" role="status">{t('copy.claimSuccessfulReward')} {betMoney(success)}</p>}
  <p className="rebate-note">{t('copy.estimatesDependOnPeriodSettlementProviderRates')}</p>

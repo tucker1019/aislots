@@ -1,10 +1,10 @@
 import { t } from '../../i18n';
 import type { RebateInfo } from '../../services/rebate';
-import { betMoney } from '../bet-records/money';
+import {RebateForecast} from './RebateForecast';
 export function RebateRules({info}:{info:RebateInfo}){
- const forecasts=[{label:t('copy.totalEstimatedRebate'),amount:info.daily.reward+info.weekly.reward+info.monthly.reward},{label:t('copy.availableTomorrow'),amount:info.daily.reward},{label:t('copy.availableNextMonday'),amount:info.weekly.reward},{label:t('copy.availableOnThe1StOfNextMonth'),amount:info.monthly.reward}];
+ const forecasts=[{id:'total',label:t('copy.totalEstimatedRebate'),amount:info.daily.reward+info.weekly.reward+info.monthly.reward},{id:'daily',label:t('copy.availableTomorrow'),amount:info.daily.reward},{id:'weekly',label:t('copy.availableNextMonday'),amount:info.weekly.reward},{id:'monthly',label:t('copy.availableOnThe1StOfNextMonth'),amount:info.monthly.reward}];
  return <div className="rebate-rules-page">
-  <div className="rebate-preview rebate-rules-summary">{forecasts.map(row=><div key={row.label}><span>{row.label}</span><strong>{betMoney(row.amount)}</strong></div>)}</div>
+  <RebateForecast items={forecasts} className="rebate-rules-summary"/>
   <p className="rebate-rules-callout">{t('copy.rebatesSettleDailyWeeklyAndMonthlyClaim')}</p>
   <div className="rebate-table-wrap"><table className="rebate-rate-table"><caption>{t('copy.providerRebateRates')}</caption><thead><tr>{[t('copy.provider'),t('copy.rebateRate'),t('copy.dailyRebate'),t('copy.weeklyRebate'),t('copy.monthlyRebate')].map(title=><th scope="col" key={title}>{title}</th>)}</tr></thead><tbody>
    {info.platforms.map(p=><tr key={p.name}><th scope="row">{p.name}</th><td>{(p.dailyRateBps+p.weeklyRateBps+p.monthlyRateBps)/100}%</td><td>{p.dailyRateBps/100}%</td><td>{p.weeklyRateBps/100}%</td><td>{p.monthlyRateBps/100}%</td></tr>)}
