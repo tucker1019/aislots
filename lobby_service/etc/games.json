@@ -1,0 +1,1 @@
+{"appname": "aislots-lobby", "appkey": "web", "country": "ID", "currency": "IDR", "games": {"AG1": {"enabled": true, "url": "http://127.0.0.1:5180/", "provider": "AG", "name": "麻将胡了"}}}

@@ -22,7 +22,7 @@ func TestReturnLogic(t *testing.T) {
 	ctx := context.Background()
 	store := mocks.NewMockReturnStore(gomock.NewController(t))
 	cfg := config.ReturnConfig{DailyRateBps: 80, WeeklyRateBps: 10, MonthlyRateBps: 10, LoserReturnRateBps: 1000}
-	l := New(svc.New(config.Config{Returns: cfg, Checkin: config.CheckinConfig{Timezone: "Asia/Jakarta"}}, &repository.Repository{Returns: store}))
+	l := New(svc.New(config.Config{Game: config.GameConfig{Games: map[string]config.GameEntry{"AG1": {Enabled: true, Provider: "AG"}, "AG2": {Enabled: true, Provider: "AG"}, "closed": {Enabled: false, Provider: "Other"}}}, Returns: cfg, Checkin: config.CheckinConfig{Timezone: "Asia/Jakarta"}}, &repository.Repository{Returns: store}))
 	uid := int64(7)
 	sid := strings.Repeat("a", 52)
 	request := func() *pb.ReturnRequest { return &pb.ReturnRequest{Uid: &uid, Sid: &sid, ActivityDate: "2026-06-01"} }
@@ -50,7 +50,7 @@ func TestReturnLogic(t *testing.T) {
 	}
 	store.EXPECT().ReadReturns(ctx, uid, gomock.Any(), model.GroupRebate, cfg, l.location, gomock.Any()).Return(&model.ReturnView{Date: "2026-06-01", Total: 300, Sections: []*model.ReturnSection{section(model.ReturnDaily), section(model.ReturnWeekly), section(model.ReturnMonthly)}}, nil)
 	out, err := l.RebateInfo(ctx, request())
-	if err != nil || out.ClaimableTotal != 300 || out.Daily.Claim.Type != "daily" || out.Weekly.Claim.Type != "weekly" || out.Monthly.Claim.Type != "monthly" || out.Daily.Claim.LossAmount != 2000 {
+	if err != nil || out.ClaimableTotal != 300 || out.Daily.Claim.Type != "daily" || out.Weekly.Claim.Type != "weekly" || out.Monthly.Claim.Type != "monthly" || out.Daily.Claim.LossAmount != 2000 || len(out.Platforms) != 1 || out.Platforms[0].Name != "AG" || out.Platforms[0].DailyRateBps != 80 {
 		t.Fatal(out, err)
 	}
 	store.EXPECT().ReadReturns(ctx, uid, gomock.Any(), model.GroupLoser, cfg, l.location, gomock.Any()).Return(&model.ReturnView{Date: "2026-06-01", Total: 100, Sections: []*model.ReturnSection{section(model.ReturnLoser)}}, nil)

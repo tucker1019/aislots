@@ -183,3 +183,7 @@ items只包含本次实际领取的明细，按type字典序排列；按type取�
 ## 验证
 
 `LOBBY_INTEGRATION_DATABASE_URL=... make test` 包括周一且为1号时的三份合领、净亏损与盈利、实时预估、过期、不重复领取、溢出回滚、任意一笔流水失败全批次回滚及跨日重试测试。make lint检查代码。
+
+## 大厅平台展示
+
+反水info增加platforms：每项包含name、dailyRateBps、weeklyRateBps、monthlyRateBps。平台名由games.json中开放游戏的provider去重排序返回，不返回游戏名。当前所有平台采用同一套全局比例，接口不会改变原有结算基数及算法。客户端平台卡片显示日、周、月比例之和，规则中分别展示三个周期比例；各周期独立结算。

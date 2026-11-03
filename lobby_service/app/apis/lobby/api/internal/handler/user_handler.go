@@ -76,7 +76,7 @@ func decode(w http.ResponseWriter, r *http.Request, req proto.Message) error {
 }
 
 func bindIdentity(r *http.Request, m protoreflect.Message) error {
-	for _, key := range []string{"uid", "sid", "orderId", "status", "limit", "cursor"} {
+	for _, key := range []string{"uid", "sid", "orderId", "status", "limit", "cursor", "from", "to"} {
 		values, ok := r.URL.Query()[key]
 		if !ok {
 			continue

@@ -152,3 +152,7 @@ VIP升降级时序使用服务端接收处理时间，历史迟到事件仍归�
 现有账号启用时从VIP0初始化，不追溯旧事件发升级奖励。后台分批初始化，支持服务重启继续处理，真实机台流水仍待接入。新账号在创建事务内建立VIP状态。
 
 source统一由script/coin_sources.py维护：升级vip_001、周工资vip_002、月工资vip_003。升级合领每批一条总额source流水，逐等级明细保存在lobby_vip_rewards；工资也是独立批次。奖励明细、批次、source、余额原子提交。
+
+## 客户端领取状态
+
+`upgradeRewards` 返回逐级奖励记录（含待领取和已领取）；`upgradeClaimableTotal` 仅累加未领取金额。客户端按记录的 `level` 和 `status` 展示“领取／已领取／等级权益”，不能用最高等级推断领取状态。周、月礼金使用 `weekly`、`monthly` 已结算记录，并匹配奖励记录所属等级；`weeklyPreview`、`monthlyPreview` 仅用于预估，不构成可领取资格。升级接口仍一次领取全部待领奖励，使用同一requestId重试不会重复加币。

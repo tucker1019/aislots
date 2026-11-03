@@ -10,6 +10,7 @@ import (
 )
 
 type Config struct {
+	Game          GameConfig
 	Address       string
 	DatabaseURL   string
 	SessionDays   int
@@ -41,6 +42,10 @@ func Load() (Config, error) {
 		if err != nil || c.SessionDays < 1 || c.SessionDays > 3650 {
 			return c, fmt.Errorf("LOBBY_SESSION_DAYS must be between 1 and 3650")
 		}
+	}
+	c.Game, err = LoadGames(os.Getenv("LOBBY_GAMES_CONFIG"))
+	if err != nil {
+		return c, err
 	}
 	c.RechargeTiers, err = LoadRechargeTiers(os.Getenv("LOBBY_RECHARGE_CONFIG"))
 	if err != nil {

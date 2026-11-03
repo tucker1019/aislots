@@ -32,6 +32,9 @@ func Public(err error) *Error {
 }
 
 var (
+	ErrGameTicket         = New(codes.UserError_USER_ERROR_GAME_TICKET, "游戏进入凭据无效或已过期", 401)
+	ErrGameFunds          = New(codes.UserError_USER_ERROR_GAME_FUNDS, "余额不足", 400)
+	ErrGameConflict       = New(codes.UserError_USER_ERROR_GAME_CONFLICT, "游戏结算请求冲突", 409)
 	ErrNewbieEmpty        = New(codes.UserError_USER_ERROR_NEWBIE_EMPTY, "当前没有可领取的新手充值奖励", 400)
 	ErrVIPEmpty           = New(codes.UserError_USER_ERROR_VIP_EMPTY, "当前没有可领取的VIP奖励", 400)
 	ErrVIPRequestConflict = New(codes.UserError_USER_ERROR_VIP_REQUEST_CONFLICT, "请求号已用于其他VIP领取", 409)

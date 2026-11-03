@@ -114,3 +114,7 @@ source统一维护：[script/coin_sources.py](script/coin_sources.py)，执行 `
 `GET /api/activity/newbie-recharge/info`返回注册起活动截止时间、累计成功充值、各档进度/还差金额/可领状态；`POST /api/activity/newbie-recharge/claim`手动合领全部已达标未领取档位，requestId幂等，每档仅一次。
 
 [etc/newbie-recharge.json](etc/newbie-recharge.json)可配置天数、门槛、奖励、到期是否作废。示例注册起3天内充值100/500/1000元分别额外赠10/50/100元，配置仍为整数分。注册时快照规则，不扫描source；成功充值本金按精确时间窗口统计。详见[新手充值接口](docs/newbie-recharge-api.md)。
+
+## UID分配
+
+新用户（游客和注册账号）UID从10000001开始，由数据库identity生成。迁移010同时适配新库和已有库，保留已分配UID并只向前调整序列，重复启动不会回退或重用编号。

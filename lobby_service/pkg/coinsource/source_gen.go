@@ -4,16 +4,18 @@ package coinsource
 type Source string
 
 const (
-	SourceNewbieRecharge Source = "act_006" // 新手累计充值奖励
-	SourceVIPUpgrade     Source = "vip_001" // VIP升级礼金
-	SourceVIPWeekly      Source = "vip_002" // VIP周工资
-	SourceVIPMonthly     Source = "vip_003" // VIP月工资
-	SourceRebateDaily    Source = "act_002" // 日反水奖励加币
-	SourceRebateWeekly   Source = "act_003" // 周反水奖励加币
-	SourceRebateMonthly  Source = "act_004" // 月反水奖励加币
-	SourceLoserReturn    Source = "act_005" // 亏损返还奖励加币
-	SourceCheckinReward  Source = "act_001" // 签到奖励加币
-	SourceRechargeCredit Source = "rch_001" // 充值本金加币
-	SourceRechargeBonus  Source = "rch_002" // 充值赠送加币
-	SourceRechargeFee    Source = "rch_003" // 充值手续费减币
+	SourceGameBet        Source = "game_001" // 游戏投注扣币
+	SourceGameWin        Source = "game_002" // 游戏逐轮派彩
+	SourceNewbieRecharge Source = "act_006"  // 新手累计充值奖励
+	SourceVIPUpgrade     Source = "vip_001"  // VIP升级礼金
+	SourceVIPWeekly      Source = "vip_002"  // VIP周工资
+	SourceVIPMonthly     Source = "vip_003"  // VIP月工资
+	SourceRebateDaily    Source = "act_002"  // 日反水奖励加币
+	SourceRebateWeekly   Source = "act_003"  // 周反水奖励加币
+	SourceRebateMonthly  Source = "act_004"  // 月反水奖励加币
+	SourceLoserReturn    Source = "act_005"  // 亏损返还奖励加币
+	SourceCheckinReward  Source = "act_001"  // 签到奖励加币
+	SourceRechargeCredit Source = "rch_001"  // 充值本金加币
+	SourceRechargeBonus  Source = "rch_002"  // 充值赠送加币
+	SourceRechargeFee    Source = "rch_003"  // 充值手续费减币
 )

@@ -37,7 +37,9 @@ message ReturnSection {
  ReturnPeriod claim = 1;
  ReturnPeriod preview = 2;
 }
+message RebatePlatform {string name=1;int32 daily_rate_bps=2 [json_name="dailyRateBps"];int32 weekly_rate_bps=3 [json_name="weeklyRateBps"];int32 monthly_rate_bps=4 [json_name="monthlyRateBps"];}
 message RebateInfoReply {
+ repeated RebatePlatform platforms=7;
  string activity_date = 1 [json_name="activityDate"];
  string timezone = 2;
  ReturnSection daily = 3;

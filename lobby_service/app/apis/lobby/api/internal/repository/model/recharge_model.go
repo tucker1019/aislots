@@ -81,6 +81,7 @@ func postRecharge(tx *gorm.DB, wallet *LobbyWalletBalance, order *LobbyRechargeO
 
 // OrderQuery uses a stable (created_at, order_id) cursor, newest first.
 type OrderQuery struct {
+	From, To   time.Time
 	Status     string
 	Limit      int
 	BeforeTime time.Time
@@ -107,6 +108,12 @@ func (m *RechargeModel) ReadRechargeOrders(ctx context.Context, uid int64, token
 		return nil, err
 	}
 	query := m.DB.WithContext(ctx).Where("uid = ?", uid)
+	if !q.From.IsZero() {
+		query = query.Where("created_at >= ?", q.From)
+	}
+	if !q.To.IsZero() {
+		query = query.Where("created_at < ?", q.To)
+	}
 	if q.Status != "" {
 		query = query.Where("status = ?", q.Status)
 	}

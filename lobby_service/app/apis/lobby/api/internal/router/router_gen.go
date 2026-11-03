@@ -4,6 +4,7 @@ package router
 import (
 	"apps/app/apis/lobby/api/internal/handler"
 	checkinlogic "apps/app/apis/lobby/api/internal/logic/checkinv1/checkinservice"
+	gamelogic "apps/app/apis/lobby/api/internal/logic/gamev1/gameservice"
 	newbielogic "apps/app/apis/lobby/api/internal/logic/newbiev1/newbieservice"
 	rechargelogic "apps/app/apis/lobby/api/internal/logic/rechargev1/rechargeservice"
 	returnlogic "apps/app/apis/lobby/api/internal/logic/returnv1/returnservice"
@@ -24,6 +25,14 @@ func New(ctx *svc.ServiceContext) http.Handler {
 	returns := returnlogic.New(ctx)
 	vip := viplogic.New(ctx)
 	newbie := newbielogic.New(ctx)
+	game := gamelogic.New(ctx)
+	mux.HandleFunc("POST /api/game/wallet-ledger", handler.API(func() *pb.WalletLedgerRequest { return new(pb.WalletLedgerRequest) }, game.WalletLedger))
+	mux.HandleFunc("POST /api/game/wallet-ledger/detail", handler.API(func() *pb.WalletLedgerRequest { return new(pb.WalletLedgerRequest) }, game.WalletLedgerDetail))
+	mux.HandleFunc("POST /api/game/records", handler.API(func() *pb.GameRecordsRequest { return new(pb.GameRecordsRequest) }, game.GameRecords))
+	mux.HandleFunc("POST /api/game/launch", handler.API(func() *pb.GameLaunchRequest { return new(pb.GameLaunchRequest) }, game.GameLaunch))
+	mux.HandleFunc("POST /internal/game/exchange", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameExchangeRequest { return new(pb.GameExchangeRequest) }, game.GameExchange)))
+	mux.HandleFunc("POST /internal/game/balance", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameBalanceRequest { return new(pb.GameBalanceRequest) }, game.GameBalance)))
+	mux.HandleFunc("POST /internal/game/settle", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameSettleRequest { return new(pb.GameSettleRequest) }, game.GameSettle)))
 	mux.HandleFunc("POST /api/user/account/visitor/login", handler.API(func() *pb.UserRequest { return new(pb.UserRequest) }, logic.VisitorLogin))
 	mux.HandleFunc("POST /api/user/account/session/renewal", handler.API(func() *pb.UserRequest { return new(pb.UserRequest) }, logic.SessionRenewal))
 	mux.HandleFunc("POST /api/user/account/uniquecode/register", handler.API(func() *pb.UserRequest { return new(pb.UserRequest) }, logic.UniqueCodeRegister))

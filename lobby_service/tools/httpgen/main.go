@@ -27,6 +27,7 @@ import (
  "apps/pkg/trace"
  "apps/app/apis/lobby/api/internal/handler"
  "apps/app/apis/lobby/api/internal/logic/userv1/userservice"
+ gamelogic "apps/app/apis/lobby/api/internal/logic/gamev1/gameservice"
  newbielogic "apps/app/apis/lobby/api/internal/logic/newbiev1/newbieservice"
  viplogic "apps/app/apis/lobby/api/internal/logic/vipv1/vipservice"
  returnlogic "apps/app/apis/lobby/api/internal/logic/returnv1/returnservice"
@@ -43,6 +44,7 @@ func New(ctx *svc.ServiceContext) http.Handler {
  returns:=returnlogic.New(ctx)
  vip:=viplogic.New(ctx)
  newbie:=newbielogic.New(ctx)
+ game:=gamelogic.New(ctx)
 `)
 
 	for _, file := range set.File {
@@ -63,6 +65,9 @@ func New(ctx *svc.ServiceContext) http.Handler {
 					panic("GET or POST annotation required")
 				}
 				receiver := "logic"
+				if service.GetName() == "GameService" {
+					receiver = "game"
+				}
 				if service.GetName() == "RechargeService" {
 					receiver = "recharge"
 				}
@@ -80,6 +85,10 @@ func New(ctx *svc.ServiceContext) http.Handler {
 				}
 				parts := strings.Split(method.GetInputType(), ".")
 				input := parts[len(parts)-1]
+				if strings.HasPrefix(path, "/internal/") {
+					fmt.Fprintf(&b, "mux.HandleFunc(%q,handler.ServiceOnly(ctx.Config.Game.ServiceToken,handler.API(func()*pb.%s{return new(pb.%s)},%s.%s)))\n", verb+" "+path, input, input, receiver, method.GetName())
+					continue
+				}
 				fmt.Fprintf(&b, "mux.HandleFunc(%q,handler.API(func()*pb.%s{return new(pb.%s)},%s.%s))\n", verb+" "+path, input, input, receiver, method.GetName())
 			}
 		}

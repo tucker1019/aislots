@@ -43,10 +43,13 @@ func (m *VIPModel) ReadVIP(ctx context.Context, uid int64, token string, now tim
 			return err
 		}
 		v.State = s
-		if err = tx.Where("uid = ? AND kind = ? AND status = ?", uid, "upgrade", "pending").Order("level").Find(&v.Upgrades).Error; err != nil {
+		if err = tx.Where("uid = ? AND kind = ?", uid, "upgrade").Order("level").Find(&v.Upgrades).Error; err != nil {
 			return err
 		}
 		for _, r := range v.Upgrades {
+			if r.Status != "pending" {
+				continue
+			}
 			if v.UpgradeTotal > math.MaxInt64-r.Amount {
 				return xerr.ErrBalanceLimit
 			}

@@ -78,8 +78,11 @@ func (l *Logic) RechargeOrderInfo(ctx context.Context, r *pb.RechargeRequest) (*
 }
 
 type orderCursor struct {
-	Time time.Time
-	ID   string
+	From   string `json:",omitempty"`
+	To     string `json:",omitempty"`
+	Status string `json:",omitempty"`
+	Time   time.Time
+	ID     string
 }
 
 func (l *Logic) RechargeOrderList(ctx context.Context, r *pb.RechargeRequest) (*pb.RechargeOrdersReply, error) {
@@ -97,6 +100,23 @@ func (l *Logic) RechargeOrderList(ctx context.Context, r *pb.RechargeRequest) (*
 		limit = 20
 	}
 	q := model.OrderQuery{Status: r.Status, Limit: limit}
+	if r.From != "" || r.To != "" {
+		from, e := time.Parse(time.RFC3339Nano, r.From)
+		if e != nil {
+			return nil, xerr.ErrInvalid
+		}
+		to, e := time.Parse(time.RFC3339Nano, r.To)
+		if e != nil || !from.Before(to) || to.Sub(from) > 31*24*time.Hour {
+			return nil, xerr.ErrInvalid
+		}
+		q.From = from.UTC()
+		q.To = to.UTC()
+	}
+	boundFrom, boundTo := "", ""
+	if !q.From.IsZero() {
+		boundFrom = q.From.Format(time.RFC3339Nano)
+		boundTo = q.To.Format(time.RFC3339Nano)
+	}
 	if r.Cursor != "" {
 		if len(r.Cursor) > 512 {
 			return nil, xerr.ErrInvalid
@@ -109,6 +129,12 @@ func (l *Logic) RechargeOrderList(ctx context.Context, r *pb.RechargeRequest) (*
 		if json.Unmarshal(data, &c) != nil || c.Time.IsZero() || c.ID == "" || len(c.ID) > 128 {
 			return nil, xerr.ErrInvalid
 		}
+		if (c.From != "" || c.To != "") && (c.From != boundFrom || c.To != boundTo) {
+			return nil, xerr.ErrInvalid
+		}
+		if c.Status != "" && c.Status != r.Status {
+			return nil, xerr.ErrInvalid
+		}
 		q.BeforeTime = c.Time
 		q.BeforeID = c.ID
 	}
@@ -119,7 +145,7 @@ func (l *Logic) RechargeOrderList(ctx context.Context, r *pb.RechargeRequest) (*
 	out := &pb.RechargeOrdersReply{Items: []*pb.RechargeReply{}}
 	if len(orders) > limit {
 		last := orders[limit-1]
-		data, _ := json.Marshal(orderCursor{Time: last.CreatedAt, ID: last.OrderID})
+		data, _ := json.Marshal(orderCursor{Time: last.CreatedAt, ID: last.OrderID, From: boundFrom, To: boundTo, Status: r.Status})
 		out.NextCursor = base64.RawURLEncoding.EncodeToString(data)
 		orders = orders[:limit]
 	}

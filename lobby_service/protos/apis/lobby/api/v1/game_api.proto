@@ -1,0 +1,31 @@
+syntax="proto3";
+package apis.lobby.api.v1;
+option go_package="apps/pb/apis/lobby/api/v1;v1";
+import "google/api/annotations.proto";
+service GameService {
+ rpc WalletLedger(WalletLedgerRequest) returns (WalletLedgerReply) {option (google.api.http)={post:"/api/game/wallet-ledger" body:"*"};}
+ rpc WalletLedgerDetail(WalletLedgerRequest) returns (WalletLedgerDetailReply) {option (google.api.http)={post:"/api/game/wallet-ledger/detail" body:"*"};}
+ rpc GameRecords(GameRecordsRequest) returns (GameRecordsReply) {option (google.api.http)={post:"/api/game/records" body:"*"};}
+ rpc GameLaunch(GameLaunchRequest) returns (GameLaunchReply) {option (google.api.http)={post:"/api/game/launch" body:"*"};}
+ rpc GameExchange(GameExchangeRequest) returns (GameIdentityReply) {option (google.api.http)={post:"/internal/game/exchange" body:"*"};}
+ rpc GameBalance(GameBalanceRequest) returns (GameBalanceReply) {option (google.api.http)={post:"/internal/game/balance" body:"*"};}
+ rpc GameSettle(GameSettleRequest) returns (GameSettleReply) {option (google.api.http)={post:"/internal/game/settle" body:"*"};}
+}
+message GameLaunchRequest {optional int64 uid=1;optional string sid=2;string game_id=3 [json_name="gameId"];}
+message GameLaunchReply {string launch_url=1 [json_name="launchUrl"];string expires_at=2 [json_name="expiresAt"];}
+message GameExchangeRequest {string launch_ticket=1 [json_name="launchTicket"];string exchange_id=2 [json_name="exchangeId"];string game_id=3 [json_name="gameId"];}
+message GameIdentityReply {int64 uid=1;string appname=2;string appkey=3;string country=4;string currency=5;int64 coins=6;}
+message GameBalanceRequest {int64 uid=1;string game_id=2 [json_name="gameId"];}
+message GameBalanceReply {int64 coins=1;}
+message GameSettleRequest {int64 uid=1;string game_id=2 [json_name="gameId"];string bet_id=3 [json_name="betId"];string request_id=4 [json_name="requestId"];int64 debit=5;int64 credit=6;}
+message GameSettleReply {string status=1;int64 coins=2;}
+
+message GameRecordsRequest {optional int64 uid=1;optional string sid=2;string from=3;string to=4;int32 page=5;string provider=6;}
+message GameRecord {string bet_id=1 [json_name="betId"];string game_id=2 [json_name="gameId"];string game_name=3 [json_name="gameName"];string provider=4;string created_at=5 [json_name="createdAt"];int64 bet_amount=6 [json_name="betAmount"];int64 valid_bet=7 [json_name="validBet"];int64 profit=8;}
+message GameRecordsReply {repeated GameRecord items=1;int64 count=2;int64 bet_amount=3 [json_name="betAmount"];int64 profit=4;bool has_more=5 [json_name="hasMore"];string currency=6;repeated string providers=7;}
+
+message WalletLedgerRequest {optional int64 uid=1;optional string sid=2;string from=3;string to=4;string category=5;string cursor=6;string id=7;}
+message WalletLedgerCategory {string id=1;string name=2;}
+message WalletLedgerItem {string id=1;string order_id=2 [json_name="orderId"];string type=3;string currency=4;int64 amount=5;int64 balance=6;string created_at=7 [json_name="createdAt"];string remark=8;}
+message WalletLedgerReply {repeated WalletLedgerItem items=1;repeated WalletLedgerCategory categories=2;string next_cursor=3 [json_name="nextCursor"];}
+message WalletLedgerDetailReply {WalletLedgerItem item=1;}

@@ -11,6 +11,7 @@ import (
 )
 
 type Repository struct {
+	Game     GameStore
 	Users    UserStore
 	Recharge RechargeStore
 	Checkin  CheckinStore
@@ -33,6 +34,7 @@ func (r *Repository) ConfigureVIP(db *gorm.DB, c config.VIPConfig, loc *time.Loc
 	engine := &model.VIPModel{DB: db, Config: c, Location: loc}
 	r.VIP = engine
 	r.Activity.VIP = engine
+	r.Game = &model.GameModel{DB: db, Location: loc, VIP: engine}
 	if users, ok := r.Users.(*model.UserModel); ok {
 		users.VIP = engine
 	}

@@ -2,6 +2,7 @@ package returnservice
 
 import (
 	"context"
+	"sort"
 	"time"
 
 	"apps/app/apis/lobby/api/internal/config"
@@ -14,13 +15,14 @@ import (
 )
 
 type Logic struct {
+	games    config.GameConfig
 	store    repository.ReturnStore
 	config   config.ReturnConfig
 	location *time.Location
 }
 
 func New(s *svc.ServiceContext) *Logic {
-	return &Logic{store: s.Repo.Returns, config: s.Config.Returns, location: s.Config.Checkin.Location()}
+	return &Logic{games: s.Config.Game, store: s.Repo.Returns, config: s.Config.Returns, location: s.Config.Checkin.Location()}
 }
 
 func (l *Logic) info(ctx context.Context, r *pb.ReturnRequest, group string) (*model.ReturnView, error) {
@@ -39,7 +41,22 @@ func (l *Logic) RebateInfo(ctx context.Context, r *pb.ReturnRequest) (*pb.Rebate
 	if err != nil {
 		return nil, err
 	}
-	return &pb.RebateInfoReply{ActivityDate: v.Date, Timezone: l.location.String(), Daily: sectionReply(v.Sections[0]), Weekly: sectionReply(v.Sections[1]), Monthly: sectionReply(v.Sections[2]), ClaimableTotal: v.Total}, nil
+	out := &pb.RebateInfoReply{ActivityDate: v.Date, Timezone: l.location.String(), Daily: sectionReply(v.Sections[0]), Weekly: sectionReply(v.Sections[1]), Monthly: sectionReply(v.Sections[2]), ClaimableTotal: v.Total}
+	providers := map[string]bool{}
+	for _, g := range l.games.Games {
+		if g.Enabled && g.Provider != "" {
+			providers[g.Provider] = true
+		}
+	}
+	names := []string{}
+	for name := range providers {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	for _, name := range names {
+		out.Platforms = append(out.Platforms, &pb.RebatePlatform{Name: name, DailyRateBps: l.config.DailyRateBps, WeeklyRateBps: l.config.WeeklyRateBps, MonthlyRateBps: l.config.MonthlyRateBps})
+	}
+	return out, nil
 }
 
 func (l *Logic) LoserReturnInfo(ctx context.Context, r *pb.ReturnRequest) (*pb.LoserReturnInfoReply, error) {

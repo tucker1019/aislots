@@ -22,6 +22,8 @@ message RechargeRequest {
  string status = 6;
  int32 limit = 7;
  string cursor = 8;
+ string from = 9; // RFC3339, inclusive creation time
+ string to = 10; // RFC3339, exclusive creation time
 }
 message RechargeTier {
  string id = 1;

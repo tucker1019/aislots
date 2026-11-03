@@ -143,8 +143,37 @@ func TestOrderList(t *testing.T) {
 	if err != nil || len(out.Items) != 1 || out.NextCursor != "" {
 		t.Fatal(out, err)
 	}
-	data, _ := json.Marshal(orderCursor{Time: now, ID: "b"})
+	data, _ := json.Marshal(orderCursor{Time: now, ID: "b", Status: "success"})
 	if r.Cursor != base64.RawURLEncoding.EncodeToString(data) {
 		t.Fatal("cursor mismatch")
+	}
+}
+
+func TestOrderDateRangeAndCursorBinding(t *testing.T) {
+	l, _, store := setup(t)
+	ctx := context.Background()
+	for _, pair := range [][2]string{{"bad", "2026-11-04T00:00:00Z"}, {"2026-11-03T00:00:00Z", ""}, {"2026-11-04T00:00:00Z", "2026-11-03T00:00:00Z"}, {"2026-01-01T00:00:00Z", "2026-03-01T00:00:00Z"}} {
+		r := request()
+		r.From = pair[0]
+		r.To = pair[1]
+		if _, e := l.RechargeOrderList(ctx, r); !errors.Is(e, xerr.ErrInvalid) {
+			t.Fatal(pair, e)
+		}
+	}
+	from := time.Date(2026, 11, 3, 0, 0, 0, 0, time.UTC)
+	to := from.Add(24 * time.Hour)
+	r := request()
+	r.From = from.Format(time.RFC3339)
+	r.To = to.Format(time.RFC3339)
+	r.Limit = 1
+	store.EXPECT().ReadRechargeOrders(ctx, int64(7), gomock.Any(), model.OrderQuery{From: from, To: to, Limit: 1}, gomock.Any()).Return([]*model.LobbyRechargeOrder{{OrderID: "b", CreatedAt: from}, {OrderID: "a", CreatedAt: from}}, nil)
+	out, e := l.RechargeOrderList(ctx, r)
+	if e != nil || out.NextCursor == "" {
+		t.Fatal(out, e)
+	}
+	r.Cursor = out.NextCursor
+	r.From = from.Add(-24 * time.Hour).Format(time.RFC3339)
+	if _, e = l.RechargeOrderList(ctx, r); !errors.Is(e, xerr.ErrInvalid) {
+		t.Fatal("accepted cursor from another time filter", e)
 	}
 }

@@ -178,6 +178,15 @@ func TestVIPPostgres(t *testing.T) {
 			}()
 		}
 		wg.Wait()
+		claimed, readErr := m.ReadVIP(ctx, uid, token, *now)
+		if readErr != nil || claimed.UpgradeTotal != 0 || len(claimed.Upgrades) != 4 {
+			t.Fatal("claimed history missing or counted as pending", claimed, readErr)
+		}
+		for _, reward := range claimed.Upgrades {
+			if reward.Status != "claimed" {
+				t.Fatal("incorrect reward state", reward)
+			}
+		}
 		var wallet LobbyWalletBalance
 		db.Where("uid = ?", uid).Take(&wallet)
 		if wallet.Coins != 56 {

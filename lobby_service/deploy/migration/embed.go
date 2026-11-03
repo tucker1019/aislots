@@ -26,5 +26,11 @@ var vipSchema string
 //go:embed 008_newbie_recharge.sql
 var newbieSchema string
 
+//go:embed 009_game_integration.sql
+var gameSchema string
+
+//go:embed 010_uid_start.sql
+var uidSchema string
+
 // Schema applies initial schema and backward-compatible upgrades in order.
-var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema
+var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema + "\n" + gameSchema + "\n" + uidSchema
