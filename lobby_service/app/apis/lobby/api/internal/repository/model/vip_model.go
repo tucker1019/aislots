@@ -102,7 +102,7 @@ func vipSource(kind string) coinsource.Source {
 	}
 }
 
-func (m *VIPModel) ClaimVIP(ctx context.Context, uid int64, token, kind, requestID, date string, now time.Time) (*VIPReceipt, error) {
+func (m *VIPModel) ClaimVIP(ctx context.Context, uid int64, token, kind, requestID, date, rewardID string, now time.Time) (*VIPReceipt, error) {
 	receipt := &VIPReceipt{}
 	err := m.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := (&UserModel{DB: tx}).Check(ctx, uid, token, now); err != nil {
@@ -114,7 +114,16 @@ func (m *VIPModel) ClaimVIP(ctx context.Context, uid int64, token, kind, request
 		}
 		err := tx.Where("uid = ? AND kind = ? AND request_id = ?", uid, kind, requestID).Take(&receipt.Batch).Error
 		if err == nil {
-			return tx.Where("batch_id = ?", receipt.Batch.ClaimID).Order("level, reward_key").Find(&receipt.Items).Error
+			if e := tx.Where("batch_id = ?", receipt.Batch.ClaimID).Order("level, reward_key").Find(&receipt.Items).Error; e != nil {
+				return e
+			}
+			if rewardID != "" && (len(receipt.Items) != 1 || receipt.Items[0].RewardID != rewardID) {
+				return xerr.ErrInvalid
+			}
+			if kind == "upgrade" && rewardID == "" {
+				return xerr.ErrInvalid
+			}
+			return nil
 		}
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			return err
@@ -129,7 +138,13 @@ func (m *VIPModel) ClaimVIP(ctx context.Context, uid int64, token, kind, request
 		if date != activityDate(now, m.location()) {
 			return xerr.ErrReturnDate
 		}
+		if kind == "upgrade" && rewardID == "" {
+			return xerr.ErrInvalid
+		}
 		query := tx.Where("uid = ? AND kind = ? AND status = ?", uid, kind, "pending")
+		if rewardID != "" {
+			query = query.Where("reward_id = ?", rewardID)
+		}
 		if kind != "upgrade" {
 			query = query.Where("available_at <= ? AND expires_at > ?", now, now)
 		}

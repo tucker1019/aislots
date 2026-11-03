@@ -26,6 +26,7 @@ type ledgerCategory struct {
 
 func (l *Logic) ledgerCategories() []ledgerCategory {
 	c := []ledgerCategory{
+		{"invite", "邀请奖励", []string{string(coinsource.SourceInviteReward)}, nil},
 		{"recharge", "会员充值", []string{string(coinsource.SourceRechargeCredit)}, nil},
 		{"bonus", "充值赠送", []string{string(coinsource.SourceRechargeBonus)}, nil},
 		{"fee", "充值手续费", []string{string(coinsource.SourceRechargeFee)}, nil},

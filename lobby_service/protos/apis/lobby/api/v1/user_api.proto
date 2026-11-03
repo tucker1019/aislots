@@ -20,6 +20,7 @@ service UserService {
  rpc ProfileUpdate(UserRequest) returns (ProfileReply) { option (google.api.http) = { post: "/api/user/user/update" body: "*" }; }
 }
 message UserRequest {
+ string invite_code=8 [json_name="inviteCode"];
  optional int64 uid = 1;
  optional string sid = 2;
  string account = 3;

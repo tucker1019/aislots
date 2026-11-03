@@ -93,7 +93,7 @@ source统一维护：[script/coin_sources.py](script/coin_sources.py)，执行 `
 
 ## 循环签到
 
-`GET /api/activity/checkin/info` 查询今日进度，`POST /api/activity/checkin/claim` 领取奖励；两个接口均需uid/sid。断签重置第1天，领完配置周期重新循环，每天只计算当天流水及成功充值。配置[etc/checkin.json](etc/checkin.json)，可用LOBBY_CHECKIN_CONFIG覆盖，默认Asia/Jakarta时区，修改后重启。示例7天的门槛/奖励为可调整占位配置。
+`GET /api/activity/checkin/info` 查询今日进度，`POST /api/activity/checkin/claim` 领取奖励；两个接口均需uid/sid。断签重置第1天，领完配置周期重新循环，每天只计算当天流水及成功充值。配置[etc/checkin.json](etc/checkin.json)，可用LOBBY_CHECKIN_CONFIG覆盖，默认Asia/Shanghai（北京时间）时区，修改后重启。示例7天的门槛/奖励为可调整占位配置。
 
 独立业务事件和每日汇总统计流水，预留可信游戏结算适配方法，不遍历机台source；真实游戏流水尚未接入。完整协议与接入约定见[签到接口文档](docs/checkin-api.md)。
 

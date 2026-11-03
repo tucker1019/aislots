@@ -4,6 +4,7 @@ package coinsource
 type Source string
 
 const (
+	SourceInviteReward   Source = "act_007"  // 邀请好友奖励加币
 	SourceGameBet        Source = "game_001" // 游戏投注扣币
 	SourceGameWin        Source = "game_002" // 游戏逐轮派彩
 	SourceNewbieRecharge Source = "act_006"  // 新手累计充值奖励

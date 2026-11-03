@@ -1,0 +1,11 @@
+{
+  "version": "invite-v1",
+  "durationDays": 30,
+  "minDepositCount": 5,
+  "minDepositAmount": 50000,
+  "minBetAmount": 500000,
+  "rewardAmount": 20000,
+  "displayRows": 10,
+  "baseUrl": "http://127.0.0.1:5175/",
+  "supportUrl": "https://t.me/tucker881"
+}

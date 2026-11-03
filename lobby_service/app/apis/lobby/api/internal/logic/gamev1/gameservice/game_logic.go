@@ -16,13 +16,21 @@ import (
 )
 
 type Logic struct {
-	users  repository.UserStore
-	store  repository.GameStore
-	config config.GameConfig
+	invite       inviteStore
+	inviteConfig config.InviteConfig
+	location     *time.Location
+	stats        *statisticsCache
+	users        repository.UserStore
+	store        repository.GameStore
+	config       config.GameConfig
 }
 
 func New(s *svc.ServiceContext) *Logic {
-	return &Logic{store: s.Repo.Game, config: s.Config.Game, users: s.Repo.Users}
+	var invites inviteStore
+	if s.Repo.Invite != nil {
+		invites = s.Repo.Invite
+	}
+	return &Logic{invite: invites, inviteConfig: s.Config.Invite, store: s.Repo.Game, config: s.Config.Game, users: s.Repo.Users, stats: newStatisticsCache(), location: s.Config.Checkin.Location()}
 }
 func (l *Logic) GameLaunch(ctx context.Context, r *pb.GameLaunchRequest) (*pb.GameLaunchReply, error) {
 	g, ok := l.config.Games[r.GameId]

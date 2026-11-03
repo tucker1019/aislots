@@ -26,7 +26,7 @@ func TestVIPLogic(t *testing.T) {
 	uid := int64(7)
 	sid := strings.Repeat("a", 52)
 	request := func() *pb.VipRequest {
-		return &pb.VipRequest{Uid: &uid, Sid: &sid, RequestId: "req", ActivityDate: "2026-06-01"}
+		return &pb.VipRequest{Uid: &uid, Sid: &sid, RequestId: "req", ActivityDate: "2026-06-01", RewardId: "reward-1"}
 	}
 	if _, err := l.VipInfo(ctx, &pb.VipRequest{}); !errors.Is(err, xerr.ErrSession) {
 		t.Fatal(err)
@@ -74,11 +74,11 @@ func TestVIPLogic(t *testing.T) {
 		if _, err := test.call(ctx, r); !errors.Is(err, xerr.ErrInvalid) {
 			t.Fatal(err)
 		}
-		store.EXPECT().ClaimVIP(ctx, uid, gomock.Any(), test.kind, "req", "2026-06-01", gomock.Any()).Return(nil, xerr.ErrVIPEmpty)
+		store.EXPECT().ClaimVIP(ctx, uid, gomock.Any(), test.kind, "req", "2026-06-01", "reward-1", gomock.Any()).Return(nil, xerr.ErrVIPEmpty)
 		if _, err := test.call(ctx, request()); !errors.Is(err, xerr.ErrVIPEmpty) {
 			t.Fatal(err)
 		}
-		store.EXPECT().ClaimVIP(ctx, uid, gomock.Any(), test.kind, "req", "2026-06-01", gomock.Any()).Return(&model.VIPReceipt{Batch: model.LobbyVipClaimBatch{ClaimID: "vpc_1", TotalReward: 200, Coins: 1200}, Items: []*model.LobbyVipReward{{Kind: test.kind, Level: 1, Amount: 200, Status: "claimed"}}}, nil)
+		store.EXPECT().ClaimVIP(ctx, uid, gomock.Any(), test.kind, "req", "2026-06-01", "reward-1", gomock.Any()).Return(&model.VIPReceipt{Batch: model.LobbyVipClaimBatch{ClaimID: "vpc_1", TotalReward: 200, Coins: 1200}, Items: []*model.LobbyVipReward{{Kind: test.kind, Level: 1, Amount: 200, Status: "claimed"}}}, nil)
 		out, err := test.call(ctx, request())
 		if err != nil || out.Coins != 1200 || out.Items[0].Kind != test.kind {
 			t.Fatal(out, err)

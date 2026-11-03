@@ -78,8 +78,11 @@ func (l *Logic) claim(ctx context.Context, r *pb.VipRequest, kind string) (*pb.V
 	if _, err := time.Parse(time.DateOnly, r.ActivityDate); err != nil {
 		return nil, xerr.ErrInvalid
 	}
+	if kind == "upgrade" && r.RewardId == "" || len(r.RewardId) > 128 {
+		return nil, xerr.ErrInvalid
+	}
 	now := time.Now().UTC()
-	receipt, err := l.store.ClaimVIP(ctx, r.GetUid(), userlogic.Hash(r.GetSid()), kind, r.RequestId, r.ActivityDate, now)
+	receipt, err := l.store.ClaimVIP(ctx, r.GetUid(), userlogic.Hash(r.GetSid()), kind, r.RequestId, r.ActivityDate, r.RewardId, now)
 	if err != nil {
 		return nil, xerr.Public(err)
 	}

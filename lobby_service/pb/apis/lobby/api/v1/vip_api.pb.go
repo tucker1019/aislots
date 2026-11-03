@@ -28,6 +28,7 @@ type VipRequest struct {
 	Sid           *string                `protobuf:"bytes,2,opt,name=sid,proto3,oneof" json:"sid,omitempty"`
 	RequestId     string                 `protobuf:"bytes,3,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	ActivityDate  string                 `protobuf:"bytes,4,opt,name=activity_date,json=activityDate,proto3" json:"activity_date,omitempty"`
+	RewardId      string                 `protobuf:"bytes,5,opt,name=reward_id,json=rewardId,proto3" json:"reward_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -86,6 +87,13 @@ func (x *VipRequest) GetRequestId() string {
 func (x *VipRequest) GetActivityDate() string {
 	if x != nil {
 		return x.ActivityDate
+	}
+	return ""
+}
+
+func (x *VipRequest) GetRewardId() string {
+	if x != nil {
+		return x.RewardId
 	}
 	return ""
 }
@@ -707,14 +715,15 @@ var File_apis_lobby_api_v1_vip_api_proto protoreflect.FileDescriptor
 
 const file_apis_lobby_api_v1_vip_api_proto_rawDesc = "" +
 	"\n" +
-	"\x1fapis/lobby/api/v1/vip_api.proto\x12\x11apis.lobby.api.v1\x1a\x1cgoogle/api/annotations.proto\"\x8e\x01\n" +
+	"\x1fapis/lobby/api/v1/vip_api.proto\x12\x11apis.lobby.api.v1\x1a\x1cgoogle/api/annotations.proto\"\xab\x01\n" +
 	"\n" +
 	"VipRequest\x12\x15\n" +
 	"\x03uid\x18\x01 \x01(\x03H\x00R\x03uid\x88\x01\x01\x12\x15\n" +
 	"\x03sid\x18\x02 \x01(\tH\x01R\x03sid\x88\x01\x01\x12\x1d\n" +
 	"\n" +
 	"request_id\x18\x03 \x01(\tR\trequestId\x12#\n" +
-	"\ractivity_date\x18\x04 \x01(\tR\factivityDateB\x06\n" +
+	"\ractivity_date\x18\x04 \x01(\tR\factivityDate\x12\x1b\n" +
+	"\treward_id\x18\x05 \x01(\tR\brewardIdB\x06\n" +
 	"\x04_uidB\x06\n" +
 	"\x04_sid\"\xdc\x03\n" +
 	"\bVipLevel\x12\x14\n" +

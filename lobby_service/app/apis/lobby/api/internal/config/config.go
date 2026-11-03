@@ -18,6 +18,7 @@ type Config struct {
 	Checkin       CheckinConfig
 	Returns       ReturnConfig
 	VIP           VIPConfig
+	Invite        InviteConfig
 	Newbie        NewbieConfig
 }
 
@@ -64,6 +65,10 @@ func Load() (Config, error) {
 		return c, err
 	}
 	c.Newbie, err = LoadNewbie(os.Getenv("LOBBY_NEWBIE_RECHARGE_CONFIG"))
+	if err != nil {
+		return c, err
+	}
+	c.Invite, err = LoadInvite(os.Getenv("LOBBY_INVITE_CONFIG"))
 	if err != nil {
 		return c, err
 	}

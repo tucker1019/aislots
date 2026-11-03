@@ -6,14 +6,14 @@ import "google/api/annotations.proto";
 service VIPService {
  // @Desc: VIP完整配置、当前状态、待领奖励及工资
  rpc VipInfo(VipRequest) returns (VipInfoReply) {option (google.api.http)={get:"/api/vip/info"};}
- // @Desc: 一次领取全部待领升级礼金
+ // @Desc: 按奖励ID单独领取一级升级礼金
  rpc VipUpgradeClaim(VipRequest) returns (VipClaimReply) {option (google.api.http)={post:"/api/vip/upgrade/claim" body:"*"};}
  // @Desc: 领取服务端已结算的周工资
  rpc VipWeeklyClaim(VipRequest) returns (VipClaimReply) {option (google.api.http)={post:"/api/vip/weekly/claim" body:"*"};}
  // @Desc: 领取服务端已结算的月工资
  rpc VipMonthlyClaim(VipRequest) returns (VipClaimReply) {option (google.api.http)={post:"/api/vip/monthly/claim" body:"*"};}
 }
-message VipRequest { optional int64 uid=1;optional string sid=2;string request_id=3 [json_name="requestId"];string activity_date=4 [json_name="activityDate"]; }
+message VipRequest { optional int64 uid=1;optional string sid=2;string request_id=3 [json_name="requestId"];string activity_date=4 [json_name="activityDate"];string reward_id=5 [json_name="rewardId"]; }
 message VipLevel {
  int32 level=1;int64 upgrade_bet=2 [json_name="upgradeBet"];int64 upgrade_recharge=3 [json_name="upgradeRecharge"];
  int64 keep_bet=4 [json_name="keepBet"];int64 keep_recharge=5 [json_name="keepRecharge"];

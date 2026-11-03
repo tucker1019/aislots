@@ -58,6 +58,7 @@ func run() error {
 	repo := repository.New(db, c.Checkin.Location())
 	repo.ConfigureVIP(db, c.VIP, c.Checkin.Location())
 	repo.ConfigureNewbie(db, c.Newbie)
+	repo.ConfigureInvite(db, c.Invite)
 	dependencies := svc.New(c, repo)
 	workerCtx, cancelWorker := context.WithCancel(ctx)
 	workerDone := server.StartPayments(workerCtx, dependencies.Repo.Recharge)

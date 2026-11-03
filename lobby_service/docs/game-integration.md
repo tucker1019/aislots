@@ -74,3 +74,7 @@ go run ./cmd/slots-server -config configs/server.lobby.json
 `POST /api/game/wallet-ledger/detail`：`{uid,sid,id}`，id为列表流水ID字符串。只能读取当前用户的流水。
 
 item包含id、orderId、type、currency、amount（有符号整数分）、balance（该笔账变后余额）、createdAt、remark。业务分类由服务端映射source，日周月反水合并为“反水奖励”；游戏流水通过结算单关联厂商，显示“AG 投注 / AG 派彩”，不公开具体游戏名称。没有三方转入/转出分类。订单号可复制；不合并不同实际账变，余额取每笔记账快照。
+
+## 个人报表
+
+`POST /api/user/report`，请求带`uid/sid/period`，周期为`today/yesterday/this_week/last_week`；服务端按活动时区计算自然日和周一开始的自然周，返回半开区间`from/to`、统计时区、币种及独立指标。充值只计本金；返水和各项奖励按实际钱包入账时间统计；游戏输赢为派彩减下注，有效投注取可信活动事件的有效流水（非直接复制投注额）。净输赢为游戏输赢加已到账返水、签到、VIP奖励、亏损返还、充值赠送、新手奖励，不含充值本金、取款和充值手续费。取款、代理、账户调整暂标记`supported=false`。同一只读快照聚合，禁止客户端传UID外的统计数据或直接访问机台数据库。新增金币source时须同步确认报表归类。

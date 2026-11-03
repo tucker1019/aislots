@@ -20,15 +20,26 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, table := range []string{"lobby_game_tickets", "lobby_game_settlements", "lobby_users", "lobby_sessions", "lobby_recharge_orders", "lobby_coin_ledger", "lobby_wallet_balances", "lobby_activity_daily", "lobby_activity_events", "lobby_checkin_claims", "lobby_return_batches", "lobby_return_claims", "lobby_vip_states", "lobby_vip_rewards", "lobby_vip_claim_batches", "lobby_newbie_recharges", "lobby_newbie_recharge_tiers", "lobby_newbie_claim_batches"} {
+	for _, table := range []string{"lobby_invite_codes", "lobby_invite_relations", "lobby_invite_rewards", "lobby_invite_batches", "lobby_game_statistics_epoch", "lobby_game_completions", "lobby_game_rtp_minutes", "lobby_game_streaks", "lobby_game_streak_days", "lobby_game_rank_candidates", "lobby_game_tickets", "lobby_game_settlements", "lobby_users", "lobby_sessions", "lobby_recharge_orders", "lobby_coin_ledger", "lobby_wallet_balances", "lobby_activity_daily", "lobby_activity_events", "lobby_checkin_claims", "lobby_return_batches", "lobby_return_claims", "lobby_vip_states", "lobby_vip_rewards", "lobby_vip_claim_batches", "lobby_newbie_recharges", "lobby_newbie_recharge_tiers", "lobby_newbie_claim_batches"} {
 		if !db.Migrator().HasTable(table) {
 			log.Fatalf("run migration first: missing %s", table)
 		}
 	}
 	g := gen.NewGenerator(gen.Config{OutPath: "app/apis/lobby/api/internal/repository/query", ModelPkgPath: "app/apis/lobby/api/internal/repository/model", FieldNullable: true})
+	g.WithDataTypeMap(map[string]func(gorm.ColumnType) string{"numeric": func(gorm.ColumnType) string { return "string" }})
 	g.UseDB(db)
+	g.GenerateModel("lobby_game_statistics_epoch")
+	g.GenerateModel("lobby_game_completions")
+	g.GenerateModel("lobby_game_rtp_minutes")
+	g.GenerateModel("lobby_game_streaks")
+	g.GenerateModel("lobby_game_streak_days")
+	g.GenerateModel("lobby_game_rank_candidates")
 	g.GenerateModel("lobby_game_tickets")
 	g.GenerateModel("lobby_game_settlements")
+	g.GenerateModel("lobby_invite_codes")
+	g.GenerateModel("lobby_invite_relations")
+	g.GenerateModel("lobby_invite_rewards")
+	g.GenerateModel("lobby_invite_batches")
 	g.GenerateModel("lobby_users")
 	g.GenerateModel("lobby_sessions")
 	g.GenerateModel("lobby_recharge_orders")

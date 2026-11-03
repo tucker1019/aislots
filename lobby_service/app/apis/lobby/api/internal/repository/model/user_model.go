@@ -21,6 +21,7 @@ type UserModel struct {
 	DB     *gorm.DB
 	VIP    *VIPModel
 	Newbie *NewbieModel
+	Invite *InviteModel
 }
 
 func databaseError(err error) error {
@@ -35,6 +36,12 @@ func databaseError(err error) error {
 }
 
 func (m *UserModel) Create(ctx context.Context, account, password, token string, expiry time.Time) (int64, error) {
+	return m.create(ctx, account, password, token, expiry, "")
+}
+func (m *UserModel) CreateInvited(ctx context.Context, token string, expiry time.Time, code string) (int64, error) {
+	return m.create(ctx, "", "", token, expiry, code)
+}
+func (m *UserModel) create(ctx context.Context, account, password, token string, expiry time.Time, code string) (int64, error) {
 	avatar, err := rand.Int(rand.Reader, big.NewInt(15))
 	if err != nil {
 		return 0, xerr.Public(err)
@@ -61,6 +68,11 @@ func (m *UserModel) Create(ctx context.Context, account, password, token string,
 		}
 		if m.Newbie != nil {
 			if _, err := m.Newbie.enroll(tx, user.UID, user.CreatedAt); err != nil {
+				return err
+			}
+		}
+		if m.Invite != nil && code != "" {
+			if err := m.Invite.bind(tx, user.UID, code, user.CreatedAt); err != nil {
 				return err
 			}
 		}

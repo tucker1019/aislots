@@ -171,13 +171,27 @@ func TestVIPPostgres(t *testing.T) {
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				r, e := m.ClaimVIP(ctx, uid, token, "upgrade", "same-request", date, *now)
-				if e != nil || r.Batch.TotalReward != 56 || len(r.Items) != 4 {
+				r, e := m.ClaimVIP(ctx, uid, token, "upgrade", "same-request", date, v.Upgrades[0].RewardID, *now)
+				if e != nil || r.Batch.TotalReward != v.Upgrades[0].Amount || len(r.Items) != 1 {
 					t.Error(r, e)
 				}
 			}()
 		}
 		wg.Wait()
+		if _, e := m.ClaimVIP(ctx, uid, token, "upgrade", "same-request", date, v.Upgrades[1].RewardID, *now); !errors.Is(e, xerr.ErrInvalid) {
+			t.Fatal("request rebound to another reward", e)
+		}
+		if _, e := m.ClaimVIP(ctx, uid, token, "upgrade", "bulk-denied", date, "", *now); !errors.Is(e, xerr.ErrInvalid) {
+			t.Fatal("bulk claim accepted", e)
+		}
+		if _, e := m.ClaimVIP(ctx, uid, token, "upgrade", "missing-reward", date, "another-user-reward", *now); !errors.Is(e, xerr.ErrVIPEmpty) {
+			t.Fatal("foreign reward accepted", e)
+		}
+		for _, reward := range v.Upgrades[1:] {
+			if _, e := m.ClaimVIP(ctx, uid, token, "upgrade", "single-"+reward.RewardID, date, reward.RewardID, *now); e != nil {
+				t.Fatal(e)
+			}
+		}
 		claimed, readErr := m.ReadVIP(ctx, uid, token, *now)
 		if readErr != nil || claimed.UpgradeTotal != 0 || len(claimed.Upgrades) != 4 {
 			t.Fatal("claimed history missing or counted as pending", claimed, readErr)
@@ -200,8 +214,8 @@ func TestVIPPostgres(t *testing.T) {
 		if v.State.Level != 2 || v.State.UpgradeBet != 0 || v.State.UpgradeRecharge != 0 || v.State.HighestLevel != 4 {
 			t.Fatal(v.State)
 		}
-		replay, e := m.ClaimVIP(ctx, uid, token, "upgrade", "same-request", date, *now)
-		if e != nil || replay.Batch.TotalReward != 56 {
+		replay, e := m.ClaimVIP(ctx, uid, token, "upgrade", "same-request", date, v.Upgrades[0].RewardID, *now)
+		if e != nil || replay.Batch.TotalReward != v.Upgrades[0].Amount {
 			t.Fatal(replay, e)
 		}
 	})
@@ -266,11 +280,11 @@ func TestVIPPostgres(t *testing.T) {
 		cfg := m.Config
 		m.Config.Levels = append([]config.VIPLevel(nil), m.Config.Levels...)
 		m.Config.Levels[2].WeeklyReward = 999
-		r, err := m.ClaimVIP(ctx, uid, token, "weekly", "weekly-1", "2026-06-01", *now)
+		r, err := m.ClaimVIP(ctx, uid, token, "weekly", "weekly-1", "2026-06-01", "", *now)
 		if err != nil || r.Batch.TotalReward != 60 {
 			t.Fatal(r, err)
 		}
-		r, err = m.ClaimVIP(ctx, uid, token, "monthly", "monthly-1", "2026-06-01", *now)
+		r, err = m.ClaimVIP(ctx, uid, token, "monthly", "monthly-1", "2026-06-01", "", *now)
 		if err != nil || r.Batch.TotalReward != 80 {
 			t.Fatal(r, err)
 		}
@@ -279,14 +293,14 @@ func TestVIPPostgres(t *testing.T) {
 			t.Fatal(wallet)
 		}
 		*now = now.Add(24 * time.Hour)
-		r, err = m.ClaimVIP(ctx, uid, token, "weekly", "weekly-1", "2026-06-01", *now)
+		r, err = m.ClaimVIP(ctx, uid, token, "weekly", "weekly-1", "2026-06-01", "", *now)
 		if err != nil || r.Batch.TotalReward != 60 {
 			t.Fatal(r, err)
 		}
-		if _, err = m.ClaimVIP(ctx, uid, token, "weekly", "new-id", "2026-06-02", *now); !errors.Is(err, xerr.ErrVIPEmpty) {
+		if _, err = m.ClaimVIP(ctx, uid, token, "weekly", "new-id", "2026-06-02", "", *now); !errors.Is(err, xerr.ErrVIPEmpty) {
 			t.Fatal(err)
 		}
-		if _, err = m.ClaimVIP(ctx, uid, token, "upgrade", "new-id", "2026-06-01", *now); !errors.Is(err, xerr.ErrReturnDate) {
+		if _, err = m.ClaimVIP(ctx, uid, token, "upgrade", "new-id", "2026-06-01", "", *now); !errors.Is(err, xerr.ErrReturnDate) {
 			t.Fatal(err)
 		}
 		m.Config = cfg
@@ -304,10 +318,10 @@ func TestVIPPostgres(t *testing.T) {
 		if v.Weekly.Status != "ineligible" {
 			t.Fatal(v.Weekly)
 		}
-		if _, err = m.ClaimVIP(ctx, uid, token, "weekly", "no-money", "2026-06-01", *now); !errors.Is(err, xerr.ErrVIPEmpty) {
+		if _, err = m.ClaimVIP(ctx, uid, token, "weekly", "no-money", "2026-06-01", "", *now); !errors.Is(err, xerr.ErrVIPEmpty) {
 			t.Fatal(err)
 		}
-		if _, err = m.ClaimVIP(ctx, uid, "bad", "upgrade", "no-money", "2026-06-01", *now); !errors.Is(err, xerr.ErrSession) {
+		if _, err = m.ClaimVIP(ctx, uid, "bad", "upgrade", "no-money", "2026-06-01", "", *now); !errors.Is(err, xerr.ErrSession) {
 			t.Fatal(err)
 		}
 	})
@@ -327,7 +341,7 @@ func TestVIPPostgres(t *testing.T) {
 		}
 		date := now.In(loc).Format(time.DateOnly)
 		db.Model(&LobbyWalletBalance{}).Where("uid = ?", uid).Update("coins", int64(math.MaxInt64))
-		if _, err := m.ClaimVIP(ctx, uid, token, "upgrade", "overflow", date, *now); !errors.Is(err, xerr.ErrBalanceLimit) {
+		if _, err := m.ClaimVIP(ctx, uid, token, "upgrade", "overflow", date, v.Upgrades[0].RewardID, *now); !errors.Is(err, xerr.ErrBalanceLimit) {
 			t.Fatal(err)
 		}
 		db.Model(&LobbyWalletBalance{}).Where("uid = ?", uid).Update("coins", int64(0))
@@ -339,7 +353,7 @@ func TestVIPPostgres(t *testing.T) {
 		}); err != nil {
 			t.Fatal(err)
 		}
-		_, err := m.ClaimVIP(ctx, uid, token, "upgrade", "failed", date, *now)
+		_, err := m.ClaimVIP(ctx, uid, token, "upgrade", "failed", date, v.Upgrades[0].RewardID, *now)
 		if e := db.Callback().Create().Remove(callback); e != nil {
 			t.Fatal(e)
 		}

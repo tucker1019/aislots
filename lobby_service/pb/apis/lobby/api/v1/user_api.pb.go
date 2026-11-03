@@ -24,6 +24,7 @@ const (
 
 type UserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	InviteCode    string                 `protobuf:"bytes,8,opt,name=invite_code,json=inviteCode,proto3" json:"invite_code,omitempty"`
 	Uid           *int64                 `protobuf:"varint,1,opt,name=uid,proto3,oneof" json:"uid,omitempty"`
 	Sid           *string                `protobuf:"bytes,2,opt,name=sid,proto3,oneof" json:"sid,omitempty"`
 	Account       string                 `protobuf:"bytes,3,opt,name=account,proto3" json:"account,omitempty"`
@@ -62,6 +63,13 @@ func (x *UserRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use UserRequest.ProtoReflect.Descriptor instead.
 func (*UserRequest) Descriptor() ([]byte, []int) {
 	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *UserRequest) GetInviteCode() string {
+	if x != nil {
+		return x.InviteCode
+	}
+	return ""
 }
 
 func (x *UserRequest) GetUid() int64 {
@@ -238,8 +246,10 @@ var File_apis_lobby_api_v1_user_api_proto protoreflect.FileDescriptor
 
 const file_apis_lobby_api_v1_user_api_proto_rawDesc = "" +
 	"\n" +
-	" apis/lobby/api/v1/user_api.proto\x12\x11apis.lobby.api.v1\x1a\x1cgoogle/api/annotations.proto\"\xdf\x01\n" +
-	"\vUserRequest\x12\x15\n" +
+	" apis/lobby/api/v1/user_api.proto\x12\x11apis.lobby.api.v1\x1a\x1cgoogle/api/annotations.proto\"\x80\x02\n" +
+	"\vUserRequest\x12\x1f\n" +
+	"\vinvite_code\x18\b \x01(\tR\n" +
+	"inviteCode\x12\x15\n" +
 	"\x03uid\x18\x01 \x01(\x03H\x00R\x03uid\x88\x01\x01\x12\x15\n" +
 	"\x03sid\x18\x02 \x01(\tH\x01R\x03sid\x88\x01\x01\x12\x18\n" +
 	"\aaccount\x18\x03 \x01(\tR\aaccount\x12\x1a\n" +

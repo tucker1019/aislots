@@ -32,5 +32,14 @@ var gameSchema string
 //go:embed 010_uid_start.sql
 var uidSchema string
 
+//go:embed 012_game_statistics.sql
+var gameStatisticsSchema string
+
+//go:embed 013_invite.sql
+var inviteSchema string
+
+//go:embed 014_invite_chests.sql
+var inviteChestSchema string
+
 // Schema applies initial schema and backward-compatible upgrades in order.
-var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema + "\n" + gameSchema + "\n" + uidSchema
+var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema + "\n" + gameSchema + "\n" + uidSchema + "\n" + gameStatisticsSchema + "\n" + inviteSchema + "\n" + inviteChestSchema

@@ -17,7 +17,7 @@
 - 例如配置VIP1需100、VIP2需1000，打105后VIP1，剩余5，升VIP2还差995（示例单位一致，与截图数值独立）。
 - 当前等级可下降，历史最高等级只上升。每一级仅首次达到时产生一次奖励资格；重升不重复发奖。
 - 首次达到时保存礼金金额快照。已获得但未领取的升级礼金不因降级、配置修改而消失，不过期。
-- 升级接口一次领取所有待领升级礼金，明细逐级返回，共用一个批次入账；不自动发钱。
+- 升级接口按rewardId单独领取一级礼金；跨多级时每一级独立领取、独立记录入账，不自动合领或发钱。
 
 ## 保级
 
@@ -103,14 +103,14 @@ levels每项包含：level、upgradeBet、upgradeRecharge、keepBet、keepRechar
 
 ## 领取接口
 
-- `POST /api/vip/upgrade/claim`：一次领取全部待领升级奖励。
+- `POST /api/vip/upgrade/claim`：必须传rewardId，一次只领取该ID对应的一笔晋级奖励。
 - `POST /api/vip/weekly/claim`：领取当前窗口内已结算周工资。
 - `POST /api/vip/monthly/claim`：领取当前窗口内已结算月工资。
 
-三个接口请求结构相同：
+三个接口共享基础请求字段；晋级接口额外必传rewardId，周月接口可传对应奖励ID精确领取：
 
 ```json
-{"uid":123,"sid":"YOUR_SID","requestId":"vip-claim-unique-client-id","activityDate":"2026-06-01"}
+{"uid":123,"sid":"YOUR_SID","requestId":"vip-claim-unique-client-id","activityDate":"2026-06-01","rewardId":"vpr_SERVER_ID"}
 ```
 
 requestId由客户端为一次领取意图生成，1–128字节，无首尾空白和控制字符。超时重试复用原requestId和原activityDate；下一次领取生成新requestId。不能提交金额、等级或目标余额。uid/sid也可通过公共查询参数传入，两处都传必须一致。
@@ -120,17 +120,16 @@ requestId由客户端为一次领取意图生成，1–128字节，无首尾空�
  "code":"OK",
  "data":{
   "claimId":"vpc_SERVER_ID",
-  "totalReward":900,
-  "coins":100900,
+  "totalReward":200,
+  "coins":100200,
   "items":[
-   {"rewardId":"vpr_2","kind":"upgrade","level":2,"amount":300,"status":"claimed","periodStart":"","periodEnd":"","availableAt":"2026-05-31T10:00:00Z","expiresAt":"","requiredBet":0,"requiredRecharge":0,"actualBet":0,"actualRecharge":0},
-   {"rewardId":"vpr_3","kind":"upgrade","level":3,"amount":600,"status":"claimed","periodStart":"","periodEnd":"","availableAt":"2026-05-31T10:00:00Z","expiresAt":"","requiredBet":0,"requiredRecharge":0,"actualBet":0,"actualRecharge":0}
+   {"rewardId":"vpr_2","kind":"upgrade","level":2,"amount":200,"status":"claimed","periodStart":"","periodEnd":"","availableAt":"2026-05-31T10:00:00Z","expiresAt":"","requiredBet":0,"requiredRecharge":0,"actualBet":0,"actualRecharge":0}
   ]
  }
 }
 ```
 
-例中VIP2+VIP3待领礼金为3+6=9元。items升序展示每级礼金，totalReward合计；coins是该批次结算后的余额快照，当前余额从用户信息获取。
+例中仅领取所指定VIP2奖励200分，items只含该笔，其他等级奖励保持原状态。coins是该笔结算后的余额快照，当前余额从用户信息获取。
 
 按(uid,kind,requestId)幂等。相同请求重试返回原批次，即使跨天也不误领新的奖励。新请求日期过期则拒绝，刷新info后使用新请求号操作。已领奖励即使用新requestId也不能重复领取。
 
@@ -155,4 +154,9 @@ source统一由script/coin_sources.py维护：升级vip_001、周工资vip_002�
 
 ## 客户端领取状态
 
-`upgradeRewards` 返回逐级奖励记录（含待领取和已领取）；`upgradeClaimableTotal` 仅累加未领取金额。客户端按记录的 `level` 和 `status` 展示“领取／已领取／等级权益”，不能用最高等级推断领取状态。周、月礼金使用 `weekly`、`monthly` 已结算记录，并匹配奖励记录所属等级；`weeklyPreview`、`monthlyPreview` 仅用于预估，不构成可领取资格。升级接口仍一次领取全部待领奖励，使用同一requestId重试不会重复加币。
+`upgradeRewards` 返回逐级奖励记录（含待领取和已领取）；`upgradeClaimableTotal` 仅累加未领取金额。客户端按记录的 `level` 和 `status` 展示“领取／已领取／等级权益”，不能用最高等级推断领取状态。周、月礼金使用 `weekly`、`monthly` 已结算记录，并匹配奖励记录所属等级；`weeklyPreview`、`monthlyPreview` 仅用于预估，不构成可领取资格。升级接口按rewardId单笔领取，使用同一requestId和rewardId重试不会重复加币。
+
+
+### 按笔领取约束
+
+晋级领取必须指定当前用户的一笔rewardId，不传时拒绝请求，不回退为合领。相同requestId重试绑定原奖励ID，换另一奖励ID会被拒绝。按uid、kind、rewardId查询待领奖励，领取、钱包余额、source流水和幂等回执在同一事务提交。晋级返回items始终仅该笔，金额使用奖励快照。周、月工资保持不同接口、不同kind和独立回执，互不合并。VIP页面按选择等级领取晋级奖励，成功只更新该rewardId对应状态。

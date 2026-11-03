@@ -11,6 +11,7 @@ import (
 )
 
 type Repository struct {
+	Invite   *model.InviteModel
 	Game     GameStore
 	Users    UserStore
 	Recharge RechargeStore
@@ -48,5 +49,13 @@ func (r *Repository) ConfigureNewbie(db *gorm.DB, c config.NewbieConfig) {
 	r.Newbie = engine
 	if users, ok := r.Users.(*model.UserModel); ok {
 		users.Newbie = engine
+	}
+}
+
+func (r *Repository) ConfigureInvite(db *gorm.DB, c config.InviteConfig) {
+	m := &model.InviteModel{DB: db, Config: c}
+	r.Invite = m
+	if users, ok := r.Users.(*model.UserModel); ok {
+		users.Invite = m
 	}
 }

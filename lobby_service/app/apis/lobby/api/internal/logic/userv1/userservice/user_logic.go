@@ -101,3 +101,18 @@ func (s *Service) Bind(ctx context.Context, uid int64, sid, account, password st
 	}
 	return Identity{uid, sid, expiry}, nil
 }
+
+func (s *Service) CreateInvited(ctx context.Context, code string) (Identity, error) {
+	if len(code) > 64 || strings.TrimSpace(code) != code {
+		return Identity{}, xerr.ErrInvalid
+	}
+	store, ok := s.Store.(interface {
+		CreateInvited(context.Context, string, time.Time, string) (int64, error)
+	})
+	if !ok {
+		return Identity{}, xerr.ErrInvalid
+	}
+	token, expiry := s.token()
+	uid, err := store.CreateInvited(ctx, Hash(token), expiry, code)
+	return Identity{uid, token, expiry}, err
+}

@@ -1134,6 +1134,1386 @@ func (x *WalletLedgerDetailReply) GetItem() *WalletLedgerItem {
 	return nil
 }
 
+type PersonalReportRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Uid           *int64                 `protobuf:"varint,1,opt,name=uid,proto3,oneof" json:"uid,omitempty"`
+	Sid           *string                `protobuf:"bytes,2,opt,name=sid,proto3,oneof" json:"sid,omitempty"`
+	Period        string                 `protobuf:"bytes,3,opt,name=period,proto3" json:"period,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PersonalReportRequest) Reset() {
+	*x = PersonalReportRequest{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PersonalReportRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PersonalReportRequest) ProtoMessage() {}
+
+func (x *PersonalReportRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PersonalReportRequest.ProtoReflect.Descriptor instead.
+func (*PersonalReportRequest) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *PersonalReportRequest) GetUid() int64 {
+	if x != nil && x.Uid != nil {
+		return *x.Uid
+	}
+	return 0
+}
+
+func (x *PersonalReportRequest) GetSid() string {
+	if x != nil && x.Sid != nil {
+		return *x.Sid
+	}
+	return ""
+}
+
+func (x *PersonalReportRequest) GetPeriod() string {
+	if x != nil {
+		return x.Period
+	}
+	return ""
+}
+
+type ReportMetric struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Key           string                 `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Label         string                 `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
+	Amount        int64                  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	Supported     bool                   `protobuf:"varint,4,opt,name=supported,proto3" json:"supported,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReportMetric) Reset() {
+	*x = ReportMetric{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportMetric) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportMetric) ProtoMessage() {}
+
+func (x *ReportMetric) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportMetric.ProtoReflect.Descriptor instead.
+func (*ReportMetric) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *ReportMetric) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *ReportMetric) GetLabel() string {
+	if x != nil {
+		return x.Label
+	}
+	return ""
+}
+
+func (x *ReportMetric) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *ReportMetric) GetSupported() bool {
+	if x != nil {
+		return x.Supported
+	}
+	return false
+}
+
+type PersonalReportReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*ReportMetric        `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	From          string                 `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	To            string                 `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	Timezone      string                 `protobuf:"bytes,4,opt,name=timezone,proto3" json:"timezone,omitempty"`
+	Currency      string                 `protobuf:"bytes,5,opt,name=currency,proto3" json:"currency,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PersonalReportReply) Reset() {
+	*x = PersonalReportReply{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PersonalReportReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PersonalReportReply) ProtoMessage() {}
+
+func (x *PersonalReportReply) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PersonalReportReply.ProtoReflect.Descriptor instead.
+func (*PersonalReportReply) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *PersonalReportReply) GetItems() []*ReportMetric {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+func (x *PersonalReportReply) GetFrom() string {
+	if x != nil {
+		return x.From
+	}
+	return ""
+}
+
+func (x *PersonalReportReply) GetTo() string {
+	if x != nil {
+		return x.To
+	}
+	return ""
+}
+
+func (x *PersonalReportReply) GetTimezone() string {
+	if x != nil {
+		return x.Timezone
+	}
+	return ""
+}
+
+func (x *PersonalReportReply) GetCurrency() string {
+	if x != nil {
+		return x.Currency
+	}
+	return ""
+}
+
+type GameCompleteRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Uid           int64                  `protobuf:"varint,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	GameId        string                 `protobuf:"bytes,2,opt,name=game_id,json=gameId,proto3" json:"game_id,omitempty"`
+	BetId         string                 `protobuf:"bytes,3,opt,name=bet_id,json=betId,proto3" json:"bet_id,omitempty"`
+	Sequence      int64                  `protobuf:"varint,4,opt,name=sequence,proto3" json:"sequence,omitempty"`
+	BetAmount     int64                  `protobuf:"varint,5,opt,name=bet_amount,json=betAmount,proto3" json:"bet_amount,omitempty"`
+	WinAmount     int64                  `protobuf:"varint,6,opt,name=win_amount,json=winAmount,proto3" json:"win_amount,omitempty"`
+	StartedAt     string                 `protobuf:"bytes,7,opt,name=started_at,json=startedAt,proto3" json:"started_at,omitempty"`
+	EndedAt       string                 `protobuf:"bytes,8,opt,name=ended_at,json=endedAt,proto3" json:"ended_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GameCompleteRequest) Reset() {
+	*x = GameCompleteRequest{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameCompleteRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameCompleteRequest) ProtoMessage() {}
+
+func (x *GameCompleteRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameCompleteRequest.ProtoReflect.Descriptor instead.
+func (*GameCompleteRequest) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *GameCompleteRequest) GetUid() int64 {
+	if x != nil {
+		return x.Uid
+	}
+	return 0
+}
+
+func (x *GameCompleteRequest) GetGameId() string {
+	if x != nil {
+		return x.GameId
+	}
+	return ""
+}
+
+func (x *GameCompleteRequest) GetBetId() string {
+	if x != nil {
+		return x.BetId
+	}
+	return ""
+}
+
+func (x *GameCompleteRequest) GetSequence() int64 {
+	if x != nil {
+		return x.Sequence
+	}
+	return 0
+}
+
+func (x *GameCompleteRequest) GetBetAmount() int64 {
+	if x != nil {
+		return x.BetAmount
+	}
+	return 0
+}
+
+func (x *GameCompleteRequest) GetWinAmount() int64 {
+	if x != nil {
+		return x.WinAmount
+	}
+	return 0
+}
+
+func (x *GameCompleteRequest) GetStartedAt() string {
+	if x != nil {
+		return x.StartedAt
+	}
+	return ""
+}
+
+func (x *GameCompleteRequest) GetEndedAt() string {
+	if x != nil {
+		return x.EndedAt
+	}
+	return ""
+}
+
+type GameCompleteReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Included      bool                   `protobuf:"varint,1,opt,name=included,proto3" json:"included,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GameCompleteReply) Reset() {
+	*x = GameCompleteReply{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameCompleteReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameCompleteReply) ProtoMessage() {}
+
+func (x *GameCompleteReply) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameCompleteReply.ProtoReflect.Descriptor instead.
+func (*GameCompleteReply) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *GameCompleteReply) GetIncluded() bool {
+	if x != nil {
+		return x.Included
+	}
+	return false
+}
+
+type GameStatisticsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Uid           *int64                 `protobuf:"varint,1,opt,name=uid,proto3,oneof" json:"uid,omitempty"`
+	Sid           *string                `protobuf:"bytes,2,opt,name=sid,proto3,oneof" json:"sid,omitempty"`
+	GameId        string                 `protobuf:"bytes,3,opt,name=game_id,json=gameId,proto3" json:"game_id,omitempty"`
+	Window        string                 `protobuf:"bytes,4,opt,name=window,proto3" json:"window,omitempty"`
+	Board         string                 `protobuf:"bytes,5,opt,name=board,proto3" json:"board,omitempty"`
+	Period        string                 `protobuf:"bytes,6,opt,name=period,proto3" json:"period,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GameStatisticsRequest) Reset() {
+	*x = GameStatisticsRequest{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameStatisticsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameStatisticsRequest) ProtoMessage() {}
+
+func (x *GameStatisticsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameStatisticsRequest.ProtoReflect.Descriptor instead.
+func (*GameStatisticsRequest) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *GameStatisticsRequest) GetUid() int64 {
+	if x != nil && x.Uid != nil {
+		return *x.Uid
+	}
+	return 0
+}
+
+func (x *GameStatisticsRequest) GetSid() string {
+	if x != nil && x.Sid != nil {
+		return *x.Sid
+	}
+	return ""
+}
+
+func (x *GameStatisticsRequest) GetGameId() string {
+	if x != nil {
+		return x.GameId
+	}
+	return ""
+}
+
+func (x *GameStatisticsRequest) GetWindow() string {
+	if x != nil {
+		return x.Window
+	}
+	return ""
+}
+
+func (x *GameStatisticsRequest) GetBoard() string {
+	if x != nil {
+		return x.Board
+	}
+	return ""
+}
+
+func (x *GameStatisticsRequest) GetPeriod() string {
+	if x != nil {
+		return x.Period
+	}
+	return ""
+}
+
+type GameRtpReply struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	GameId          string                 `protobuf:"bytes,1,opt,name=game_id,json=gameId,proto3" json:"game_id,omitempty"`
+	From            string                 `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	To              string                 `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	UpdatedAt       string                 `protobuf:"bytes,4,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	StatisticsSince string                 `protobuf:"bytes,5,opt,name=statistics_since,json=statisticsSince,proto3" json:"statistics_since,omitempty"`
+	BetAmount       string                 `protobuf:"bytes,6,opt,name=bet_amount,json=betAmount,proto3" json:"bet_amount,omitempty"`
+	WinAmount       string                 `protobuf:"bytes,7,opt,name=win_amount,json=winAmount,proto3" json:"win_amount,omitempty"`
+	Rounds          int64                  `protobuf:"varint,8,opt,name=rounds,proto3" json:"rounds,omitempty"`
+	HasData         bool                   `protobuf:"varint,9,opt,name=has_data,json=hasData,proto3" json:"has_data,omitempty"`
+	Percent         string                 `protobuf:"bytes,10,opt,name=percent,proto3" json:"percent,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *GameRtpReply) Reset() {
+	*x = GameRtpReply{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameRtpReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameRtpReply) ProtoMessage() {}
+
+func (x *GameRtpReply) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameRtpReply.ProtoReflect.Descriptor instead.
+func (*GameRtpReply) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *GameRtpReply) GetGameId() string {
+	if x != nil {
+		return x.GameId
+	}
+	return ""
+}
+
+func (x *GameRtpReply) GetFrom() string {
+	if x != nil {
+		return x.From
+	}
+	return ""
+}
+
+func (x *GameRtpReply) GetTo() string {
+	if x != nil {
+		return x.To
+	}
+	return ""
+}
+
+func (x *GameRtpReply) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+func (x *GameRtpReply) GetStatisticsSince() string {
+	if x != nil {
+		return x.StatisticsSince
+	}
+	return ""
+}
+
+func (x *GameRtpReply) GetBetAmount() string {
+	if x != nil {
+		return x.BetAmount
+	}
+	return ""
+}
+
+func (x *GameRtpReply) GetWinAmount() string {
+	if x != nil {
+		return x.WinAmount
+	}
+	return ""
+}
+
+func (x *GameRtpReply) GetRounds() int64 {
+	if x != nil {
+		return x.Rounds
+	}
+	return 0
+}
+
+func (x *GameRtpReply) GetHasData() bool {
+	if x != nil {
+		return x.HasData
+	}
+	return false
+}
+
+func (x *GameRtpReply) GetPercent() string {
+	if x != nil {
+		return x.Percent
+	}
+	return ""
+}
+
+type GameLeaderboardItem struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Rank          int32                  `protobuf:"varint,1,opt,name=rank,proto3" json:"rank,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Nickname      string                 `protobuf:"bytes,3,opt,name=nickname,proto3" json:"nickname,omitempty"`
+	AvatarId      int32                  `protobuf:"varint,4,opt,name=avatar_id,json=avatarId,proto3" json:"avatar_id,omitempty"`
+	BetId         string                 `protobuf:"bytes,5,opt,name=bet_id,json=betId,proto3" json:"bet_id,omitempty"`
+	BetAmount     string                 `protobuf:"bytes,6,opt,name=bet_amount,json=betAmount,proto3" json:"bet_amount,omitempty"`
+	WinAmount     string                 `protobuf:"bytes,7,opt,name=win_amount,json=winAmount,proto3" json:"win_amount,omitempty"`
+	Multiplier    string                 `protobuf:"bytes,8,opt,name=multiplier,proto3" json:"multiplier,omitempty"`
+	Streak        int64                  `protobuf:"varint,9,opt,name=streak,proto3" json:"streak,omitempty"`
+	OccurredAt    string                 `protobuf:"bytes,10,opt,name=occurred_at,json=occurredAt,proto3" json:"occurred_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GameLeaderboardItem) Reset() {
+	*x = GameLeaderboardItem{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameLeaderboardItem) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameLeaderboardItem) ProtoMessage() {}
+
+func (x *GameLeaderboardItem) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameLeaderboardItem.ProtoReflect.Descriptor instead.
+func (*GameLeaderboardItem) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *GameLeaderboardItem) GetRank() int32 {
+	if x != nil {
+		return x.Rank
+	}
+	return 0
+}
+
+func (x *GameLeaderboardItem) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *GameLeaderboardItem) GetNickname() string {
+	if x != nil {
+		return x.Nickname
+	}
+	return ""
+}
+
+func (x *GameLeaderboardItem) GetAvatarId() int32 {
+	if x != nil {
+		return x.AvatarId
+	}
+	return 0
+}
+
+func (x *GameLeaderboardItem) GetBetId() string {
+	if x != nil {
+		return x.BetId
+	}
+	return ""
+}
+
+func (x *GameLeaderboardItem) GetBetAmount() string {
+	if x != nil {
+		return x.BetAmount
+	}
+	return ""
+}
+
+func (x *GameLeaderboardItem) GetWinAmount() string {
+	if x != nil {
+		return x.WinAmount
+	}
+	return ""
+}
+
+func (x *GameLeaderboardItem) GetMultiplier() string {
+	if x != nil {
+		return x.Multiplier
+	}
+	return ""
+}
+
+func (x *GameLeaderboardItem) GetStreak() int64 {
+	if x != nil {
+		return x.Streak
+	}
+	return 0
+}
+
+func (x *GameLeaderboardItem) GetOccurredAt() string {
+	if x != nil {
+		return x.OccurredAt
+	}
+	return ""
+}
+
+type GameLeaderboardReply struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Items           []*GameLeaderboardItem `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	UpdatedAt       string                 `protobuf:"bytes,2,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	StatisticsSince string                 `protobuf:"bytes,3,opt,name=statistics_since,json=statisticsSince,proto3" json:"statistics_since,omitempty"`
+	Timezone        string                 `protobuf:"bytes,4,opt,name=timezone,proto3" json:"timezone,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *GameLeaderboardReply) Reset() {
+	*x = GameLeaderboardReply{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameLeaderboardReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameLeaderboardReply) ProtoMessage() {}
+
+func (x *GameLeaderboardReply) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameLeaderboardReply.ProtoReflect.Descriptor instead.
+func (*GameLeaderboardReply) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *GameLeaderboardReply) GetItems() []*GameLeaderboardItem {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+func (x *GameLeaderboardReply) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+func (x *GameLeaderboardReply) GetStatisticsSince() string {
+	if x != nil {
+		return x.StatisticsSince
+	}
+	return ""
+}
+
+func (x *GameLeaderboardReply) GetTimezone() string {
+	if x != nil {
+		return x.Timezone
+	}
+	return ""
+}
+
+type InviteRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RewardId      string                 `protobuf:"bytes,4,opt,name=reward_id,json=rewardId,proto3" json:"reward_id,omitempty"`
+	Page          int32                  `protobuf:"varint,5,opt,name=page,proto3" json:"page,omitempty"`
+	Uid           *int64                 `protobuf:"varint,1,opt,name=uid,proto3,oneof" json:"uid,omitempty"`
+	Sid           *string                `protobuf:"bytes,2,opt,name=sid,proto3,oneof" json:"sid,omitempty"`
+	RequestId     string                 `protobuf:"bytes,3,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InviteRequest) Reset() {
+	*x = InviteRequest{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InviteRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InviteRequest) ProtoMessage() {}
+
+func (x *InviteRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InviteRequest.ProtoReflect.Descriptor instead.
+func (*InviteRequest) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *InviteRequest) GetRewardId() string {
+	if x != nil {
+		return x.RewardId
+	}
+	return ""
+}
+
+func (x *InviteRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *InviteRequest) GetUid() int64 {
+	if x != nil && x.Uid != nil {
+		return *x.Uid
+	}
+	return 0
+}
+
+func (x *InviteRequest) GetSid() string {
+	if x != nil && x.Sid != nil {
+		return *x.Sid
+	}
+	return ""
+}
+
+func (x *InviteRequest) GetRequestId() string {
+	if x != nil {
+		return x.RequestId
+	}
+	return ""
+}
+
+type InviteRules struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Version          string                 `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
+	DurationDays     int32                  `protobuf:"varint,2,opt,name=duration_days,json=durationDays,proto3" json:"duration_days,omitempty"`
+	MinDepositCount  int32                  `protobuf:"varint,3,opt,name=min_deposit_count,json=minDepositCount,proto3" json:"min_deposit_count,omitempty"`
+	MinDepositAmount int64                  `protobuf:"varint,4,opt,name=min_deposit_amount,json=minDepositAmount,proto3" json:"min_deposit_amount,omitempty"`
+	MinBetAmount     int64                  `protobuf:"varint,5,opt,name=min_bet_amount,json=minBetAmount,proto3" json:"min_bet_amount,omitempty"`
+	RewardAmount     int64                  `protobuf:"varint,6,opt,name=reward_amount,json=rewardAmount,proto3" json:"reward_amount,omitempty"`
+	DisplayRows      int32                  `protobuf:"varint,7,opt,name=display_rows,json=displayRows,proto3" json:"display_rows,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *InviteRules) Reset() {
+	*x = InviteRules{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InviteRules) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InviteRules) ProtoMessage() {}
+
+func (x *InviteRules) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InviteRules.ProtoReflect.Descriptor instead.
+func (*InviteRules) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *InviteRules) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
+func (x *InviteRules) GetDurationDays() int32 {
+	if x != nil {
+		return x.DurationDays
+	}
+	return 0
+}
+
+func (x *InviteRules) GetMinDepositCount() int32 {
+	if x != nil {
+		return x.MinDepositCount
+	}
+	return 0
+}
+
+func (x *InviteRules) GetMinDepositAmount() int64 {
+	if x != nil {
+		return x.MinDepositAmount
+	}
+	return 0
+}
+
+func (x *InviteRules) GetMinBetAmount() int64 {
+	if x != nil {
+		return x.MinBetAmount
+	}
+	return 0
+}
+
+func (x *InviteRules) GetRewardAmount() int64 {
+	if x != nil {
+		return x.RewardAmount
+	}
+	return 0
+}
+
+func (x *InviteRules) GetDisplayRows() int32 {
+	if x != nil {
+		return x.DisplayRows
+	}
+	return 0
+}
+
+type InviteInfoReply struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	InviteUrl      string                 `protobuf:"bytes,1,opt,name=invite_url,json=inviteUrl,proto3" json:"invite_url,omitempty"`
+	SupportUrl     string                 `protobuf:"bytes,2,opt,name=support_url,json=supportUrl,proto3" json:"support_url,omitempty"`
+	Rules          *InviteRules           `protobuf:"bytes,3,opt,name=rules,proto3" json:"rules,omitempty"`
+	InvitedCount   int64                  `protobuf:"varint,4,opt,name=invited_count,json=invitedCount,proto3" json:"invited_count,omitempty"`
+	QualifiedCount int64                  `protobuf:"varint,5,opt,name=qualified_count,json=qualifiedCount,proto3" json:"qualified_count,omitempty"`
+	PendingAmount  int64                  `protobuf:"varint,6,opt,name=pending_amount,json=pendingAmount,proto3" json:"pending_amount,omitempty"`
+	ClaimedAmount  int64                  `protobuf:"varint,7,opt,name=claimed_amount,json=claimedAmount,proto3" json:"claimed_amount,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *InviteInfoReply) Reset() {
+	*x = InviteInfoReply{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InviteInfoReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InviteInfoReply) ProtoMessage() {}
+
+func (x *InviteInfoReply) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InviteInfoReply.ProtoReflect.Descriptor instead.
+func (*InviteInfoReply) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *InviteInfoReply) GetInviteUrl() string {
+	if x != nil {
+		return x.InviteUrl
+	}
+	return ""
+}
+
+func (x *InviteInfoReply) GetSupportUrl() string {
+	if x != nil {
+		return x.SupportUrl
+	}
+	return ""
+}
+
+func (x *InviteInfoReply) GetRules() *InviteRules {
+	if x != nil {
+		return x.Rules
+	}
+	return nil
+}
+
+func (x *InviteInfoReply) GetInvitedCount() int64 {
+	if x != nil {
+		return x.InvitedCount
+	}
+	return 0
+}
+
+func (x *InviteInfoReply) GetQualifiedCount() int64 {
+	if x != nil {
+		return x.QualifiedCount
+	}
+	return 0
+}
+
+func (x *InviteInfoReply) GetPendingAmount() int64 {
+	if x != nil {
+		return x.PendingAmount
+	}
+	return 0
+}
+
+func (x *InviteInfoReply) GetClaimedAmount() int64 {
+	if x != nil {
+		return x.ClaimedAmount
+	}
+	return 0
+}
+
+type InviteClaimReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ClaimId       string                 `protobuf:"bytes,1,opt,name=claim_id,json=claimId,proto3" json:"claim_id,omitempty"`
+	TotalReward   int64                  `protobuf:"varint,2,opt,name=total_reward,json=totalReward,proto3" json:"total_reward,omitempty"`
+	Coins         int64                  `protobuf:"varint,3,opt,name=coins,proto3" json:"coins,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InviteClaimReply) Reset() {
+	*x = InviteClaimReply{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InviteClaimReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InviteClaimReply) ProtoMessage() {}
+
+func (x *InviteClaimReply) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InviteClaimReply.ProtoReflect.Descriptor instead.
+func (*InviteClaimReply) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *InviteClaimReply) GetClaimId() string {
+	if x != nil {
+		return x.ClaimId
+	}
+	return ""
+}
+
+func (x *InviteClaimReply) GetTotalReward() int64 {
+	if x != nil {
+		return x.TotalReward
+	}
+	return 0
+}
+
+func (x *InviteClaimReply) GetCoins() int64 {
+	if x != nil {
+		return x.Coins
+	}
+	return 0
+}
+
+type InviteChest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Slot          int64                  `protobuf:"varint,1,opt,name=slot,proto3" json:"slot,omitempty"`
+	RewardId      string                 `protobuf:"bytes,2,opt,name=reward_id,json=rewardId,proto3" json:"reward_id,omitempty"`
+	Amount        int64                  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	Status        string                 `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InviteChest) Reset() {
+	*x = InviteChest{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InviteChest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InviteChest) ProtoMessage() {}
+
+func (x *InviteChest) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InviteChest.ProtoReflect.Descriptor instead.
+func (*InviteChest) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *InviteChest) GetSlot() int64 {
+	if x != nil {
+		return x.Slot
+	}
+	return 0
+}
+
+func (x *InviteChest) GetRewardId() string {
+	if x != nil {
+		return x.RewardId
+	}
+	return ""
+}
+
+func (x *InviteChest) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *InviteChest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+type InviteChestsReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Info          *InviteInfoReply       `protobuf:"bytes,1,opt,name=info,proto3" json:"info,omitempty"`
+	Items         []*InviteChest         `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	HasMore       bool                   `protobuf:"varint,4,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InviteChestsReply) Reset() {
+	*x = InviteChestsReply{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InviteChestsReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InviteChestsReply) ProtoMessage() {}
+
+func (x *InviteChestsReply) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InviteChestsReply.ProtoReflect.Descriptor instead.
+func (*InviteChestsReply) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *InviteChestsReply) GetInfo() *InviteInfoReply {
+	if x != nil {
+		return x.Info
+	}
+	return nil
+}
+
+func (x *InviteChestsReply) GetItems() []*InviteChest {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+func (x *InviteChestsReply) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *InviteChestsReply) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
+type InviteFriend struct {
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	Uid                   string                 `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	Account               string                 `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
+	RegisteredAt          string                 `protobuf:"bytes,3,opt,name=registered_at,json=registeredAt,proto3" json:"registered_at,omitempty"`
+	DepositCount          int64                  `protobuf:"varint,4,opt,name=deposit_count,json=depositCount,proto3" json:"deposit_count,omitempty"`
+	DepositAmount         int64                  `protobuf:"varint,5,opt,name=deposit_amount,json=depositAmount,proto3" json:"deposit_amount,omitempty"`
+	BetAmount             int64                  `protobuf:"varint,6,opt,name=bet_amount,json=betAmount,proto3" json:"bet_amount,omitempty"`
+	Qualified             bool                   `protobuf:"varint,7,opt,name=qualified,proto3" json:"qualified,omitempty"`
+	Reasons               []string               `protobuf:"bytes,8,rep,name=reasons,proto3" json:"reasons,omitempty"`
+	RequiredDepositCount  int32                  `protobuf:"varint,9,opt,name=required_deposit_count,json=requiredDepositCount,proto3" json:"required_deposit_count,omitempty"`
+	RequiredDepositAmount int64                  `protobuf:"varint,10,opt,name=required_deposit_amount,json=requiredDepositAmount,proto3" json:"required_deposit_amount,omitempty"`
+	RequiredBetAmount     int64                  `protobuf:"varint,11,opt,name=required_bet_amount,json=requiredBetAmount,proto3" json:"required_bet_amount,omitempty"`
+	DurationDays          int32                  `protobuf:"varint,12,opt,name=duration_days,json=durationDays,proto3" json:"duration_days,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
+}
+
+func (x *InviteFriend) Reset() {
+	*x = InviteFriend{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InviteFriend) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InviteFriend) ProtoMessage() {}
+
+func (x *InviteFriend) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InviteFriend.ProtoReflect.Descriptor instead.
+func (*InviteFriend) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *InviteFriend) GetUid() string {
+	if x != nil {
+		return x.Uid
+	}
+	return ""
+}
+
+func (x *InviteFriend) GetAccount() string {
+	if x != nil {
+		return x.Account
+	}
+	return ""
+}
+
+func (x *InviteFriend) GetRegisteredAt() string {
+	if x != nil {
+		return x.RegisteredAt
+	}
+	return ""
+}
+
+func (x *InviteFriend) GetDepositCount() int64 {
+	if x != nil {
+		return x.DepositCount
+	}
+	return 0
+}
+
+func (x *InviteFriend) GetDepositAmount() int64 {
+	if x != nil {
+		return x.DepositAmount
+	}
+	return 0
+}
+
+func (x *InviteFriend) GetBetAmount() int64 {
+	if x != nil {
+		return x.BetAmount
+	}
+	return 0
+}
+
+func (x *InviteFriend) GetQualified() bool {
+	if x != nil {
+		return x.Qualified
+	}
+	return false
+}
+
+func (x *InviteFriend) GetReasons() []string {
+	if x != nil {
+		return x.Reasons
+	}
+	return nil
+}
+
+func (x *InviteFriend) GetRequiredDepositCount() int32 {
+	if x != nil {
+		return x.RequiredDepositCount
+	}
+	return 0
+}
+
+func (x *InviteFriend) GetRequiredDepositAmount() int64 {
+	if x != nil {
+		return x.RequiredDepositAmount
+	}
+	return 0
+}
+
+func (x *InviteFriend) GetRequiredBetAmount() int64 {
+	if x != nil {
+		return x.RequiredBetAmount
+	}
+	return 0
+}
+
+func (x *InviteFriend) GetDurationDays() int32 {
+	if x != nil {
+		return x.DurationDays
+	}
+	return 0
+}
+
+type InviteFriendsReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*InviteFriend        `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	HasMore       bool                   `protobuf:"varint,3,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InviteFriendsReply) Reset() {
+	*x = InviteFriendsReply{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InviteFriendsReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InviteFriendsReply) ProtoMessage() {}
+
+func (x *InviteFriendsReply) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InviteFriendsReply.ProtoReflect.Descriptor instead.
+func (*InviteFriendsReply) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *InviteFriendsReply) GetItems() []*InviteFriend {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+func (x *InviteFriendsReply) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *InviteFriendsReply) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
 var File_apis_lobby_api_v1_game_api_proto protoreflect.FileDescriptor
 
 const file_apis_lobby_api_v1_game_api_proto_rawDesc = "" +
@@ -1239,8 +2619,156 @@ const file_apis_lobby_api_v1_game_api_proto_rawDesc = "" +
 	"\vnext_cursor\x18\x03 \x01(\tR\n" +
 	"nextCursor\"R\n" +
 	"\x17WalletLedgerDetailReply\x127\n" +
-	"\x04item\x18\x01 \x01(\v2#.apis.lobby.api.v1.WalletLedgerItemR\x04item2\x8f\a\n" +
-	"\vGameService\x12\x80\x01\n" +
+	"\x04item\x18\x01 \x01(\v2#.apis.lobby.api.v1.WalletLedgerItemR\x04item\"m\n" +
+	"\x15PersonalReportRequest\x12\x15\n" +
+	"\x03uid\x18\x01 \x01(\x03H\x00R\x03uid\x88\x01\x01\x12\x15\n" +
+	"\x03sid\x18\x02 \x01(\tH\x01R\x03sid\x88\x01\x01\x12\x16\n" +
+	"\x06period\x18\x03 \x01(\tR\x06periodB\x06\n" +
+	"\x04_uidB\x06\n" +
+	"\x04_sid\"l\n" +
+	"\fReportMetric\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05label\x18\x02 \x01(\tR\x05label\x12\x16\n" +
+	"\x06amount\x18\x03 \x01(\x03R\x06amount\x12\x1c\n" +
+	"\tsupported\x18\x04 \x01(\bR\tsupported\"\xa8\x01\n" +
+	"\x13PersonalReportReply\x125\n" +
+	"\x05items\x18\x01 \x03(\v2\x1f.apis.lobby.api.v1.ReportMetricR\x05items\x12\x12\n" +
+	"\x04from\x18\x02 \x01(\tR\x04from\x12\x0e\n" +
+	"\x02to\x18\x03 \x01(\tR\x02to\x12\x1a\n" +
+	"\btimezone\x18\x04 \x01(\tR\btimezone\x12\x1a\n" +
+	"\bcurrency\x18\x05 \x01(\tR\bcurrency\"\xeb\x01\n" +
+	"\x13GameCompleteRequest\x12\x10\n" +
+	"\x03uid\x18\x01 \x01(\x03R\x03uid\x12\x17\n" +
+	"\agame_id\x18\x02 \x01(\tR\x06gameId\x12\x15\n" +
+	"\x06bet_id\x18\x03 \x01(\tR\x05betId\x12\x1a\n" +
+	"\bsequence\x18\x04 \x01(\x03R\bsequence\x12\x1d\n" +
+	"\n" +
+	"bet_amount\x18\x05 \x01(\x03R\tbetAmount\x12\x1d\n" +
+	"\n" +
+	"win_amount\x18\x06 \x01(\x03R\twinAmount\x12\x1d\n" +
+	"\n" +
+	"started_at\x18\a \x01(\tR\tstartedAt\x12\x19\n" +
+	"\bended_at\x18\b \x01(\tR\aendedAt\"/\n" +
+	"\x11GameCompleteReply\x12\x1a\n" +
+	"\bincluded\x18\x01 \x01(\bR\bincluded\"\xb4\x01\n" +
+	"\x15GameStatisticsRequest\x12\x15\n" +
+	"\x03uid\x18\x01 \x01(\x03H\x00R\x03uid\x88\x01\x01\x12\x15\n" +
+	"\x03sid\x18\x02 \x01(\tH\x01R\x03sid\x88\x01\x01\x12\x17\n" +
+	"\agame_id\x18\x03 \x01(\tR\x06gameId\x12\x16\n" +
+	"\x06window\x18\x04 \x01(\tR\x06window\x12\x14\n" +
+	"\x05board\x18\x05 \x01(\tR\x05board\x12\x16\n" +
+	"\x06period\x18\x06 \x01(\tR\x06periodB\x06\n" +
+	"\x04_uidB\x06\n" +
+	"\x04_sid\"\xa0\x02\n" +
+	"\fGameRtpReply\x12\x17\n" +
+	"\agame_id\x18\x01 \x01(\tR\x06gameId\x12\x12\n" +
+	"\x04from\x18\x02 \x01(\tR\x04from\x12\x0e\n" +
+	"\x02to\x18\x03 \x01(\tR\x02to\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\x04 \x01(\tR\tupdatedAt\x12)\n" +
+	"\x10statistics_since\x18\x05 \x01(\tR\x0fstatisticsSince\x12\x1d\n" +
+	"\n" +
+	"bet_amount\x18\x06 \x01(\tR\tbetAmount\x12\x1d\n" +
+	"\n" +
+	"win_amount\x18\a \x01(\tR\twinAmount\x12\x16\n" +
+	"\x06rounds\x18\b \x01(\x03R\x06rounds\x12\x19\n" +
+	"\bhas_data\x18\t \x01(\bR\ahasData\x12\x18\n" +
+	"\apercent\x18\n" +
+	" \x01(\tR\apercent\"\xa9\x02\n" +
+	"\x13GameLeaderboardItem\x12\x12\n" +
+	"\x04rank\x18\x01 \x01(\x05R\x04rank\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1a\n" +
+	"\bnickname\x18\x03 \x01(\tR\bnickname\x12\x1b\n" +
+	"\tavatar_id\x18\x04 \x01(\x05R\bavatarId\x12\x15\n" +
+	"\x06bet_id\x18\x05 \x01(\tR\x05betId\x12\x1d\n" +
+	"\n" +
+	"bet_amount\x18\x06 \x01(\tR\tbetAmount\x12\x1d\n" +
+	"\n" +
+	"win_amount\x18\a \x01(\tR\twinAmount\x12\x1e\n" +
+	"\n" +
+	"multiplier\x18\b \x01(\tR\n" +
+	"multiplier\x12\x16\n" +
+	"\x06streak\x18\t \x01(\x03R\x06streak\x12\x1f\n" +
+	"\voccurred_at\x18\n" +
+	" \x01(\tR\n" +
+	"occurredAt\"\xba\x01\n" +
+	"\x14GameLeaderboardReply\x12<\n" +
+	"\x05items\x18\x01 \x03(\v2&.apis.lobby.api.v1.GameLeaderboardItemR\x05items\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\x02 \x01(\tR\tupdatedAt\x12)\n" +
+	"\x10statistics_since\x18\x03 \x01(\tR\x0fstatisticsSince\x12\x1a\n" +
+	"\btimezone\x18\x04 \x01(\tR\btimezone\"\x9d\x01\n" +
+	"\rInviteRequest\x12\x1b\n" +
+	"\treward_id\x18\x04 \x01(\tR\brewardId\x12\x12\n" +
+	"\x04page\x18\x05 \x01(\x05R\x04page\x12\x15\n" +
+	"\x03uid\x18\x01 \x01(\x03H\x00R\x03uid\x88\x01\x01\x12\x15\n" +
+	"\x03sid\x18\x02 \x01(\tH\x01R\x03sid\x88\x01\x01\x12\x1d\n" +
+	"\n" +
+	"request_id\x18\x03 \x01(\tR\trequestIdB\x06\n" +
+	"\x04_uidB\x06\n" +
+	"\x04_sid\"\x94\x02\n" +
+	"\vInviteRules\x12\x18\n" +
+	"\aversion\x18\x01 \x01(\tR\aversion\x12#\n" +
+	"\rduration_days\x18\x02 \x01(\x05R\fdurationDays\x12*\n" +
+	"\x11min_deposit_count\x18\x03 \x01(\x05R\x0fminDepositCount\x12,\n" +
+	"\x12min_deposit_amount\x18\x04 \x01(\x03R\x10minDepositAmount\x12$\n" +
+	"\x0emin_bet_amount\x18\x05 \x01(\x03R\fminBetAmount\x12#\n" +
+	"\rreward_amount\x18\x06 \x01(\x03R\frewardAmount\x12!\n" +
+	"\fdisplay_rows\x18\a \x01(\x05R\vdisplayRows\"\xa3\x02\n" +
+	"\x0fInviteInfoReply\x12\x1d\n" +
+	"\n" +
+	"invite_url\x18\x01 \x01(\tR\tinviteUrl\x12\x1f\n" +
+	"\vsupport_url\x18\x02 \x01(\tR\n" +
+	"supportUrl\x124\n" +
+	"\x05rules\x18\x03 \x01(\v2\x1e.apis.lobby.api.v1.InviteRulesR\x05rules\x12#\n" +
+	"\rinvited_count\x18\x04 \x01(\x03R\finvitedCount\x12'\n" +
+	"\x0fqualified_count\x18\x05 \x01(\x03R\x0equalifiedCount\x12%\n" +
+	"\x0epending_amount\x18\x06 \x01(\x03R\rpendingAmount\x12%\n" +
+	"\x0eclaimed_amount\x18\a \x01(\x03R\rclaimedAmount\"f\n" +
+	"\x10InviteClaimReply\x12\x19\n" +
+	"\bclaim_id\x18\x01 \x01(\tR\aclaimId\x12!\n" +
+	"\ftotal_reward\x18\x02 \x01(\x03R\vtotalReward\x12\x14\n" +
+	"\x05coins\x18\x03 \x01(\x03R\x05coins\"n\n" +
+	"\vInviteChest\x12\x12\n" +
+	"\x04slot\x18\x01 \x01(\x03R\x04slot\x12\x1b\n" +
+	"\treward_id\x18\x02 \x01(\tR\brewardId\x12\x16\n" +
+	"\x06amount\x18\x03 \x01(\x03R\x06amount\x12\x16\n" +
+	"\x06status\x18\x04 \x01(\tR\x06status\"\xb0\x01\n" +
+	"\x11InviteChestsReply\x126\n" +
+	"\x04info\x18\x01 \x01(\v2\".apis.lobby.api.v1.InviteInfoReplyR\x04info\x124\n" +
+	"\x05items\x18\x02 \x03(\v2\x1e.apis.lobby.api.v1.InviteChestR\x05items\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x19\n" +
+	"\bhas_more\x18\x04 \x01(\bR\ahasMore\"\xc5\x03\n" +
+	"\fInviteFriend\x12\x10\n" +
+	"\x03uid\x18\x01 \x01(\tR\x03uid\x12\x18\n" +
+	"\aaccount\x18\x02 \x01(\tR\aaccount\x12#\n" +
+	"\rregistered_at\x18\x03 \x01(\tR\fregisteredAt\x12#\n" +
+	"\rdeposit_count\x18\x04 \x01(\x03R\fdepositCount\x12%\n" +
+	"\x0edeposit_amount\x18\x05 \x01(\x03R\rdepositAmount\x12\x1d\n" +
+	"\n" +
+	"bet_amount\x18\x06 \x01(\x03R\tbetAmount\x12\x1c\n" +
+	"\tqualified\x18\a \x01(\bR\tqualified\x12\x18\n" +
+	"\areasons\x18\b \x03(\tR\areasons\x124\n" +
+	"\x16required_deposit_count\x18\t \x01(\x05R\x14requiredDepositCount\x126\n" +
+	"\x17required_deposit_amount\x18\n" +
+	" \x01(\x03R\x15requiredDepositAmount\x12.\n" +
+	"\x13required_bet_amount\x18\v \x01(\x03R\x11requiredBetAmount\x12#\n" +
+	"\rduration_days\x18\f \x01(\x05R\fdurationDays\"z\n" +
+	"\x12InviteFriendsReply\x125\n" +
+	"\x05items\x18\x01 \x03(\v2\x1f.apis.lobby.api.v1.InviteFriendR\x05items\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x19\n" +
+	"\bhas_more\x18\x03 \x01(\bR\ahasMore2\x90\x10\n" +
+	"\vGameService\x12~\n" +
+	"\fInviteChests\x12 .apis.lobby.api.v1.InviteRequest\x1a$.apis.lobby.api.v1.InviteChestsReply\"&\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/api/activity/invite/chests\x12\x86\x01\n" +
+	"\x10InviteChestClaim\x12 .apis.lobby.api.v1.InviteRequest\x1a#.apis.lobby.api.v1.InviteClaimReply\"+\x82\xd3\xe4\x93\x02%:\x01*\" /api/activity/invite/chest/claim\x12\x81\x01\n" +
+	"\rInviteFriends\x12 .apis.lobby.api.v1.InviteRequest\x1a%.apis.lobby.api.v1.InviteFriendsReply\"'\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/api/activity/invite/friends\x12x\n" +
+	"\n" +
+	"InviteInfo\x12 .apis.lobby.api.v1.InviteRequest\x1a\".apis.lobby.api.v1.InviteInfoReply\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/activity/invite/info\x12{\n" +
+	"\vInviteClaim\x12 .apis.lobby.api.v1.InviteRequest\x1a#.apis.lobby.api.v1.InviteClaimReply\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/activity/invite/claim\x12\x80\x01\n" +
+	"\fGameComplete\x12&.apis.lobby.api.v1.GameCompleteRequest\x1a$.apis.lobby.api.v1.GameCompleteReply\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/internal/game/complete\x12n\n" +
+	"\aGameRtp\x12(.apis.lobby.api.v1.GameStatisticsRequest\x1a\x1f.apis.lobby.api.v1.GameRtpReply\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\"\r/api/game/rtp\x12\x86\x01\n" +
+	"\x0fGameLeaderboard\x12(.apis.lobby.api.v1.GameStatisticsRequest\x1a'.apis.lobby.api.v1.GameLeaderboardReply\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/game/leaderboard\x12\x7f\n" +
+	"\x0ePersonalReport\x12(.apis.lobby.api.v1.PersonalReportRequest\x1a&.apis.lobby.api.v1.PersonalReportReply\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/user/report\x12\x80\x01\n" +
 	"\fWalletLedger\x12&.apis.lobby.api.v1.WalletLedgerRequest\x1a$.apis.lobby.api.v1.WalletLedgerReply\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/api/game/wallet-ledger\x12\x93\x01\n" +
 	"\x12WalletLedgerDetail\x12&.apis.lobby.api.v1.WalletLedgerRequest\x1a*.apis.lobby.api.v1.WalletLedgerDetailReply\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/api/game/wallet-ledger/detail\x12w\n" +
 	"\vGameRecords\x12%.apis.lobby.api.v1.GameRecordsRequest\x1a#.apis.lobby.api.v1.GameRecordsReply\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/api/game/records\x12s\n" +
@@ -1263,7 +2791,7 @@ func file_apis_lobby_api_v1_game_api_proto_rawDescGZIP() []byte {
 	return file_apis_lobby_api_v1_game_api_proto_rawDescData
 }
 
-var file_apis_lobby_api_v1_game_api_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_apis_lobby_api_v1_game_api_proto_msgTypes = make([]protoimpl.MessageInfo, 33)
 var file_apis_lobby_api_v1_game_api_proto_goTypes = []any{
 	(*GameLaunchRequest)(nil),       // 0: apis.lobby.api.v1.GameLaunchRequest
 	(*GameLaunchReply)(nil),         // 1: apis.lobby.api.v1.GameLaunchReply
@@ -1281,31 +2809,72 @@ var file_apis_lobby_api_v1_game_api_proto_goTypes = []any{
 	(*WalletLedgerItem)(nil),        // 13: apis.lobby.api.v1.WalletLedgerItem
 	(*WalletLedgerReply)(nil),       // 14: apis.lobby.api.v1.WalletLedgerReply
 	(*WalletLedgerDetailReply)(nil), // 15: apis.lobby.api.v1.WalletLedgerDetailReply
+	(*PersonalReportRequest)(nil),   // 16: apis.lobby.api.v1.PersonalReportRequest
+	(*ReportMetric)(nil),            // 17: apis.lobby.api.v1.ReportMetric
+	(*PersonalReportReply)(nil),     // 18: apis.lobby.api.v1.PersonalReportReply
+	(*GameCompleteRequest)(nil),     // 19: apis.lobby.api.v1.GameCompleteRequest
+	(*GameCompleteReply)(nil),       // 20: apis.lobby.api.v1.GameCompleteReply
+	(*GameStatisticsRequest)(nil),   // 21: apis.lobby.api.v1.GameStatisticsRequest
+	(*GameRtpReply)(nil),            // 22: apis.lobby.api.v1.GameRtpReply
+	(*GameLeaderboardItem)(nil),     // 23: apis.lobby.api.v1.GameLeaderboardItem
+	(*GameLeaderboardReply)(nil),    // 24: apis.lobby.api.v1.GameLeaderboardReply
+	(*InviteRequest)(nil),           // 25: apis.lobby.api.v1.InviteRequest
+	(*InviteRules)(nil),             // 26: apis.lobby.api.v1.InviteRules
+	(*InviteInfoReply)(nil),         // 27: apis.lobby.api.v1.InviteInfoReply
+	(*InviteClaimReply)(nil),        // 28: apis.lobby.api.v1.InviteClaimReply
+	(*InviteChest)(nil),             // 29: apis.lobby.api.v1.InviteChest
+	(*InviteChestsReply)(nil),       // 30: apis.lobby.api.v1.InviteChestsReply
+	(*InviteFriend)(nil),            // 31: apis.lobby.api.v1.InviteFriend
+	(*InviteFriendsReply)(nil),      // 32: apis.lobby.api.v1.InviteFriendsReply
 }
 var file_apis_lobby_api_v1_game_api_proto_depIdxs = []int32{
 	9,  // 0: apis.lobby.api.v1.GameRecordsReply.items:type_name -> apis.lobby.api.v1.GameRecord
 	13, // 1: apis.lobby.api.v1.WalletLedgerReply.items:type_name -> apis.lobby.api.v1.WalletLedgerItem
 	12, // 2: apis.lobby.api.v1.WalletLedgerReply.categories:type_name -> apis.lobby.api.v1.WalletLedgerCategory
 	13, // 3: apis.lobby.api.v1.WalletLedgerDetailReply.item:type_name -> apis.lobby.api.v1.WalletLedgerItem
-	11, // 4: apis.lobby.api.v1.GameService.WalletLedger:input_type -> apis.lobby.api.v1.WalletLedgerRequest
-	11, // 5: apis.lobby.api.v1.GameService.WalletLedgerDetail:input_type -> apis.lobby.api.v1.WalletLedgerRequest
-	8,  // 6: apis.lobby.api.v1.GameService.GameRecords:input_type -> apis.lobby.api.v1.GameRecordsRequest
-	0,  // 7: apis.lobby.api.v1.GameService.GameLaunch:input_type -> apis.lobby.api.v1.GameLaunchRequest
-	2,  // 8: apis.lobby.api.v1.GameService.GameExchange:input_type -> apis.lobby.api.v1.GameExchangeRequest
-	4,  // 9: apis.lobby.api.v1.GameService.GameBalance:input_type -> apis.lobby.api.v1.GameBalanceRequest
-	6,  // 10: apis.lobby.api.v1.GameService.GameSettle:input_type -> apis.lobby.api.v1.GameSettleRequest
-	14, // 11: apis.lobby.api.v1.GameService.WalletLedger:output_type -> apis.lobby.api.v1.WalletLedgerReply
-	15, // 12: apis.lobby.api.v1.GameService.WalletLedgerDetail:output_type -> apis.lobby.api.v1.WalletLedgerDetailReply
-	10, // 13: apis.lobby.api.v1.GameService.GameRecords:output_type -> apis.lobby.api.v1.GameRecordsReply
-	1,  // 14: apis.lobby.api.v1.GameService.GameLaunch:output_type -> apis.lobby.api.v1.GameLaunchReply
-	3,  // 15: apis.lobby.api.v1.GameService.GameExchange:output_type -> apis.lobby.api.v1.GameIdentityReply
-	5,  // 16: apis.lobby.api.v1.GameService.GameBalance:output_type -> apis.lobby.api.v1.GameBalanceReply
-	7,  // 17: apis.lobby.api.v1.GameService.GameSettle:output_type -> apis.lobby.api.v1.GameSettleReply
-	11, // [11:18] is the sub-list for method output_type
-	4,  // [4:11] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+	17, // 4: apis.lobby.api.v1.PersonalReportReply.items:type_name -> apis.lobby.api.v1.ReportMetric
+	23, // 5: apis.lobby.api.v1.GameLeaderboardReply.items:type_name -> apis.lobby.api.v1.GameLeaderboardItem
+	26, // 6: apis.lobby.api.v1.InviteInfoReply.rules:type_name -> apis.lobby.api.v1.InviteRules
+	27, // 7: apis.lobby.api.v1.InviteChestsReply.info:type_name -> apis.lobby.api.v1.InviteInfoReply
+	29, // 8: apis.lobby.api.v1.InviteChestsReply.items:type_name -> apis.lobby.api.v1.InviteChest
+	31, // 9: apis.lobby.api.v1.InviteFriendsReply.items:type_name -> apis.lobby.api.v1.InviteFriend
+	25, // 10: apis.lobby.api.v1.GameService.InviteChests:input_type -> apis.lobby.api.v1.InviteRequest
+	25, // 11: apis.lobby.api.v1.GameService.InviteChestClaim:input_type -> apis.lobby.api.v1.InviteRequest
+	25, // 12: apis.lobby.api.v1.GameService.InviteFriends:input_type -> apis.lobby.api.v1.InviteRequest
+	25, // 13: apis.lobby.api.v1.GameService.InviteInfo:input_type -> apis.lobby.api.v1.InviteRequest
+	25, // 14: apis.lobby.api.v1.GameService.InviteClaim:input_type -> apis.lobby.api.v1.InviteRequest
+	19, // 15: apis.lobby.api.v1.GameService.GameComplete:input_type -> apis.lobby.api.v1.GameCompleteRequest
+	21, // 16: apis.lobby.api.v1.GameService.GameRtp:input_type -> apis.lobby.api.v1.GameStatisticsRequest
+	21, // 17: apis.lobby.api.v1.GameService.GameLeaderboard:input_type -> apis.lobby.api.v1.GameStatisticsRequest
+	16, // 18: apis.lobby.api.v1.GameService.PersonalReport:input_type -> apis.lobby.api.v1.PersonalReportRequest
+	11, // 19: apis.lobby.api.v1.GameService.WalletLedger:input_type -> apis.lobby.api.v1.WalletLedgerRequest
+	11, // 20: apis.lobby.api.v1.GameService.WalletLedgerDetail:input_type -> apis.lobby.api.v1.WalletLedgerRequest
+	8,  // 21: apis.lobby.api.v1.GameService.GameRecords:input_type -> apis.lobby.api.v1.GameRecordsRequest
+	0,  // 22: apis.lobby.api.v1.GameService.GameLaunch:input_type -> apis.lobby.api.v1.GameLaunchRequest
+	2,  // 23: apis.lobby.api.v1.GameService.GameExchange:input_type -> apis.lobby.api.v1.GameExchangeRequest
+	4,  // 24: apis.lobby.api.v1.GameService.GameBalance:input_type -> apis.lobby.api.v1.GameBalanceRequest
+	6,  // 25: apis.lobby.api.v1.GameService.GameSettle:input_type -> apis.lobby.api.v1.GameSettleRequest
+	30, // 26: apis.lobby.api.v1.GameService.InviteChests:output_type -> apis.lobby.api.v1.InviteChestsReply
+	28, // 27: apis.lobby.api.v1.GameService.InviteChestClaim:output_type -> apis.lobby.api.v1.InviteClaimReply
+	32, // 28: apis.lobby.api.v1.GameService.InviteFriends:output_type -> apis.lobby.api.v1.InviteFriendsReply
+	27, // 29: apis.lobby.api.v1.GameService.InviteInfo:output_type -> apis.lobby.api.v1.InviteInfoReply
+	28, // 30: apis.lobby.api.v1.GameService.InviteClaim:output_type -> apis.lobby.api.v1.InviteClaimReply
+	20, // 31: apis.lobby.api.v1.GameService.GameComplete:output_type -> apis.lobby.api.v1.GameCompleteReply
+	22, // 32: apis.lobby.api.v1.GameService.GameRtp:output_type -> apis.lobby.api.v1.GameRtpReply
+	24, // 33: apis.lobby.api.v1.GameService.GameLeaderboard:output_type -> apis.lobby.api.v1.GameLeaderboardReply
+	18, // 34: apis.lobby.api.v1.GameService.PersonalReport:output_type -> apis.lobby.api.v1.PersonalReportReply
+	14, // 35: apis.lobby.api.v1.GameService.WalletLedger:output_type -> apis.lobby.api.v1.WalletLedgerReply
+	15, // 36: apis.lobby.api.v1.GameService.WalletLedgerDetail:output_type -> apis.lobby.api.v1.WalletLedgerDetailReply
+	10, // 37: apis.lobby.api.v1.GameService.GameRecords:output_type -> apis.lobby.api.v1.GameRecordsReply
+	1,  // 38: apis.lobby.api.v1.GameService.GameLaunch:output_type -> apis.lobby.api.v1.GameLaunchReply
+	3,  // 39: apis.lobby.api.v1.GameService.GameExchange:output_type -> apis.lobby.api.v1.GameIdentityReply
+	5,  // 40: apis.lobby.api.v1.GameService.GameBalance:output_type -> apis.lobby.api.v1.GameBalanceReply
+	7,  // 41: apis.lobby.api.v1.GameService.GameSettle:output_type -> apis.lobby.api.v1.GameSettleReply
+	26, // [26:42] is the sub-list for method output_type
+	10, // [10:26] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_apis_lobby_api_v1_game_api_proto_init() }
@@ -1316,13 +2885,16 @@ func file_apis_lobby_api_v1_game_api_proto_init() {
 	file_apis_lobby_api_v1_game_api_proto_msgTypes[0].OneofWrappers = []any{}
 	file_apis_lobby_api_v1_game_api_proto_msgTypes[8].OneofWrappers = []any{}
 	file_apis_lobby_api_v1_game_api_proto_msgTypes[11].OneofWrappers = []any{}
+	file_apis_lobby_api_v1_game_api_proto_msgTypes[16].OneofWrappers = []any{}
+	file_apis_lobby_api_v1_game_api_proto_msgTypes[21].OneofWrappers = []any{}
+	file_apis_lobby_api_v1_game_api_proto_msgTypes[25].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_apis_lobby_api_v1_game_api_proto_rawDesc), len(file_apis_lobby_api_v1_game_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   16,
+			NumMessages:   33,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

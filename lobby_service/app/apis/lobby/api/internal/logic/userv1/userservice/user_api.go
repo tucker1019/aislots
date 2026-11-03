@@ -16,8 +16,11 @@ func reply(id Identity, err error) (*pb.IdentityReply, error) {
 	return &pb.IdentityReply{Uid: id.UID, Sid: id.SID, ExpiresAt: id.ExpiresAt.Format(time.RFC3339Nano)}, nil
 }
 
-func (l *Service) VisitorLogin(ctx context.Context, _ *pb.UserRequest) (*pb.IdentityReply, error) {
-	return reply(l.Create(ctx, "", "", true))
+func (l *Service) VisitorLogin(ctx context.Context, r *pb.UserRequest) (*pb.IdentityReply, error) {
+	if r.InviteCode == "" {
+		return reply(l.Create(ctx, "", "", true))
+	}
+	return reply(l.CreateInvited(ctx, r.InviteCode))
 }
 
 func (l *Service) SessionRenewal(ctx context.Context, r *pb.UserRequest) (*pb.IdentityReply, error) {

@@ -3,6 +3,15 @@ package apis.lobby.api.v1;
 option go_package="apps/pb/apis/lobby/api/v1;v1";
 import "google/api/annotations.proto";
 service GameService {
+ rpc InviteChests(InviteRequest) returns (InviteChestsReply) {option (google.api.http)={post:"/api/activity/invite/chests" body:"*"};}
+ rpc InviteChestClaim(InviteRequest) returns (InviteClaimReply) {option (google.api.http)={post:"/api/activity/invite/chest/claim" body:"*"};}
+ rpc InviteFriends(InviteRequest) returns (InviteFriendsReply) {option (google.api.http)={post:"/api/activity/invite/friends" body:"*"};}
+ rpc InviteInfo(InviteRequest) returns (InviteInfoReply) {option (google.api.http)={post:"/api/activity/invite/info" body:"*"};}
+ rpc InviteClaim(InviteRequest) returns (InviteClaimReply) {option (google.api.http)={post:"/api/activity/invite/claim" body:"*"};}
+ rpc GameComplete(GameCompleteRequest) returns (GameCompleteReply) {option (google.api.http)={post:"/internal/game/complete" body:"*"};}
+ rpc GameRtp(GameStatisticsRequest) returns (GameRtpReply) {option (google.api.http)={post:"/api/game/rtp" body:"*"};}
+ rpc GameLeaderboard(GameStatisticsRequest) returns (GameLeaderboardReply) {option (google.api.http)={post:"/api/game/leaderboard" body:"*"};}
+ rpc PersonalReport(PersonalReportRequest) returns (PersonalReportReply) {option (google.api.http)={post:"/api/user/report" body:"*"};}
  rpc WalletLedger(WalletLedgerRequest) returns (WalletLedgerReply) {option (google.api.http)={post:"/api/game/wallet-ledger" body:"*"};}
  rpc WalletLedgerDetail(WalletLedgerRequest) returns (WalletLedgerDetailReply) {option (google.api.http)={post:"/api/game/wallet-ledger/detail" body:"*"};}
  rpc GameRecords(GameRecordsRequest) returns (GameRecordsReply) {option (google.api.http)={post:"/api/game/records" body:"*"};}
@@ -29,3 +38,24 @@ message WalletLedgerCategory {string id=1;string name=2;}
 message WalletLedgerItem {string id=1;string order_id=2 [json_name="orderId"];string type=3;string currency=4;int64 amount=5;int64 balance=6;string created_at=7 [json_name="createdAt"];string remark=8;}
 message WalletLedgerReply {repeated WalletLedgerItem items=1;repeated WalletLedgerCategory categories=2;string next_cursor=3 [json_name="nextCursor"];}
 message WalletLedgerDetailReply {WalletLedgerItem item=1;}
+
+message PersonalReportRequest {optional int64 uid=1;optional string sid=2;string period=3;}
+message ReportMetric {string key=1;string label=2;int64 amount=3;bool supported=4;}
+message PersonalReportReply {repeated ReportMetric items=1;string from=2;string to=3;string timezone=4;string currency=5;}
+
+message GameCompleteRequest {int64 uid=1;string game_id=2 [json_name="gameId"];string bet_id=3 [json_name="betId"];int64 sequence=4;int64 bet_amount=5 [json_name="betAmount"];int64 win_amount=6 [json_name="winAmount"];string started_at=7 [json_name="startedAt"];string ended_at=8 [json_name="endedAt"];}
+message GameCompleteReply {bool included=1;}
+message GameStatisticsRequest {optional int64 uid=1;optional string sid=2;string game_id=3 [json_name="gameId"];string window=4;string board=5;string period=6;}
+message GameRtpReply {string game_id=1 [json_name="gameId"];string from=2;string to=3;string updated_at=4 [json_name="updatedAt"];string statistics_since=5 [json_name="statisticsSince"];string bet_amount=6 [json_name="betAmount"];string win_amount=7 [json_name="winAmount"];int64 rounds=8;bool has_data=9 [json_name="hasData"];string percent=10;}
+message GameLeaderboardItem {int32 rank=1;string user_id=2 [json_name="userId"];string nickname=3;int32 avatar_id=4 [json_name="avatarId"];string bet_id=5 [json_name="betId"];string bet_amount=6 [json_name="betAmount"];string win_amount=7 [json_name="winAmount"];string multiplier=8;int64 streak=9;string occurred_at=10 [json_name="occurredAt"];}
+message GameLeaderboardReply {repeated GameLeaderboardItem items=1;string updated_at=2 [json_name="updatedAt"];string statistics_since=3 [json_name="statisticsSince"];string timezone=4;}
+
+message InviteRequest {string reward_id=4 [json_name="rewardId"];int32 page=5;optional int64 uid=1;optional string sid=2;string request_id=3 [json_name="requestId"];}
+message InviteRules {string version=1;int32 duration_days=2 [json_name="durationDays"];int32 min_deposit_count=3 [json_name="minDepositCount"];int64 min_deposit_amount=4 [json_name="minDepositAmount"];int64 min_bet_amount=5 [json_name="minBetAmount"];int64 reward_amount=6 [json_name="rewardAmount"];int32 display_rows=7 [json_name="displayRows"];}
+message InviteInfoReply {string invite_url=1 [json_name="inviteUrl"];string support_url=2 [json_name="supportUrl"];InviteRules rules=3;int64 invited_count=4 [json_name="invitedCount"];int64 qualified_count=5 [json_name="qualifiedCount"];int64 pending_amount=6 [json_name="pendingAmount"];int64 claimed_amount=7 [json_name="claimedAmount"];}
+message InviteClaimReply {string claim_id=1 [json_name="claimId"];int64 total_reward=2 [json_name="totalReward"];int64 coins=3;}
+
+message InviteChest {int64 slot=1;string reward_id=2 [json_name="rewardId"];int64 amount=3;string status=4;}
+message InviteChestsReply {InviteInfoReply info=1;repeated InviteChest items=2;int32 page=3;bool has_more=4 [json_name="hasMore"];}
+message InviteFriend {string uid=1;string account=2;string registered_at=3 [json_name="registeredAt"];int64 deposit_count=4 [json_name="depositCount"];int64 deposit_amount=5 [json_name="depositAmount"];int64 bet_amount=6 [json_name="betAmount"];bool qualified=7;repeated string reasons=8;int32 required_deposit_count=9 [json_name="requiredDepositCount"];int64 required_deposit_amount=10 [json_name="requiredDepositAmount"];int64 required_bet_amount=11 [json_name="requiredBetAmount"];int32 duration_days=12 [json_name="durationDays"];}
+message InviteFriendsReply {repeated InviteFriend items=1;int32 page=2;bool has_more=3 [json_name="hasMore"];}

@@ -4,6 +4,7 @@
 
 | 英文枚举 | 流水存储值 | 含义 |
 | --- | --- | --- |
+| `SourceInviteReward` | `act_007` | 邀请好友奖励加币 |
 | `SourceGameBet` | `game_001` | 游戏投注扣币 |
 | `SourceGameWin` | `game_002` | 游戏逐轮派彩 |
 | `SourceNewbieRecharge` | `act_006` | 新手累计充值奖励 |

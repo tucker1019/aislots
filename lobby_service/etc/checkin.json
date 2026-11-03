@@ -1,6 +1,6 @@
 {
   "version": "checkin-v1",
-  "timezone": "Asia/Jakarta",
+  "timezone": "Asia/Shanghai",
   "days": [
     {"requiredBet": 10000, "requiredRecharge": 1000, "reward": 100},
     {"requiredBet": 20000, "requiredRecharge": 1000, "reward": 200},

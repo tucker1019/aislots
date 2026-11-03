@@ -43,18 +43,18 @@ func (m *MockVIPStore) EXPECT() *MockVIPStoreMockRecorder {
 }
 
 // ClaimVIP mocks base method.
-func (m *MockVIPStore) ClaimVIP(arg0 context.Context, arg1 int64, arg2, arg3, arg4, arg5 string, arg6 time.Time) (*model.VIPReceipt, error) {
+func (m *MockVIPStore) ClaimVIP(arg0 context.Context, arg1 int64, arg2, arg3, arg4, arg5, arg6 string, arg7 time.Time) (*model.VIPReceipt, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ClaimVIP", arg0, arg1, arg2, arg3, arg4, arg5, arg6)
+	ret := m.ctrl.Call(m, "ClaimVIP", arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
 	ret0, _ := ret[0].(*model.VIPReceipt)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ClaimVIP indicates an expected call of ClaimVIP.
-func (mr *MockVIPStoreMockRecorder) ClaimVIP(arg0, arg1, arg2, arg3, arg4, arg5, arg6 any) *gomock.Call {
+func (mr *MockVIPStoreMockRecorder) ClaimVIP(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClaimVIP", reflect.TypeOf((*MockVIPStore)(nil).ClaimVIP), arg0, arg1, arg2, arg3, arg4, arg5, arg6)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClaimVIP", reflect.TypeOf((*MockVIPStore)(nil).ClaimVIP), arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
 }
 
 // ReadVIP mocks base method.
