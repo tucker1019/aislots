@@ -54,10 +54,29 @@
     #LoadingScreen .loading-progress-fill::before { content: ''; display: block; width: 100%; height: 100%; background: url('loading/jdt1.png') left center/auto 78.5714% no-repeat; }
     #LoadingScreen .start-button { position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%); box-sizing: border-box; width: 42%; padding: 3% 0; border: .45cqw solid #ffd96a; border-radius: 1.8cqw; color: #6b2100; background: linear-gradient(#ffe89a, #f6a51a); box-shadow: 0 .8cqw 0 #9b3f05, 0 1.5cqw 3cqw rgba(75,20,0,.35); font: 700 6cqw/1 Helvetica,Arial,sans-serif; letter-spacing: .2cqw; cursor: pointer; }
     #LoadingScreen .start-button:active { transform: translate(-50%, 2px); }
-  </style>
+
+    /* 独立于 Cocos 的首屏；黑底覆盖窗口，Logo 按游戏区域等比适配。 */
+    #AGOpening { position: fixed; inset: 0; z-index: 2147483647; background: #000; }
+    #AGOpening > svg { position: absolute; left: 50%; top: 50%; width: min(58vw, 31.0714vh); height: auto; transform: translate(-50%, -50%); overflow: visible; }
+
+</style>
 
 </head>
 <body>
+  <div id="AGOpening" role="status" aria-label="AG 加载中">
+    <svg viewBox="0 0 249 152" aria-hidden="true">
+      <defs>
+        <g id="ag-glyph-a"><rect x="22.6" y="0.0" width="9.8" height="9.8" fill="#ff6e00"/><rect x="33.9" y="0.0" width="9.8" height="9.8" fill="#fff"/><rect x="45.2" y="0.0" width="9.8" height="9.8" fill="#fff"/><rect x="56.5" y="0.0" width="9.8" height="9.8" fill="#fff"/><rect x="67.8" y="0.0" width="9.8" height="9.8" fill="#fff"/><rect x="79.1" y="0.0" width="9.8" height="9.8" fill="#fff"/><rect x="11.3" y="11.3" width="9.8" height="9.8" fill="#fff"/><rect x="22.6" y="11.3" width="9.8" height="9.8" fill="#fff"/><rect x="33.9" y="11.3" width="9.8" height="9.8" fill="#fff"/><rect x="45.2" y="11.3" width="9.8" height="9.8" fill="#fff"/><rect x="56.5" y="11.3" width="9.8" height="9.8" fill="#fff"/><rect x="67.8" y="11.3" width="9.8" height="9.8" fill="#fff"/><rect x="79.1" y="11.3" width="9.8" height="9.8" fill="#fff"/><rect x="90.4" y="11.3" width="9.8" height="9.8" fill="#fff"/><rect x="0.0" y="22.6" width="9.8" height="9.8" fill="#6414e6"/><rect x="11.3" y="22.6" width="9.8" height="9.8" fill="#fff"/><rect x="90.4" y="22.6" width="9.8" height="9.8" fill="#fff"/><rect x="101.7" y="22.6" width="9.8" height="9.8" fill="#fff"/><rect x="0.0" y="33.9" width="9.8" height="9.8" fill="#fff"/><rect x="11.3" y="33.9" width="9.8" height="9.8" fill="#fff"/><rect x="90.4" y="33.9" width="9.8" height="9.8" fill="#fff"/><rect x="101.7" y="33.9" width="9.8" height="9.8" fill="#fff"/><rect x="0.0" y="45.2" width="9.8" height="9.8" fill="#fff"/><rect x="11.3" y="45.2" width="9.8" height="9.8" fill="#fff"/><rect x="22.6" y="45.2" width="9.8" height="9.8" fill="#fff"/><rect x="33.9" y="45.2" width="9.8" height="9.8" fill="#fff"/><rect x="45.2" y="45.2" width="9.8" height="9.8" fill="#fff"/><rect x="56.5" y="45.2" width="9.8" height="9.8" fill="#fff"/><rect x="67.8" y="45.2" width="9.8" height="9.8" fill="#fff"/><rect x="79.1" y="45.2" width="9.8" height="9.8" fill="#fff"/><rect x="90.4" y="45.2" width="9.8" height="9.8" fill="#fff"/><rect x="101.7" y="45.2" width="9.8" height="9.8" fill="#fff"/><rect x="0.0" y="56.5" width="9.8" height="9.8" fill="#fff"/><rect x="11.3" y="56.5" width="9.8" height="9.8" fill="#fff"/><rect x="22.6" y="56.5" width="9.8" height="9.8" fill="#fff"/><rect x="33.9" y="56.5" width="9.8" height="9.8" fill="#fff"/><rect x="45.2" y="56.5" width="9.8" height="9.8" fill="#fff"/><rect x="56.5" y="56.5" width="9.8" height="9.8" fill="#fff"/><rect x="67.8" y="56.5" width="9.8" height="9.8" fill="#fff"/><rect x="79.1" y="56.5" width="9.8" height="9.8" fill="#e619dc"/><rect x="90.4" y="56.5" width="9.8" height="9.8" fill="#fff"/><rect x="101.7" y="56.5" width="9.8" height="9.8" fill="#fff"/><rect x="0.0" y="67.8" width="9.8" height="9.8" fill="#fff"/><rect x="11.3" y="67.8" width="9.8" height="9.8" fill="#fff"/><rect x="90.4" y="67.8" width="9.8" height="9.8" fill="#fff"/><rect x="101.7" y="67.8" width="9.8" height="9.8" fill="#fff"/><rect x="0.0" y="79.1" width="9.8" height="9.8" fill="#fff"/><rect x="11.3" y="79.1" width="9.8" height="9.8" fill="#fff"/><rect x="90.4" y="79.1" width="9.8" height="9.8" fill="#fff"/><rect x="101.7" y="79.1" width="9.8" height="9.8" fill="#fff"/><rect x="0.0" y="90.4" width="9.8" height="9.8" fill="#fff"/><rect x="11.3" y="90.4" width="9.8" height="9.8" fill="#fff"/><rect x="90.4" y="90.4" width="9.8" height="9.8" fill="#fff"/><rect x="101.7" y="90.4" width="9.8" height="9.8" fill="#fff"/><rect x="0.0" y="101.7" width="9.8" height="9.8" fill="#fff"/><rect x="11.3" y="101.7" width="9.8" height="9.8" fill="#19bee6"/><rect x="90.4" y="101.7" width="9.8" height="9.8" fill="#fff"/><rect x="101.7" y="101.7" width="9.8" height="9.8" fill="#fff"/></g>
+        <g id="ag-glyph-g"><path d="M.3 32.4h9.8v-9.8H.3Zm0 0" style="stroke:none;fill-rule:evenodd;fill:#e61973;fill-opacity:1"></path><path d="M22.8 9.8h9.7V0h-9.7Zm0 0" style="stroke:none;fill-rule:evenodd;fill:#ffb919;fill-opacity:1"></path><path d="M11.6 100.3h9.7v-9.8h-9.7Zm0 0" style="stroke:none;fill-rule:evenodd;fill:#1987e6;fill-opacity:1"></path><path d="M79 111.6h9.7v-9.8h-9.8Zm0 0" style="stroke:none;fill-rule:evenodd;fill:#ff4b00;fill-opacity:1"></path><path d="M101.4 55h9.7v-9.7h-9.7Zm0 0" style="stroke:none;fill-rule:evenodd;fill:#14e691;fill-opacity:1"></path><path d="M101.4 89h9.7v-9.8h-9.7Zm0 0" style="stroke:none;fill-rule:evenodd;fill:#ff1928;fill-opacity:1"></path><path d="M67.7 9.8h9.7V0h-9.7Zm-11.2 0h9.7V0h-9.7Zm-11.3 0H55V0h-9.8ZM34 9.8h9.8V0H34Zm33.7 11.3h9.7v-9.8h-9.7Zm-11.2 0h9.7v-9.8h-9.7Zm-11.3 0H55v-9.8h-9.8Zm-11.2 0h9.8v-9.8H34Zm56.2 0h9.7v-9.8h-9.7Zm-11.3 0h9.8v-9.8h-9.8Zm-56.1 0h9.7v-9.8h-9.7Zm-11.2 0h9.7v-9.8h-9.7Zm78.6 11.3h9.7v-9.8h-9.7Zm-11.3 0h9.8v-9.8h-9.8Zm-56.1 0h9.7v-9.8h-9.7Zm-11.2 0h9.7v-9.8h-9.7Zm0 11.3h9.7V34h-9.7Zm-11.3 0h9.8V34H.3Zm11.3 11.4h9.7v-9.9h-9.7Zm78.6 0h9.7v-9.9h-9.7Zm-11.3 0h9.8v-9.9h-9.8Zm-11.2 0h9.7v-9.9h-9.7Zm-11.2 0h9.7v-9.9h-9.7ZM.3 55h9.8v-9.9H.3ZM79 66.4h9.8v-9.8h-9.8Zm-11.2 0h9.7v-9.8h-9.7Zm-11.2 0h9.7v-9.8h-9.7Zm-45 0h9.8v-9.8h-9.7Zm89.9 0h9.7v-9.8h-9.7Zm-11.2 0h9.7v-9.8h-9.7Zm-89.9 0h9.8v-9.8H.3Zm101 11.3h9.8v-9.8h-9.7Zm-89.7 0h9.7v-9.8h-9.7Zm78.6 0h9.7v-9.8h-9.7Zm-89.9 0h9.8v-9.8H.3ZM90.2 89h9.7v-9.8h-9.7ZM.3 89h9.8v-9.8H.3ZM79 89h9.8v-9.8h-9.8Zm-56.1 0h9.7v-9.8h-9.7Zm-11.2 0h9.7v-9.8h-9.7Zm78.6 11.3h9.7v-9.8h-9.7Zm-11.3 0h9.8v-9.8h-9.8Zm-11.2 0h9.7v-9.8h-9.7Zm-11.2 0h9.7v-9.8h-9.7Zm-11.3 0H55v-9.8h-9.8Zm-11.2 0h9.8v-9.8H34Zm-11.2 0h9.7v-9.8h-9.7Zm45 11.3h9.6v-9.8h-9.7Zm-11.3 0h9.7v-9.8h-9.7Zm-11.3 0H55v-9.8h-9.8Zm-11.2 0h9.8v-9.8H34Zm-11.2 0h9.7v-9.8h-9.7Zm0 0" style="stroke:none;fill-rule:evenodd;fill:#fff;fill-opacity:1"></path></g>
+        <linearGradient id="ag-edge" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".2" stop-color="#fff"/><stop offset=".8" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        <mask id="ag-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="249" height="152"><rect width="249" height="152" fill="url(#ag-edge)"/></mask>
+        <filter id="ag-motion-a" x="-100%" width="300%"><feGaussianBlur stdDeviation="0 0"/></filter>
+        <filter id="ag-motion-g" x="-100%" width="300%"><feGaussianBlur stdDeviation="0 0"/></filter>
+      </defs>
+      <g mask="url(#ag-mask)"><g id="ag-roll-a" transform="translate(0,20)" filter="url(#ag-motion-a)"><use href="#ag-glyph-a" y="0"/><use href="#ag-glyph-a" y="-152"/><use href="#ag-glyph-a" y="-304"/><use href="#ag-glyph-a" y="-456"/><use href="#ag-glyph-a" y="-608"/><use href="#ag-glyph-a" y="-760"/><use href="#ag-glyph-a" y="-912"/><use href="#ag-glyph-a" y="-1064"/><use href="#ag-glyph-a" y="-1216"/><use href="#ag-glyph-a" y="-1368"/><use href="#ag-glyph-a" y="-1520"/></g><g id="ag-roll-g" transform="translate(137,20)" filter="url(#ag-motion-g)"><use href="#ag-glyph-g" y="0"/><use href="#ag-glyph-g" y="-152"/><use href="#ag-glyph-g" y="-304"/><use href="#ag-glyph-g" y="-456"/><use href="#ag-glyph-g" y="-608"/><use href="#ag-glyph-g" y="-760"/><use href="#ag-glyph-g" y="-912"/><use href="#ag-glyph-g" y="-1064"/><use href="#ag-glyph-g" y="-1216"/><use href="#ag-glyph-g" y="-1368"/><use href="#ag-glyph-g" y="-1520"/></g></g>
+    </svg>
+  </div>
+
   <div id="GameDiv" cc_exact_fit_screen="true">
     <div id="LoadingScreen" aria-label="Loading">
       <img src="loading/1025.jpg" alt="" />
@@ -67,6 +86,79 @@
     <div id="Cocos3dGameContainer">
       <canvas id="GameCanvas" oncontextmenu="event.preventDefault()" tabindex="99"></canvas>
     </div>
+
+  <script>
+    (function () {
+      var opening = document.getElementById('AGOpening');
+      var logo = opening.querySelector('svg');
+      var cover = document.getElementById('LoadingScreen') || document.getElementById('PreviewCover');
+      var image = cover.querySelector('img');
+      var ready = false, minimumElapsed = false, removed = false;
+      var observer;
+      function fit() {
+        var rect = cover.getBoundingClientRect();
+        if (rect.width <= 0 || rect.height <= 0) return;
+        logo.style.width = Math.min(rect.width * .58, rect.height * .4) + 'px';
+        logo.style.left = rect.left + rect.width / 2 + 'px';
+        logo.style.top = rect.top + rect.height / 2 + 'px';
+      }
+      // 沿用 pg_loading 的重复字形滚动、纵向模糊和回弹；首轮在一秒内播完。
+      var letters = [
+        { layer: document.getElementById('ag-roll-a'), blur: document.querySelector('#ag-motion-a feGaussianBlur'), x: 0, delay: 70 },
+        { layer: document.getElementById('ag-roll-g'), blur: document.querySelector('#ag-motion-g feGaussianBlur'), x: 137, delay: 0 }
+      ];
+      var animationFrame = 0, cycleStart;
+      function animate(now) {
+        if (removed) return;
+        if (cycleStart === undefined) cycleStart = now;
+        var elapsed = now - cycleStart;
+        letters.forEach(function (letter) {
+          var t = Math.max(0, elapsed - letter.delay), y = 20, blur = 0;
+          if (t > 0 && t < 620) {
+            var progress = t / 620;
+            y += 1532 * progress;
+            blur = 45 * Math.min(progress, 1 - progress);
+          } else if (t >= 620 && t < 716) {
+            y += 1520 + 12 * (1 - (t - 620) / 96);
+          }
+          letter.layer.setAttribute('transform', 'translate(' + letter.x + ',' + y + ')');
+          letter.blur.setAttribute('stdDeviation', '0 ' + blur);
+        });
+        if (elapsed >= 1200) cycleStart = now;
+        animationFrame = requestAnimationFrame(animate);
+      }
+      animationFrame = requestAnimationFrame(animate);
+      function finish() {
+        if (removed || !ready || !minimumElapsed) return;
+        removed = true;
+        cancelAnimationFrame(animationFrame);
+        opening.remove();
+        window.removeEventListener('resize', fit);
+        image.removeEventListener('load', loaded);
+        if (observer) observer.disconnect();
+      }
+      function loaded() {
+        if (!image.complete || image.naturalWidth === 0) return;
+        // decode 确保封面像素已经可绘制，避免移除黑层后闪空白。
+        var decoded = image.decode ? image.decode() : Promise.resolve();
+        decoded.then(function () { ready = true; finish(); }).catch(function () {
+          if (image.complete && image.naturalWidth > 0) { ready = true; finish(); }
+        });
+      }
+      fit();
+      window.addEventListener('resize', fit);
+      if (typeof ResizeObserver !== 'undefined') {
+        observer = new ResizeObserver(fit);
+        observer.observe(cover);
+      }
+      image.addEventListener('load', loaded);
+      loaded(); // 命中浏览器缓存时可能早于监听完成加载。
+      // 从首帧开始计时，不能把首次绘制前的脚本耗时算入这一秒。
+      requestAnimationFrame(function () {
+        setTimeout(function () { minimumElapsed = true; finish(); }, 1000);
+      });
+    }());
+  </script>
   <%- include(cocosTemplate, {}) %>
 </body>
 </html>
