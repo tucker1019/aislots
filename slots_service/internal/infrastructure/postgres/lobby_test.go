@@ -25,6 +25,7 @@ func TestLobbySettlementRecoversLostResponseWithoutRedrawing(t *testing.T) {
 	rejectNext := false
 	var mu sync.Mutex
 	debits := 0
+	var completions []lobby.Completion
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get("Authorization") != "Bearer "+strings.Repeat("s", 32) {
 			w.WriteHeader(401)
@@ -34,6 +35,18 @@ func TestLobbySettlementRecoversLostResponseWithoutRedrawing(t *testing.T) {
 		defer mu.Unlock()
 		var data any
 		switch r.URL.Path {
+		case "/internal/game/complete":
+			var in lobby.Completion
+			if e := json.NewDecoder(r.Body).Decode(&in); e != nil {
+				t.Error(e)
+				return
+			}
+			completions = append(completions, in)
+			if len(completions) == 1 {
+				w.WriteHeader(503)
+				return
+			}
+			data = map[string]any{"included": true}
 		case "/internal/game/exchange":
 			data = map[string]any{"uid": 1, "appname": "lobby", "appkey": "web", "country": "ID", "currency": "IDR", "coins": balance}
 		case "/internal/game/balance":
@@ -170,6 +183,26 @@ func TestLobbySettlementRecoversLostResponseWithoutRedrawing(t *testing.T) {
 	}
 	if steps != 9 || balance != 1040 || frame.TotalWinAmount != 90 || engine.calls.Load() != 3 || debits != 1 {
 		t.Fatal(fmt.Sprint("bad free settlement ", steps, " ", balance, " ", frame.TotalWinAmount, " ", debits))
+	}
+
+	// The free chain emits one durable completion; lost acknowledgement is retried after reopening the store.
+	if e = restarted.FlushStatistics(ctx); e == nil {
+		t.Fatal("expected failed acknowledgement")
+	}
+	worker, e := postgres.Open(ctx, dsn)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer worker.Close()
+	worker.UseLobby(adapter)
+	if e = worker.FlushStatistics(ctx); e != nil {
+		t.Fatal(e)
+	}
+	if len(completions) != 2 || completions[0] != completions[1] || completions[0].Sequence != 1 || completions[0].BetAmount != 100 || completions[0].WinAmount != 90 {
+		t.Fatal("wrong whole-bet statistics", completions)
+	}
+	if e = worker.FlushStatistics(ctx); e != nil || len(completions) != 2 {
+		t.Fatal("completion delivered after acknowledgement", e)
 	}
 	if e = inspect.QueryRow(ctx, `SELECT count(*) FROM test_wallets`).Scan(&count); e != nil || count != 0 {
 		t.Fatal("real user entered test wallet", count, e)

@@ -138,3 +138,19 @@ func (c *Client) Settle(ctx context.Context, in Settlement) (string, int64, erro
 	}
 	return out.Status, out.Coins, e
 }
+
+type Completion struct {
+	UID       int64     `json:"uid"`
+	GameID    string    `json:"gameId"`
+	BetID     string    `json:"betId"`
+	Sequence  int64     `json:"sequence"`
+	BetAmount int64     `json:"betAmount"`
+	WinAmount int64     `json:"winAmount"`
+	StartedAt time.Time `json:"startedAt"`
+	EndedAt   time.Time `json:"endedAt"`
+}
+
+func (c *Client) Complete(ctx context.Context, in Completion) error {
+	var out struct{ Included bool }
+	return c.call(ctx, "/internal/game/complete", in, &out)
+}

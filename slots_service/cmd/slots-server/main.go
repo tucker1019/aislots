@@ -76,6 +76,7 @@ func run(logger *slog.Logger) error {
 				return e
 			}
 			store.UseLobby(adapter)
+			go store.RunStatistics(ctx)
 			service, err = play.NewLive(store, catalog, bets, adapter)
 		} else {
 			service, err = play.New(store, catalog, bets, cfg.TestProfile)

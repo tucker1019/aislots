@@ -185,3 +185,5 @@ curl -H 'Authorization: Bearer <accessToken>' \
 ## 大厅真实用户
 
 使用 `configs/server.lobby.json` 启用大厅钱包；该模式拒绝固定测试登录和旧测试会话。`POST /api/v1/login` 新增 `launchTicket`、`exchangeId`、`gameId` 的登录方式，不传大厅sid。兑换重试使用同一exchangeId，成功后保存游戏accessToken并移除URL票据。state/spin协议和逐轮结算行为保持不变；真实会话过期返回大厅重新进入，不自动切换测试用户。接入、内部资金协议及恢复机制见 `lobby_service/docs/game-integration.md`。
+
+整局完成统计通过服务端outbox投递大厅：SaveTicket complete时同事务写入game_statistics_outbox，按游戏/玩家连续sequence后台重试。客户端不提交RTP和榜单结果；该通知不涉及额外钱包结算。详见大厅docs/game-statistics.md。

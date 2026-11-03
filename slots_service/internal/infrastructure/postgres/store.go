@@ -216,6 +216,15 @@ func (t *transaction) SaveTicket(ctx context.Context, value play.Ticket) error {
 	if value.Status == "active" || value.Status == "complete" {
 		_, err = t.tx.Exec(ctx, `INSERT INTO bet_orders(bet_id,status,data) VALUES($1,$2,$3) ON CONFLICT(bet_id) DO UPDATE SET status=excluded.status,data=excluded.data,updated_at=now()`, value.ID, value.Status, raw)
 	}
+	if err == nil && t.remote && value.Status == "complete" {
+		_, err = t.tx.Exec(ctx, `WITH seq AS (
+ INSERT INTO game_statistics_sequences(game_id,uid,sequence)
+ SELECT $1,$2,1 WHERE NOT EXISTS(SELECT 1 FROM game_statistics_outbox WHERE bet_id=$3)
+ ON CONFLICT(game_id,uid) DO UPDATE SET sequence=game_statistics_sequences.sequence+1 RETURNING sequence)
+ INSERT INTO game_statistics_outbox(game_id,uid,bet_id,sequence,bet_amount,win_amount,started_at,ended_at)
+ SELECT $1,$2,$3,seq.sequence,$4,$5,COALESCE((SELECT MIN(created_at) FROM spin_steps WHERE bet_id=$3),now()),now() FROM seq
+ ON CONFLICT(bet_id) DO NOTHING`, value.GameID, p.UID, value.ID, value.Amount, value.TotalWin)
+	}
 	return err
 }
 func (t *transaction) State(ctx context.Context, id string) (engine.State, error) {
