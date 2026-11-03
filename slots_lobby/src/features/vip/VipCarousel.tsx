@@ -1,3 +1,4 @@
+import { t } from '../../i18n';
 import { useEffect, useRef } from 'react';
 import type { VipLevel } from '../../services/vip-details';
 import { betMoney } from '../bet-records/money';
@@ -34,12 +35,12 @@ export function VipCarousel({ levels, selected, current, highest, onSelect }: Pr
     element.addEventListener('scroll', settle, { passive: true });
     return () => { clearTimeout(timer); element.removeEventListener('scroll', settle); };
   }, [onSelect]);
-  return <div ref={viewport} className="vip-carousel" role="region" aria-roledescription="轮播" aria-label="VIP等级卡片" tabIndex={0} onKeyDown={event => {
+  return <div ref={viewport} className="vip-carousel" role="region" aria-roledescription={t('copy.carousel')} aria-label={t('copy.vipLevelCards')} tabIndex={0} onKeyDown={event => {
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
     event.preventDefault();
     const index = levels.findIndex(row => row.level === selected);
     onSelect(levels[Math.max(0, Math.min(levels.length - 1, index + (event.key === 'ArrowRight' ? 1 : -1)))].level);
-  }}>{levels.map(tier => <section key={tier.level} data-level={tier.level} className={`vip-tier-card${tier.level === selected ? ' vip-tier-selected' : ''}`} role="group" aria-label={`VIP${tier.level}等级权益`} aria-hidden={tier.level !== selected}>
-    <span>{tier.level === current ? '当前等级' : tier.level <= highest ? '已解锁' : '待解锁'}</span><h2>VIP{tier.level}</h2><p>晋级存款 {betMoney(tier.upgradeRecharge)} · 有效流水 {betMoney(tier.upgradeBet)}</p><p>保级存款 {betMoney(tier.keepRecharge)} · 有效流水 {betMoney(tier.keepBet)}</p>
+  }}>{levels.map(tier => <section key={tier.level} data-level={tier.level} className={`vip-tier-card${tier.level === selected ? ' vip-tier-selected' : ''}`} role="group" aria-label={t('copy.vipValueBenefits', {p0: tier.level})} aria-hidden={tier.level !== selected}>
+    <span>{tier.level === current ? t('copy.currentLevel') : tier.level <= highest ? t('copy.unlocked') : t('copy.locked')}</span><h2>VIP{tier.level}</h2><p>{t('copy.upgradeDeposits')} {betMoney(tier.upgradeRecharge)} {t('copy.eligibleTurnover207')} {betMoney(tier.upgradeBet)}</p><p>{t('copy.protectionDeposits')} {betMoney(tier.keepRecharge)} {t('copy.eligibleTurnover207')} {betMoney(tier.keepBet)}</p>
   </section>)}</div>;
 }

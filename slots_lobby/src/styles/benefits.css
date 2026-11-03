@@ -18,3 +18,15 @@
 .benefit-card-bottom button:active:not(:disabled) { background: #eaf2ff; }
 .benefits-feedback { padding: 24px 12px; text-align: center; color: var(--muted); font-size: 13px; background: #f5f7fb; border-radius: 13px; }
 .benefits-note { margin: 4px 2px 0; font-size: 11px; line-height: 1.6; color: var(--muted); }
+
+body:has(.vip-upgrade-modal) .ant-modal-mask { backdrop-filter: blur(7px); background: rgb(20 24 39 / 65%); }
+.vip-upgrade-modal .ant-modal-container,.vip-upgrade-modal .ant-modal-content { background: transparent; padding: 0; box-shadow: none; }
+.vip-upgrade-panel { overflow: hidden; border-radius: 14px; background: #f5f7fb; box-shadow: 0 14px 45px rgb(0 0 0 / 20%); }
+.vip-upgrade-panel h2 { margin: 0; padding: 14px; text-align: center; font-size: 16px; color: #385b95; background: linear-gradient(120deg,#e0e8fa,#edf3ff); }
+.vip-upgrade-body { padding: 18px 15px 14px; }
+.vip-upgrade-progress { margin-bottom: 16px; }.vip-upgrade-progress > div:first-child { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--muted); }.vip-upgrade-progress b { color: #ad7b20; }.vip-upgrade-progress .ant-progress { margin-top: 8px; }
+.vip-upgrade-home { width: 100%; min-height: 42px; border: 0; border-radius: 9px; background: var(--blue); color: #fff; font-weight: 600; font-size: 14px; }
+.vip-upgrade-close { display: block; margin: 22px auto 0; width: 30px; height: 30px; border-radius: 50%; border: 1px solid #a3bce3; background: #517bc5; color: #fff; font-size: 24px; line-height: 24px; }
+.vip-upgrade-notice { color: var(--muted); font-size: 13px; line-height: 1.7; margin: 0 0 18px; }
+
+.vip-salary-error { margin: 0; color: #c13f3f; font-size: 12px; line-height: 1.6; }.vip-salary-error button { margin-left: 8px; border: 1px solid #c6d8f3; border-radius: 6px; padding: 5px 9px; color: var(--blue); background: #fff; }

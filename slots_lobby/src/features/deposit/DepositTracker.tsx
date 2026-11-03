@@ -1,3 +1,4 @@
+import { t } from '../../i18n';
 import { useEffect } from 'react';
 import { message } from 'antd';
 import { useQueryClient } from '@tanstack/react-query';
@@ -17,8 +18,8 @@ export function DepositTracker({onSuccess}:{onSuccess?:()=>void}){
    void client.invalidateQueries({queryKey:['cash-records']});
    void client.invalidateQueries({queryKey:['wallet-ledger']});
    void client.invalidateQueries({queryKey:['recharge-order',uid,data.orderId]});
-   void toast.success({key:'deposit-success',content:'存款成功',duration:2});onSuccess?.();
-  }else void toast.error({key:'deposit-failed',content:'存款订单未成功，请重新创建订单'});
+   void toast.success({key:'deposit-success',content:t('copy.depositSuccessful'),duration:2});onSuccess?.();
+  }else void toast.error({key:'deposit-failed',content:t('copy.theDepositOrderFailedPleaseCreateA')});
  },[order.data,intent,uid,client,toast,onSuccess]);
  return holder;
 }

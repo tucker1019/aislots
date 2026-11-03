@@ -1,3 +1,7 @@
+import {InviteFriendsPage} from './InviteFriendsPage';
+import { InvitePage } from './InvitePage';
+import { t, useLanguageStore } from '../i18n';
+import { PersonalReportPage } from './PersonalReportPage';
 import { RebateRulesPage } from './RebateRulesPage';
 import { EarnPage } from './EarnPage';
 import { VipPage } from './VipPage';
@@ -15,8 +19,9 @@ import { BottomNavigation } from '../components/BottomNavigation';
 import { HomeContent } from '../features/home/HomeContent';
 
 export function LobbyPage() {
+  useLanguageStore(state=>state.locale);
   const { view, navigate, orderId } = useLobbyRoute();
-  const comingSoon = () => { void toast.info({ key: 'lobby-notice', content: '敬请期待' }); };
+  const comingSoon = () => { void toast.info({ key: 'lobby-notice', content: t('copy.comingSoon') }); };
   const [toast, contextHolder] = message.useMessage({
     top: view !== 'home' ? 'calc(env(safe-area-inset-top, 0px) + 12px)' : 'calc(var(--header-height) + 12px)', duration: 1.6, maxCount: 1,
     classNames: { list: 'lobby-toast-list' },
@@ -25,9 +30,9 @@ export function LobbyPage() {
   return <>
     {view === 'home' && <Header />}
     {contextHolder}
-    <main key={view} className={`lobby-page-transition home-content${view !== 'home' ? ' account-route' : ''}${['records', 'bet-records', 'wallet-ledger', 'earn-rules'].includes(view) ? ' records-route' : ''}`} aria-label="大厅内容">
-      {view === 'earn-rules' ? <RebateRulesPage onBack={() => navigate('earn')} /> : view === 'earn' ? <EarnPage /> : view === 'vip' || view === 'vip-details' ? <VipPage tables={view === 'vip-details'} onBack={() => navigate(view === 'vip-details' ? 'vip' : 'benefits')} onTables={() => navigate('vip-details')} /> : view === 'wallet-ledger' ? <WalletLedgerPage id={orderId} onBack={() => navigate('my')} /> : view === 'benefits' ? <BenefitsPage onBack={() => navigate('my')} onComingSoon={comingSoon} onVip={() => navigate('vip')} /> : view === 'bet-records' ? <BetRecordsPage onBack={() => navigate('my')} /> : view === 'records' ? <CashRecordsPage orderId={orderId} onBack={() => navigate('my')} onComingSoon={comingSoon} /> : view === 'deposit' ? <DepositPage /> : view === 'my' ? <MyAccount onAction={comingSoon} onDeposit={() => navigate('deposit')} onRecords={() => navigate('records')} onBetRecords={() => navigate('bet-records')} onBenefits={() => navigate('benefits')} onLedger={() => navigate('wallet-ledger')} /> : <HomeContent onToast={text => { void toast.info({ key: 'lobby-notice', content: text }); }} />}
+    <main key={view} className={`lobby-page-transition home-content${view !== 'home' ? ' account-route' : ''}${['records', 'bet-records', 'wallet-ledger', 'earn-rules', 'personal-report', 'invite', 'invite-friends'].includes(view) ? ' records-route' : ''}`} aria-label={t('copy.lobbyContent')}>
+      {view === 'invite-friends' ? <InviteFriendsPage onBack={() => navigate('earn')} /> : view === 'invite' ? <InvitePage onBack={() => navigate('my')} /> : view === 'personal-report' ? <PersonalReportPage onBack={() => navigate('my')} /> : view === 'earn-rules' ? <RebateRulesPage onBack={() => navigate('earn')} /> : view === 'earn' ? <EarnPage /> : view === 'vip' || view === 'vip-details' ? <VipPage tables={view === 'vip-details'} onBack={() => navigate(view === 'vip-details' ? 'vip' : 'benefits')} onTables={() => navigate('vip-details')} /> : view === 'wallet-ledger' ? <WalletLedgerPage id={orderId} onBack={() => navigate('my')} /> : view === 'benefits' ? <BenefitsPage onBack={() => navigate('my')} onComingSoon={comingSoon} onVip={() => navigate('vip')} /> : view === 'bet-records' ? <BetRecordsPage onBack={() => navigate('my')} /> : view === 'records' ? <CashRecordsPage orderId={orderId} onBack={() => navigate('my')} onComingSoon={comingSoon} /> : view === 'deposit' ? <DepositPage /> : view === 'my' ? <MyAccount onAction={comingSoon} onDeposit={() => navigate('deposit')} onRecords={() => navigate('records')} onBetRecords={() => navigate('bet-records')} onBenefits={() => navigate('benefits')} onLedger={() => navigate('wallet-ledger')} onReport={() => navigate('personal-report')} onInvite={() => navigate('invite')} /> : <HomeContent onToast={text => { void toast.info({ key: 'lobby-notice', content: text }); }} />}
     </main>
-    {view !== 'earn-rules' && view !== 'vip' && view !== 'vip-details' && view !== 'records' && view !== 'bet-records' && view !== 'benefits' && view !== 'wallet-ledger' && <BottomNavigation view={view} onNavigate={navigate} onComingSoon={() => { void toast.info({ key: 'lobby-notice', content: '敬请期待' }); }} />}
+    {view !== 'invite-friends' && view !== 'invite' && view !== 'personal-report' && view !== 'earn-rules' && view !== 'vip' && view !== 'vip-details' && view !== 'records' && view !== 'bet-records' && view !== 'benefits' && view !== 'wallet-ledger' && <BottomNavigation view={view} onNavigate={navigate} onComingSoon={() => { void toast.info({ key: 'lobby-notice', content: t('copy.comingSoon') }); }} />}
   </>;
 }

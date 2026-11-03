@@ -13,6 +13,11 @@ import './styles/vip.css';
 import './styles/checkin.css';
 import './styles/wallet-ledger.css';
 import './styles/records.css';
+import './styles/personal-report.css';
 import './styles/earn.css';
 import { App } from './app/App';
 createRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>);
+
+import './styles/game-detail.css';
+
+import './styles/invite.css';

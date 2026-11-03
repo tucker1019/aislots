@@ -32,3 +32,12 @@
 
 .account-name-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .account-vip-badge { display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0; padding: 2px 6px; border: 1px solid #c8d9ff; border-radius: 8px; background: #edf3ff; color: #3566c5; font-size: 10px; font-weight: 700; line-height: 14px; white-space: nowrap; }
+
+.wallet-amount { display: inline-grid; vertical-align: middle; }.wallet-amount > span { grid-area: 1 / 1; }.wallet-amount-hidden { visibility: hidden; }.wallet-loading-dots { display: inline-flex; align-items: center; gap: 1px; }.wallet-loading-dots > span { display: inline-block; animation: wallet-dot-bounce .7s ease-in-out infinite; }.wallet-refresh-icon,.wallet-refresh-spinning { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }.wallet-refresh-spinning { animation: wallet-refresh-turn .8s linear infinite; }
+@keyframes wallet-refresh-turn { to { transform: rotate(360deg); } }
+@keyframes wallet-dot-bounce { 0%,100% { transform: translateY(0); opacity: .4; } 50% { transform: translateY(-4px); opacity: 1; } }
+@media(prefers-reduced-motion:reduce) { .wallet-refresh-spinning,.wallet-loading-dots > span { animation: none; } }
+
+.account-help .account-language-current { margin-left: auto; color: var(--muted); font-size: 12px; flex: 0 0 auto; }.language-options { display: grid; gap: 16px; width: 100%; padding: 12px 0; }.account-refresh-error { color: #b55348; font-size: 12px; margin-bottom: 12px; }
+
+.account-help .account-language-current + span:last-child { margin-left: 0; }

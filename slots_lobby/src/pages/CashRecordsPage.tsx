@@ -1,3 +1,4 @@
+import { t } from '../i18n';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { RecordsLayout } from '../components/records/RecordsLayout';
@@ -44,14 +45,14 @@ export function CashRecordsPage({ onBack, onComingSoon, orderId }: { onBack: () 
   const failed = profile.isError || (query.isError && items.length === 0);
   const loading = profile.isPending || (!profile.isError && query.isPending);
   function retry() { if (profile.isError) void profile.refetch(); else void query.refetch(); }
-  return <RecordsLayout title="存取记录" backLabel="返回我的" onBack={onBack} filters={<RecordFilters kind={kind} period={period} onKind={setKind} onPeriod={value => { setPeriod(value); document.getElementById('root')?.scrollTo({ top: 0 }); }} onComingSoon={onComingSoon} />}>
-    {loading ? <p className="cash-records-feedback" role="status">正在加载记录…</p>
-      : failed ? <section className="cash-records-feedback" role="alert"><p>记录暂时无法加载</p><button type="button" disabled={profile.isFetching || query.isFetching} onClick={retry}>重新加载</button></section>
+  return <RecordsLayout title={t('copy.depositHistory')} backLabel={t('copy.backToMyAccount')} onBack={onBack} filters={<RecordFilters kind={kind} period={period} onKind={setKind} onPeriod={value => { setPeriod(value); document.getElementById('root')?.scrollTo({ top: 0 }); }} onComingSoon={onComingSoon} />}>
+    {loading ? <p className="cash-records-feedback" role="status">{t('copy.loadingRecords')}</p>
+      : failed ? <section className="cash-records-feedback" role="alert"><p>{t('copy.recordsAreCurrentlyUnavailable')}</p><button type="button" disabled={profile.isFetching || query.isFetching} onClick={retry}>{t('copy.reload')}</button></section>
       : <><RecordList items={items} onOpen={open} />
-        {query.isRefetchError && <p className="cash-records-feedback" role="alert">刷新失败，<button type="button" disabled={query.isFetching} onClick={retry}>重试</button></p>}
-        {query.isFetchNextPageError && <p className="cash-records-feedback" role="alert">加载更多失败，请重试</p>}
-        {query.hasNextPage ? <button type="button" className="cash-load-more" disabled={query.isFetching} onClick={() => { void query.fetchNextPage(); }}>{query.isFetchingNextPage ? '正在加载…' : query.isFetchNextPageError ? '重试加载更多' : '加载更多'}</button>
-          : items.length > 0 && <p className="cash-records-end">已全部加载～</p>}
+        {query.isRefetchError && <p className="cash-records-feedback" role="alert">{t('copy.refreshFailed')}<button type="button" disabled={query.isFetching} onClick={retry}>{t('copy.retry')}</button></p>}
+        {query.isFetchNextPageError && <p className="cash-records-feedback" role="alert">{t('copy.unableToLoadMorePleaseRetry')}</p>}
+        {query.hasNextPage ? <button type="button" className="cash-load-more" disabled={query.isFetching} onClick={() => { void query.fetchNextPage(); }}>{query.isFetchingNextPage ? t('copy.loading266') : query.isFetchNextPageError ? t('copy.retryLoadingMore') : t('copy.loadMore')}</button>
+          : items.length > 0 && <p className="cash-records-end">{t('copy.allRecordsLoaded')}</p>}
       </>}
   </RecordsLayout>;
 }

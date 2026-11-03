@@ -1,5 +1,6 @@
+import { t } from '../../i18n';
 export type RecordPeriod = 'today' | 'yesterday' | 'week' | 'month';
-export const periodLabels: Record<RecordPeriod, string> = { today: '今天', yesterday: '昨天', week: '近7天', month: '近30天' };
+export const periodLabels: () => Record<RecordPeriod, string> = () => ({ today: t('copy.today'), yesterday: t('copy.yesterday'), week: t('copy.last7Days'), month: t('copy.last30Days') });
 /** 按浏览器本地日期计算，传给服务端的是UTC绝对时间；结束时间不包含在范围内。 */
 export function recordRange(period: RecordPeriod, now = new Date()) {
   const from = new Date(now.getFullYear(), now.getMonth(), now.getDate());

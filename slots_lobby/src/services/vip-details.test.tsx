@@ -45,7 +45,7 @@ it('真实待领奖励可领，成功刷新为已领取，未解锁等级不可�
  vi.mocked(claimVipReward).mockResolvedValue(300);setup();
  fireEvent.click(await screen.findByRole('button',{name:'晋级奖励领取'}));
  expect(await screen.findByRole('button',{name:'晋级奖励已领取'})).toBeDisabled();
- expect(claimVipReward).toHaveBeenCalledWith('upgrade','2026-11-03',expect.any(String));
+ expect(claimVipReward).toHaveBeenCalledWith('upgrade','2026-11-03',expect.any(String),'upgrade-1');
  expect(screen.getByRole('status')).toHaveTextContent('已领取 3.00');
  expect(await screen.findByText('领取成功',{exact:true})).toBeInTheDocument();
  fireEvent.click(screen.getByRole('button',{name:'VIP2'}));expect(screen.getByRole('button',{name:'晋级奖励等级权益'})).toBeDisabled();
@@ -61,4 +61,14 @@ it('丢失领取响应后重试保持相同请求ID，周期奖励按奖励所�
  fireEvent.click(screen.getByRole('button',{name:'周礼金领取'}));
  await waitFor(()=>expect(claimVipReward).toHaveBeenCalledTimes(2));
  expect(vi.mocked(claimVipReward).mock.calls[1]).toEqual(vi.mocked(claimVipReward).mock.calls[0]);
+});
+it('跨级奖励逐级领取，领取一级不影响另一级',async()=>{
+ const rewards=[{rewardId:'level-1',level:1,amount:300,status:'claimable'},{rewardId:'level-2',level:2,amount:500,status:'claimable'}];
+ const initial=parseVipDetails({...fixture,upgradeRewards:rewards});
+ vi.mocked(loadVipDetails).mockResolvedValueOnce(initial).mockResolvedValue({...initial,upgradeRewards:[{...rewards[0],status:'claimed'},rewards[1]]});
+ vi.mocked(claimVipReward).mockResolvedValue(300);setup();
+ fireEvent.click(await screen.findByRole('button',{name:'晋级奖励领取'}));expect(await screen.findByRole('button',{name:'晋级奖励已领取'})).toBeDisabled();
+ expect(claimVipReward).toHaveBeenCalledWith('upgrade','2026-11-03',expect.any(String),'level-1');
+ fireEvent.click(screen.getByRole('button',{name:'VIP2'}));expect(screen.getByRole('button',{name:'晋级奖励领取'})).toBeEnabled();
+ fireEvent.click(screen.getByRole('button',{name:'晋级奖励领取'}));await waitFor(()=>expect(claimVipReward).toHaveBeenCalledWith('upgrade','2026-11-03',expect.any(String),'level-2'));
 });

@@ -30,3 +30,11 @@ it('加载中不显示虚构余额', () => {
   expect(screen.getByRole('status', { name: '正在加载用户资料' })).toBeInTheDocument();
   expect(screen.queryByLabelText('金币余额 0.00')).not.toBeInTheDocument();
 });
+
+it('首页头像进入我的，金额框进入充值', async () => {
+  window.history.replaceState({},'', '/');
+  vi.mocked(loadAccountProfile).mockResolvedValue({uid:7,nickname:'小明',coins:100,avatarId:1});
+  const user=setup();await screen.findByLabelText('金币余额 1.00');
+  await user.click(screen.getByRole('button',{name:'前往我的'}));expect(window.location.pathname).toBe('/my');
+  await user.click(screen.getByRole('button',{name:'前往充值'}));expect(window.location.pathname).toBe('/deposit');
+});

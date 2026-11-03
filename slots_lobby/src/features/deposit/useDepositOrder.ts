@@ -1,3 +1,4 @@
+import { t } from '../../i18n';
 import { useQuery } from '@tanstack/react-query';
 import { createRecharge,fetchRechargeOrder } from '../../services/recharge';
 import { readIntent,saveIntent } from './intent';
@@ -6,7 +7,7 @@ export function useDepositOrder(uid:number,intent:DepositIntent|null){
  return useQuery({queryKey:['deposit-tracking',uid,intent?.requestId],enabled:uid>0&&!!intent,
   queryFn:async({signal})=>{
    const current=readIntent(uid);
-   if(!current||current.requestId!==intent?.requestId)throw new Error('订单已变化');
+   if(!current||current.requestId!==intent?.requestId)throw new Error(t('copy.orderHasChanged'));
    let orderId=current.orderId;
    if(!orderId){const receipt=await createRecharge(current.tierId,current.requestId,uid);orderId=receipt.orderId;if(readIntent(uid)?.requestId===current.requestId)saveIntent(uid,{...current,orderId});}
    return fetchRechargeOrder(orderId,signal,uid);

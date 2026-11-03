@@ -1,3 +1,4 @@
+import { t } from '../i18n';
 import { ensureSession, request } from './account';
 import { isRecord } from '../features/account/types';
 /** 校验HTTP(S)游戏入口；实际进入地址由大厅服务签发。 */
@@ -16,12 +17,12 @@ export async function launchGame(gameId: string): Promise<string> {
   const identity = await ensureSession();
   const data = await request('/api/game/launch', { method: 'POST',
     body: JSON.stringify({ uid: identity.uid, sid: identity.sid, gameId }),
-  }, '暂时无法进入游戏，请重试');
+  }, t('copy.unableToOpenTheGamePleaseRetry'));
   if (!isRecord(data) || typeof data.launchUrl !== 'string' || typeof data.expiresAt !== 'string')
-    throw new Error('游戏入口响应格式有误');
+    throw new Error(t('copy.invalidGameLaunchResponse'));
   const url = resolveGameEntry(data.launchUrl, false);
   if (!url || new URL(url).searchParams.get('launchTicket')?.length !== 52 || !Number.isFinite(Date.parse(data.expiresAt)))
-    throw new Error('游戏入口无效或已过期，请重试');
+    throw new Error(t('copy.gameEntryIsInvalidOrExpiredPlease'));
   return url;
 }
 

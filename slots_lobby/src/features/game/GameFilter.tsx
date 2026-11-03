@@ -1,0 +1,6 @@
+import { useEffect,useRef,useState } from 'react';
+export function GameFilter({label,value,displayValue,options,onChange}:{label:string;value:string;displayValue?:string;options:readonly {value:string;label:string}[];onChange:(value:string)=>void}){
+ const [open,setOpen]=useState(false);const root=useRef<HTMLDivElement>(null);
+ useEffect(()=>{const outside=(event:PointerEvent)=>{if(!root.current?.contains(event.target as Node))setOpen(false);};document.addEventListener('pointerdown',outside);return()=>document.removeEventListener('pointerdown',outside);},[]);
+ return <div ref={root} className="game-filter" onKeyDown={event=>{if(event.key==='Escape'){setOpen(false);root.current?.querySelector('button')?.focus();}}}><button type="button" aria-label={label} aria-expanded={open} aria-haspopup="listbox" onClick={()=>setOpen(!open)}>{displayValue??options.find(option=>option.value===value)?.label}<span aria-hidden="true">⌄</span></button>{open&&<div className="game-filter-menu" role="listbox" aria-label={label}>{options.map(option=><button type="button" role="option" key={option.value} aria-selected={value===option.value} onClick={()=>{onChange(option.value);setOpen(false);root.current?.querySelector('button')?.focus();}}>{option.label}</button>)}</div>}</div>;
+}
