@@ -8,6 +8,7 @@ import { fetchGames } from '../services/catalog';
 import { useLobbyStore } from '../stores/lobby';
 import type { Game } from '../features/games/types';
 vi.mock('../services/catalog', () => ({ fetchGames: vi.fn() }));
+vi.mock('../services/account', () => ({ loadAccountProfile: vi.fn().mockResolvedValue({ uid: 7, nickname: '测试用户', avatarId: 1, coins: 0 }) }));
 const games: Game[] = [
   { id:'AG1',title:'麻将胡了',subtitle:'Mahjong Ways',category:'cascade',art:'mahjong',status:'available',featured:true,isNew:false,description:'麻将',tags:['麻将'],launchUrl:'http://127.0.0.1:5180/' },
   { id:'candy',title:'糖果星球',subtitle:'Candy Planet',category:'cascade',art:'candy',status:'upcoming',featured:false,isNew:true,description:'筹备',tags:['糖果'] },

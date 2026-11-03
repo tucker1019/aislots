@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import { Button, Input, Modal, Segmented } from 'antd';
-import type { InputRef } from 'antd';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { Icon } from '../components/Icon';
@@ -22,7 +21,6 @@ export function LobbyPage() {
   const [category, setCategory] = useState<Category>('all');
   const [about, setAbout] = useState(false);
   const catalog = useRef<HTMLElement>(null);
-  const search = useRef<InputRef>(null);
   const featured = games.find(game => game.featured && game.art === 'mahjong');
   const visible = filterGames(games, { view, category, query, favoriteIds, recentIds });
   const favoriteCount = games.filter(game => favoriteIds.includes(game.id)).length;
@@ -36,9 +34,7 @@ export function LobbyPage() {
   const empty = query.trim() || category !== 'all';
   return <>
     <a className="skip-link" href="#catalog">跳到游戏列表</a>
-    <Header view={view} favoriteCount={favoriteCount} onNavigate={navigate} onSearch={() => {
-      explore(); search.current?.focus({ preventScroll: true });
-    }} onAbout={() => setAbout(true)} />
+    <Header view={view} favoriteCount={favoriteCount} onNavigate={navigate} />
     <main>
       {view === 'discover' && featured && !isError && <FeaturedGame game={featured} onExplore={explore} />}
       {view === 'discover' && isPending && <div className="featured-placeholder" aria-hidden="true" />}
@@ -50,7 +46,7 @@ export function LobbyPage() {
         <div className="catalog-toolbar">
           <div className="category-control"><Segmented<Category> value={category} onChange={setCategory}
             aria-label="按玩法筛选" options={[{ label: '全部游戏', value: 'all' }, { label: '连续消除', value: 'cascade' }, { label: '连线玩法', value: 'lines' }]} /></div>
-          <Input ref={search} id="game-search" className="game-search" aria-label="搜索游戏名称或主题" placeholder="搜索游戏名称或主题"
+          <Input id="game-search" className="game-search" aria-label="搜索游戏名称或主题" placeholder="搜索游戏名称或主题"
             prefix={<Icon name="search" size={17} />} allowClear maxLength={80} value={query} onChange={event => setQuery(event.target.value)} />
         </div>
         <div className="catalog-results" aria-live="polite" aria-atomic="true">

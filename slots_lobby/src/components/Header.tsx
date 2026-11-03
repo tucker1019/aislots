@@ -1,6 +1,6 @@
-import { Button, Tooltip } from 'antd';
 import { Brand } from './Brand';
 import { Icon } from './Icon';
+import { UserSummary } from '../features/account/UserSummary';
 import type { IconName } from './Icon';
 import type { LobbyView } from '../features/games/types';
 const links: { id: LobbyView; label: string; icon: IconName }[] = [
@@ -10,19 +10,13 @@ const links: { id: LobbyView; label: string; icon: IconName }[] = [
 ];
 interface HeaderProps {
   view: LobbyView; favoriteCount: number; onNavigate: (view: LobbyView) => void;
-  onSearch: () => void; onAbout: () => void;
 }
-export function Header({ view, favoriteCount, onNavigate, onSearch, onAbout }: HeaderProps) {
+export function Header({ view, favoriteCount, onNavigate }: HeaderProps) {
   return <>
     <header className="site-header">
       <div className="header-inner">
         <button className="brand-home" aria-label="AISlots 首页" onClick={() => onNavigate('discover')}><Brand /></button>
-        <div className="header-actions">
-          <Tooltip title="搜索游戏"><Button type="text" aria-label="搜索游戏" className="header-icon" icon={<Icon name="search" />} onClick={onSearch} /></Tooltip>
-          <span className="header-divider" />
-          <Button type="text" className="about-button" onClick={onAbout}>关于 AISlots <Icon name="chevron" size={13} /></Button>
-          <Button type="text" className="mobile-about" aria-label="关于 AISlots" icon={<Icon name="info" />} onClick={onAbout} />
-        </div>
+        <UserSummary />
       </div>
     </header>
     <nav className="mobile-navigation" aria-label="主导航">

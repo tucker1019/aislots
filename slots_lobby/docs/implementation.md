@@ -22,3 +22,12 @@
 - [x] 浏览器验证1440/412/320宽度、滚动固定栏、弹窗边界；运行lint/typecheck/test/build。
 
 Query、Zustand、services及接口数据流不变，无新增依赖。
+
+## 2026-11-03 固定顶栏与用户资料
+
+用户明确确认接真实资料：无身份创建游客，已有身份续期，然后读取coins/avatarId。顶栏删除搜索、说明按钮，固定在大厅顶部。
+
+- [x] 新增services/account、stores/session及features/account，Query持有资料，Zustand持久化身份；校验响应、错误/超时重试，并发登录去重。
+- [x] 修改Header/LobbyPage、全局及布局样式；新增1–15号头像和占位图，保留内容区搜索及页脚说明。
+- [x] Vite开发和预览代理到8081；补齐环境变量和独立服务启动文档，不修改服务端源代码。
+- [x] 先运行失败测试，再实现；22项测试、lint、typecheck、构建通过，浏览器验证窄屏/宽屏、刷新身份及固定滚动位置。

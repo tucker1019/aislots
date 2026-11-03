@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 const paths = {
+  coin: <><circle cx="12" cy="12" r="9" /><path d="M14.5 7.5h-4a2.2 2.2 0 0 0 0 4.5h3a2.2 2.2 0 0 1 0 4.5h-4M12 5.5v13" /></>,
   search: <><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.5 4.5" /></>,
   heart: <path d="M20.7 5.7a5.2 5.2 0 0 0-7.4 0L12 7l-1.3-1.3a5.2 5.2 0 0 0-7.4 7.4L12 22l8.7-8.9a5.2 5.2 0 0 0 0-7.4Z" />,
   clock: <><circle cx="12" cy="12" r="9" /><path d="M12 6.5V12l3.8 2.2" /></>,

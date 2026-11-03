@@ -11,6 +11,7 @@
   --paper: #f5f5f7;
   --line: #e5e5e8;
   --content: 430px;
+  --header-height: calc(62px + env(safe-area-inset-top, 0px));
 }
 
 * {
@@ -37,6 +38,7 @@ body {
   scrollbar-width: none;
   overscroll-behavior-y: contain;
   background: #fff;
+  padding-top: var(--header-height);
   padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
 }
 
