@@ -4,8 +4,8 @@
 
 .game-cover {
   position: relative;
-  aspect-ratio: 1.48;
-  border-radius: 18px;
+  aspect-ratio: 1.17;
+  border-radius: 14px;
   overflow: hidden;
   isolation: isolate;
   background: #edf0e9;
@@ -41,9 +41,10 @@
 
 .game-illustration {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 116%;
+  height: 116%;
   transition: transform .3s ease;
+  margin: -8%;
 }
 
 .game-card:hover .game-illustration {
@@ -52,17 +53,17 @@
 
 .game-badges {
   position: absolute;
-  left: 14px;
-  top: 14px;
+  left: 9px;
+  top: 11px;
   display: flex;
-  gap: 5px;
-  max-width: calc(100% - 63px);
+  gap: 4px;
+  max-width: calc(100% - 45px);
   z-index: 3;
   flex-wrap: wrap;
 }
 
 .game-badge {
-  padding: 5px 8px;
+  padding: 4px 6px;
   background: rgb(255 255 255 / 82%);
   border-radius: 6px;
   color: #6d6d74;
@@ -78,6 +79,7 @@
 .badge-new {
   background: #fff3;
   color: #7b5d78;
+  display: none;
 }
 
 .cover-moon .game-badge {
@@ -87,13 +89,13 @@
 
 .favorite-button.ant-btn {
   position: absolute;
-  right: 8px;
-  top: 6px;
+  right: 0;
+  top: 0;
   z-index: 4;
-  width: 39px;
-  height: 39px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: rgb(255 255 255 / 75%);
+  background: transparent;
   color: #838b83;
   display: inline-flex;
 }
@@ -109,34 +111,34 @@
 }
 
 .favorite-button svg {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
 }
 
 .game-card-body {
-  padding: 13px 3px 0;
+  padding: 10px 1px 0;
 }
 
 .game-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 5px;
+  gap: 2px;
 }
 
 .game-title-row h3 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: -.5px;
   white-space: nowrap;
 }
 
 .card-play.ant-btn {
-  font-size: 12px;
+  font-size: 11px;
   color: #0066cc;
-  height: 32px;
-  padding: 0 0 0 10px;
-  gap: 1px;
+  height: 44px;
+  padding: 0 0 0 5px;
+  gap: 0;
 }
 
 .card-play.ant-btn:hover {
@@ -145,9 +147,9 @@
 }
 
 .upcoming-button.ant-btn {
-  height: 29px;
-  padding: 0 9px;
-  font-size: 10px;
+  height: 25px;
+  padding: 0 6px;
+  font-size: 9px;
   border: 0;
   background: #f5f5f7;
   color: #939398;
@@ -155,7 +157,7 @@
 }
 
 .game-subtitle {
-  font-size: 12px;
+  font-size: 11px;
   color: #8a8a90;
   margin-top: 1px;
   line-height: 1.5;
@@ -164,10 +166,10 @@
 .game-meta {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 5px;
   color: #96969c;
   font-size: 10px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .meta-divider {
@@ -244,7 +246,7 @@
 }
 
 .game-card:hover .mahjong-tile {
-  translate: 0 -3px;
+  translate: none;
 }
 
 .mahjong-orbit {
@@ -270,17 +272,20 @@
 }
 
 .mahjong-art-hero {
-  height: 366px;
-  width: 100%;
-  overflow: visible;
+  height: 235px;
+  width: calc(100% + 40px);
+  overflow: hidden;
   position: relative;
   align-self: center;
+  margin-top: 7px;
 }
 
 .mahjong-art-hero .tile-composition {
   width: 570px;
   height: 365px;
-  top: 47%;
+  top: 41%;
+  transform: translate(-50%,-50%) scale(.63);
+  left: 51%;
 }
 
 .mahjong-art-hero .mahjong-tile {
@@ -320,15 +325,15 @@
 }
 
 .mahjong-art-hero .orbit-one {
-  width: 360px;
-  height: 360px;
-  top: 49%;
+  width: 225px;
+  height: 225px;
+  top: 48%;
 }
 
 .mahjong-art-hero .orbit-two {
-  width: 500px;
-  height: 500px;
-  top: 49%;
+  width: 340px;
+  height: 340px;
+  top: 48%;
   border-color: #dce5d8;
 }
 
@@ -340,240 +345,46 @@
 }
 
 .spark-one {
-  left: 14%;
-  top: 13%;
+  left: 16%;
+  top: 9%;
   font-size: 18px;
 }
 
 .spark-two {
-  right: 7%;
-  bottom: 6%;
-  font-size: 31px;
+  right: 12%;
+  bottom: 12%;
+  font-size: 24px;
 }
 
 .art-caption {
   position: absolute;
-  right: 28px;
-  bottom: -7px;
+  right: 24px;
+  bottom: 17px;
   color: #a0aaa0;
-  font-size: 10px;
-  letter-spacing: 2px;
+  font-size: 9px;
+  letter-spacing: 1px;
 }
 
-@media(max-width:1050px) {
-  .mahjong-art-hero .tile-composition {
-    transform: translate(-50%,-50%) scale(.85);
-  }
-
-  .mahjong-art-hero .orbit-one {
-    width: 300px;
-    height: 300px;
-  }
-
-  .mahjong-art-hero .orbit-two {
-    width: 410px;
-    height: 410px;
-  }
-
-  .game-cover {
-    aspect-ratio: 1.46;
-  }
-
-  .game-title-row h3 {
-    font-size: 18px;
-  }
-
+.game-cover .tile-composition {
+  transform: translate(-50%,-50%) scale(.71);
+  top: 46%;
 }
 
-@media(max-width:760px) {
-  .mahjong-art-hero {
-    height: 310px;
-  }
-
-  .mahjong-art-hero .tile-composition {
-    transform: translate(-50%,-50%) scale(.65);
-  }
-
-  .mahjong-art-hero .orbit-one {
-    width: 230px;
-    height: 230px;
-  }
-
-  .mahjong-art-hero .orbit-two {
-    width: 315px;
-    height: 315px;
-  }
-
-  .art-caption {
-    right: 5px;
-    bottom: 0;
-    font-size: 9px;
-    letter-spacing: 1px;
-  }
-
-  .spark-one {
-    left: 5%;
-    top: 15%;
-  }
-
-  .spark-two {
-    right: 0;
-    bottom: 4%;
-  }
-
-  .game-cover {
-    aspect-ratio: 1.5;
-  }
-
+.game-cover .orbit-one {
+  width: 150px;
+  height: 150px;
 }
 
-@media(max-width:640px) {
-  .mahjong-art-hero {
-    height: 235px;
-    overflow: hidden;
-    width: calc(100% + 40px);
-    margin-top: 7px;
-  }
-
-  .mahjong-art-hero .tile-composition {
-    transform: translate(-50%,-50%) scale(.63);
-    top: 41%;
-    left: 51%;
-  }
-
-  .mahjong-art-hero .orbit-one {
-    width: 225px;
-    height: 225px;
-    top: 48%;
-  }
-
-  .mahjong-art-hero .orbit-two {
-    width: 340px;
-    height: 340px;
-    top: 48%;
-  }
-
-  .art-caption {
-    bottom: 17px;
-    right: 24px;
-    font-size: 9px;
-  }
-
-  .spark-one {
-    left: 16%;
-    top: 9%;
-  }
-
-  .spark-two {
-    right: 12%;
-    bottom: 12%;
-    font-size: 24px;
-  }
-
-  .game-cover {
-    border-radius: 14px;
-    aspect-ratio: 1.17;
-  }
-
-  .game-cover .tile-composition {
-    transform: translate(-50%,-50%) scale(.71);
-    top: 46%;
-  }
-
-  .game-cover .orbit-one {
-    width: 150px;
-    height: 150px;
-  }
-
-  .game-cover .orbit-two {
-    width: 210px;
-    height: 210px;
-  }
-
-  .game-card-body {
-    padding: 10px 1px 0;
-  }
-
-  .game-title-row {
-    align-items: center;
-    gap: 2px;
-  }
-
-  .game-title-row h3 {
-    font-size: 16px;
-    letter-spacing: -.5px;
-  }
-
-  .upcoming-button.ant-btn {
-    height: 25px;
-    font-size: 9px;
-    padding: 0 6px;
-  }
-
-  .card-play.ant-btn {
-    font-size: 11px;
-    gap: 0;
-    padding: 0 0 0 5px;
-    height: 44px;
-  }
-
-  .card-play svg {
-    width: 12px;
-  }
-
-  .game-subtitle {
-    font-size: 11px;
-    margin-top: 1px;
-  }
-
-  .game-meta {
-    font-size: 10px;
-    margin-top: 8px;
-    gap: 5px;
-  }
-
-  .favorite-button.ant-btn {
-    top: 0;
-    right: 0;
-    background: transparent;
-    width: 44px;
-    height: 44px;
-  }
-
-  .favorite-button svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  .game-badges {
-    left: 9px;
-    top: 11px;
-    gap: 4px;
-    max-width: calc(100% - 45px);
-  }
-
-  .game-badge {
-    font-size: 10px;
-    padding: 4px 6px;
-  }
-
-  .badge-new {
-    display: none;
-  }
-
-  .game-illustration {
-    width: 116%;
-    height: 116%;
-    margin: -8%;
-  }
-
-  .game-card:hover .mahjong-tile {
-    translate: none;
-  }
-
+.game-cover .orbit-two {
+  width: 210px;
+  height: 210px;
 }
 
-@media(max-width:360px) {
+.card-play svg {
+  width: 12px;
+}
+
+@container lobby (max-width: 360px) {
   .game-title-row h3 {
     font-size: 14px;
   }
@@ -594,5 +405,4 @@
   .featured-copy h1 {
     font-size: 34px;
   }
-
 }

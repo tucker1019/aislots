@@ -17,12 +17,6 @@ export function Header({ view, favoriteCount, onNavigate, onSearch, onAbout }: H
     <header className="site-header">
       <div className="header-inner">
         <button className="brand-home" aria-label="AISlots 首页" onClick={() => onNavigate('discover')}><Brand /></button>
-        <nav className="desktop-navigation" aria-label="主导航">
-          {links.map(link => <button key={link.id} onClick={() => onNavigate(link.id)}
-            className={view === link.id ? 'nav-link is-active' : 'nav-link'} aria-current={view === link.id ? 'page' : undefined}>
-            {link.label}{link.id === 'favorites' && favoriteCount > 0 && <span className="nav-count">{favoriteCount}</span>}
-          </button>)}
-        </nav>
         <div className="header-actions">
           <Tooltip title="搜索游戏"><Button type="text" aria-label="搜索游戏" className="header-icon" icon={<Icon name="search" />} onClick={onSearch} /></Tooltip>
           <span className="header-divider" />
@@ -31,10 +25,10 @@ export function Header({ view, favoriteCount, onNavigate, onSearch, onAbout }: H
         </div>
       </div>
     </header>
-    <nav className="mobile-navigation" aria-label="手机导航">
+    <nav className="mobile-navigation" aria-label="主导航">
       {links.map(link => <button key={link.id} className={view === link.id ? 'is-active' : ''}
         aria-current={view === link.id ? 'page' : undefined} onClick={() => onNavigate(link.id)}>
-        <Icon name={link.icon} size={21} /><span>{link.id === 'favorites' ? '收藏' : link.label}</span>
+        <Icon name={link.icon} size={21} /><span>{link.id === 'favorites' ? `收藏${favoriteCount > 0 ? ` ${favoriteCount}` : ''}` : link.label}</span>
       </button>)}
     </nav>
   </>;

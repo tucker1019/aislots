@@ -10,7 +10,7 @@
   --blue: #0066cc;
   --paper: #f5f5f7;
   --line: #e5e5e8;
-  --content: 1240px;
+  --content: 430px;
 }
 
 * {
@@ -20,6 +20,32 @@
 body {
   margin: 0;
   min-width: 320px;
+  height: 100dvh;
+  overflow: hidden;
+  background: #e9eaee;
+}
+
+/* 同一套竖版页面：宽屏居中，窄屏铺满，页面在大厅内部滚动。 */
+#root {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: var(--content);
+  height: 100dvh;
+  margin-inline: auto;
+  overflow: hidden auto;
+  scrollbar-width: none;
+  overscroll-behavior-y: contain;
+  background: #fff;
+  padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+}
+
+#root::-webkit-scrollbar {
+  display: none;
+}
+
+main {
+  container: lobby / inline-size;
 }
 
 button,input {
@@ -70,7 +96,7 @@ img {
 .skip-link {
   position: fixed;
   top: -60px;
-  left: 20px;
+  left: max(20px, calc((100% - var(--content)) / 2 + 20px));
   z-index: 1000;
   background: #0066cc;
   color: #fff;
@@ -101,6 +127,21 @@ img {
 .ant-modal-close {
   width: 44px!important;
   height: 44px!important;
+}
+
+/* Ant Design 弹窗挂在 body，遮罩和滚动层也必须对齐大厅边界。 */
+.lobby-modal .ant-modal-mask,
+.lobby-modal .ant-modal-wrap {
+  left: 50%;
+  right: auto;
+  width: min(100%, var(--content));
+  transform: translateX(-50%);
+}
+
+.lobby-modal .ant-modal {
+  max-width: calc(100% - 32px);
+  margin-inline: auto;
+  padding-bottom: 0;
 }
 
 .about-copy {

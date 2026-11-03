@@ -41,7 +41,7 @@ describe('大厅用户流程', () => {
   it('收藏可进入专属列表，取消最后一条后出现空态', async () => {
     vi.mocked(fetchGames).mockResolvedValue(games);const user=setup();
     await user.click(await screen.findByRole('button',{name:'收藏麻将胡了'}));
-    await user.click(within(screen.getByRole('navigation',{name:'主导航'})).getByRole('button',{name:/我的收藏/}));
+    await user.click(within(screen.getByRole('navigation',{name:'主导航'})).getByRole('button',{name:/收藏/}));
     expect(screen.getByRole('article',{name:'麻将胡了'})).toBeInTheDocument();
     expect(screen.queryByRole('article',{name:'糖果星球'})).not.toBeInTheDocument();
     await user.click(screen.getByRole('button',{name:'取消收藏麻将胡了'}));

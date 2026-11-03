@@ -29,7 +29,7 @@ export function LobbyPage() {
   const navigate = (next: LobbyView) => {
     setView(next); setQuery(''); setCategory('all');
     if (next !== 'discover') catalog.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    else window.scrollTo({ top: 0, behavior: 'smooth' });
+    else document.getElementById('root')?.scrollTo({ top: 0, behavior: 'smooth' });
   };
   const explore = () => catalog.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   const clearFilters = () => { setQuery(''); setCategory('all'); };
@@ -71,7 +71,7 @@ export function LobbyPage() {
       </section>
     </main>
     <Footer onAbout={() => setAbout(true)} />
-    <Modal title="关于 AISlots" open={about} onCancel={() => setAbout(false)} footer={<Button type="primary" onClick={() => setAbout(false)}>知道了</Button>} centered width={440}>
+    <Modal rootClassName="lobby-modal" title="关于 AISlots" open={about} onCancel={() => setAbout(false)} footer={<Button type="primary" onClick={() => setAbout(false)}>知道了</Button>} centered width={398}>
       <div className="about-copy"><p>AISlots，让喜欢的游戏，随时在你身边。</p><p>当前为大厅预览版：麻将胡了已接入，其余卡片为筹备内容，暂时无法进入。</p><p>收藏和最近玩过仅保存在当前浏览器，不会上传个人偏好。</p></div>
     </Modal>
   </>;
