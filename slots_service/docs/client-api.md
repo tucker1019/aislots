@@ -181,3 +181,7 @@ curl -H 'Authorization: Bearer <accessToken>' \
 所有响应头返回 `X-Trace-Id`，包括健康检查、业务错误、404、跨域预检和来源拒绝。编号由服务端为每次HTTP请求独立生成，为32位十六进制字符串；请求完成日志和服务端错误日志的 `traceId` 与响应头一致。可使用它关联日志，日志不记录含身份凭据的查询串。
 
 响应包含 `Access-Control-Expose-Headers: X-Trace-Id`，在已允许的跨域来源上可通过 `response.headers.get('X-Trace-Id')` 读取。业务幂等仍使用requestId，Trace ID不替代requestId。
+
+## 大厅真实用户
+
+使用 `configs/server.lobby.json` 启用大厅钱包；该模式拒绝固定测试登录和旧测试会话。`POST /api/v1/login` 新增 `launchTicket`、`exchangeId`、`gameId` 的登录方式，不传大厅sid。兑换重试使用同一exchangeId，成功后保存游戏accessToken并移除URL票据。state/spin协议和逐轮结算行为保持不变；真实会话过期返回大厅重新进入，不自动切换测试用户。接入、内部资金协议及恢复机制见 `lobby_service/docs/game-integration.md`。

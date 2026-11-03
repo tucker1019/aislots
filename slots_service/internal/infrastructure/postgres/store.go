@@ -5,6 +5,7 @@ import (
 	"aislots/slots_service/internal/application/play"
 	"aislots/slots_service/internal/domain/identity"
 	"aislots/slots_service/internal/engine"
+	"aislots/slots_service/internal/infrastructure/lobby"
 	"context"
 	"crypto/rand"
 	"crypto/sha256"
@@ -23,7 +24,10 @@ import (
 //go:embed migrations/*.sql
 var migrationFiles embed.FS
 
-type Store struct{ pool *pgxpool.Pool }
+type Store struct {
+	pool  *pgxpool.Pool
+	lobby *lobby.Client
+}
 
 func Open(ctx context.Context, url string) (*Store, error) {
 	pool, err := pgxpool.New(ctx, url)
@@ -34,7 +38,7 @@ func Open(ctx context.Context, url string) (*Store, error) {
 		pool.Close()
 		return nil, fmt.Errorf("PostgreSQL unavailable: %w", err)
 	}
-	return &Store{pool}, nil
+	return &Store{pool: pool}, nil
 }
 func (s *Store) Close()                         { s.pool.Close() }
 func (s *Store) Ping(ctx context.Context) error { return s.pool.Ping(ctx) }
@@ -89,6 +93,14 @@ func lockSubject(ctx context.Context, tx pgx.Tx, p identity.Context) error {
 	return err
 }
 func (s *Store) CreateSession(ctx context.Context, hash string, session play.Session, initial int64) (int64, error) {
+	if s.lobby != nil && s.lobby.Matches(session.Player) {
+		raw, e := json.Marshal(session)
+		if e != nil {
+			return 0, e
+		}
+		_, e = s.pool.Exec(ctx, `INSERT INTO game_sessions(token_hash,data,expires_at) VALUES($1,$2,$3) ON CONFLICT(token_hash) DO NOTHING`, hash, raw, session.ExpiresAt)
+		return initial, e
+	}
 	tx, err := s.pool.Begin(ctx)
 	if err != nil {
 		return 0, err
@@ -128,6 +140,9 @@ func (s *Store) Session(ctx context.Context, hash string) (play.Session, error) 
 	return session, err
 }
 func (s *Store) WithPlayer(ctx context.Context, p identity.Context, fn func(play.Tx) error) error {
+	if s.lobby != nil && s.lobby.Matches(p) {
+		return s.withLobbyPlayer(ctx, p, fn)
+	}
 	tx, err := s.pool.Begin(ctx)
 	if err != nil {
 		return err
@@ -150,9 +165,11 @@ func (s *Store) WithPlayer(ctx context.Context, p identity.Context, fn func(play
 }
 
 type transaction struct {
-	tx      pgx.Tx
-	player  identity.Context
-	balance int64
+	tx         pgx.Tx
+	player     identity.Context
+	balance    int64
+	remote     bool
+	operations []walletOperation
 }
 
 func (t *transaction) Balance() int64 { return t.balance }
@@ -269,6 +286,9 @@ func readJSON[T any](ctx context.Context, tx pgx.Tx, sql string, args ...any) (T
 	return value, true, err
 }
 func (t *transaction) Wallet(ctx context.Context, id, kind string, amount int64) (int64, error) {
+	if t.remote {
+		return t.remoteWallet(ctx, id, kind, amount)
+	}
 	if kind != "debit" && kind != "credit" || kind == "debit" && amount >= 0 || kind == "credit" && amount <= 0 {
 		return 0, fmt.Errorf("invalid wallet operation")
 	}

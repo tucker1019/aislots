@@ -3,6 +3,7 @@ package play
 import (
 	"aislots/slots_service/internal/application/bet"
 	"aislots/slots_service/internal/application/betlist"
+	"aislots/slots_service/internal/domain/identity"
 	"aislots/slots_service/internal/engine"
 	"context"
 	"crypto/rand"
@@ -15,24 +16,28 @@ import (
 )
 
 type Service struct {
-	store   Store
-	games   bet.Games
-	bets    *betlist.Service
-	profile TestProfile
+	store    Store
+	games    bet.Games
+	bets     *betlist.Service
+	launcher LaunchVerifier
+	profile  TestProfile
 }
 
 func New(store Store, games bet.Games, bets *betlist.Service, profile TestProfile) (*Service, error) {
 	if store == nil || games == nil || bets == nil || !profile.Enabled || !profile.Player().Valid() || profile.InitialBalance < 1 {
 		return nil, fmt.Errorf("explicit test profile and dependencies required")
 	}
-	return &Service{store, games, bets, profile}, nil
+	return &Service{store: store, games: games, bets: bets, profile: profile}, nil
 }
 func TokenHash(token string) string {
 	sum := sha256.Sum256([]byte(token))
 	return hex.EncodeToString(sum[:])
 }
 func (s *Service) Login(ctx context.Context, r LoginRequest) (LoginResponse, error) {
-	if !r.Test || r.AppName != s.profile.AppName || r.AppKey != s.profile.AppKey || r.UID != s.profile.UID {
+	if r.LaunchTicket != "" {
+		return s.launch(ctx, r)
+	}
+	if !s.profile.Enabled || !r.Test || r.AppName != s.profile.AppName || r.AppKey != s.profile.AppKey || r.UID != s.profile.UID {
 		return LoginResponse{}, ErrUnauthorized
 	}
 	if _, err := s.games.Resolve(r.GameID, ""); err != nil {
@@ -56,6 +61,12 @@ func (s *Service) Authenticate(ctx context.Context, token string) (Session, erro
 	session, err := s.store.Session(ctx, TokenHash(token))
 	if err != nil {
 		return Session{}, err
+	}
+	if s.launcher != nil {
+		matcher, ok := s.launcher.(interface{ Matches(identity.Context) bool })
+		if !ok || !matcher.Matches(session.Player) {
+			return Session{}, ErrUnauthorized
+		}
 	}
 	if time.Now().After(session.ExpiresAt) {
 		return Session{}, ErrUnauthorized

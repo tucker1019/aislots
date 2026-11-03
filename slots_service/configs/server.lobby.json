@@ -1,0 +1,80 @@
+{
+  "http": {
+    "address": "127.0.0.1:8080",
+    "readHeaderTimeoutSeconds": 5,
+    "readTimeoutSeconds": 15,
+    "writeTimeoutSeconds": 30,
+    "idleTimeoutSeconds": 60,
+    "shutdownTimeoutSeconds": 15
+  },
+  "database": {
+    "urlEnv": "AISLOTS_DATABASE_URL",
+    "autoMigrate": true
+  },
+  "testProfile": {
+    "enabled": false
+  },
+  "betPoliciesFile": "bets.test.json",
+  "allowedOrigins": [
+    "http://127.0.0.1:5174",
+    "http://localhost:5174",
+    "http://127.0.0.1:5180",
+    "http://localhost:5180",
+    "http://127.0.0.1:7456",
+    "http://localhost:7456",
+    "http://127.0.0.1:7457",
+    "http://localhost:7457"
+  ],
+  "games": [
+    {
+      "configDir": "../testdata/integration/AG1",
+      "baseLibraryDir": "../testdata/integration/AG1/library/base",
+      "freeLibraryDir": "../testdata/integration/AG1/library/free",
+      "triggerSymbolCount": 3,
+      "maxFillAttempts": 64,
+      "current": false
+    },
+    {
+      "configDir": "../testdata/deployments/2026-10-23T09-46/AG1",
+      "baseLibraryDir": "../../game_libraries/AG1/base/2026-10-23T09-46-00-110Z-7555d806",
+      "freeLibraryDir": "../../game_libraries/AG1/free/2026-10-23T09-45-17-045Z-b8fedfe4",
+      "triggerSymbolCount": 3,
+      "maxFillAttempts": 64,
+      "current": false
+    },
+    {
+      "configDir": "../testdata/deployments/2026-10-23T09-46/AG1",
+      "baseLibraryDir": "../../game_libraries/AG1/base/2026-10-23T09-46-00-110Z-7555d806",
+      "freeLibraryDir": "../../game_libraries/AG1/free/2026-10-23T09-45-17-045Z-b8fedfe4",
+      "triggerSymbolCount": 3,
+      "maxFillAttempts": 64,
+      "current": false,
+      "freeAwardSymbolCounts": {
+        "8": 3,
+        "10": 4,
+        "12": 5
+      }
+    },
+    {
+      "configDir": "../testdata/deployments/2026-11-02-gold/AG1",
+      "baseLibraryDir": "../../game_libraries/AG1/base/2026-11-02T07-13-22-448Z-0545a1f5",
+      "freeLibraryDir": "../../game_libraries/AG1/free/2026-11-02T07-13-28-703Z-37a5ac02",
+      "triggerSymbolCount": 3,
+      "maxFillAttempts": 64,
+      "current": true,
+      "freeAwardSymbolCounts": {
+        "10": 3,
+        "12": 4,
+        "14": 5
+      }
+    }
+  ],
+  "lobby": {
+    "enabled": true,
+    "url": "http://127.0.0.1:8081",
+    "tokenEnv": "LOBBY_GAME_SERVICE_TOKEN",
+    "appname": "aislots-lobby",
+    "appkey": "web",
+    "gameId": "AG1"
+  }
+}

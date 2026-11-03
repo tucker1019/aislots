@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"aislots/slots_service/internal/application/play"
+	"aislots/slots_service/internal/infrastructure/lobby"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -16,6 +17,7 @@ type DatabaseConfig struct {
 	AutoMigrate bool   `json:"autoMigrate"`
 }
 type Config struct {
+	Lobby           lobby.Config     `json:"lobby"`
 	Database        DatabaseConfig   `json:"database"`
 	TestProfile     play.TestProfile `json:"testProfile"`
 	BetPoliciesFile string           `json:"betPoliciesFile"`
@@ -75,6 +77,9 @@ func LoadConfig(path string) (Config, error) {
 				*p = filepath.Join(filepath.Dir(path), *p)
 			}
 		}
+	}
+	if c.Lobby.Enabled && (c.Database.URLEnv == "" || c.BetPoliciesFile == "" || c.Lobby.TokenEnv == "" || c.Lobby.GameID == "" || c.TestProfile.Enabled) {
+		return c, fmt.Errorf("live lobby requires database and bet policies; test profile must be disabled")
 	}
 	if c.TestProfile.Enabled {
 		if c.Database.URLEnv == "" || c.BetPoliciesFile == "" || !c.TestProfile.Player().Valid() || c.TestProfile.InitialBalance < 1 {

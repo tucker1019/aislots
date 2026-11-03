@@ -1,6 +1,7 @@
 package play
 
 import (
+	"aislots/slots_service/internal/domain/identity"
 	"context"
 	"crypto/rand"
 	"time"
@@ -137,5 +138,17 @@ func (s *Service) Spin(ctx context.Context, session Session, gameID, requestID s
 		out = frame
 		return nil
 	})
+	if err == nil {
+		if committed, ok := s.store.(interface {
+			SettledReceipt(context.Context, identity.Context, string, string) (SpinReceipt, bool, error)
+		}); ok {
+			var receipt SpinReceipt
+			var found bool
+			receipt, found, err = committed.SettledReceipt(ctx, session.Player, gameID, requestID)
+			if found {
+				out = receipt.Frame
+			}
+		}
+	}
 	return out, err
 }

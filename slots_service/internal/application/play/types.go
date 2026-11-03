@@ -41,11 +41,13 @@ func (p TestProfile) Player() identity.Context {
 }
 
 type LoginRequest struct {
-	Test    bool   `json:"test"`
-	AppName string `json:"appname"`
-	AppKey  string `json:"appkey"`
-	UID     string `json:"uid"`
-	GameID  string `json:"gameId"`
+	LaunchTicket string `json:"launchTicket"`
+	ExchangeID   string `json:"exchangeId"`
+	Test         bool   `json:"test"`
+	AppName      string `json:"appname"`
+	AppKey       string `json:"appkey"`
+	UID          string `json:"uid"`
+	GameID       string `json:"gameId"`
 }
 type LoginResponse struct {
 	AccessToken string           `json:"accessToken"`

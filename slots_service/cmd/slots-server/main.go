@@ -5,6 +5,7 @@ import (
 	"aislots/slots_service/internal/application/play"
 	"aislots/slots_service/internal/bootstrap"
 	"aislots/slots_service/internal/infrastructure/gamedata"
+	"aislots/slots_service/internal/infrastructure/lobby"
 	"aislots/slots_service/internal/infrastructure/postgres"
 	"aislots/slots_service/internal/transport/httpapi"
 	"context"
@@ -45,7 +46,7 @@ func run(logger *slog.Logger) error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	var handler http.Handler = httpapi.NewRouter(func() bool { return catalog.Count() > 0 })
-	if cfg.TestProfile.Enabled {
+	if cfg.TestProfile.Enabled || cfg.Lobby.Enabled {
 		url := os.Getenv(cfg.Database.URLEnv)
 		if url == "" {
 			return fmt.Errorf("database environment %s required", cfg.Database.URLEnv)
@@ -68,7 +69,17 @@ func run(logger *slog.Logger) error {
 		if err != nil {
 			return err
 		}
-		service, err := play.New(store, catalog, bets, cfg.TestProfile)
+		var service *play.Service
+		if cfg.Lobby.Enabled {
+			adapter, e := lobby.New(cfg.Lobby, os.Getenv(cfg.Lobby.TokenEnv))
+			if e != nil {
+				return e
+			}
+			store.UseLobby(adapter)
+			service, err = play.NewLive(store, catalog, bets, adapter)
+		} else {
+			service, err = play.New(store, catalog, bets, cfg.TestProfile)
+		}
 		if err != nil {
 			return err
 		}
@@ -84,7 +95,7 @@ func run(logger *slog.Logger) error {
 	server := &http.Server{Addr: cfg.HTTP.Address, Handler: handler, ReadHeaderTimeout: bootstrap.Seconds(cfg.HTTP.ReadHeaderTimeoutSeconds), ReadTimeout: bootstrap.Seconds(cfg.HTTP.ReadTimeoutSeconds), WriteTimeout: bootstrap.Seconds(cfg.HTTP.WriteTimeoutSeconds), IdleTimeout: bootstrap.Seconds(cfg.HTTP.IdleTimeoutSeconds)}
 	done := make(chan error, 1)
 	go func() { done <- server.ListenAndServe() }()
-	logger.Info("server starting", "address", server.Addr, "games", catalog.Count(), "betEnabled", cfg.TestProfile.Enabled)
+	logger.Info("server starting", "address", server.Addr, "games", catalog.Count(), "betEnabled", cfg.TestProfile.Enabled || cfg.Lobby.Enabled, "lobbyEnabled", cfg.Lobby.Enabled)
 	select {
 	case err := <-done:
 		if errors.Is(err, http.ErrServerClosed) {
