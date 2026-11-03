@@ -12,7 +12,7 @@ it('按真实天数排奖励，领取使用服务端日期并禁止重复点击'
  vi.mocked(loadCheckinInfo).mockResolvedValue(info);vi.mocked(claimCheckin).mockResolvedValue(188);setup();
  const button=await screen.findByRole('button',{name:'立即签到'});expect(screen.getAllByLabelText(/第\d天，奖励/)).toHaveLength(7);
  fireEvent.click(button);await waitFor(()=>expect(claimCheckin).toHaveBeenCalledWith('2026-11-03',expect.anything()));
- expect(await screen.findByRole('button',{name:'今日已签到'})).toBeDisabled();expect(await screen.findByText('签到成功，获得 1.88')).toBeInTheDocument();expect(await screen.findByText('领取成功',{exact:true})).toBeInTheDocument();
+ expect(await screen.findByRole('button',{name:'今日已签到'})).toBeDisabled();expect(screen.queryByText(/签到成功，获得/)).not.toBeInTheDocument();expect(await screen.findByText('领取成功',{exact:true})).toBeInTheDocument();
 });
 it('条件不足不能领取',async()=>{vi.mocked(loadCheckinInfo).mockResolvedValue({...info,canClaim:false});setup();expect(await screen.findByRole('button',{name:'完成充值与投注条件后签到'})).toBeDisabled();expect(claimCheckin).not.toHaveBeenCalled();});
 it('失败可重试原日期',async()=>{vi.mocked(loadCheckinInfo).mockResolvedValue(info);vi.mocked(claimCheckin).mockRejectedValue(new Error('失败'));setup();fireEvent.click(await screen.findByRole('button',{name:'立即签到'}));expect(await screen.findByRole('alert')).toHaveTextContent('失败');expect(screen.queryByText('领取成功',{exact:true})).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'立即签到'})).toBeEnabled();});

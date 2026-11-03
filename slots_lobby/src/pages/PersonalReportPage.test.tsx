@@ -17,7 +17,7 @@ it('本金和赠送独立展示，未实现项目留空，筛选使用服务端�
 });
 it('加载失败可以重试，不展示伪造的零金额',async()=>{
  vi.mocked(fetchPersonalReport).mockRejectedValueOnce(new Error('network')).mockResolvedValue(fixture);setup();
- const alert=await screen.findByRole('alert');expect(within(alert).getByText('个人报表加载失败')).toBeInTheDocument();expect(screen.queryByText('0.00')).not.toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'重试'}));expect(await screen.findByText('100.00')).toBeInTheDocument();
+ const alert=await screen.findByRole('alert');expect(within(alert).getByText('网络异常，请重试')).toBeInTheDocument();expect(screen.queryByText('0.00')).not.toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'重试'}));expect(await screen.findByText('100.00')).toBeInTheDocument();
 });
 it('响应拒绝不安全金额、重复指标及反向日期',()=>{
  expect(parsePersonalReport(fixture).items[0].amount).toBe(10000);

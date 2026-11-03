@@ -18,3 +18,5 @@
 - 允许标题换行；不要只缩短英文、缩小字体或写死标题高度来解决适配。空间不足时在表格内部横向滚动，不撑宽页面。
 - 反水预估与反水规则页统一复用 `src/features/earn/RebateForecast.tsx`，其他同类布局优先复用现有组件。
 - 修改后检查中英文及 320px 窄屏、长文案、大金额，在浏览器核对标题与金额对齐，不能只依赖 DOM 测试。
+
+- 公共接口失败界面按 [slots-lobby-ui skill](../.agents/skills/slots-lobby-ui/SKILL.md) 实现，复用 NetworkError 组件。

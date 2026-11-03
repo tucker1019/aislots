@@ -1,0 +1,11 @@
+.wallet-management-page h2 { margin:0 0 22px; font-size:19px; color:#1d1d1f; }
+.wallet-channel-list { display:grid; gap:14px; }
+.wallet-channel-list > button { display:flex; align-items:center; gap:14px; width:100%; padding:22px 18px; border:1px solid var(--line); border-radius:12px; background:#fff; color:#6e6e73; text-align:start; cursor:pointer; }
+.wallet-channel-icon { display:grid; place-items:center; width:44px; height:44px; flex-shrink:0; border-radius:50%; background:#e7f1ff; color:#1677ff; }
+.wallet-channel-copy { display:flex; flex-direction:column; gap:5px; flex:1; min-width:0; overflow-wrap:anywhere; }
+.wallet-channel-copy strong { color:#1d1d1f; font-size:19px; font-weight:500; }
+.wallet-channel-copy > span { font-size:14px; }
+.wallet-management-page .ant-input { min-height:44px; }
+.wallet-management-page .ant-form .ant-alert { margin-bottom:16px; }
+.wallet-feedback { text-align:center; color:#6e6e73; padding:28px 0; }
+.wallet-channel-list > button:focus-visible { outline:2px solid #1677ff; outline-offset:3px; }

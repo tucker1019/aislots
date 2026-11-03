@@ -4,7 +4,7 @@ import { isRecord } from '../features/account/types';
 export interface RechargeTier { id: string; amount: number; bonus: number; fee: number; creditAmount: number }
 export type OrderStatus = 'pending' | 'success' | 'failed';
 export interface RechargeReceipt { orderId: string; paymentUrl: string; status: OrderStatus }
-export interface RechargeOrder extends RechargeReceipt { amount: number; bonus: number; fee: number; creditAmount: number; createdAt: string }
+export interface RechargeOrder extends RechargeReceipt { kind?:'deposit'|'withdrawal'; amount: number; bonus: number; fee: number; creditAmount: number; createdAt: string }
 const money = (v: unknown): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= 0;
 function amounts(v: Record<string, unknown>) {
  return money(v.amount) && v.amount > 0 && money(v.bonus) && money(v.fee) && v.fee < v.amount &&

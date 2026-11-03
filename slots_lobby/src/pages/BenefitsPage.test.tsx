@@ -16,7 +16,7 @@ it('五张卡片用真实数据，中心页不请求签到，详情暂不领取'
 });
 it('一个接口失败不遮挡另一个接口结果，可单独重试',async()=>{
  vi.mocked(loadCheckinOverview).mockRejectedValue(new Error('network'));vi.mocked(loadVipOverview).mockRejectedValue(new Error('network'));
- setup();expect(screen.getByRole('button',{name:'签到'})).toBeEnabled(); expect(loadCheckinOverview).not.toHaveBeenCalled();expect(await screen.findByText('VIP 福利加载失败')).toBeInTheDocument();expect(screen.getByText('重试 VIP 福利')).toBeEnabled();
+ setup();expect(screen.getByRole('button',{name:'签到'})).toBeEnabled(); expect(loadCheckinOverview).not.toHaveBeenCalled();expect(await screen.findByText('网络异常，请重试')).toBeInTheDocument();expect(screen.getByText('重试')).toBeEnabled();
 });
 it('提升VIP弹出真实升级进度，获取流水跳首页，关闭不跳转',async()=>{
  vi.mocked(loadVipOverview).mockResolvedValue({level:6,upgradeReward:0,weeklyReward:1200,monthlyReward:2800,upgradeBet:25320,upgradeRecharge:100,nextBet:10000000,nextRecharge:200,protecting:false});

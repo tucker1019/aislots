@@ -1,3 +1,4 @@
+import {NetworkError} from '../components/feedback/NetworkError';
 import { t, getLocale } from '../i18n';
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -34,5 +35,5 @@ function VipOverview({ info }: { info: VipDetails }) {
 export function VipPage({ tables, onBack, onTables }: { tables: boolean; onBack: () => void; onTables: () => void }) {
   const uid = useSessionStore(state => state.session?.uid);
   const query = useQuery({queryKey:['lobby','vip-details',uid],queryFn:({signal}) => loadVipDetails(signal),retry:false,staleTime:15000});
-  return <section className="vip-page benefits-page"><header className="benefits-heading"><button type="button" aria-label={tables ? t('copy.backToMyVip') : t('copy.backToBenefits')} onClick={onBack}><Icon name="chevron" size={20} /></button><h1>{tables ? t('copy.vipDetails') : t('copy.myVip')}</h1>{!tables && <button type="button" className="vip-details-link" onClick={onTables}>{t('copy.vipDetails')}</button>}</header>{query.isPending ? <p className="benefits-feedback" role="status">{t('copy.loadingVipDetails')}</p> : query.isError || !query.data ? <div className="benefits-feedback" role="alert"><p>{t('copy.vipDetailsFailedToLoad')}</p><button type="button" disabled={query.isFetching} onClick={() => void query.refetch()}>{t('copy.retry')}</button></div> : tables ? <VipTables levels={query.data.levels} current={query.data.state.level} /> : <VipOverview info={query.data} />}</section>;
+  return <section className="vip-page benefits-page"><header className="benefits-heading"><button type="button" aria-label={tables ? t('copy.backToMyVip') : t('copy.backToBenefits')} onClick={onBack}><Icon name="chevron" size={20} /></button><h1>{tables ? t('copy.vipDetails') : t('copy.myVip')}</h1>{!tables && <button type="button" className="vip-details-link" onClick={onTables}>{t('copy.vipDetails')}</button>}</header>{query.isPending ? <p className="benefits-feedback" role="status">{t('copy.loadingVipDetails')}</p> : query.isError || !query.data ? <NetworkError disabled={query.isFetching} onRetry={() => void query.refetch()}/> : tables ? <VipTables levels={query.data.levels} current={query.data.state.level} /> : <VipOverview info={query.data} />}</section>;
 }

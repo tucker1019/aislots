@@ -1,6 +1,6 @@
+import {NetworkError} from '../../components/feedback/NetworkError';
 import { t } from '../../i18n';
 import { useClaimToast } from '../rewards/useClaimToast';
-import { useState } from 'react';
 import { Modal } from 'antd';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { claimCheckin, loadCheckinInfo } from '../../services/checkin';
@@ -11,11 +11,9 @@ export function CheckinModal({ onClose }: { onClose: () => void }) {
  const uid = useSessionStore(state => state.session?.uid);
  const client = useQueryClient();
  const {notify,holder}=useClaimToast();
- const [success, setSuccess] = useState<number | null>(null);
  const info = useQuery({queryKey:['lobby','checkin-detail',uid],queryFn:({signal})=>loadCheckinInfo(signal),retry:false,staleTime:0,refetchOnWindowFocus:false});
- const claim = useMutation({mutationFn:claimCheckin,retry:false,onSuccess:reward=>{
+ const claim = useMutation({mutationFn:claimCheckin,retry:false,onSuccess:()=>{
   notify();
-  setSuccess(reward);
   client.setQueryData(['lobby','checkin-detail',uid], info.data ? {...info.data,claimed:true,canClaim:false} : undefined);
   void client.invalidateQueries({queryKey:['lobby','current-profile']});
  }});
@@ -24,7 +22,7 @@ export function CheckinModal({ onClose }: { onClose: () => void }) {
  return <>{holder}<Modal open centered footer={null} closable={false} width={350} onCancel={() => {if (!claim.isPending) onClose();}} maskClosable={!claim.isPending} keyboard={!claim.isPending} className="checkin-modal" title={null}>
   <section className="checkin-panel" aria-label={t('copy.dailyCheckInRewards')}>
    <header><span className="checkin-eyebrow">DAILY REWARDS</span><h2>{t('copy.dailyCheckInRewards')}</h2><span className="checkin-header-icon" aria-hidden="true"><Icon name="calendar" size={40} /></span></header>
-   {info.isPending ? <p className="checkin-feedback" role="status">{t('copy.loadingCheckInRewards')}</p> : !data ? <div className="checkin-feedback" role="alert"><p>{t('copy.checkInInformationFailedToLoad')}</p><button type="button" disabled={info.isFetching} onClick={()=>void info.refetch()}>{t('copy.retry')}</button></div> : <>
+   {info.isPending ? <p className="checkin-feedback" role="status">{t('copy.loadingCheckInRewards')}</p> : !data ? <NetworkError disabled={info.isFetching} onRetry={()=>void info.refetch()}/> : <>
     <div className="checkin-rewards"><div className="checkin-stats"><span>{t('copy.consecutiveCheckIns')} <b>{claimedDays}</b> {t('copy.days')}</span><span>{t('copy.todaySReward')} <b>{betMoney(data.current.reward)}</b></span></div>
      <div className={`checkin-days${data.days.length === 7 ? ' checkin-seven' : ''}`}>
       {data.days.map(row => { const done=row.day<=claimedDays; const current=row.day===data.currentDay; return <div key={row.day} className={`checkin-day${current ? ' current' : ''}${done ? ' claimed' : ''}`} aria-label={t('copy.dayValueRewardValueValue', {p0: row.day, p1: betMoney(row.reward), p2: done ? t('copy.claimed') : current ? t('copy.current') : ''})}>
@@ -34,7 +32,6 @@ export function CheckinModal({ onClose }: { onClose: () => void }) {
     </div>
     <div className="checkin-progress"><p>{t('copy.walletDeposits')} <b className={data.rechargeAmount>=data.current.requiredRecharge?'met':''}>{betMoney(data.rechargeAmount)}</b> / {betMoney(data.current.requiredRecharge)}</p><p>{t('copy.requiredBets')} <b className={data.validBet>=data.current.requiredBet?'met':''}>{betMoney(data.validBet)}</b> / {betMoney(data.current.requiredBet)}</p></div>
     {claim.isError && <p className="checkin-error" role="alert">{claim.error.message}</p>}
-    {success !== null && <p className="checkin-success" role="status">{t('copy.checkInSuccessfulReward')} {betMoney(success)}</p>}
     <button className="checkin-claim" type="button" disabled={claim.isPending || data.claimed || !data.canClaim || info.isFetching} onClick={()=>claim.mutate(data.activityDate)}>{claim.isPending?t('copy.checkingIn'):data.claimed?t('copy.checkedInToday'):!data.canClaim?t('copy.meetDepositAndBettingRequirementsToCheck'):t('copy.checkInNow')}</button>
    </>}
   </section>

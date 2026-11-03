@@ -1,3 +1,4 @@
+import {NetworkError} from '../components/feedback/NetworkError';
 import { t } from '../i18n';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
@@ -21,8 +22,8 @@ export function CashRecordsPage({ onBack, onComingSoon, orderId }: { onBack: () 
   useEffect(() => () => { void client.invalidateQueries({ queryKey: ['lobby', 'current-profile'] }); }, [client]);
   const now = new Date(); const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const range = useMemo(() => recordRange(period, new Date(midnight)), [period, midnight]);
-  const query = useInfiniteQuery({ queryKey: ['cash-records', profile.data?.uid, range.from, range.to],
-    enabled: !!profile.data, initialPageParam: '', queryFn: ({ pageParam, signal }) => fetchCashRecords(range, pageParam, signal),
+  const query = useInfiniteQuery({ queryKey: ['cash-records', profile.data?.uid, kind, range.from, range.to],
+    enabled: !!profile.data, initialPageParam: '', queryFn: ({ pageParam, signal }) => fetchCashRecords(range, pageParam, signal, kind),
     getNextPageParam: page => page.nextCursor || undefined, retry: false,
     refetchInterval: result => result.state.data?.pages.some(page => page.items.some(item => item.status === 'pending')) ? 3000 : false });
   const items = query.data?.pages.flatMap(page => page.items) ?? [];
@@ -47,7 +48,7 @@ export function CashRecordsPage({ onBack, onComingSoon, orderId }: { onBack: () 
   function retry() { if (profile.isError) void profile.refetch(); else void query.refetch(); }
   return <RecordsLayout title={t('copy.depositHistory')} backLabel={t('copy.backToMyAccount')} onBack={onBack} filters={<RecordFilters kind={kind} period={period} onKind={setKind} onPeriod={value => { setPeriod(value); document.getElementById('root')?.scrollTo({ top: 0 }); }} onComingSoon={onComingSoon} />}>
     {loading ? <p className="cash-records-feedback" role="status">{t('copy.loadingRecords')}</p>
-      : failed ? <section className="cash-records-feedback" role="alert"><p>{t('copy.recordsAreCurrentlyUnavailable')}</p><button type="button" disabled={profile.isFetching || query.isFetching} onClick={retry}>{t('copy.reload')}</button></section>
+      : failed ? <NetworkError disabled={profile.isFetching || query.isFetching} onRetry={retry}/>
       : <><RecordList items={items} onOpen={open} />
         {query.isRefetchError && <p className="cash-records-feedback" role="alert">{t('copy.refreshFailed')}<button type="button" disabled={query.isFetching} onClick={retry}>{t('copy.retry')}</button></p>}
         {query.isFetchNextPageError && <p className="cash-records-feedback" role="alert">{t('copy.unableToLoadMorePleaseRetry')}</p>}

@@ -35,7 +35,7 @@ it('三张表逐等级展示服务端配置并高亮当前等级', async () => {
  expect(screen.getAllByRole('table')).toHaveLength(3);
 });
 it('接口失败显示重试，不展示伪造权益', async () => {
- vi.mocked(loadVipDetails).mockRejectedValue(new Error('network'));setup();expect(await screen.findByRole('alert')).toHaveTextContent('VIP详情加载失败');expect(screen.getByRole('button',{name:'重试'})).toBeEnabled();
+ vi.mocked(loadVipDetails).mockRejectedValue(new Error('network'));setup();expect(await screen.findByRole('alert')).toHaveTextContent('网络异常，请重试');expect(screen.getByRole('button',{name:'重试'})).toBeEnabled();
 });
 
 it('真实待领奖励可领，成功刷新为已领取，未解锁等级不可领', async () => {

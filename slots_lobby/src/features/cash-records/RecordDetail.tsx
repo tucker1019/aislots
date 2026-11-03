@@ -1,3 +1,5 @@
+import {NetworkError} from '../../components/feedback/NetworkError';
+import { WithdrawalRecordDetail } from '../withdrawal/WithdrawalRecordDetail';
 import { t, getLocale } from '../../i18n';
 import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -5,7 +7,7 @@ import { fetchRechargeOrder } from '../../services/recharge';
 import { useAccountProfile } from '../account/useAccountProfile';
 import { coinsLabel } from '../account/formatCoins';
 import { RecordsLayout } from '../../components/records/RecordsLayout';
-export function RecordDetail({ orderId, onBack }: { orderId: string; onBack: () => void }) {
+function RechargeRecordDetail({ orderId, onBack }: { orderId: string; onBack: () => void }) {
   const profile = useAccountProfile();
   const order = useQuery({ queryKey: ['recharge-order', profile.data?.uid, orderId], enabled: !!profile.data,
     queryFn: ({ signal }) => fetchRechargeOrder(orderId, signal), retry: false,
@@ -25,8 +27,8 @@ export function RecordDetail({ orderId, onBack }: { orderId: string; onBack: () 
   }
   const failed = profile.isError || order.isError;
   return <RecordsLayout title={t('copy.depositDetails')} backLabel={t('copy.backToDepositHistory')} onBack={onBack}>
-    {failed ? <section className="cash-records-feedback" role="alert"><p>{t('copy.depositDetailsFailedToLoadPleaseRetry')}</p><button type="button" disabled={profile.isFetching || order.isFetching}
-      onClick={() => { if (profile.isError) void profile.refetch(); else void order.refetch(); }}>{t('copy.reload')}</button></section>
+    {failed ? <NetworkError disabled={profile.isFetching || order.isFetching}
+      onRetry={() => { if (profile.isError) void profile.refetch(); else void order.refetch(); }}/>
       : !data ? <p className="cash-records-feedback" role="status">{t('copy.loadingDepositDetails')}</p>
       : <article className="cash-receipt">
         <div className="cash-receipt-summary"><span>{t('copy.depositAmount')}</span><strong>+{coinsLabel(data.amount)}</strong>
@@ -44,3 +46,5 @@ export function RecordDetail({ orderId, onBack }: { orderId: string; onBack: () 
       </article>}
   </RecordsLayout>;
 }
+
+export function RecordDetail({orderId,onBack}:{orderId:string;onBack:()=>void}){return orderId.startsWith('wdr_')?<WithdrawalRecordDetail orderId={orderId} onBack={onBack}/>:<RechargeRecordDetail orderId={orderId} onBack={onBack}/>;}

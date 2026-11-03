@@ -21,4 +21,4 @@ it('详情按流水ID读取并显示订单、币种和备注',async()=>{
 it('追加记录保留原列表',async()=>{
  vi.mocked(fetchLedger).mockResolvedValueOnce({...page,nextCursor:'7'}).mockResolvedValueOnce({...page,items:[{...item,id:'6',type:'签到奖励'}]});setup();await screen.findByText('AG 投注');fireEvent.click(screen.getByRole('button',{name:'加载更多'}));expect(await screen.findByText('签到奖励')).toBeInTheDocument();expect(screen.getByText('AG 投注')).toBeInTheDocument();
 });
-it('失败可以重试',async()=>{vi.mocked(fetchLedger).mockRejectedValue(new Error('network'));setup();expect(await screen.findByText('资金明细加载失败')).toBeInTheDocument();expect(screen.getByRole('button',{name:'重试'})).toBeEnabled();});
+it('失败可以重试',async()=>{vi.mocked(fetchLedger).mockRejectedValue(new Error('network'));setup();expect(await screen.findByText('网络异常，请重试')).toBeInTheDocument();expect(screen.getByRole('button',{name:'重试'})).toBeEnabled();});

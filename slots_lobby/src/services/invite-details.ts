@@ -3,7 +3,7 @@ import {t} from '../i18n';
 import {callInvite,parseInviteInfo,type InviteInfo} from './invite';
 export interface InviteChest {slot:number;rewardId:string;amount:number;status:'locked'|'claimable'|'claimed'}
 export interface InviteChests {info:InviteInfo;items:InviteChest[];page:number;hasMore:boolean}
-export type InviteReason='deposit_count'|'deposit_amount'|'bet_amount';
+export type InviteReason='deposit_count'|'deposit_amount'|'bet_amount'|'payout_account';
 export interface InviteFriend {uid:string;account:string;registeredAt:string;depositCount:number;depositAmount:number;betAmount:number;qualified:boolean;reasons:InviteReason[];requiredDepositCount:number;requiredDepositAmount:number;requiredBetAmount:number;durationDays:number}
 function invalid():never{throw new Error(t('invite.invalidData'));}
 function integer(value:unknown){return typeof value==='number'&&Number.isSafeInteger(value)&&value>=0?value:invalid();}
@@ -19,7 +19,7 @@ export async function claimInviteChest(rewardId:string,requestId:string){const d
 export function parseFriends(data:unknown){
  if(!isRecord(data))return invalid();const page=integer(data.page);if(page<1)return invalid();const items=list(data.items).map((item):InviteFriend=>{
  if(!isRecord(item)||typeof item.uid!=='string'||typeof item.account!=='string'||typeof item.registeredAt!=='string'||!Number.isFinite(Date.parse(item.registeredAt)))return invalid();
- const reasons=list(item.reasons).map((r):InviteReason=>r==='deposit_count'||r==='deposit_amount'||r==='bet_amount'?r:invalid());
+ const reasons=list(item.reasons).map((r):InviteReason=>r==='deposit_count'||r==='deposit_amount'||r==='bet_amount'||r==='payout_account'?r:invalid());
  return {uid:item.uid,account:item.account,registeredAt:item.registeredAt,depositCount:integer(item.depositCount),depositAmount:integer(item.depositAmount),betAmount:integer(item.betAmount),qualified:boolean(item.qualified),reasons,requiredDepositCount:integer(item.requiredDepositCount),requiredDepositAmount:integer(item.requiredDepositAmount),requiredBetAmount:integer(item.requiredBetAmount),durationDays:integer(item.durationDays)};
  });return {items,page,hasMore:boolean(data.hasMore)};
 }

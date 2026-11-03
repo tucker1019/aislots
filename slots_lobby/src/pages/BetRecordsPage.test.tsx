@@ -16,7 +16,7 @@ it('加载更多保留旧记录，汇总来自服务端，时间筛选重查第�
  expect(await screen.findByText('暂无投注记录')).toBeInTheDocument();
  await waitFor(() => expect(vi.mocked(loadBetRecords).mock.calls[2]?.[2]).toBe(1));
 });
-it('失败提供重试', async () => {vi.mocked(loadBetRecords).mockRejectedValue(new Error('network'));setup();expect(await screen.findByText('投注记录加载失败')).toBeInTheDocument();expect(screen.getByText('重试')).toBeEnabled();});
+it('失败提供重试', async () => {vi.mocked(loadBetRecords).mockRejectedValue(new Error('network'));setup();expect(await screen.findByText('网络异常，请重试')).toBeInTheDocument();expect(screen.getByText('重试')).toBeEnabled();});
 it('厂商默认全部，下拉读取服务端选项，选择后请求服务端筛选', async () => {
  vi.mocked(loadBetRecords).mockResolvedValue({...page,hasMore:false});
  setup();await screen.findByText('动态厂商');

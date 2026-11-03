@@ -1,3 +1,4 @@
+import {NetworkError} from '../components/feedback/NetworkError';
 import { t } from '../i18n';
 import { SalaryBenefit } from '../features/benefits/SalaryBenefit';
 import { VipUpgradeModal } from '../features/benefits/VipUpgradeModal';
@@ -20,7 +21,7 @@ export function BenefitsPage({ onBack, onComingSoon, onVip }: { onVip?: () => vo
   return <section className="benefits-page"><header className="benefits-heading"><button type="button" aria-label={t('copy.backToMyAccount')} onClick={onBack}><Icon name="chevron" size={20} /></button><h1>{t('copy.benefitsCenter')}</h1></header>
     <div className="benefits-cards">
       <BenefitCard title={t('copy.dailyCheckIn')} icon="calendar" tone="purple" description={t('copy.checkInDailyToEarnRewards')} action={t('copy.checkIn')} onAction={() => setCheckinOpen(true)} />
-      {vip.isPending ? <p className="benefits-feedback" role="status">{t('copy.loadingVipBenefits')}</p> : !info ? <div className="benefits-feedback" role="alert"><p>{t('copy.vipBenefitsFailedToLoad')}</p><button type="button" disabled={vip.isFetching} onClick={() => void vip.refetch()}>{t('copy.retryVipBenefits')}</button></div> : <>
+      {vip.isPending ? <p className="benefits-feedback" role="status">{t('copy.loadingVipBenefits')}</p> : !info ? <NetworkError disabled={vip.isFetching} onRetry={() => void vip.refetch()}/> : <>
         <SalaryBenefit kind="weekly" info={info}/>
         <SalaryBenefit kind="monthly" info={info}/>
         <BenefitCard title={t('copy.levelUpReward')} icon="growth" tone="green" value={betMoney(info.nextUpgradeReward ?? 0)} description={info.nextBet === null ? t('copy.youHaveReachedTheHighestVipLevel238') : t('copy.upgradeToVipValueToEarnA', {p0: info.level + 1})} action={info.upgradeReward > 0 ? t('copy.viewLevelUpRewards') : t('copy.upgradeVipForRewards')} onAction={info.upgradeReward > 0 ? (onVip ?? onComingSoon) : () => setUpgradeOpen(true)} />

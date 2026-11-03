@@ -2,8 +2,8 @@ import { t } from '../../i18n';
 import { useState } from 'react';
 import { periodLabels } from './range';
 import type { RecordPeriod } from './range';
-export type RecordKind = 'all' | 'deposit';
-export function RecordFilters({ kind, period, onKind, onPeriod, onComingSoon }: {
+export type RecordKind = 'all' | 'deposit' | 'withdrawal';
+export function RecordFilters({ kind, period, onKind, onPeriod }: {
   kind: RecordKind; period: RecordPeriod; onKind: (kind: RecordKind) => void;
   onPeriod: (period: RecordPeriod) => void; onComingSoon: () => void;
 }) {
@@ -12,7 +12,7 @@ export function RecordFilters({ kind, period, onKind, onPeriod, onComingSoon }: 
   return <div className="cash-filter-container" onKeyDown={event => { if (event.key === 'Escape') close(); }}>
     <div className="cash-filter-bar">
       <button type="button" aria-expanded={panel === 'kind'} aria-controls="cash-record-filters" onClick={() => setPanel(panel === 'kind' ? null : 'kind')}>
-        {kind === 'all' ? t('copy.all') : t('copy.deposit')}<span aria-hidden="true">{panel === 'kind' ? '▴' : '▾'}</span>
+        {kind === 'all' ? t('copy.all') : kind==='withdrawal'?t('copy.withdraw'):t('copy.deposit')}<span aria-hidden="true">{panel === 'kind' ? '▴' : '▾'}</span>
       </button>
       <button type="button" aria-expanded={panel === 'period'} aria-controls="cash-record-filters" onClick={() => setPanel(panel === 'period' ? null : 'period')}>
         {periodLabels()[period]}<span aria-hidden="true">{panel === 'period' ? '▴' : '▾'}</span>
@@ -24,7 +24,7 @@ export function RecordFilters({ kind, period, onKind, onPeriod, onComingSoon }: 
         {panel === 'kind' ? <>
           <button type="button" aria-pressed={kind === 'all'} onClick={() => { onKind('all'); close(); }}>{t('copy.all')}</button>
           <button type="button" aria-pressed={kind === 'deposit'} onClick={() => { onKind('deposit'); close(); }}>{t('copy.deposit')}</button>
-          <button type="button" onClick={() => { close(); onComingSoon(); }}>{t('copy.withdraw')}</button>
+          <button type="button" aria-pressed={kind==='withdrawal'} onClick={() => { onKind('withdrawal'); close(); }}>{t('copy.withdraw')}</button>
         </> : (Object.keys(periodLabels()) as RecordPeriod[]).map(value => <button type="button" key={value} aria-pressed={period === value}
           onClick={() => { onPeriod(value); close(); }}>{periodLabels()[value]}</button>)}
       </div>

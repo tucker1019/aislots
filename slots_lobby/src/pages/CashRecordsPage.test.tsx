@@ -16,17 +16,18 @@ function setup(orderId?: string) {
   render(<QueryClientProvider client={client}><CashRecordsPage orderId={orderId} onBack={onBack} onComingSoon={comingSoon} /></QueryClientProvider>);
   return { user: userEvent.setup(), onBack, comingSoon };
 }
-it('空态与筛选：取款只提示敬请期待，时间筛选发出不同的服务端范围', async () => {
+it('空态与筛选：取款按类型查询，时间筛选发出不同的服务端范围', async () => {
   vi.mocked(fetchCashRecords).mockResolvedValue({ items: [], nextCursor: '' });
-  const { user, comingSoon } = setup();
+  const { user } = setup();
   expect(await screen.findByLabelText('暂无数据')).toBeInTheDocument();
   await user.click(screen.getByRole('button', { name: '全部' }));
   await user.click(screen.getByRole('button', { name: '取款' }));
-  expect(comingSoon).toHaveBeenCalledOnce(); expect(fetchCashRecords).toHaveBeenCalledTimes(1);
+  await waitFor(() => expect(fetchCashRecords).toHaveBeenCalledTimes(2));
+  expect(vi.mocked(fetchCashRecords).mock.calls[1][3]).toBe('withdrawal');
   await user.click(screen.getByRole('button', { name: '今天' }));
   await user.click(screen.getByRole('button', { name: '昨天' }));
-  await waitFor(() => expect(fetchCashRecords).toHaveBeenCalledTimes(2));
-  expect(vi.mocked(fetchCashRecords).mock.calls[0][0]).not.toEqual(vi.mocked(fetchCashRecords).mock.calls[1][0]);
+  await waitFor(() => expect(fetchCashRecords).toHaveBeenCalledTimes(3));
+  expect(vi.mocked(fetchCashRecords).mock.calls[1][0]).not.toEqual(vi.mocked(fetchCashRecords).mock.calls[2][0]);
   expect(screen.queryByLabelText('记录时间')).not.toBeInTheDocument();
 });
 it('加载更多保留已看记录，第二页失败可重试，行点击进入详情地址', async () => {
@@ -44,9 +45,9 @@ it('加载更多保留已看记录，第二页失败可重试，行点击进入�
 it('列表失败提供重试，不能显示成空记录', async () => {
   vi.mocked(fetchCashRecords).mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce({ items: [], nextCursor: '' });
   const { user } = setup();
-  expect(await screen.findByRole('alert')).toHaveTextContent('记录暂时无法加载');
+  expect(await screen.findByRole('alert')).toHaveTextContent('网络异常，请重试');
   expect(screen.queryByLabelText('暂无数据')).not.toBeInTheDocument();
-  await user.click(screen.getByRole('button', { name: '重新加载' }));
+  await user.click(screen.getByRole('button', { name: '重试' }));
   expect(await screen.findByLabelText('暂无数据')).toBeInTheDocument();
 });
 it('详情展示真实费用到账与测试支付，可复制订单号；失败订单不展示已到账金额', async () => {

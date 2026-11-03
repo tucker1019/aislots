@@ -1,3 +1,4 @@
+import {NetworkError} from '../../components/feedback/NetworkError';
 import { serverText, t, getLocale } from '../../i18n';
 import { RecordsLayout } from '../../components/records/RecordsLayout';
 import { useQuery } from '@tanstack/react-query';
@@ -12,7 +13,7 @@ export function LedgerDetail({id,onBack}:{id:string;onBack:()=>void}){
  const [toast,holder]=message.useMessage();const row=query.data;
  const copy=async()=>{try{await navigator.clipboard.writeText(row?.orderId??'');void toast.success(t('copy.orderNumberCopied'));}catch{void toast.error(t('copy.copyFailedPressAndHoldTheOrder'));}};
  return <RecordsLayout title={t('copy.transactionDetails')} backLabel={t('copy.backToWalletTransactions')} onBack={onBack}>{holder}
- {query.isPending?<p className="cash-records-feedback" role="status">{t('copy.loadingDetails')}</p>:!row?<div className="cash-records-feedback" role="alert"><p>{t('copy.transactionDetailsFailedToLoad')}</p><button type="button" disabled={query.isFetching} onClick={()=>void query.refetch()}>{t('copy.retry')}</button></div>:<>
+ {query.isPending?<p className="cash-records-feedback" role="status">{t('copy.loadingDetails')}</p>:!row?<NetworkError disabled={query.isFetching} onRetry={()=>void query.refetch()}/>:<>
  <div className={`ledger-detail-amount ${row.amount<0?'bet-loss':'bet-gain'}`}>{row.amount>0?'+':''}{betMoney(row.amount)} <small>{row.currency}</small></div>
  <dl className="ledger-detail-fields"><div><dt>{t('copy.transactionType')}</dt><dd>{serverText(row.type)}</dd></div><div><dt>{t('copy.currency')}</dt><dd>{row.currency}</dd></div><div><dt>{t('copy.transactionTime')}</dt><dd>{new Date(row.createdAt).toLocaleString(getLocale(),{hour12:false})}</dd></div><div><dt>{t('copy.orderNumber')}</dt><dd className="ledger-order-id"><span>{row.orderId}</span><button type="button" aria-label={t('copy.copyOrderNumber')} onClick={()=>void copy()}><Icon name="list" size={16}/></button></dd></div><div><dt>{t('copy.balanceAfterTransaction')}</dt><dd>{betMoney(row.balance)}</dd></div><div><dt>{t('copy.notes')}</dt><dd>{serverText(row.remark||'—')}</dd></div></dl>
  </>}

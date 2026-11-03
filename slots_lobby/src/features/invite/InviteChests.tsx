@@ -1,3 +1,4 @@
+import {NetworkError} from '../../components/feedback/NetworkError';
 import {useRef,useState} from 'react';
 import {useMutation,useQuery,useQueryClient} from '@tanstack/react-query';
 import {Icon} from '../../components/Icon';
@@ -16,7 +17,7 @@ export function InviteChests(){
  const data=query.data;
  async function copy(){if(!data)return;try{await navigator.clipboard.writeText(data.info.inviteUrl);void toast.success(t('invite.linkCopied'));}catch{void toast.error(t('invite.copyFailed'));}}
  return <>{holder}<section className="earn-invite" aria-label={t('copy.inviteFriends')}>
- {query.isPending?<p role="status">{t('invite.loading')}</p>:!data?<div role="alert"><p>{t('invite.loadFailed')}</p><button type="button" disabled={query.isFetching} onClick={()=>void query.refetch()}>{t('copy.retry')}</button></div>:<>
+ {query.isPending?<p role="status">{t('invite.loading')}</p>:!data?<NetworkError disabled={query.isFetching} onRetry={()=>void query.refetch()}/>:<>
  <div className="earn-invite-summary"><span>{t('invite.memberSummary',{count:data.info.invitedCount,qualified:data.info.qualifiedCount})}</span><button type="button" onClick={()=>navigateLobby('invite-friends')}>{t('invite.friends')} ›</button></div>
  <div className="invite-card invite-link"><label htmlFor="earn-invite-link">{t('invite.link')}</label><input id="earn-invite-link" readOnly value={data.info.inviteUrl}/><button type="button" onClick={()=>void copy()}>{t('copy.copy')}</button></div>
  <header className="earn-invite-heading"><h2>{t('copy.inviteFriends')}</h2><button type="button" onClick={()=>navigateLobby('invite')}>{t('copy.viewRules')}</button></header>
