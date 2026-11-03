@@ -1,0 +1,35 @@
+import { RecordsLayout } from '../components/records/RecordsLayout';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { Icon } from '../components/Icon';
+import { fetchLedger } from '../services/wallet-ledger';
+import { useSessionStore } from '../stores/session';
+import { recordRange, periodLabels } from '../features/cash-records/range';
+import type { RecordPeriod } from '../features/cash-records/range';
+import { betMoney } from '../features/bet-records/money';
+import { LedgerDetail } from '../features/wallet-ledger/LedgerDetail';
+import { navigateLobby } from '../app/useLobbyRoute';
+import { isRecord } from '../features/account/types';
+export function WalletLedgerPage({onBack,id}:{onBack:()=>void;id?:string}){
+ const [category,setCategory]=useState('');const [period,setPeriod]=useState<RecordPeriod>('today');const [panel,setPanel]=useState<'category'|'period'|null>(null);
+ const uid=useSessionStore(state=>state.session?.uid);const range=useMemo(()=>recordRange(period),[period]);
+ const query=useInfiniteQuery({queryKey:['wallet-ledger',uid,range.from,range.to,category],initialPageParam:'',queryFn:({pageParam,signal})=>fetchLedger(range.from,range.to,category,pageParam,signal),getNextPageParam:last=>last.nextCursor||undefined,retry:false});
+ const categories=query.data?.pages[0]?.categories??[];const items=Array.from(new Map(query.data?.pages.flatMap(page=>page.items).map(row=>[row.id,row])??[]).values());
+ const scroll=useRef(0);const previous=useRef(id);
+ useEffect(()=>{if(previous.current&&!id){const frame=requestAnimationFrame(()=>document.getElementById('root')?.scrollTo({top:scroll.current}));previous.current=id;return ()=>cancelAnimationFrame(frame);}previous.current=id;},[id]);
+ function open(value:string){scroll.current=document.getElementById('root')?.scrollTop??0;navigateLobby('wallet-ledger',{orderId:value});}
+ function close(){const state:unknown=window.history.state;if(isRecord(state)&&state.lobbyFrom==='/wallet-ledger')window.history.back();else navigateLobby('wallet-ledger');}
+ if(id)return <LedgerDetail id={id} onBack={close}/>;
+ return <RecordsLayout title="资金明细" backLabel="返回我的" onBack={onBack} filters={
+ <div className="cash-filter-container" onKeyDown={event=>{if(event.key==='Escape')setPanel(null);}}><div className="cash-filter-bar">
+ <button type="button" aria-expanded={panel==='category'} onClick={()=>setPanel(panel==='category'?null:'category')}>{categories.find(row=>row.id===category)?.name||'全部'}<span aria-hidden="true">{panel==='category'?'▴':'▾'}</span></button>
+ <button type="button" aria-expanded={panel==='period'} onClick={()=>setPanel(panel==='period'?null:'period')}>{periodLabels[period]}<span aria-hidden="true">{panel==='period'?'▴':'▾'}</span></button></div>
+ {panel&&<><button className="cash-filter-backdrop" type="button" aria-label="收起筛选" onClick={()=>setPanel(null)}/><div className="cash-filter-options ledger-filter-options" aria-label={panel==='category'?'账变类型':'记录时间'}>{panel==='category'?[{id:'',name:'全部'},...categories].map(row=><button type="button" key={row.id} aria-pressed={category===row.id} onClick={()=>{setCategory(row.id);setPanel(null);}}>{row.name}</button>):(Object.keys(periodLabels) as RecordPeriod[]).map(value=><button type="button" key={value} aria-pressed={period===value} onClick={()=>{setPeriod(value);setPanel(null);}}>{periodLabels[value]}</button>)}</div></>}
+ </div>}>
+ {query.isPending?<p className="cash-records-feedback" role="status">正在加载资金明细…</p>:query.isError&&!query.data?<div className="cash-records-feedback" role="alert"><p>资金明细加载失败</p><button type="button" disabled={query.isFetching} onClick={()=>void query.refetch()}>重试</button></div>:<>
+ {items.length===0?<div className="cash-records-empty"><Icon name="list" size={42}/><p>暂无资金明细</p></div>:<div className="ledger-list">{items.map(row=><button className="ledger-row" type="button" key={row.id} onClick={()=>open(row.id)}><span className="cash-record-icon"><Icon name="wallet" size={20}/></span><span className="ledger-description"><strong>{row.type}</strong><time dateTime={row.createdAt}>{new Date(row.createdAt).toLocaleString('zh-CN',{hour12:false})}</time></span><span className="ledger-result"><strong className={row.amount<0?'bet-loss':'bet-gain'}>{row.amount>0?'+':''}{betMoney(row.amount)}</strong><span>账户余额 {betMoney(row.balance)}</span></span><Icon name="chevron" size={14}/></button>)}</div>}
+ {query.isError&&<p className="cash-records-feedback" role="alert">加载失败，当前记录已保留</p>}
+ {query.hasNextPage?<button type="button" className="cash-load-more" disabled={query.isFetching} onClick={()=>void query.fetchNextPage()}>{query.isFetchingNextPage?'加载中…':query.isError?'重试加载':'加载更多'}</button>:items.length>0&&<p className="cash-records-end">已全部加载～</p>}
+ </>}
+ </RecordsLayout>;
+}

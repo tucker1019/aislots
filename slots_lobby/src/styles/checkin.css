@@ -1,0 +1,24 @@
+body:has(.checkin-modal) .ant-modal-mask { backdrop-filter: blur(7px); background: rgb(20 24 39 / 65%); }
+.checkin-modal .ant-modal-container,.checkin-modal .ant-modal-content { padding: 0; border-radius: 22px; background: transparent; box-shadow: none; }
+.checkin-panel { padding: 16px 11px 13px; border: 1px solid #d6dff1; border-radius: 22px; background: linear-gradient(150deg,#edf1ff,#fff 55%,#e6eeff); box-shadow: 0 7px 0 #cddaf1,0 18px 60px rgb(0 0 0 / 20%); }
+.checkin-panel > header { position: relative; padding: 0 9px 15px; }
+.checkin-eyebrow { color: #6e7bad; font-size: 10px; font-weight: 700; letter-spacing: 2px; }
+.checkin-panel h2 { margin: 4px 0 0; color: #245cba; font-size: 24px; font-weight: 800; }
+.checkin-header-icon { position: absolute; right: 12px; top: 3px; color: #517ed3; transform: rotate(8deg); }
+.checkin-rewards { background: #e0e9fc; padding: 10px; border-radius: 13px; }
+.checkin-stats { display: flex; justify-content: space-between; gap: 7px; margin-bottom: 9px; font-size: 11px; color: #536382; }
+.checkin-stats b { color: #ae7517; }
+.checkin-days { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 6px; max-height: 40dvh; overflow: auto; }
+.checkin-day { display: flex; flex-direction: column; align-items: center; min-height: 85px; border-radius: 10px; overflow: hidden; background: #f4f7ff; color: #b27c1c; padding-bottom: 6px; border: 1px solid transparent; }
+.checkin-day > span { display: block; width: 100%; text-align: center; padding: 5px 0; margin-bottom: 7px; background: #d2def7; color: #526c9f; font-size: 11px; }
+.checkin-day > strong { margin-top: 5px; font-size: 13px; }
+.checkin-day.current { border-color: #f0b348; background: #fff8e7; }.checkin-day.current > span { background: #f3af35; color: #fff; }
+.checkin-day.claimed { background: #edf7f1; color: #2c9271; }.checkin-seven .checkin-day:last-child { grid-column: span 2; }
+.checkin-progress { display: flex; justify-content: space-between; gap: 10px; margin: 13px 0 9px; flex-wrap: wrap; }
+.checkin-progress p { margin: 0; color: #4e5870; font-size: 11px; }.checkin-progress b { color: #d44c4c; }.checkin-progress b.met { color: #20865f; }
+.checkin-claim { width: 100%; min-height: 38px; padding: 8px; border: 1px solid #5984d7; border-radius: 24px; color: #fff; background: linear-gradient(#729bef,#3c6dcd); box-shadow: inset 0 1px 0 #c4d7ff; font-size: 14px; font-weight: 650; }
+.checkin-claim:disabled { opacity: .55; box-shadow: none; }
+.checkin-close { display: block; margin: 27px auto 0; width: 32px; height: 32px; border-radius: 50%; border: 1px solid #91abe0; background: #4d79cd; color: #fff; font-size: 25px; line-height: 25px; }
+.checkin-error,.checkin-success { font-size: 12px; text-align: center; line-height: 1.5; }.checkin-error { color: #c94141; }.checkin-success { color: #238466; }
+.checkin-feedback { padding: 30px 10px; text-align: center; color: #677695; }.checkin-feedback button { border: 1px solid #aac1ec; border-radius: 8px; background: #fff; padding: 8px 18px; color: #3967b9; }
+@media(max-width:360px) { .checkin-stats { font-size: 10px; }.checkin-modal { max-width: calc(100vw - 32px); } }

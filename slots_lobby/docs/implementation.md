@@ -42,3 +42,12 @@ Query、Zustand、services及接口数据流不变，无新增依赖。
 - [x] 验证保留功能及空白主体，运行lint/typecheck/test/build并检查浏览器。
 
 历史验证记录留在qa文档；旧功能源码可从Git历史恢复。Cocos和两个Go服务均不修改。
+
+## 2026-11-03 通知、Banner及厂商游戏布局
+
+用户确认：通知→Banner→热门/AG/PG/JILI/PP→游戏，紧凑三列网格。热门与AG显示唯一麻将游戏，PG/JILI/PP弹Toast“敬请期待”，保持原列表。
+
+- [x] 新增features/home各视图、home.css、本地内容及麻将原有封面/Banner资源。
+- [x] 页面组合Toast，保留固定资料顶栏和竖版适配；Query和Zustand资料流不变，无新增依赖。
+- [x] 更新区块和交互测试，检查320/412/1440视口及Toast容器定位。
+- [x] 保留并行任务修改的游戏启动按钮和服务端入口逻辑；用户要求本次暂不提交代码。

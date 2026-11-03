@@ -1,0 +1,20 @@
+#root:has(.benefits-page) { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.benefits-page { padding-bottom: 24px; }
+.benefits-heading { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: center; min-height: 54px; background: rgb(255 255 255 / 95%); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+.benefits-heading h1 { margin: 0; font-size: 17px; font-weight: 650; }
+.benefits-heading > button { position: absolute; left: 0; width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: transparent; color: var(--blue); }
+.benefits-heading > button svg { transform: rotate(180deg); }
+.benefits-cards { display: grid; gap: 10px; padding-top: 15px; }
+.benefit-card { background: #f5f7fb; border: 1px solid #e9edf4; border-radius: 13px; padding: 11px 12px; }
+.benefit-card > header { display: flex; align-items: center; gap: 9px; padding-bottom: 11px; border-bottom: 1px solid #e2e7ef; }
+.benefit-card h2 { font-size: 14px; font-weight: 650; margin: 0; }
+.benefit-card header > strong { margin-left: auto; color: #b17b20; font-size: 17px; font-variant-numeric: tabular-nums; }
+.benefit-icon { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; }
+.benefit-icon-purple { background: #ede4ff; color: #8b4dcc; }.benefit-icon-blue { background: #e1ebff; color: #4c78d3; }.benefit-icon-rose { background: #ffe3eb; color: #cf5478; }.benefit-icon-green { background: #dcf4ec; color: #268e72; }.benefit-icon-gold { background: #fff0cd; color: #b47e1d; }
+.benefit-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 10px; }
+.benefit-card-bottom p { flex: 1; margin: 0; font-size: 11px; line-height: 1.6; color: var(--muted); overflow-wrap: anywhere; }
+.benefit-card-bottom button,.benefits-feedback button { flex-shrink: 0; border: 1px solid #c1d6f2; background: #fff; color: var(--blue); border-radius: 7px; padding: 7px 10px; font-size: 11px; min-height: 32px; }
+.benefit-card-bottom button:disabled,.benefits-feedback button:disabled { opacity: .5; cursor: default; }
+.benefit-card-bottom button:active:not(:disabled) { background: #eaf2ff; }
+.benefits-feedback { padding: 24px 12px; text-align: center; color: var(--muted); font-size: 13px; background: #f5f7fb; border-radius: 13px; }
+.benefits-note { margin: 4px 2px 0; font-size: 11px; line-height: 1.6; color: var(--muted); }

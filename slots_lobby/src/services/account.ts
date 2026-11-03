@@ -11,7 +11,7 @@ function apiUrl(path: string): string {
   return base.replace(/\/$/, '') + path;
 }
 
-async function request(path: string, init: RequestInit = {}): Promise<unknown> {
+export async function request(path: string, init: RequestInit = {}, failureMessage = '暂时无法读取用户资料，请重试'): Promise<unknown> {
   const controller = new AbortController();
   const abort = () => controller.abort();
   const signal = init.signal;
@@ -28,7 +28,7 @@ async function request(path: string, init: RequestInit = {}): Promise<unknown> {
     if (isRecord(body) && body.code === 10010002)
       throw new Error('会话已失效，请重新登录');
     if (!response.ok || !isRecord(body) || body.code !== 'OK')
-      throw new Error('暂时无法读取用户资料，请重试');
+      throw new Error(failureMessage);
     return body.data;
   } catch (error) {
     if (signal?.aborted) throw error;
@@ -43,7 +43,7 @@ async function request(path: string, init: RequestInit = {}): Promise<unknown> {
 
 let confirmed: Session | null = null;
 let pending: Promise<Session> | undefined;
-function ensureSession(): Promise<Session> {
+export function ensureSession(): Promise<Session> {
   const stored = useSessionStore.getState().session;
   if (stored && confirmed?.sid === stored.sid && confirmed.uid === stored.uid && Date.parse(confirmed.expiresAt) > Date.now())
     return Promise.resolve(confirmed);

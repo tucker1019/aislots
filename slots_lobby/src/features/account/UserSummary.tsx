@@ -1,17 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
+import { coinsLabel } from './formatCoins';
 import { Icon } from '../../components/Icon';
-import { loadAccountProfile } from '../../services/account';
-
-function coinsLabel(coins: number): string {
-  return Math.floor(coins / 100).toLocaleString('zh-CN') + '.' + String(coins % 100).padStart(2, '0');
-}
+import { useAccountProfile } from './useAccountProfile';
 
 export function UserSummary() {
-  const { data, isPending, isError, isFetching, refetch, error } = useQuery({
-    queryKey: ['lobby', 'current-profile'], queryFn: ({ signal }) => loadAccountProfile(signal),
-    // 创建游客失败不自动重放POST；显式重试由用户发起。
-    retry: false, staleTime: 15000, refetchOnWindowFocus: true,
-  });
+  const { data, isPending, isError, isFetching, refetch, error } = useAccountProfile();
   const balance = data ? coinsLabel(data.coins) : undefined;
   return <div className="header-account">
     <div className="header-wallet">

@@ -1,0 +1,203 @@
+.home-content {
+  padding: 0 12px 24px;
+}
+
+.home-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.home-notice > svg {
+  color: var(--blue);
+}
+
+.notice-viewport {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.notice-track {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  animation: notice-scroll 18s linear infinite;
+}
+
+.notice-track > span {
+  padding-right: 56px;
+}
+
+.home-notice:hover .notice-track {
+  animation-play-state: paused;
+}
+
+@keyframes notice-scroll {
+  to { transform: translateX(-50%); }
+}
+
+.promotion-banner {
+  position: relative;
+  overflow: hidden;
+  height: 84px;
+  border-radius: 10px;
+  background: #491207;
+  margin-bottom: 10px;
+  color: #fff3d9;
+}
+
+.promotion-banner > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 50%;
+  opacity: .75;
+}
+
+.promotion-copy {
+  position: relative;
+  padding: 9px 16px;
+}
+
+.promotion-copy > span {
+  font-size: 8px;
+  letter-spacing: 1.8px;
+  color: #f5d199;
+}
+
+.promotion-copy h1 {
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 650;
+  margin-top: 1px;
+}
+
+.promotion-copy p {
+  font-size: 10px;
+  margin-top: 3px;
+  color: #f1d9bc;
+}
+
+.provider-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.provider-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 59px;
+  padding: 5px 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.provider-tab:hover {
+  background: #f5f5f7;
+}
+
+.provider-tab[aria-pressed="true"] {
+  color: var(--blue);
+  background: #edf4ff;
+}
+
+.provider-mark {
+  display: flex;
+  align-items: center;
+  height: 23px;
+  font-size: 19px;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: -.8px;
+  line-height: 1;
+}
+
+.provider-hot .provider-mark { font-size: 23px; font-style: normal; }
+.provider-AG .provider-mark { color: #d66c30; }
+.provider-PG .provider-mark { color: #8a6cce; }
+.provider-JILI .provider-mark { color: #238267; font-size: 17px; }
+.provider-PP .provider-mark { color: #b8882f; }
+
+.home-game-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.game-tile {
+  display: block;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.06;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: #e49b29;
+  overflow: hidden;
+}
+
+.game-tile > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+}
+
+.game-provider {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  border-radius: 3px;
+  background: #633000b3;
+  color: #fff;
+  font-size: 9px;
+  line-height: 1;
+  padding: 3px 4px;
+  font-weight: 650;
+}
+
+.game-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 7px 3px;
+  background: #c35c0e;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* Toast挂载于body，消息层和竖版大厅保持同一条中线。 */
+.lobby-toast-list {
+  left: 50%!important;
+  right: auto!important;
+  width: min(calc(100% - 24px), 406px)!important;
+  transform: translateX(-50%);
+}
+
+@media(prefers-reduced-motion: reduce) {
+  .notice-track { animation: none!important; }
+  .notice-track > span[aria-hidden] { display: none; }
+}
+
+.lobby-toast-list .ant-message-notice {
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 5px 18px rgb(25 45 75 / 16%);
+}
