@@ -1,16 +1,18 @@
 package model
 
 import (
-	"apps/app/apis/lobby/api/internal/config"
-	"apps/pkg/coinsource"
-	"apps/pkg/xerr"
 	"context"
 	"crypto/rand"
 	"errors"
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 	"math"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/config"
+	"apps/pkg/coinsource"
+	"apps/pkg/xerr"
+
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type InviteModel struct {
@@ -41,15 +43,18 @@ func (m *InviteModel) bind(tx *gorm.DB, uid int64, code string, created time.Tim
 	c := m.Config
 	return tx.Create(&LobbyInviteRelation{InviteeUID: uid, InviterUID: owner.UID, RegisteredAt: created, Deadline: created.Add(time.Duration(c.DurationDays) * 24 * time.Hour), ConfigVersion: c.Version, MinDepositCount: c.MinDepositCount, MinDepositAmount: c.MinDepositAmount, MinBetAmount: c.MinBetAmount, RewardAmount: c.RewardAmount}).Error
 }
+
 func (m *InviteModel) materialize(tx *gorm.DB, uid int64, now time.Time) error {
 	return tx.Exec(`INSERT INTO lobby_invite_rewards(invitee_uid,inviter_uid,amount,earned_at,slot)
  SELECT r.invitee_uid,r.inviter_uid,r.reward_amount,?, COALESCE((SELECT MAX(slot) FROM lobby_invite_rewards WHERE inviter_uid=?),0)+ROW_NUMBER() OVER(ORDER BY r.invitee_uid) FROM lobby_invite_relations r
  WHERE r.inviter_uid=? AND NOT EXISTS(SELECT 1 FROM lobby_invite_rewards w WHERE w.invitee_uid=r.invitee_uid)
+ AND EXISTS(SELECT 1 FROM lobby_payout_accounts a WHERE a.uid=r.invitee_uid AND a.created_at<r.deadline AND a.created_at<=?)
  AND (SELECT count(*) FROM lobby_recharge_orders o WHERE o.uid=r.invitee_uid AND o.status='success' AND COALESCE(o.settled_at,o.created_at)>=r.registered_at AND COALESCE(o.settled_at,o.created_at)<r.deadline AND COALESCE(o.settled_at,o.created_at)<=?)>=r.min_deposit_count
  AND (SELECT COALESCE(sum(o.amount),0) FROM lobby_recharge_orders o WHERE o.uid=r.invitee_uid AND o.status='success' AND COALESCE(o.settled_at,o.created_at)>=r.registered_at AND COALESCE(o.settled_at,o.created_at)<r.deadline AND COALESCE(o.settled_at,o.created_at)<=?)>=r.min_deposit_amount
  AND (SELECT COALESCE(sum(e.amount),0) FROM lobby_activity_events e WHERE e.uid=r.invitee_uid AND e.event_type='game_bet' AND e.occurred_at>=r.registered_at AND e.occurred_at<r.deadline AND e.occurred_at<=?)>=r.min_bet_amount
- ON CONFLICT(invitee_uid) DO NOTHING`, now, uid, uid, now, now, now).Error
+ ON CONFLICT(invitee_uid) DO NOTHING`, now, uid, uid, now, now, now, now).Error
 }
+
 func (m *InviteModel) Read(ctx context.Context, uid int64, now time.Time) (*InviteView, error) {
 	v := &InviteView{}
 	err := m.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
@@ -80,15 +85,18 @@ func (m *InviteModel) Read(ctx context.Context, uid int64, now time.Time) (*Invi
 	})
 	return v, err
 }
+
 func (m *InviteModel) Claim(ctx context.Context, uid int64, requestID string, now time.Time) (*LobbyInviteBatch, error) {
 	return m.claim(ctx, uid, requestID, now, 0)
 }
+
 func (m *InviteModel) ClaimOne(ctx context.Context, uid int64, requestID string, now time.Time, target int64) (*LobbyInviteBatch, error) {
 	if target <= 0 {
 		return nil, xerr.ErrInvalid
 	}
 	return m.claim(ctx, uid, requestID, now, target)
 }
+
 func (m *InviteModel) claim(ctx context.Context, uid int64, requestID string, now time.Time, target int64) (*LobbyInviteBatch, error) {
 	var batch LobbyInviteBatch
 	err := m.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {

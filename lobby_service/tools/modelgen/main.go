@@ -20,7 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, table := range []string{"lobby_invite_codes", "lobby_invite_relations", "lobby_invite_rewards", "lobby_invite_batches", "lobby_game_statistics_epoch", "lobby_game_completions", "lobby_game_rtp_minutes", "lobby_game_streaks", "lobby_game_streak_days", "lobby_game_rank_candidates", "lobby_game_tickets", "lobby_game_settlements", "lobby_users", "lobby_sessions", "lobby_recharge_orders", "lobby_coin_ledger", "lobby_wallet_balances", "lobby_activity_daily", "lobby_activity_events", "lobby_checkin_claims", "lobby_return_batches", "lobby_return_claims", "lobby_vip_states", "lobby_vip_rewards", "lobby_vip_claim_batches", "lobby_newbie_recharges", "lobby_newbie_recharge_tiers", "lobby_newbie_claim_batches"} {
+	for _, table := range []string{"lobby_withdrawal_orders", "lobby_payout_accounts", "lobby_agent_paths", "lobby_agent_queue", "lobby_agent_days", "lobby_agent_personal", "lobby_agent_claims", "lobby_agent_daily", "lobby_agent_contributions", "lobby_invite_codes", "lobby_invite_relations", "lobby_invite_rewards", "lobby_invite_batches", "lobby_game_statistics_epoch", "lobby_game_completions", "lobby_game_rtp_minutes", "lobby_game_streaks", "lobby_game_streak_days", "lobby_game_rank_candidates", "lobby_game_tickets", "lobby_game_settlements", "lobby_users", "lobby_sessions", "lobby_recharge_orders", "lobby_coin_ledger", "lobby_wallet_balances", "lobby_activity_daily", "lobby_activity_events", "lobby_checkin_claims", "lobby_return_batches", "lobby_return_claims", "lobby_vip_states", "lobby_vip_rewards", "lobby_vip_claim_batches", "lobby_newbie_recharges", "lobby_newbie_recharge_tiers", "lobby_newbie_claim_batches"} {
 		if !db.Migrator().HasTable(table) {
 			log.Fatalf("run migration first: missing %s", table)
 		}
@@ -56,5 +56,14 @@ func main() {
 	g.GenerateModel("lobby_newbie_recharges")
 	g.GenerateModel("lobby_newbie_recharge_tiers")
 	g.GenerateModel("lobby_newbie_claim_batches")
+	g.GenerateModel("lobby_agent_paths")
+	g.GenerateModel("lobby_agent_queue")
+	g.GenerateModel("lobby_agent_days")
+	g.GenerateModel("lobby_agent_personal")
+	g.GenerateModel("lobby_agent_claims")
+	g.GenerateModel("lobby_agent_daily")
+	g.GenerateModel("lobby_agent_contributions")
+	g.GenerateModel("lobby_payout_accounts")
+	g.GenerateModel("lobby_withdrawal_orders")
 	g.Execute()
 }

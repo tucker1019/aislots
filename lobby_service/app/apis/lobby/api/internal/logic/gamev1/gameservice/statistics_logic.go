@@ -1,10 +1,6 @@
 package gameservice
 
 import (
-	user "apps/app/apis/lobby/api/internal/logic/userv1/userservice"
-	"apps/app/apis/lobby/api/internal/repository/model"
-	pb "apps/pb/apis/lobby/api/v1"
-	"apps/pkg/xerr"
 	"context"
 	"crypto/hmac"
 	"crypto/sha256"
@@ -12,6 +8,11 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	user "apps/app/apis/lobby/api/internal/logic/userv1/userservice"
+	"apps/app/apis/lobby/api/internal/repository/model"
+	pb "apps/pb/apis/lobby/api/v1"
+	"apps/pkg/xerr"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -33,6 +34,7 @@ type statisticsCache struct {
 func newStatisticsCache() *statisticsCache {
 	return &statisticsCache{entries: map[string]cachedStatistics{}}
 }
+
 func cachedStats[T proto.Message](cache *statisticsCache, key string, read func() (T, error)) (T, error) {
 	if cache == nil {
 		return read()
@@ -56,6 +58,7 @@ func cachedStats[T proto.Message](cache *statisticsCache, key string, read func(
 	}
 	return out, e
 }
+
 func (l *Logic) statisticsAuth(ctx context.Context, r *pb.GameStatisticsRequest) (statisticsStore, error) {
 	if r.GetUid() <= 0 || len(r.GetSid()) != 52 {
 		return nil, xerr.ErrSession
@@ -72,6 +75,7 @@ func (l *Logic) statisticsAuth(ctx context.Context, r *pb.GameStatisticsRequest)
 	}
 	return store, nil
 }
+
 func (l *Logic) GameComplete(ctx context.Context, r *pb.GameCompleteRequest) (*pb.GameCompleteReply, error) {
 	if _, ok := l.config.Games[r.GameId]; !ok || r.Uid <= 0 || r.BetId == "" || len(r.BetId) > 128 || r.Sequence < 1 || r.BetAmount < 1 || r.WinAmount < 0 {
 		return nil, xerr.ErrInvalid
@@ -94,6 +98,7 @@ func (l *Logic) GameComplete(ctx context.Context, r *pb.GameCompleteRequest) (*p
 	}
 	return &pb.GameCompleteReply{Included: included}, nil
 }
+
 func (l *Logic) GameRtp(ctx context.Context, r *pb.GameStatisticsRequest) (*pb.GameRtpReply, error) {
 	store, e := l.statisticsAuth(ctx, r)
 	if e != nil {
@@ -112,6 +117,7 @@ func (l *Logic) GameRtp(ctx context.Context, r *pb.GameStatisticsRequest) (*pb.G
 		return &pb.GameRtpReply{GameId: r.GameId, From: v.From.Format(time.RFC3339), To: v.To.Format(time.RFC3339), UpdatedAt: now.Format(time.RFC3339), StatisticsSince: v.Since.Format(time.RFC3339), BetAmount: v.BetAmount, WinAmount: v.WinAmount, Rounds: v.Rounds, HasData: v.HasData, Percent: v.Percent}, nil
 	})
 }
+
 func (l *Logic) GameLeaderboard(ctx context.Context, r *pb.GameStatisticsRequest) (*pb.GameLeaderboardReply, error) {
 	store, e := l.statisticsAuth(ctx, r)
 	if e != nil {

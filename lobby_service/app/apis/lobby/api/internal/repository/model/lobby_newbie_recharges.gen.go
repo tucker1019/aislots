@@ -14,11 +14,11 @@ const TableNameLobbyNewbieRecharge = "lobby_newbie_recharges"
 type LobbyNewbieRecharge struct {
 	UID             int64     `gorm:"column:uid;primaryKey" json:"uid"`
 	StartsAt        time.Time `gorm:"column:starts_at;not null" json:"starts_at"`
-	EnrolledAt      time.Time `gorm:"column:enrolled_at;not null;default:now()" json:"enrolled_at"`
 	EndsAt          time.Time `gorm:"column:ends_at;not null" json:"ends_at"`
 	DurationDays    int32     `gorm:"column:duration_days;not null" json:"duration_days"`
 	ConfigVersion   string    `gorm:"column:config_version;not null" json:"config_version"`
 	ExpireUnclaimed bool      `gorm:"column:expire_unclaimed;not null" json:"expire_unclaimed"`
+	EnrolledAt      time.Time `gorm:"column:enrolled_at;not null;default:now()" json:"enrolled_at"`
 }
 
 // TableName LobbyNewbieRecharge's table name

@@ -1,13 +1,15 @@
 package model
 
 import (
-	"apps/pkg/coinsource"
-	"apps/pkg/xerr"
 	"context"
 	"database/sql"
-	"gorm.io/gorm"
 	"math/big"
 	"time"
+
+	"apps/pkg/coinsource"
+	"apps/pkg/xerr"
+
+	"gorm.io/gorm"
 )
 
 type PersonalReportView struct {
@@ -35,6 +37,7 @@ func reportBounds(period string, now time.Time, location *time.Location) (time.T
 	}
 	return start, start.AddDate(0, 0, days)
 }
+
 func (m *GameModel) PersonalReport(ctx context.Context, uid int64, period string, now time.Time) (*PersonalReportView, error) {
 	location := m.Location
 	if location == nil {
@@ -56,6 +59,11 @@ func (m *GameModel) PersonalReport(ctx context.Context, uid int64, period string
 			sources[r.Source] = r.Amount
 		}
 		read := func(s coinsource.Source) int64 { return sources[string(s)] }
+		var withdrawn int64
+		if e := tx.Model(&LobbyWithdrawalOrder{}).Select("COALESCE(SUM(amount),0)").Where("uid=? AND status='success' AND settled_at>=? AND settled_at<?", uid, from, to).Scan(&withdrawn).Error; e != nil {
+			return e
+		}
+		out.Amounts["withdrawal"] = withdrawn
 		out.Amounts["recharge"] = read(coinsource.SourceRechargeCredit)
 		out.Amounts["betAmount"] = -read(coinsource.SourceGameBet)
 		if out.Amounts["betAmount"] < 0 {
@@ -67,8 +75,10 @@ func (m *GameModel) PersonalReport(ctx context.Context, uid int64, period string
 		}
 		out.Amounts["gameProfit"] = profit.Int64()
 		mappings := map[string][]coinsource.Source{
-			"inviteReward": {coinsource.SourceInviteReward},
-			"rebate":       {coinsource.SourceRebateDaily, coinsource.SourceRebateWeekly, coinsource.SourceRebateMonthly}, "checkin": {coinsource.SourceCheckinReward}, "vipUpgrade": {coinsource.SourceVIPUpgrade}, "vipWeekly": {coinsource.SourceVIPWeekly}, "vipMonthly": {coinsource.SourceVIPMonthly}, "loserReturn": {coinsource.SourceLoserReturn}, "rechargeBonus": {coinsource.SourceRechargeBonus}, "newbieReward": {coinsource.SourceNewbieRecharge},
+			"withdrawalBonus": {coinsource.SourceWithdrawalBonus},
+			"commission":      {coinsource.SourceAgentCommission},
+			"inviteReward":    {coinsource.SourceInviteReward},
+			"rebate":          {coinsource.SourceRebateDaily, coinsource.SourceRebateWeekly, coinsource.SourceRebateMonthly}, "checkin": {coinsource.SourceCheckinReward}, "vipUpgrade": {coinsource.SourceVIPUpgrade}, "vipWeekly": {coinsource.SourceVIPWeekly}, "vipMonthly": {coinsource.SourceVIPMonthly}, "loserReturn": {coinsource.SourceLoserReturn}, "rechargeBonus": {coinsource.SourceRechargeBonus}, "newbieReward": {coinsource.SourceNewbieRecharge},
 		}
 		net := new(big.Int).Set(profit)
 		for key, list := range mappings {

@@ -4,6 +4,10 @@ import subprocess
 
 # English enum identifier, stable stored value, description.
 SOURCES = [
+    ('SourceWithdrawalDebit', 'wdr_001', '取款申请扣除本金'),
+    ('SourceWithdrawalRefund', 'wdr_002', '取款退回返还本金'),
+    ('SourceWithdrawalBonus', 'wdr_003', '取款通过赠送加币'),
+    ('SourceAgentCommission', 'agt_001', '代理日结佣金领取'),
     ('SourceInviteReward', 'act_007', '邀请好友奖励加币'),
     ('SourceGameBet', 'game_001', '游戏投注扣币'),
     ('SourceGameWin', 'game_002', '游戏逐轮派彩'),

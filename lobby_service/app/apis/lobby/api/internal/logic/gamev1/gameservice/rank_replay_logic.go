@@ -1,8 +1,6 @@
 package gameservice
 
 import (
-	pb "apps/pb/apis/lobby/api/v1"
-	"apps/pkg/xerr"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -12,6 +10,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	pb "apps/pb/apis/lobby/api/v1"
+	"apps/pkg/xerr"
 )
 
 func (l *Logic) GameRankReplay(ctx context.Context, r *pb.GameRankReplayRequest) (*pb.GameRankReplayReply, error) {

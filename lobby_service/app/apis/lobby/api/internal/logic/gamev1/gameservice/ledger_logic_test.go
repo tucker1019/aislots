@@ -1,15 +1,16 @@
 package gameservice
 
 import (
-	"apps/app/apis/lobby/api/internal/config"
-	"apps/app/apis/lobby/api/internal/repository/model"
-	pb "apps/pb/apis/lobby/api/v1"
-	"apps/pkg/xerr"
 	"context"
 	"errors"
 	"strings"
 	"testing"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/config"
+	"apps/app/apis/lobby/api/internal/repository/model"
+	pb "apps/pb/apis/lobby/api/v1"
+	"apps/pkg/xerr"
 
 	"gorm.io/gorm"
 )
@@ -27,9 +28,11 @@ func (f *ledgerFake) Ledger(_ context.Context, _ int64, _, _ time.Time, sources,
 	f.games = games
 	return f.rows, f.err
 }
+
 func (f *ledgerFake) LedgerDetail(context.Context, int64, int64) (model.WalletLedgerRow, error) {
 	return f.rows[0], f.err
 }
+
 func TestWalletLedgerBusinessTypesAndAuthorization(t *testing.T) {
 	ctx := context.Background()
 	uid := int64(1)

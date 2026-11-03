@@ -27,6 +27,7 @@ import (
  "apps/pkg/trace"
  "apps/app/apis/lobby/api/internal/handler"
  "apps/app/apis/lobby/api/internal/logic/userv1/userservice"
+ agentlogic "apps/app/apis/lobby/api/internal/logic/agentv1/agentservice"
  gamelogic "apps/app/apis/lobby/api/internal/logic/gamev1/gameservice"
  newbielogic "apps/app/apis/lobby/api/internal/logic/newbiev1/newbieservice"
  viplogic "apps/app/apis/lobby/api/internal/logic/vipv1/vipservice"
@@ -44,6 +45,7 @@ func New(ctx *svc.ServiceContext) http.Handler {
  returns:=returnlogic.New(ctx)
  vip:=viplogic.New(ctx)
  newbie:=newbielogic.New(ctx)
+ agent:=agentlogic.New(ctx)
  game:=gamelogic.New(ctx)
 `)
 
@@ -65,6 +67,9 @@ func New(ctx *svc.ServiceContext) http.Handler {
 					panic("GET or POST annotation required")
 				}
 				receiver := "logic"
+				if service.GetName() == "AgentService" {
+					receiver = "agent"
+				}
 				if service.GetName() == "GameService" {
 					receiver = "game"
 				}

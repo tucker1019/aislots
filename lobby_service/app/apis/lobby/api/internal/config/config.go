@@ -10,16 +10,19 @@ import (
 )
 
 type Config struct {
-	Game          GameConfig
-	Address       string
-	DatabaseURL   string
-	SessionDays   int
-	RechargeTiers []RechargeTier
-	Checkin       CheckinConfig
-	Returns       ReturnConfig
-	VIP           VIPConfig
-	Invite        InviteConfig
-	Newbie        NewbieConfig
+	Agent              AgentConfig
+	Game               GameConfig
+	Address            string
+	DatabaseURL        string
+	SessionDays        int
+	RechargeTiers      []RechargeTier
+	WithdrawalTiers    []RechargeTier
+	WithdrawalTestMode bool
+	Checkin            CheckinConfig
+	Returns            ReturnConfig
+	VIP                VIPConfig
+	Invite             InviteConfig
+	Newbie             NewbieConfig
 }
 
 func (c Config) SessionTTL() time.Duration { return time.Duration(c.SessionDays) * 24 * time.Hour }
@@ -44,6 +47,10 @@ func Load() (Config, error) {
 			return c, fmt.Errorf("LOBBY_SESSION_DAYS must be between 1 and 3650")
 		}
 	}
+	c.Agent, err = LoadAgent(os.Getenv("LOBBY_AGENT_CONFIG"))
+	if err != nil {
+		return c, err
+	}
 	c.Game, err = LoadGames(os.Getenv("LOBBY_GAMES_CONFIG"))
 	if err != nil {
 		return c, err
@@ -52,6 +59,15 @@ func Load() (Config, error) {
 	if err != nil {
 		return c, err
 	}
+	withdrawalPath := os.Getenv("LOBBY_WITHDRAWAL_CONFIG")
+	if withdrawalPath == "" {
+		withdrawalPath = "etc/withdrawal.json"
+	}
+	c.WithdrawalTiers, err = LoadRechargeTiers(withdrawalPath)
+	if err != nil {
+		return c, err
+	}
+	c.WithdrawalTestMode = os.Getenv("LOBBY_WITHDRAWAL_TEST_MODE") == "true"
 	c.Checkin, err = LoadCheckin(os.Getenv("LOBBY_CHECKIN_CONFIG"))
 	if err != nil {
 		return c, err

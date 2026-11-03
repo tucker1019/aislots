@@ -13,7 +13,7 @@ func TestInviteConfig(t *testing.T) {
 	check := func(value InviteConfig, valid bool) {
 		t.Helper()
 		b, _ := json.Marshal(value)
-		if e := os.WriteFile(file, b, 0600); e != nil {
+		if e := os.WriteFile(file, b, 0o600); e != nil {
 			t.Fatal(e)
 		}
 		v, e := LoadInvite(file)
@@ -37,11 +37,11 @@ func TestInviteConfig(t *testing.T) {
 	bad = c
 	bad.SupportURL = "https://u:p@example.com"
 	check(bad, false)
-	os.WriteFile(file, []byte(`{} {}`), 0600)
+	os.WriteFile(file, []byte(`{} {}`), 0o600)
 	if _, e := LoadInvite(file); e == nil {
 		t.Fatal("trailing config")
 	}
-	os.WriteFile(file, []byte(`{"unknown":1}`), 0600)
+	os.WriteFile(file, []byte(`{"unknown":1}`), 0o600)
 	if _, e := LoadInvite(file); e == nil {
 		t.Fatal("unknown field")
 	}

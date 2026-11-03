@@ -1,0 +1,1 @@
+{"version":"agent-v1","providers":{"AG":[{"threshold":100,"rate":30},{"threshold":1000000,"rate":40},{"threshold":3000000,"rate":50},{"threshold":10000000,"rate":60},{"threshold":30000000,"rate":70},{"threshold":100000000,"rate":80},{"threshold":300000000,"rate":100},{"threshold":1000000000,"rate":150},{"threshold":3000000000,"rate":200},{"threshold":5000000000,"rate":300}]}}

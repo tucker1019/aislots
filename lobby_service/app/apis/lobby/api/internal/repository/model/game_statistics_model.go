@@ -1,10 +1,11 @@
 package model
 
 import (
-	"apps/pkg/xerr"
 	"context"
 	"strconv"
 	"time"
+
+	"apps/pkg/xerr"
 
 	"gorm.io/gorm"
 )
@@ -147,6 +148,7 @@ func (m *GameModel) CompleteGame(ctx context.Context, in GameCompletion) (bool, 
 	})
 	return included, err
 }
+
 func saveCandidate(tx *gorm.DB, in GameCompletion, period, board, key string, streak int64) error {
 	score := "?::numeric"
 	args := []any{in.WinAmount}
@@ -166,6 +168,7 @@ func saveCandidate(tx *gorm.DB, in GameCompletion, period, board, key string, st
 	}
 	return tx.Exec(`DELETE FROM lobby_game_rank_candidates WHERE game_id=? AND period=? AND board=? AND entry_key NOT IN (SELECT entry_key FROM lobby_game_rank_candidates WHERE game_id=? AND period=? AND board=? ORDER BY score DESC,ended_at,entry_key LIMIT 50)`, in.GameID, period, board, in.GameID, period, board).Error
 }
+
 func (m *GameModel) ReadRTP(ctx context.Context, game string, minutes int, now time.Time) (RTPView, error) {
 	out := RTPView{To: now.UTC().Truncate(time.Minute)}
 	out.From = out.To.Add(-time.Duration(minutes) * time.Minute)
@@ -185,6 +188,7 @@ func (m *GameModel) ReadRTP(ctx context.Context, game string, minutes int, now t
 	e = m.DB.WithContext(ctx).Raw("SELECT started_at FROM lobby_game_statistics_epoch WHERE id=1").Scan(&out.Since).Error
 	return out, e
 }
+
 func (m *GameModel) ReadLeaderboard(ctx context.Context, game, board, period string, now time.Time) ([]RankView, time.Time, error) {
 	db := m.DB.WithContext(ctx)
 	var since time.Time

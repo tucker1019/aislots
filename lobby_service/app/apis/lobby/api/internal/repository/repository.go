@@ -11,15 +11,18 @@ import (
 )
 
 type Repository struct {
-	Invite   *model.InviteModel
-	Game     GameStore
-	Users    UserStore
-	Recharge RechargeStore
-	Checkin  CheckinStore
-	Returns  ReturnStore
-	Activity *model.ActivityModel
-	VIP      VIPStore
-	Newbie   NewbieStore
+	Withdrawal *model.WithdrawalModel
+	Wallet     WalletStore
+	Agent      AgentStore
+	Invite     *model.InviteModel
+	Game       GameStore
+	Users      UserStore
+	Recharge   RechargeStore
+	Checkin    CheckinStore
+	Returns    ReturnStore
+	Activity   *model.ActivityModel
+	VIP        VIPStore
+	Newbie     NewbieStore
 }
 
 func New(db *gorm.DB, locations ...*time.Location) *Repository {
@@ -27,7 +30,7 @@ func New(db *gorm.DB, locations ...*time.Location) *Repository {
 	if len(locations) > 0 {
 		loc = locations[0]
 	}
-	return &Repository{Users: &model.UserModel{DB: db}, Recharge: &model.RechargeModel{DB: db, ActivityLocation: loc}, Checkin: &model.CheckinModel{DB: db}, Returns: &model.ReturnModel{DB: db}, Activity: &model.ActivityModel{DB: db, Location: loc}}
+	return &Repository{Withdrawal: &model.WithdrawalModel{DB: db}, Wallet: &model.WalletAccountModel{DB: db}, Users: &model.UserModel{DB: db}, Recharge: &model.RechargeModel{DB: db, ActivityLocation: loc}, Checkin: &model.CheckinModel{DB: db}, Returns: &model.ReturnModel{DB: db}, Activity: &model.ActivityModel{DB: db, Location: loc}}
 }
 
 // ConfigureVIP wires the same engine into user creation, recharge and game event transactions.
@@ -58,4 +61,8 @@ func (r *Repository) ConfigureInvite(db *gorm.DB, c config.InviteConfig) {
 	if users, ok := r.Users.(*model.UserModel); ok {
 		users.Invite = m
 	}
+}
+
+func (r *Repository) ConfigureAgent(db *gorm.DB, c config.AgentConfig, games map[string]config.GameEntry, loc *time.Location) {
+	r.Agent = &model.AgentModel{DB: db, Config: c, Games: games, Location: loc}
 }

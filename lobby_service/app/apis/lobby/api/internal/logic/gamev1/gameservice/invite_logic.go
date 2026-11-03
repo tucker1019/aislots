@@ -1,15 +1,16 @@
 package gameservice
 
 import (
-	user "apps/app/apis/lobby/api/internal/logic/userv1/userservice"
-	"apps/app/apis/lobby/api/internal/repository/model"
-	pb "apps/pb/apis/lobby/api/v1"
-	"apps/pkg/xerr"
 	"context"
 	"net/url"
 	"strings"
 	"time"
 	"unicode"
+
+	user "apps/app/apis/lobby/api/internal/logic/userv1/userservice"
+	"apps/app/apis/lobby/api/internal/repository/model"
+	pb "apps/pb/apis/lobby/api/v1"
+	"apps/pkg/xerr"
 )
 
 type inviteStore interface {
@@ -29,6 +30,7 @@ func (l *Logic) inviteAuth(ctx context.Context, r *pb.InviteRequest) error {
 	}
 	return nil
 }
+
 func (l *Logic) InviteInfo(ctx context.Context, r *pb.InviteRequest) (*pb.InviteInfoReply, error) {
 	if e := l.inviteAuth(ctx, r); e != nil {
 		return nil, e
@@ -44,6 +46,7 @@ func (l *Logic) InviteInfo(ctx context.Context, r *pb.InviteRequest) (*pb.Invite
 	u.RawQuery = q.Encode()
 	return &pb.InviteInfoReply{InviteUrl: u.String(), SupportUrl: c.SupportURL, Rules: &pb.InviteRules{Version: c.Version, DurationDays: c.DurationDays, MinDepositCount: c.MinDepositCount, MinDepositAmount: c.MinDepositAmount, MinBetAmount: c.MinBetAmount, RewardAmount: c.RewardAmount, DisplayRows: c.DisplayRows}, InvitedCount: v.InvitedCount, QualifiedCount: v.QualifiedCount, PendingAmount: v.PendingAmount, ClaimedAmount: v.ClaimedAmount}, nil
 }
+
 func (l *Logic) InviteClaim(ctx context.Context, r *pb.InviteRequest) (*pb.InviteClaimReply, error) {
 	if e := l.inviteAuth(ctx, r); e != nil {
 		return nil, e

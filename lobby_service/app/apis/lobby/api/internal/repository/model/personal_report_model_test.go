@@ -64,6 +64,7 @@ func TestPersonalReportPrincipalRewardsAndBoundaries(t *testing.T) {
 		t.Fatal(empty, e)
 	}
 }
+
 func TestReportCalendarWeeksAndDST(t *testing.T) {
 	loc, _ := time.LoadLocation("Asia/Jakarta")
 	now := time.Date(2026, 1, 1, 1, 0, 0, 0, loc)

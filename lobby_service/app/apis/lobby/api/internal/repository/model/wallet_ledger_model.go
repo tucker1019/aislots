@@ -15,6 +15,7 @@ type WalletLedgerRow struct {
 func (m *GameModel) ledgerQuery(ctx context.Context, uid int64) *gorm.DB {
 	return m.DB.WithContext(ctx).Table("lobby_coin_ledger AS ledger").Select("ledger.*, settlement.game_id").Joins("LEFT JOIN lobby_game_settlements AS settlement ON settlement.request_id = ledger.order_id AND settlement.uid = ledger.uid AND ledger.source IN ('game_001','game_002')").Where("ledger.uid = ?", uid)
 }
+
 func (m *GameModel) Ledger(ctx context.Context, uid int64, from, to time.Time, sources, gameIDs []string, cursor int64) ([]WalletLedgerRow, error) {
 	q := m.ledgerQuery(ctx, uid).Where("ledger.created_at >= ? AND ledger.created_at < ?", from, to)
 	if sources != nil {
@@ -30,6 +31,7 @@ func (m *GameModel) Ledger(ctx context.Context, uid int64, from, to time.Time, s
 	e := q.Order("ledger.id DESC").Limit(21).Scan(&rows).Error
 	return rows, e
 }
+
 func (m *GameModel) LedgerDetail(ctx context.Context, uid, id int64) (WalletLedgerRow, error) {
 	var row WalletLedgerRow
 	e := m.ledgerQuery(ctx, uid).Where("ledger.id = ?", id).Scan(&row).Error

@@ -1,15 +1,16 @@
 package gameservice
 
 import (
-	"apps/app/apis/lobby/api/internal/config"
-	"apps/app/apis/lobby/api/internal/repository/model"
-	pb "apps/pb/apis/lobby/api/v1"
-	"apps/pkg/xerr"
 	"context"
 	"errors"
 	"strings"
 	"testing"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/config"
+	"apps/app/apis/lobby/api/internal/repository/model"
+	pb "apps/pb/apis/lobby/api/v1"
+	"apps/pkg/xerr"
 )
 
 type inviteFake struct{ err error }
@@ -17,9 +18,11 @@ type inviteFake struct{ err error }
 func (f inviteFake) Read(context.Context, int64, time.Time) (*model.InviteView, error) {
 	return &model.InviteView{Code: "ABC", InvitedCount: 3, PendingAmount: 20000}, f.err
 }
+
 func (f inviteFake) Claim(context.Context, int64, string, time.Time) (*model.LobbyInviteBatch, error) {
 	return &model.LobbyInviteBatch{ClaimID: "claim", TotalReward: 20000, Coins: 30000}, f.err
 }
+
 func TestInviteInfoAndClaimAuthentication(t *testing.T) {
 	ctx := context.Background()
 	id := int64(7)

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "withdrawal_50",
+    "amount": 5000,
+    "fee": 150,
+    "bonus": 0
+  },
+  {
+    "id": "withdrawal_100",
+    "amount": 10000,
+    "fee": 0,
+    "bonus": 0
+  },
+  {
+    "id": "withdrawal_200",
+    "amount": 20000,
+    "fee": 0,
+    "bonus": 200
+  },
+  {
+    "id": "withdrawal_300",
+    "amount": 30000,
+    "fee": 0,
+    "bonus": 300
+  },
+  {
+    "id": "withdrawal_500",
+    "amount": 50000,
+    "fee": 0,
+    "bonus": 500
+  },
+  {
+    "id": "withdrawal_1000",
+    "amount": 100000,
+    "fee": 0,
+    "bonus": 1000
+  },
+  {
+    "id": "withdrawal_2000",
+    "amount": 200000,
+    "fee": 0,
+    "bonus": 6000
+  },
+  {
+    "id": "withdrawal_3000",
+    "amount": 300000,
+    "fee": 0,
+    "bonus": 9000
+  },
+  {
+    "id": "withdrawal_5000",
+    "amount": 500000,
+    "fee": 0,
+    "bonus": 15000
+  },
+  {
+    "id": "withdrawal_10000",
+    "amount": 1000000,
+    "fee": 0,
+    "bonus": 30000
+  }
+]

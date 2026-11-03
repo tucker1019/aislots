@@ -1,10 +1,11 @@
 package model
 
 import (
-	migrations "apps/deploy/migration"
 	"context"
 	"testing"
 	"time"
+
+	migrations "apps/deploy/migration"
 )
 
 func TestUIDStartsAt10000001AndNeverRewinds(t *testing.T) {

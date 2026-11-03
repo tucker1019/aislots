@@ -17,6 +17,7 @@ type InviteFriendRow struct {
 	RegisteredAt                             time.Time
 	DepositCount, DepositAmount, BetAmount   int64
 	Qualified                                bool
+	PayoutBound                              bool
 	RequiredDepositCount                     int32
 	RequiredDepositAmount, RequiredBetAmount int64
 	DurationDays                             int32
@@ -26,13 +27,14 @@ func (m *InviteModel) Friends(ctx context.Context, uid int64, page int, now time
 	rows := []InviteFriendRow{}
 	e := m.DB.WithContext(ctx).Raw(`SELECT r.invitee_uid,COALESCE(NULLIF(u.account,''),u.nickname) AS account,r.registered_at,
  d.count AS deposit_count,d.amount AS deposit_amount,b.amount AS bet_amount,
- (w.invitee_uid IS NOT NULL OR (d.count>=r.min_deposit_count AND d.amount>=r.min_deposit_amount AND b.amount>=r.min_bet_amount)) AS qualified,
+ (EXISTS(SELECT 1 FROM lobby_payout_accounts a WHERE a.uid=r.invitee_uid AND a.created_at<r.deadline AND a.created_at<=?)) AS payout_bound,
+ (w.invitee_uid IS NOT NULL OR (EXISTS(SELECT 1 FROM lobby_payout_accounts a WHERE a.uid=r.invitee_uid AND a.created_at<r.deadline AND a.created_at<=?) AND d.count>=r.min_deposit_count AND d.amount>=r.min_deposit_amount AND b.amount>=r.min_bet_amount)) AS qualified,
  r.min_deposit_count AS required_deposit_count,r.min_deposit_amount AS required_deposit_amount,r.min_bet_amount AS required_bet_amount,
  (EXTRACT(EPOCH FROM(r.deadline-r.registered_at))/86400)::integer AS duration_days
  FROM lobby_invite_relations r JOIN lobby_users u ON u.uid=r.invitee_uid
  LEFT JOIN lobby_invite_rewards w ON w.invitee_uid=r.invitee_uid
  CROSS JOIN LATERAL(SELECT count(*) AS count,COALESCE(sum(o.amount),0) AS amount FROM lobby_recharge_orders o WHERE o.uid=r.invitee_uid AND o.status='success' AND COALESCE(o.settled_at,o.created_at)>=r.registered_at AND COALESCE(o.settled_at,o.created_at)<r.deadline AND COALESCE(o.settled_at,o.created_at)<=?) d
  CROSS JOIN LATERAL(SELECT COALESCE(sum(e.amount),0) AS amount FROM lobby_activity_events e WHERE e.uid=r.invitee_uid AND e.event_type='game_bet' AND e.occurred_at>=r.registered_at AND e.occurred_at<r.deadline AND e.occurred_at<=?) b
- WHERE r.inviter_uid=? ORDER BY r.registered_at DESC,r.invitee_uid DESC LIMIT 21 OFFSET ?`, now, now, uid, (page-1)*20).Scan(&rows).Error
+ WHERE r.inviter_uid=? ORDER BY r.registered_at DESC,r.invitee_uid DESC LIMIT 21 OFFSET ?`, now, now, now, now, uid, (page-1)*20).Scan(&rows).Error
 	return rows, e
 }

@@ -1,13 +1,14 @@
 package model
 
 import (
-	"apps/app/apis/lobby/api/internal/config"
-	"apps/pkg/coinsource"
 	"context"
 	"fmt"
 	"sync"
 	"testing"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/config"
+	"apps/pkg/coinsource"
 )
 
 func TestInviteBindingQualificationAndClaim(t *testing.T) {
@@ -33,6 +34,7 @@ func TestInviteBindingQualificationAndClaim(t *testing.T) {
 		return id
 	}
 	guest := create(v.Code, "guest")
+
 	plain := create("unknown", "plain")
 	var relation LobbyInviteRelation
 	if e = db.Where("invitee_uid = ?", guest).Take(&relation).Error; e != nil || relation.InviterUID != owner {
@@ -81,6 +83,13 @@ func TestInviteBindingQualificationAndClaim(t *testing.T) {
 		t.Fatal(e)
 	}
 	v, e = m.Read(ctx, owner, now)
+	if e != nil || v.PendingAmount != 0 {
+		t.Fatal("unbound account qualified", v, e)
+	}
+	if e = (&WalletAccountModel{DB: db}).SaveAccount(ctx, guest, "test1", "guest-account", "测试"); e != nil {
+		t.Fatal(e)
+	}
+	v, e = m.Read(ctx, owner, now)
 	if e != nil || v.PendingAmount != 20000 || v.QualifiedCount != 1 {
 		t.Fatal("eligible historical window or snapshot", v, e)
 	}
@@ -113,6 +122,9 @@ func TestInviteBindingQualificationAndClaim(t *testing.T) {
 	}
 	// An unfinished bet cannot be made eligible after the deadline.
 	late := create(v.Code, "late")
+	if e = (&WalletAccountModel{DB: db}).SaveAccount(ctx, late, "test1", "late-account", "测试"); e != nil {
+		t.Fatal(e)
+	}
 	var r LobbyInviteRelation
 	db.Where("invitee_uid = ?", late).Take(&r)
 	for i := 0; i < 5; i++ {
@@ -185,6 +197,9 @@ func TestInviteIndividualChestsAndDeadlineDetails(t *testing.T) {
 	first, second, late := invite("chest-first"), invite("chest-second"), invite("chest-late")
 	qualify := func(id int64, at time.Time) {
 		t.Helper()
+		if e := (&WalletAccountModel{DB: db}).SaveAccount(ctx, id, "test1", "account", "测试"); e != nil {
+			t.Fatal(e)
+		}
 		o := LobbyRechargeOrder{OrderID: fmt.Sprint(id), UID: id, RequestID: "deposit", TierID: "x", Amount: 100, Bonus: 900, CreditAmount: 1000, Status: "success", CreatedAt: at, SettleAt: at, SettledAt: &at}
 		if err := db.Create(&o).Error; err != nil {
 			t.Fatal(err)

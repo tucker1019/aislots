@@ -1,14 +1,15 @@
 package gameservice
 
 import (
-	"apps/app/apis/lobby/api/internal/repository/model"
-	pb "apps/pb/apis/lobby/api/v1"
-	"apps/pkg/xerr"
 	"context"
 	"errors"
 	"strings"
 	"testing"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/repository/model"
+	pb "apps/pb/apis/lobby/api/v1"
+	"apps/pkg/xerr"
 )
 
 type reportFake struct {
@@ -19,6 +20,7 @@ type reportFake struct {
 func (f *reportFake) PersonalReport(context.Context, int64, string, time.Time) (*model.PersonalReportView, error) {
 	return &model.PersonalReportView{Amounts: map[string]int64{"recharge": 10000, "netProfit": -30}, From: time.Now(), To: time.Now().Add(time.Hour), Timezone: "Asia/Jakarta"}, f.err
 }
+
 func TestPersonalReportAuthorizationAndFields(t *testing.T) {
 	uid := int64(7)
 	sid := strings.Repeat("s", 52)
@@ -28,7 +30,7 @@ func TestPersonalReportAuthorizationAndFields(t *testing.T) {
 	for _, period := range []string{"today", "yesterday", "this_week", "last_week"} {
 		r.Period = period
 		v, e := l.PersonalReport(ctx, r)
-		if e != nil || len(v.Items) != 17 || v.Items[0].Amount != 10000 || v.Items[1].Supported || v.Items[len(v.Items)-1].Amount != -30 {
+		if e != nil || len(v.Items) != 18 || v.Items[0].Amount != 10000 || !v.Items[1].Supported || v.Items[len(v.Items)-1].Amount != -30 {
 			t.Fatal(v, e)
 		}
 	}

@@ -1,15 +1,16 @@
 package gameservice
 
 import (
-	"apps/app/apis/lobby/api/internal/config"
-	"apps/app/apis/lobby/api/internal/repository/model"
-	pb "apps/pb/apis/lobby/api/v1"
-	"apps/pkg/xerr"
 	"context"
 	"errors"
 	"strings"
 	"testing"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/config"
+	"apps/app/apis/lobby/api/internal/repository/model"
+	pb "apps/pb/apis/lobby/api/v1"
+	"apps/pkg/xerr"
 )
 
 type detailInviteFake struct {
@@ -21,6 +22,7 @@ func (f detailInviteFake) Chests(context.Context, int64, int) ([]model.LobbyInvi
 	batch := "batch"
 	return []model.LobbyInviteReward{{Slot: 1, InviteeUID: 11, Amount: 20000, BatchID: &batch}, {Slot: 2, InviteeUID: 12, Amount: 20000}}, f.detailErr
 }
+
 func (f detailInviteFake) Friends(context.Context, int64, int, time.Time) ([]model.InviteFriendRow, error) {
 	rows := []model.InviteFriendRow{{InviteeUID: 11, Account: "friend", RegisteredAt: time.Now(), DurationDays: 30, RequiredDepositCount: 5, RequiredDepositAmount: 50000, RequiredBetAmount: 500000}, {InviteeUID: 12, Qualified: true}}
 	for len(rows) < 21 {
@@ -28,9 +30,11 @@ func (f detailInviteFake) Friends(context.Context, int64, int, time.Time) ([]mod
 	}
 	return rows, f.detailErr
 }
+
 func (f detailInviteFake) ClaimOne(context.Context, int64, string, time.Time, int64) (*model.LobbyInviteBatch, error) {
 	return &model.LobbyInviteBatch{ClaimID: "one", TotalReward: 20000, Coins: 30000}, f.detailErr
 }
+
 func TestInviteChestAndFriendEndpoints(t *testing.T) {
 	ctx := context.Background()
 	uid := int64(7)
@@ -42,7 +46,7 @@ func TestInviteChestAndFriendEndpoints(t *testing.T) {
 		t.Fatal(chests, e)
 	}
 	friends, e := l.InviteFriends(ctx, r)
-	if e != nil || len(friends.Items) != 20 || !friends.HasMore || len(friends.Items[0].Reasons) != 3 || friends.Items[0].DurationDays != 30 || len(friends.Items[1].Reasons) != 0 {
+	if e != nil || len(friends.Items) != 20 || !friends.HasMore || len(friends.Items[0].Reasons) != 4 || friends.Items[0].DurationDays != 30 || len(friends.Items[1].Reasons) != 0 {
 		t.Fatal(friends, e)
 	}
 	if b, err := l.InviteChestClaim(ctx, r); err != nil || b.TotalReward != 20000 {

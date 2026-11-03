@@ -1,16 +1,17 @@
 package gameservice
 
 import (
-	user "apps/app/apis/lobby/api/internal/logic/userv1/userservice"
-	"apps/app/apis/lobby/api/internal/repository/model"
-	pb "apps/pb/apis/lobby/api/v1"
-	"apps/pkg/coinsource"
-	"apps/pkg/xerr"
 	"context"
 	"errors"
 	"sort"
 	"strconv"
 	"time"
+
+	user "apps/app/apis/lobby/api/internal/logic/userv1/userservice"
+	"apps/app/apis/lobby/api/internal/repository/model"
+	pb "apps/pb/apis/lobby/api/v1"
+	"apps/pkg/coinsource"
+	"apps/pkg/xerr"
 
 	"gorm.io/gorm"
 )
@@ -26,6 +27,10 @@ type ledgerCategory struct {
 
 func (l *Logic) ledgerCategories() []ledgerCategory {
 	c := []ledgerCategory{
+		{"withdrawal", "取款扣款", []string{string(coinsource.SourceWithdrawalDebit)}, nil},
+		{"withdrawal-refund", "取款退回", []string{string(coinsource.SourceWithdrawalRefund)}, nil},
+		{"withdrawal-bonus", "取款赠送", []string{string(coinsource.SourceWithdrawalBonus)}, nil},
+		{"commission", "代理佣金", []string{string(coinsource.SourceAgentCommission)}, nil},
 		{"invite", "邀请奖励", []string{string(coinsource.SourceInviteReward)}, nil},
 		{"recharge", "会员充值", []string{string(coinsource.SourceRechargeCredit)}, nil},
 		{"bonus", "充值赠送", []string{string(coinsource.SourceRechargeBonus)}, nil},
@@ -54,6 +59,7 @@ func (l *Logic) ledgerCategories() []ledgerCategory {
 	}
 	return c
 }
+
 func (l *Logic) ledgerItem(r model.WalletLedgerRow) *pb.WalletLedgerItem {
 	name := "其他账变"
 	for _, c := range l.ledgerCategories() {
@@ -77,6 +83,7 @@ func (l *Logic) ledgerItem(r model.WalletLedgerRow) *pb.WalletLedgerItem {
 	}
 	return &pb.WalletLedgerItem{Id: strconv.FormatInt(r.ID, 10), OrderId: r.OrderID, Type: name, Currency: l.config.Currency, Amount: r.Delta, Balance: r.BalanceAfter, CreatedAt: r.CreatedAt.UTC().Format(time.RFC3339Nano), Remark: name}
 }
+
 func (l *Logic) ledgerAuth(ctx context.Context, r *pb.WalletLedgerRequest) (ledgerStore, error) {
 	if r.GetUid() <= 0 || len(r.GetSid()) != 52 {
 		return nil, xerr.ErrSession
@@ -90,6 +97,7 @@ func (l *Logic) ledgerAuth(ctx context.Context, r *pb.WalletLedgerRequest) (ledg
 	}
 	return store, nil
 }
+
 func (l *Logic) WalletLedger(ctx context.Context, r *pb.WalletLedgerRequest) (*pb.WalletLedgerReply, error) {
 	store, e := l.ledgerAuth(ctx, r)
 	if e != nil {
@@ -142,6 +150,7 @@ func (l *Logic) WalletLedger(ctx context.Context, r *pb.WalletLedgerRequest) (*p
 	}
 	return out, nil
 }
+
 func (l *Logic) WalletLedgerDetail(ctx context.Context, r *pb.WalletLedgerRequest) (*pb.WalletLedgerDetailReply, error) {
 	store, e := l.ledgerAuth(ctx, r)
 	if e != nil {

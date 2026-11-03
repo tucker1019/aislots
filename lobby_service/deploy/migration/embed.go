@@ -44,5 +44,14 @@ var inviteChestSchema string
 //go:embed 015_rank_replays.sql
 var rankReplaySchema string
 
+//go:embed 016_agents.sql
+var agentSchema string
+
+//go:embed 017_wallet_accounts.sql
+var payoutSchema string
+
+//go:embed 018_withdrawals.sql
+var withdrawalSchema string
+
 // Schema applies initial schema and backward-compatible upgrades in order.
-var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema + "\n" + gameSchema + "\n" + uidSchema + "\n" + gameStatisticsSchema + "\n" + inviteSchema + "\n" + inviteChestSchema + "\n" + rankReplaySchema
+var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema + "\n" + gameSchema + "\n" + uidSchema + "\n" + gameStatisticsSchema + "\n" + inviteSchema + "\n" + inviteChestSchema + "\n" + rankReplaySchema + "\n" + agentSchema + "\n" + payoutSchema + "\n" + withdrawalSchema

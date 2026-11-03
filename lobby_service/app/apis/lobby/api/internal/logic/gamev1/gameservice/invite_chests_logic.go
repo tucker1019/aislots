@@ -1,12 +1,13 @@
 package gameservice
 
 import (
-	"apps/app/apis/lobby/api/internal/repository/model"
-	pb "apps/pb/apis/lobby/api/v1"
-	"apps/pkg/xerr"
 	"context"
 	"strconv"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/repository/model"
+	pb "apps/pb/apis/lobby/api/v1"
+	"apps/pkg/xerr"
 )
 
 type inviteDetailStore interface {
@@ -50,6 +51,7 @@ func (l *Logic) InviteChests(ctx context.Context, r *pb.InviteRequest) (*pb.Invi
 	}
 	return out, nil
 }
+
 func (l *Logic) InviteChestClaim(ctx context.Context, r *pb.InviteRequest) (*pb.InviteClaimReply, error) {
 	if e := l.inviteAuth(ctx, r); e != nil {
 		return nil, e
@@ -68,6 +70,7 @@ func (l *Logic) InviteChestClaim(ctx context.Context, r *pb.InviteRequest) (*pb.
 	}
 	return &pb.InviteClaimReply{ClaimId: b.ClaimID, TotalReward: b.TotalReward, Coins: b.Coins}, nil
 }
+
 func (l *Logic) InviteFriends(ctx context.Context, r *pb.InviteRequest) (*pb.InviteFriendsReply, error) {
 	if e := l.inviteAuth(ctx, r); e != nil {
 		return nil, e
@@ -90,6 +93,9 @@ func (l *Logic) InviteFriends(ctx context.Context, r *pb.InviteRequest) (*pb.Inv
 	for _, row := range rows {
 		reasons := []string{}
 		if !row.Qualified {
+			if !row.PayoutBound {
+				reasons = append(reasons, "payout_account")
+			}
 			if row.DepositCount < int64(row.RequiredDepositCount) {
 				reasons = append(reasons, "deposit_count")
 			}

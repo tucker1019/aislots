@@ -4,6 +4,15 @@ option go_package = "apps/pb/apis/lobby/api/v1;v1";
 import "google/api/annotations.proto";
 // @Desc: 大厅用户账号
 service UserService {
+ rpc WithdrawalList(UserRequest) returns (WithdrawalTiersReply) { option (google.api.http) = { post: "/api/user/withdrawal/tiers" body: "*" }; }
+ rpc WithdrawalCreate(WithdrawalRequest) returns (WithdrawalOrder) { option (google.api.http) = { post: "/api/user/withdrawal/create" body: "*" }; }
+ rpc WithdrawalReview(WithdrawalRequest) returns (WithdrawalOrder) { option (google.api.http) = { post: "/api/user/withdrawal/test-review" body: "*" }; }
+ rpc WithdrawalInfo(WithdrawalRequest) returns (WithdrawalOrder) { option (google.api.http) = { post: "/api/user/withdrawal/info" body: "*" }; }
+ rpc CashOrders(WithdrawalRequest) returns (CashOrdersReply) { option (google.api.http) = { post: "/api/user/cash/orders" body: "*" }; }
+
+ rpc WalletAccounts(UserRequest) returns (WalletAccountsReply) { option (google.api.http) = { post: "/api/user/wallet/accounts" body: "*" }; }
+ rpc WalletAccountSave(WalletAccountSaveRequest) returns (WalletAccountReply) { option (google.api.http) = { post: "/api/user/wallet/account/save" body: "*" }; }
+
  // @Desc: 创建游客
  rpc VisitorLogin(UserRequest) returns (IdentityReply) { option (google.api.http) = { post: "/api/user/account/visitor/login" body: "*" }; }
  // @Desc: 恢复会话并续期
@@ -40,3 +49,28 @@ message ProfileReply {
  int32 avatar_id = 3 [json_name = "avatarId"];
  int64 coins = 4;
 }
+
+message WalletAccountSaveRequest {
+ optional int64 uid = 1;
+ optional string sid = 2;
+ string channel = 3;
+ string account = 4;
+ string name = 5;
+}
+message WalletAccountReply {
+ string channel = 1;
+ string account = 2;
+ string name = 3;
+ bool bound = 4;
+}
+message WalletAccountsReply { repeated WalletAccountReply channels = 1; }
+
+message WithdrawalRequest {
+ optional int64 uid=1; optional string sid=2; string tier_id=3 [json_name="tierId"]; string request_id=4 [json_name="requestId"]; string channel=5; string order_id=6 [json_name="orderId"]; string decision=7; string from=8; string to=9; string cursor=10; string kind=11;
+}
+message WithdrawalTier {string id=1;int64 amount=2;int64 fee=3;int64 bonus=4;int64 payout_amount=5 [json_name="payoutAmount"];}
+message WithdrawalTiersReply {repeated WithdrawalTier items=1;bool test_mode=2 [json_name="testMode"];}
+message WithdrawalOrder {
+ string order_id=1 [json_name="orderId"];string kind=2;int64 amount=3;int64 fee=4;int64 bonus=5;int64 credit_amount=6 [json_name="creditAmount"];string status=7;string channel=8;string account=9;string name=10;string created_at=11 [json_name="createdAt"];string settled_at=12 [json_name="settledAt"];string payment_url=13 [json_name="paymentUrl"];bool test_mode=14 [json_name="testMode"];string tier_id=15 [json_name="tierId"];string request_id=16 [json_name="requestId"];
+}
+message CashOrdersReply {repeated WithdrawalOrder items=1;string next_cursor=2 [json_name="nextCursor"];}

@@ -3,6 +3,7 @@ package router
 
 import (
 	"apps/app/apis/lobby/api/internal/handler"
+	agentlogic "apps/app/apis/lobby/api/internal/logic/agentv1/agentservice"
 	checkinlogic "apps/app/apis/lobby/api/internal/logic/checkinv1/checkinservice"
 	gamelogic "apps/app/apis/lobby/api/internal/logic/gamev1/gameservice"
 	newbielogic "apps/app/apis/lobby/api/internal/logic/newbiev1/newbieservice"
@@ -25,7 +26,17 @@ func New(ctx *svc.ServiceContext) http.Handler {
 	returns := returnlogic.New(ctx)
 	vip := viplogic.New(ctx)
 	newbie := newbielogic.New(ctx)
+	agent := agentlogic.New(ctx)
 	game := gamelogic.New(ctx)
+	mux.HandleFunc("POST /api/agent/info", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentCenter))
+	mux.HandleFunc("POST /api/agent/team", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentTeam))
+	mux.HandleFunc("POST /api/agent/performance", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentPerformance))
+	mux.HandleFunc("POST /api/agent/performance/details", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentPerformanceDetails))
+	mux.HandleFunc("POST /api/agent/report", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentReport))
+	mux.HandleFunc("POST /api/agent/report/details", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentReportDetails))
+	mux.HandleFunc("POST /api/agent/rates", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentRates))
+	mux.HandleFunc("POST /api/agent/records", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentRecords))
+	mux.HandleFunc("POST /api/agent/claim", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentClaim))
 	mux.HandleFunc("POST /api/game/rank-replay", handler.API(func() *pb.GameRankReplayRequest { return new(pb.GameRankReplayRequest) }, game.GameRankReplay))
 	mux.HandleFunc("POST /api/activity/invite/chests", handler.API(func() *pb.InviteRequest { return new(pb.InviteRequest) }, game.InviteChests))
 	mux.HandleFunc("POST /api/activity/invite/chest/claim", handler.API(func() *pb.InviteRequest { return new(pb.InviteRequest) }, game.InviteChestClaim))
@@ -43,6 +54,13 @@ func New(ctx *svc.ServiceContext) http.Handler {
 	mux.HandleFunc("POST /internal/game/exchange", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameExchangeRequest { return new(pb.GameExchangeRequest) }, game.GameExchange)))
 	mux.HandleFunc("POST /internal/game/balance", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameBalanceRequest { return new(pb.GameBalanceRequest) }, game.GameBalance)))
 	mux.HandleFunc("POST /internal/game/settle", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameSettleRequest { return new(pb.GameSettleRequest) }, game.GameSettle)))
+	mux.HandleFunc("POST /api/user/withdrawal/tiers", handler.API(func() *pb.UserRequest { return new(pb.UserRequest) }, logic.WithdrawalList))
+	mux.HandleFunc("POST /api/user/withdrawal/create", handler.API(func() *pb.WithdrawalRequest { return new(pb.WithdrawalRequest) }, logic.WithdrawalCreate))
+	mux.HandleFunc("POST /api/user/withdrawal/test-review", handler.API(func() *pb.WithdrawalRequest { return new(pb.WithdrawalRequest) }, logic.WithdrawalReview))
+	mux.HandleFunc("POST /api/user/withdrawal/info", handler.API(func() *pb.WithdrawalRequest { return new(pb.WithdrawalRequest) }, logic.WithdrawalInfo))
+	mux.HandleFunc("POST /api/user/cash/orders", handler.API(func() *pb.WithdrawalRequest { return new(pb.WithdrawalRequest) }, logic.CashOrders))
+	mux.HandleFunc("POST /api/user/wallet/accounts", handler.API(func() *pb.UserRequest { return new(pb.UserRequest) }, logic.WalletAccounts))
+	mux.HandleFunc("POST /api/user/wallet/account/save", handler.API(func() *pb.WalletAccountSaveRequest { return new(pb.WalletAccountSaveRequest) }, logic.WalletAccountSave))
 	mux.HandleFunc("POST /api/user/account/visitor/login", handler.API(func() *pb.UserRequest { return new(pb.UserRequest) }, logic.VisitorLogin))
 	mux.HandleFunc("POST /api/user/account/session/renewal", handler.API(func() *pb.UserRequest { return new(pb.UserRequest) }, logic.SessionRenewal))
 	mux.HandleFunc("POST /api/user/account/uniquecode/register", handler.API(func() *pb.UserRequest { return new(pb.UserRequest) }, logic.UniqueCodeRegister))

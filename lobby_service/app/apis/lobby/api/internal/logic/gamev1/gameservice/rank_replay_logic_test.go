@@ -1,8 +1,6 @@
 package gameservice
 
 import (
-	"apps/app/apis/lobby/api/internal/config"
-	pb "apps/pb/apis/lobby/api/v1"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -10,6 +8,9 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+
+	"apps/app/apis/lobby/api/internal/config"
+	pb "apps/pb/apis/lobby/api/v1"
 )
 
 func TestRankReplayBindsPublicOrderToServerOwnedGameBet(t *testing.T) {

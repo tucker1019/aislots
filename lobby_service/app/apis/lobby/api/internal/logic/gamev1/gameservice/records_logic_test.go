@@ -1,16 +1,17 @@
 package gameservice
 
 import (
-	"apps/app/apis/lobby/api/internal/config"
-	"apps/app/apis/lobby/api/internal/repository"
-	"apps/app/apis/lobby/api/internal/repository/model"
-	pb "apps/pb/apis/lobby/api/v1"
-	"apps/pkg/xerr"
 	"context"
 	"errors"
 	"strings"
 	"testing"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/config"
+	"apps/app/apis/lobby/api/internal/repository"
+	"apps/app/apis/lobby/api/internal/repository/model"
+	pb "apps/pb/apis/lobby/api/v1"
+	"apps/pkg/xerr"
 )
 
 type recordUsers struct {
@@ -29,6 +30,7 @@ type recordFake struct {
 func (f *recordFake) Records(context.Context, int64, time.Time, time.Time, int, []string) ([]model.GameRecordRow, model.GameRecordSummary, error) {
 	return f.rows, model.GameRecordSummary{Count: 30, BetAmount: 3000, Profit: -50}, f.err
 }
+
 func TestRecordsValidationAndServerMetadata(t *testing.T) {
 	uid := int64(7)
 	sid := strings.Repeat("s", 52)

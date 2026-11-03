@@ -1,0 +1,52 @@
+syntax="proto3";
+package apis.lobby.api.v1;
+option go_package="apps/pb/apis/lobby/api/v1;v1";
+import "google/api/annotations.proto";
+// @Desc: 无限层级日结差额代理
+service AgentService {
+ // @Desc: 代理中心与今日预估
+ rpc AgentCenter(AgentRequest) returns (AgentReply) {option (google.api.http)={post:"/api/agent/info" body:"*"};}
+ // @Desc: 分页查看直属成员并逐层下钻
+ rpc AgentTeam(AgentRequest) returns (AgentReply) {option (google.api.http)={post:"/api/agent/team" body:"*"};}
+ // @Desc: 分厂商业绩
+ rpc AgentPerformance(AgentRequest) returns (AgentReply) {option (google.api.http)={post:"/api/agent/performance" body:"*"};}
+ // @Desc: 成员对当前代理贡献的业绩与佣金
+ rpc AgentPerformanceDetails(AgentRequest) returns (AgentReply) {option (google.api.http)={post:"/api/agent/performance/details" body:"*"};}
+ // @Desc: 代理团队报表
+ rpc AgentReport(AgentRequest) returns (AgentReply) {option (google.api.http)={post:"/api/agent/report" body:"*"};}
+ // @Desc: 团队流水、投注、首存及存款明细
+ rpc AgentReportDetails(AgentRequest) returns (AgentReply) {option (google.api.http)={post:"/api/agent/report/details" body:"*"};}
+ // @Desc: 各厂商返佣配置
+ rpc AgentRates(AgentRequest) returns (AgentReply) {option (google.api.http)={post:"/api/agent/rates" body:"*"};}
+ // @Desc: 佣金领取记录
+ rpc AgentRecords(AgentRequest) returns (AgentReply) {option (google.api.http)={post:"/api/agent/records" body:"*"};}
+ // @Desc: 合领全部已结算佣金
+ rpc AgentClaim(AgentRequest) returns (AgentClaimReply) {option (google.api.http)={post:"/api/agent/claim" body:"*"};}
+}
+message AgentRequest {
+ optional int64 uid=1; optional string sid=2; int64 target_uid=3 [json_name="targetUid"];
+ string period=4; string provider=5; string scope=6; string search=7; int32 page=8; string kind=9;
+ string request_id=10 [json_name="requestId"];
+}
+message AgentRow {
+ int64 uid=1; string account=2; string registered_at=3 [json_name="registeredAt"]; int32 depth=4;
+ int64 children=5; string provider=6; int64 valid_bet=7 [json_name="validBet"]; int64 team_bet=8 [json_name="teamBet"];
+ int64 commission=9; int64 profit=10; int64 amount=11; string payment_type=12 [json_name="paymentType"];
+ string claim_id=13 [json_name="claimId"]; string created_at=14 [json_name="createdAt"];
+ int64 threshold=15; int64 per_ten_thousand=16 [json_name="perTenThousand"];
+}
+message AgentSummary {
+ int64 team_count=1 [json_name="teamCount"]; int64 direct_count=2 [json_name="directCount"]; int64 other_count=3 [json_name="otherCount"];
+ int64 new_count=4 [json_name="newCount"]; int64 direct_new=5 [json_name="directNew"]; int64 other_new=6 [json_name="otherNew"];
+ int64 valid_bet=7 [json_name="validBet"]; int64 commission=8; int64 direct_commission=9 [json_name="directCommission"]; int64 other_commission=10 [json_name="otherCommission"];
+ int64 claimable=11; int64 bet_count=12 [json_name="betCount"]; int64 bettor_count=13 [json_name="bettorCount"]; int64 profit=14;
+ int64 first_deposit_count=15 [json_name="firstDepositCount"]; int64 first_deposit_amount=16 [json_name="firstDepositAmount"];
+ int64 withdrawal_count=19 [json_name="withdrawalCount"]; int64 withdrawal_amount=20 [json_name="withdrawalAmount"];
+ int64 deposit_count=17 [json_name="depositCount"]; int64 deposit_amount=18 [json_name="depositAmount"];
+}
+message AgentReply {
+ AgentSummary summary=1; repeated AgentRow items=2; bool has_more=3 [json_name="hasMore"];
+ string from=4; string to=5; string timezone=6; string status=7; string updated_at=8 [json_name="updatedAt"];
+ repeated string providers=9; string invite_url=10 [json_name="inviteUrl"]; string account=11;
+}
+message AgentClaimReply {string claim_id=1 [json_name="claimId"];int64 amount=2;int64 coins=3;string created_at=4 [json_name="createdAt"];}

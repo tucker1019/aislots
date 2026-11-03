@@ -1,15 +1,16 @@
 package gameservice
 
 import (
-	"apps/app/apis/lobby/api/internal/config"
-	"apps/app/apis/lobby/api/internal/repository/model"
-	pb "apps/pb/apis/lobby/api/v1"
-	"apps/pkg/xerr"
 	"context"
 	"errors"
 	"strings"
 	"testing"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/config"
+	"apps/app/apis/lobby/api/internal/repository/model"
+	pb "apps/pb/apis/lobby/api/v1"
+	"apps/pkg/xerr"
 )
 
 type statsFake struct {
@@ -22,15 +23,18 @@ type statsFake struct {
 func (f *statsFake) CompleteGame(context.Context, model.GameCompletion) (bool, error) {
 	return true, f.err
 }
+
 func (f *statsFake) ReadRTP(_ context.Context, _ string, minutes int, now time.Time) (model.RTPView, error) {
 	f.reads++
 	f.minutes = minutes
 	return model.RTPView{From: now.Add(-time.Hour), To: now, Since: now, BetAmount: "100", WinAmount: "200", Percent: "200.00", Rounds: 1, HasData: true}, f.err
 }
+
 func (f *statsFake) ReadLeaderboard(context.Context, string, string, string, time.Time) ([]model.RankView, time.Time, error) {
 	f.reads++
 	return []model.RankView{{PlatformOrderID: "123", UID: 7, Nickname: "Private Account", AvatarID: 2, BetID: "bet", BetAmount: "100", WinAmount: "200", Multiplier: "2.00", Streak: 3, EndedAt: time.Now()}}, time.Now(), f.err
 }
+
 func TestStatisticsAPIAuthCachePrivacyAndValidation(t *testing.T) {
 	ctx := context.Background()
 	uid := int64(7)

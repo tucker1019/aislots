@@ -1,13 +1,14 @@
 package userservice
 
 import (
-	"apps/app/apis/lobby/api/internal/repository"
-	pb "apps/pb/apis/lobby/api/v1"
 	"context"
 	"errors"
 	"strings"
 	"testing"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/repository"
+	pb "apps/pb/apis/lobby/api/v1"
 )
 
 type invitedStore struct {
@@ -23,6 +24,7 @@ func (s *invitedStore) CreateInvited(_ context.Context, token string, expiry tim
 	}
 	return 999, s.err
 }
+
 func TestVisitorInviteDispatch(t *testing.T) {
 	store := &invitedStore{}
 	s := &Service{Store: store, TTL: time.Hour}

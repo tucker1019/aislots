@@ -1,12 +1,13 @@
 package model
 
 import (
-	"apps/pkg/xerr"
 	"context"
 	"errors"
 	"fmt"
 	"testing"
 	"time"
+
+	"apps/pkg/xerr"
 )
 
 func TestStatisticsIncrementalIdempotentWindowsAndStreaks(t *testing.T) {
@@ -109,6 +110,7 @@ func TestStatisticsIncrementalIdempotentWindowsAndStreaks(t *testing.T) {
 		t.Fatal(r, e)
 	}
 }
+
 func TestStatisticsTop50AndRollingStreakBoundary(t *testing.T) {
 	db := vipTestDB(t)
 	ctx := context.Background()

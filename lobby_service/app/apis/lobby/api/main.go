@@ -59,11 +59,13 @@ func run() error {
 	repo.ConfigureVIP(db, c.VIP, c.Checkin.Location())
 	repo.ConfigureNewbie(db, c.Newbie)
 	repo.ConfigureInvite(db, c.Invite)
+	repo.ConfigureAgent(db, c.Agent, c.Game.Games, c.Checkin.Location())
 	dependencies := svc.New(c, repo)
 	workerCtx, cancelWorker := context.WithCancel(ctx)
 	workerDone := server.StartPayments(workerCtx, dependencies.Repo.Recharge)
 	vipDone := server.StartVIP(workerCtx, dependencies.Repo.VIP)
-	defer func() { cancelWorker(); <-workerDone; <-vipDone }()
+	agentDone := server.StartAgent(workerCtx, dependencies.Repo.Agent)
+	defer func() { cancelWorker(); <-workerDone; <-vipDone; <-agentDone }()
 	server := &http.Server{Addr: c.Address, Handler: router.New(dependencies), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second}
 
 	done := make(chan error, 1)

@@ -69,7 +69,7 @@ GoLand：运行种类 Package；包路径 `apps/app/apis/lobby/api`；工作目�
 
 `make test` 运行全量测试并检查每个 pkg 包≥90%、logic包≥80%的覆盖率。`make lint` 使用 golangci-lint v2.5.0；`make format` 使用 goimports/gofumpt。生成文件不手工格式化或修改。
 
-健康检查：`GET /health`（进程存活检查）。尚不包括Google/Telegram绑定、找回密码、取款和真实支付渠道；AG1已通过独立服务接口接入统一钱包。
+健康检查：`GET /health`（进程存活检查）。尚不包括Google/Telegram绑定、找回密码和真实支付渠道；AG1已通过独立服务接口接入统一钱包。
 
 ## 用户资料
 
@@ -134,3 +134,9 @@ source统一维护：[script/coin_sources.py](script/coin_sources.py)，执行 `
 机台整局完成后通过持久化Outbox投递`/internal/game/complete`，大厅核对逐轮资金汇总后更新分钟RTP桶及排行榜，不重复结算钱包。统计启用时间固定，不回填旧局。
 
 `POST /api/game/rtp`支持5分钟、1小时、24小时；`POST /api/game/leaderboard`支持派彩、倍数、连胜及今日、近7日、全部周期。`POST /api/game/rank-replay`只允许当前派彩/倍数榜前20的订单，服务端查找所属机台并签发只读回放地址，不公开玩家身份。统计配置、精度、缓存、重建命令见[统计文档](docs/game-statistics.md)。
+
+## 无限层级代理
+
+复用永久邀请关系，各厂商独立每日定档并按差额结算，次日可领、未领永久累计、一键合领。提供团队下钻、业绩贡献、代理报表、首存/存款明细及领取记录；测试支付与取款状态沿用现有业务。配置[etc/agent.json](etc/agent.json)，协议与计算示例见[代理接口](docs/agent-api.md)。
+
+取款接口、独立档位及本地测试审核开关见[取款说明](docs/withdrawal.md)。

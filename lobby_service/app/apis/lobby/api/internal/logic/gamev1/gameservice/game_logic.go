@@ -32,6 +32,7 @@ func New(s *svc.ServiceContext) *Logic {
 	}
 	return &Logic{invite: invites, inviteConfig: s.Config.Invite, store: s.Repo.Game, config: s.Config.Game, users: s.Repo.Users, stats: newStatisticsCache(), location: s.Config.Checkin.Location()}
 }
+
 func (l *Logic) GameLaunch(ctx context.Context, r *pb.GameLaunchRequest) (*pb.GameLaunchReply, error) {
 	g, ok := l.config.Games[r.GameId]
 	if !ok || !g.Enabled || len(l.config.ServiceToken) < 32 {

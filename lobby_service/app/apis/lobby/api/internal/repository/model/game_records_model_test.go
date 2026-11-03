@@ -43,5 +43,4 @@ func TestGameRecordsGroupFreeAndUserIsolation(t *testing.T) {
 	if e != nil || len(rows) != 1 || sum.Profit != 170 {
 		t.Fatal("provider aggregation changed", rows, sum, e)
 	}
-
 }
