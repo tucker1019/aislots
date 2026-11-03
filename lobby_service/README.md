@@ -1,4 +1,4 @@
-# 大厅用户服务 MVP
+# AISlots 大厅服务
 
 采用 apps-skills 的 HTTP 单体方案。独立 Go 模块（module apps）、PostgreSQL 数据库、容器及卷；与机台服务通过接口交互，不引用其代码或数据库。
 
@@ -30,13 +30,13 @@ GoLand：运行种类 Package；包路径 `apps/app/apis/lobby/api`；工作目�
 
 上面的 `internal/` 均位于 `app/apis/lobby/api/`。
 
-先修改 proto，`make build` 生成 pb 与 HTTP 路由；再实现 logic/repository。表结构修改后先执行迁移、确认表存在，再 `make model` 从数据库生成模型，扩展操作写在 `user_model.go`。`make mock` 生成 Repository mock。
+先修改 proto，`make build` 生成 pb 与 HTTP 路由；再实现 logic/repository。表结构修改后先执行迁移、确认表存在，再 `make model` 从数据库生成模型，扩展操作写在对应的 `*_model.go`。`make mock` 生成 Repository mock。
 
 依赖 protoc 和 protoc-gen-go v1.36.6（安装：`GOTOOLCHAIN=go1.25.0 go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.6`）。google HTTP annotation 源文件已放在 `protos/third_party`。技能包没有提供内部框架源码及代码生成工具，本模块提供最小生成器和公共包；尚无独立协议仓库，先随本模块版本管理 proto。PostgreSQL 为现有独立数据库选择，适配技能中的 GORM 模式。
 
 ## 接口
 
-所有用户接口为 POST + JSON；公共查询参数如 `cv、app_name、app_key、uuid、lca_coun、lca_lang、client_ts` 可随请求携带，MVP 不据此鉴权或划分租户。uid/sid 可在查询参数或 JSON 中传入，同时出现必须一致，重复身份查询参数拒绝。uid 为数字，sid 为字符串。
+账号操作接口为 POST + JSON，资料和活动查询另有 GET 接口，具体以协议为准；公共查询参数如 `cv、app_name、app_key、uuid、lca_coun、lca_lang、client_ts` 可随请求携带，MVP 不据此鉴权或划分租户。uid/sid 可在查询参数或 JSON 中传入，同时出现必须一致，重复身份查询参数拒绝。uid 为数字，sid 为字符串。
 
 | 路径（前缀 `/api/user/account/`） | JSON 请求体 | 行为 |
 | --- | --- | --- |
@@ -69,7 +69,7 @@ GoLand：运行种类 Package；包路径 `apps/app/apis/lobby/api`；工作目�
 
 `make test` 运行全量测试并检查每个 pkg 包≥90%、logic包≥80%的覆盖率。`make lint` 使用 golangci-lint v2.5.0；`make format` 使用 goimports/gofumpt。生成文件不手工格式化或修改。
 
-健康检查：`GET /health`（进程存活检查）。MVP不包括Google/Telegram绑定、机台接入、找回密码和真实支付渠道。
+健康检查：`GET /health`（进程存活检查）。尚不包括Google/Telegram绑定、找回密码、取款和真实支付渠道；AG1已通过独立服务接口接入统一钱包。
 
 ## 用户资料
 
@@ -95,13 +95,13 @@ source统一维护：[script/coin_sources.py](script/coin_sources.py)，执行 `
 
 `GET /api/activity/checkin/info` 查询今日进度，`POST /api/activity/checkin/claim` 领取奖励；两个接口均需uid/sid。断签重置第1天，领完配置周期重新循环，每天只计算当天流水及成功充值。配置[etc/checkin.json](etc/checkin.json)，可用LOBBY_CHECKIN_CONFIG覆盖，默认Asia/Shanghai（北京时间）时区，修改后重启。示例7天的门槛/奖励为可调整占位配置。
 
-独立业务事件和每日汇总统计流水，预留可信游戏结算适配方法，不遍历机台source；真实游戏流水尚未接入。完整协议与接入约定见[签到接口文档](docs/checkin-api.md)。
+独立业务事件和每日汇总统计流水，预留可信游戏结算适配方法，不遍历机台source；AG1已通过可信逐轮结算接入真实游戏流水。完整协议与接入约定见[签到接口文档](docs/checkin-api.md)。
 
 ## 日周月反水与亏损返还
 
 `GET /api/activity/rebate/info` 分别返回日/周/月上一周期可领取奖励及当前周期实时预估；`POST /api/activity/rebate/claim` 一次领取全部到期反水。`GET /api/activity/loserreturn/info` 查询昨日净亏损返还及今日预估，`POST /api/activity/loserreturn/claim` 单独领取。均需uid/sid，领取时带info的activityDate防止跨日误领。
 
-配置[etc/returns.json](etc/returns.json)，LOBBY_RETURN_CONFIG可覆盖，默认比例0.8%、0.1%、0.1%、10%，沿用签到活动时区，过期不补领。奖励批次、明细、source和余额事务提交。真实机台投注/派彩尚待接入可信结算事件。完整示例见[反水与Loser Return文档](docs/returns-api.md)。
+配置[etc/returns.json](etc/returns.json)，LOBBY_RETURN_CONFIG可覆盖，默认比例0.8%、0.1%、0.1%、10%，沿用签到活动时区，过期不补领。奖励批次、明细、source和余额事务提交。AG1投注/派彩已接入可信结算事件。完整示例见[反水与Loser Return文档](docs/returns-api.md)。
 
 ## VIP等级、保级与工资
 
@@ -118,3 +118,19 @@ source统一维护：[script/coin_sources.py](script/coin_sources.py)，执行 `
 ## UID分配
 
 新用户（游客和注册账号）UID从10000001开始，由数据库identity生成。迁移010同时适配新库和已有库，保留已分配UID并只向前调整序列，重复启动不会回退或重用编号。
+
+## 游戏统一钱包与记录
+
+大厅是唯一真实钱包，机台数据库独立，双方只通过HTTP交互。`POST /api/game/launch`签发短期票据；机台通过Bearer鉴权的内部接口兑换身份、查余额、逐轮结算。部署时两端必须设置相同的`LOBBY_GAME_SERVICE_TOKEN`；仅配置数据库不会自动启用游戏入口。游戏地址、厂商和私有API地址在[etc/games.json](etc/games.json)中配置。
+
+`POST /api/game/records`查询整局投注，`POST /api/game/wallet-ledger`及`/detail`查询逐笔账变，`POST /api/user/report`查询今天、昨天、本周、上周报表。充值本金、赠送、手续费和奖励各自记账；有效流水来自可信事件。完整部署、重试恢复和报表口径见[游戏接入文档](docs/game-integration.md)。
+
+## 邀请奖励
+
+首次游客创建可携带inviteCode；资格门槛和奖励在注册时保存快照，按期限内成功充值次数、本金及实际投注判定。支持邀请信息、全部合领、分页宝箱单领和直属好友详情，奖励入账与source流水事务提交。配置[etc/invite.json](etc/invite.json)，接口及边界见[邀请文档](docs/invite-api.md)。当前是直属邀请奖励，不是完整五级代理系统。
+
+## RTP、排行榜及回放
+
+机台整局完成后通过持久化Outbox投递`/internal/game/complete`，大厅核对逐轮资金汇总后更新分钟RTP桶及排行榜，不重复结算钱包。统计启用时间固定，不回填旧局。
+
+`POST /api/game/rtp`支持5分钟、1小时、24小时；`POST /api/game/leaderboard`支持派彩、倍数、连胜及今日、近7日、全部周期。`POST /api/game/rank-replay`只允许当前派彩/倍数榜前20的订单，服务端查找所属机台并签发只读回放地址，不公开玩家身份。统计配置、精度、缓存、重建命令见[统计文档](docs/game-statistics.md)。
