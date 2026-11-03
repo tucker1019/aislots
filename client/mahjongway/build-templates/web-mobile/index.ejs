@@ -56,7 +56,7 @@
     #LoadingScreen .start-button:active { transform: translate(-50%, 2px); }
 
     /* 独立于 Cocos 的首屏；黑底覆盖窗口，Logo 按游戏区域等比适配。 */
-    #AGOpening { position: fixed; inset: 0; z-index: 2147483647; background: #000; }
+    #AGOpening { position: fixed; inset: 0; z-index: 2147483647; background: #000; opacity: 1; transition: opacity .3s ease; }
     #AGOpening > svg { position: absolute; left: 50%; top: 50%; width: min(58vw, 31.0714vh); height: auto; transform: translate(-50%, -50%); overflow: visible; }
 
 </style>
@@ -132,7 +132,8 @@
         if (removed || !ready || !minimumElapsed) return;
         removed = true;
         cancelAnimationFrame(animationFrame);
-        opening.remove();
+        opening.style.opacity = '0';
+        setTimeout(function () { opening.remove(); }, 300);
         window.removeEventListener('resize', fit);
         image.removeEventListener('load', loaded);
         if (observer) observer.disconnect();

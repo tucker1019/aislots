@@ -99,7 +99,8 @@ export class slots_base extends Component {
 
     /** 先建立连接和特效资源，收到状态前不创建任何 cell。 */
     protected start() {
-        profiler.hideStats();
+        // Web 构建可能裁剪 profiler 模块，关闭统计面板不能阻断游戏初始化。
+        profiler?.hideStats();
         if (typeof window !== 'undefined') {
             window.addEventListener('aislots-retry', this.showRetryBanner);
             window.addEventListener('aislots-retry-end', this.hideRetryBanner);
@@ -967,13 +968,13 @@ export class slots_base extends Component {
         const root = document.createElement('div');
         root.style.cssText = 'position:absolute;inset:0;z-index:10000;container-type:size;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;color:#fff;';
         const content = document.createElement('div');
-        content.style.cssText = 'width:84%;background:rgba(40,40,52,.96);border-radius:4%;padding:7% 7% 5%;text-align:center;overflow:hidden;';
-        content.innerHTML = '<div style="font-size:clamp(18px,6cqw,30px);font-weight:500;margin-bottom:7%;">余额不足</div>' +
-            '<div style="line-height:1.55;font-size:clamp(12px,3.8cqw,19px);color:#bdbbc3;">请充值后再试。</div>';
+        content.style.cssText = 'box-sizing:border-box;width:70%;background:rgba(40,40,52,.96);border-radius:1em;padding:5% 5% 4%;text-align:center;overflow:hidden;';
+        content.innerHTML = '<div style="font-size:clamp(16px,4.8cqw,24px);font-weight:500;margin-bottom:5%;">余额不足</div>' +
+            '<div style="line-height:1.55;font-size:clamp(12px,3.4cqw,17px);color:#bdbbc3;">请充值后再试。</div>';
         const button = document.createElement('button');
         button.type = 'button';
         button.textContent = '确定';
-        button.style.cssText = 'display:block;width:70%;margin:8% auto 0;border:0;border-radius:2em;background:#c8874f;color:#202124;padding:3.5%;font-size:clamp(13px,4cqw,20px);cursor:pointer;';
+        button.style.cssText = 'display:block;width:70%;margin:6% auto 0;border:0;border-radius:2em;background:#c8874f;color:#202124;padding:3%;font-size:clamp(13px,3.6cqw,18px);cursor:pointer;';
         button.addEventListener('click', () => { root.remove(); this.failureDialog = null; });
         content.appendChild(button);
         root.appendChild(content);
