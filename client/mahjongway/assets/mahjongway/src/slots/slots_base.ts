@@ -14,7 +14,7 @@ import { loadHistoryArt } from '../history/history_assets';
 import { RuntimePerformance } from './runtime_performance';
 import { GameEffects, bigWinType } from '../effects/game_effects';
 import { Anticipation, anticipationColumns } from '../effects/anticipation';
-import { _decorator, Component, instantiate, Node, Label, Graphics, Color, UITransform } from 'cc';
+import { _decorator, Component, instantiate, Node, Label, Graphics, Color, UITransform, profiler } from 'cc';
 import { slots_r } from './slots_r';
 import { slots_cell } from './slots_cell';
 import { createSpinCellPicker, SpinCellPicker } from './slot_widget';
@@ -98,6 +98,7 @@ export class slots_base extends Component {
 
     /** 先建立连接和特效资源，收到状态前不创建任何 cell。 */
     protected start() {
+        profiler.hideStats();
         if (typeof window !== 'undefined') {
             window.addEventListener('aislots-retry', this.showRetryBanner);
             window.addEventListener('aislots-retry-end', this.hideRetryBanner);
@@ -639,8 +640,8 @@ export class slots_base extends Component {
         root.innerHTML = `<div class="bet-options-panel"><div class="bet-options-header"><h2>投注选项</h2><button class="bet-options-close" aria-label="关闭">×</button></div><div class="bet-options-content"><div class="bet-options-head"><span>投注额</span><i>×</i><span>投注级别</span><i>×</i><span>线路</span><i>=</i><strong>投注总额</strong></div><div class="bet-selector-bg"></div><div class="bet-wheel"><div class="bet-wheel-column bet-wheel-bet"></div><i>×</i><div class="bet-wheel-column bet-wheel-level"></div><i>×</i><div class="bet-wheel-column bet-wheel-lines"><span>${this.lineCount}</span></div><i>=</i><strong class="bet-wheel-total"></strong></div><div class="bet-gradient top"></div><div class="bet-gradient bottom"></div></div><div class="bet-options-actions"><button class="bet-max">最大投注</button><button class="bet-confirm">确认</button></div><div class="bet-options-footer"><span>钱包余额</span><b>${formatMoney(this.balance)}</b><span>投注额</span><b class="bet-footer-amount">${formatMoney(this.betAmount)}</b></div></div>`;
         const panel = root.firstElementChild as HTMLDivElement;
         const choices = this.betChoices.length ? this.betChoices : [{ bet: this.bet, level: this.betLevel, display: this.betAmount }];
-        const values = [...new Set(choices.map(item => item.bet))];
-        const levels = [...new Set(choices.map(item => item.level))];
+        const values = Array.from(new Set(choices.map(item => item.bet)));
+        const levels = Array.from(new Set(choices.map(item => item.level)));
         const totals = choices.map(item => item.display);
         let selectedBet = this.bet, selectedLevel = this.betLevel;
         const render = () => {
@@ -684,7 +685,7 @@ export class slots_base extends Component {
         if (!document.getElementById('aislot-bet-options-style')) {
             const style = document.createElement('style'); style.id = 'aislot-bet-options-style';
             style.textContent = `.aislot-bet-options{position:fixed;z-index:13000;background:rgba(20,20,30,.18);font-family:Nunito,Arial,sans-serif;color:#f5f4f7;overflow:hidden}.bet-options-panel{position:absolute;left:0;right:0;bottom:0;background:#30303c;border-radius:20px 20px 0 0;padding-bottom:7px;transform:translate3d(0,100%,0);transition:transform .25s cubic-bezier(.25,.1,.25,1)}.aislot-bet-options.visible .bet-options-panel{transform:translate3d(0,0,0)}.bet-options-header{height:53px;display:flex;align-items:center;justify-content:center;position:relative}.bet-options-panel h2{margin:8px 0 0;font-size:16px;font-weight:400}.bet-options-close{position:absolute;right:18px;top:11px;border:0;border-radius:50%;width:32px;height:32px;background:#50505d;color:#fff;font-size:25px;line-height:25px}.bet-options-content{position:relative;background:#282833;padding:0 5% 10px;overflow:hidden}.bet-options-head,.bet-wheel{display:grid;grid-template-columns:22.32% 5% 18.855% 5% 17.67% 5% 23.715%;align-items:center;justify-content:space-between;text-align:center;gap:0}.bet-options-head{height:34px;color:#fff;font-size:11px}.bet-options-head span{opacity:.3}.bet-options-head strong{color:#b47850;font-weight:400}.bet-options-head i,.bet-wheel>i{font-style:normal;opacity:.3}.bet-selector-bg{position:absolute;left:4px;right:4px;top:60px;height:36px;background:#30303d;border:1px solid #262633;border-radius:30px}.bet-wheel{height:160px;position:relative;z-index:1}.bet-wheel-column{height:160px;overflow:auto;scrollbar-width:none}.bet-wheel-column::-webkit-scrollbar{display:none}.bet-wheel-column button{display:block;width:100%;height:32px;border:0;background:transparent;color:#fff;font:inherit;font-size:16px;line-height:32px;white-space:nowrap}.bet-wheel-column button.active{color:#fff}.bet-wheel-lines span,.bet-wheel-total{font-size:16px;font-weight:400;color:#fff}.bet-wheel-total{color:#b47850}.bet-gradient{position:absolute;left:5%;right:5%;height:55px;z-index:2;pointer-events:none}.bet-gradient.top{top:30px;background:linear-gradient(#282833 8%,rgba(40,40,51,0))}.bet-gradient.bottom{bottom:8px;background:linear-gradient(0deg,#282833 8%,rgba(40,40,51,0))}.bet-options-actions{display:flex;justify-content:space-between;gap:10px;margin:24px 10px}.bet-options-actions button{height:36px;border-radius:30px;padding:0 12px;font:inherit;font-size:14px}.bet-options-actions .bet-max{width:30%;border:1px solid #b47850;background:#30303d;color:#b47850}.bet-options-actions .bet-confirm{width:67%;border:1px solid #b47850;background:#b47850;color:rgba(255,255,255,.85)}.bet-options-footer{display:flex;justify-content:space-between;align-items:center;margin:0 10px;background:rgba(48,48,60,.7);font-size:12px;color:#aaa;padding:6px 12px;border-radius:16px}.bet-options-footer b{color:#b47850;font-weight:400}`;
-            style.textContent += '.bet-wheel-column,.bet-wheel-total{height:160px;overflow:auto;scrollbar-width:none;scroll-snap-type:y mandatory;scroll-padding:64px 0;padding:64px 0}.bet-wheel-column button,.bet-wheel-total button{display:block;width:100%;height:32px;scroll-snap-align:center;border:0;background:transparent;color:#777782;font:inherit;font-size:16px;line-height:32px;white-space:nowrap}.bet-wheel-column button.active,.bet-wheel-total button.active{color:#fff}.bet-wheel-column::-webkit-scrollbar,.bet-wheel-total::-webkit-scrollbar{display:none}.bet-selector-bg{top:96px;height:32px}.bet-wheel-lines{height:160px;display:flex;align-items:center;justify-content:center;transform:none}.bet-wheel-lines span{display:block;height:32px;line-height:32px}.bet-wheel-total{color:#b47850;font-weight:400;transform:none}.bet-wheel-total button{color:#777782}.bet-wheel-total button.active{color:#fff}';
+            style.textContent += '.bet-wheel-column,.bet-wheel-total{box-sizing:border-box;position:relative;height:160px;overflow:auto;scrollbar-width:none;scroll-snap-type:y mandatory;scroll-padding:64px 0;padding:64px 0}.bet-wheel-column button,.bet-wheel-total button{display:block;width:100%;height:32px;scroll-snap-align:center;border:0;background:transparent;color:#777782;font:inherit;font-size:16px;line-height:32px;white-space:nowrap}.bet-wheel-column button.active,.bet-wheel-total button.active{color:#fff}.bet-wheel-column::-webkit-scrollbar,.bet-wheel-total::-webkit-scrollbar{display:none}.bet-selector-bg{top:96px;height:32px}.bet-wheel-lines{height:160px;padding:0;overflow:hidden;display:flex;align-items:center;justify-content:center;transform:none}.bet-wheel-lines span{display:block;height:32px;line-height:32px}.bet-wheel-total{color:#b47850;font-weight:400;transform:none}.bet-wheel-total button{color:#777782}.bet-wheel-total button.active{color:#fff}';
             document.head.append(style);
         }
         document.body.append(root); this.betOptionsOverlay = root; requestAnimationFrame(() => root.classList.add('visible'));
@@ -696,7 +697,7 @@ export class slots_base extends Component {
     }
 
     private restoreBetChoice(total: string) {
-        const choice = this.betChoices.find(item => this.totalBet(item.bet, item.level) === total);
+        const choice = this.betChoices.find(item => this.totalBet(item.bet, item.level) === String(total));
         if (choice) { this.bet = choice.bet; this.betLevel = choice.level; }
     }
 
@@ -1120,5 +1121,5 @@ function buildBetChoices(bets: string[], lineCount: number, maxLevel: number) {
             } catch { /* invalid server data is ignored until config validation reports it */ }
         }
     }
-    return [...result.values()].sort((a, b) => BigInt(a.display) < BigInt(b.display) ? -1 : 1);
+    return Array.from(result.values()).sort((a, b) => BigInt(a.display) < BigInt(b.display) ? -1 : 1);
 }

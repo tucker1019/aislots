@@ -1,3 +1,4 @@
+import { LaunchSession } from './launch_session';
 import { historyListResponse, historyReplayResponse } from '../../history/history_response';
 import type { HistoryQuery } from '../../history/history_types';
 import { HttpClient } from '../http/http_client';
@@ -47,6 +48,7 @@ export interface Progress {
 export type Request = <T>(path: string, body?: object, token?: string) => Promise<T>;
 export class GameApi {
     private token = '';
+    private launch: LaunchSession;
     private next = '';
     // 超时不代表下注失败：保留同一请求标识和金额，重试时避免重复扣款。
     private pending: { requestId: string; bet: string; betLevel: number } = null;
@@ -63,6 +65,7 @@ export class GameApi {
         },
         request?: Request,
     ) {
+        this.launch = new LaunchSession(base, identity.gameId);
         this.route = '/games/' + encodeURIComponent(identity.gameId);
         const client = new HttpClient({
             baseURL: base.replace(/\/$/, '') + '/api/v1',
@@ -82,6 +85,24 @@ export class GameApi {
             });
     }
     async login() {
+        const launch = this.launch.request();
+        if (launch) {
+            const data = await this.request<{ accessToken: string; balance: string }>('/login', { ...launch, gameId: this.identity.gameId });
+            if (typeof data.accessToken !== 'string' || !data.accessToken) throw new Error('游戏登录响应无效');
+            this.token = data.accessToken; this.launch.save(this.token); return data;
+        }
+        const saved = this.launch.read();
+        if (saved.live) {
+            if (!saved.token || typeof saved.token !== 'string') throw new Error('游戏会话已失效，请从大厅重新进入');
+            this.token = saved.token;
+            try { const state = await this.state(); this.launch.clearTicketURL(); return { accessToken: this.token, balance: state.balance }; }
+            catch (error) {
+                if ((error as { status?: number }).status === 401) {
+                    this.token = ''; this.launch.expire(); throw new Error('游戏会话已失效，请从大厅重新进入');
+                }
+                throw error;
+            }
+        }
         const data = await this.request<{ accessToken: string; balance: string }>(
             '/login',
             this.identity,
