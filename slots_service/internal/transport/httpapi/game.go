@@ -17,7 +17,7 @@ import (
 )
 
 // NewGameRouter exposes our client API. The supplied play service is explicitly test-only.
-func NewGameRouter(ready func() bool, service *play.Service, origins []string, logger *slog.Logger) http.Handler {
+func NewGameRouter(ready func() bool, service *play.Service, origins []string, logger *slog.Logger, replaySecrets ...string) http.Handler {
 	mux := newHealthMux(ready)
 	handle := func(pattern string, fn func(http.ResponseWriter, *http.Request) error) {
 		mux.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
@@ -26,6 +26,12 @@ func NewGameRouter(ready func() bool, service *play.Service, origins []string, l
 			}
 		})
 	}
+	secret := ""
+	if len(replaySecrets) > 0 {
+		secret = replaySecrets[0]
+	}
+	handle("POST /internal/rank-replay", rankReplayHandler(service, secret))
+
 	auth := func(r *http.Request) (play.Session, error) {
 		header := r.Header.Get("Authorization")
 		if !strings.HasPrefix(header, "Bearer ") {

@@ -5,10 +5,13 @@ import (
 	"aislots/slots_service/internal/application/play"
 	"aislots/slots_service/internal/infrastructure/lobby"
 	"aislots/slots_service/internal/infrastructure/postgres"
+	"aislots/slots_service/internal/transport/httpapi"
 	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/jackc/pgx/v5"
+	"io"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -183,6 +186,41 @@ func TestLobbySettlementRecoversLostResponseWithoutRedrawing(t *testing.T) {
 	}
 	if steps != 9 || balance != 1040 || frame.TotalWinAmount != 90 || engine.calls.Load() != 3 || debits != 1 {
 		t.Fatal(fmt.Sprint("bad free settlement ", steps, " ", balance, " ", frame.TotalWinAmount, " ", debits))
+	}
+
+	beforeReplay, err := service.Status(ctx, session, "AG1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	replayServer := httptest.NewServer(httpapi.NewGameRouter(func() bool { return true }, service, nil, slog.New(slog.NewTextHandler(io.Discard, nil)), strings.Repeat("s", 32)))
+	defer replayServer.Close()
+	req, _ := http.NewRequest("POST", replayServer.URL+"/internal/rank-replay", strings.NewReader(fmt.Sprintf(`{"uid":1,"gameId":"AG1","betId":%q}`, frame.BetID)))
+	req.Header.Set("Authorization", "Bearer "+strings.Repeat("s", 32))
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var shared struct{ Data play.ReplayShare }
+	err = json.NewDecoder(res.Body).Decode(&shared)
+	res.Body.Close()
+	if err != nil || res.StatusCode != 200 || len(shared.Data.ShareToken) != 52 {
+		t.Fatal("rank replay bridge", res.StatusCode, err)
+	}
+	public, err := service.SharedReplay(ctx, "AG1", frame.BetID, shared.Data.ShareToken, 100, "")
+	if err != nil || len(public.Frames) != steps {
+		t.Fatal("whole rank replay", len(public.Frames), err)
+	}
+	for _, f := range public.Frames {
+		if f.Balance != 0 {
+			t.Fatal("replay disclosed balance")
+		}
+	}
+	afterReplay, err := service.Status(ctx, session, "AG1")
+	if err != nil || afterReplay.RequestID != beforeReplay.RequestID || afterReplay.Balance != beforeReplay.Balance {
+		t.Fatal("replay changed live game", err)
+	}
+	if _, err = service.RankReplay(ctx, "AG1", frame.BetID, "2"); err == nil {
+		t.Fatal("rank replay owner bypass")
 	}
 
 	// The free chain emits one durable completion; lost acknowledgement is retried after reopening the store.

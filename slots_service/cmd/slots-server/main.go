@@ -91,7 +91,7 @@ func run(logger *slog.Logger) error {
 			check, cancel := context.WithTimeout(context.Background(), time.Second)
 			defer cancel()
 			return store.Ping(check) == nil
-		}, service, cfg.AllowedOrigins, logger)
+		}, service, cfg.AllowedOrigins, logger, os.Getenv(cfg.Lobby.TokenEnv))
 	}
 	server := &http.Server{Addr: cfg.HTTP.Address, Handler: handler, ReadHeaderTimeout: bootstrap.Seconds(cfg.HTTP.ReadHeaderTimeoutSeconds), ReadTimeout: bootstrap.Seconds(cfg.HTTP.ReadTimeoutSeconds), WriteTimeout: bootstrap.Seconds(cfg.HTTP.WriteTimeoutSeconds), IdleTimeout: bootstrap.Seconds(cfg.HTTP.IdleTimeoutSeconds)}
 	done := make(chan error, 1)

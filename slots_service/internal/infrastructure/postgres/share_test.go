@@ -33,6 +33,13 @@ func TestReplayShareIsPublicReadOnlyBoundAndPersistent(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
+	rankSession, rankErr := store.RankReplaySession(ctx, "AG1", id, session.Player.Subject.UID)
+	if rankErr != nil || rankSession.Player != session.Player {
+		t.Fatal("rank ownership lookup", rankSession, rankErr)
+	}
+	if _, rankErr = store.RankReplaySession(ctx, "AG1", id, "not-owner"); !errors.Is(rankErr, play.ErrNotFound) {
+		t.Fatal("rank ownership bypass", rankErr)
+	}
 	before, err := s.Status(ctx, session, "AG1")
 	if err != nil {
 		t.Fatal(err)
