@@ -1,6 +1,6 @@
 # slots_service
 
-第三方游戏服务工程，已接入 PostgreSQL、固定测试用户、下注凭据和客户端逐轮开奖接口。当前启用测试钱包，真实平台认证及加减币尚未接入。Go 1.25+，数据库驱动使用 pgx。
+游戏机台服务，已接入 PostgreSQL、客户端逐轮开奖、大厅票据身份及统一钱包。保留独立测试钱包模式；大厅接入使用 `configs/server.lobby.json`，测试模式使用 `configs/server.test.json`。Go 1.25+，数据库驱动使用 pgx。
 
 本轮联调的启动方式、接口与测试数据限制见 [客户端联调协议](docs/client-api.md)。
 
@@ -65,13 +65,13 @@ make run CONFIG=configs/server.local.json
 
 ## 当前调用流程
 
-我们的客户端登录测试身份 → 获取投注列表与state中的服务端请求标识 → spin结算并返回当前轮及下次请求标识 → 后续消除、免费仍调用spin → complete。无需申请下注或提交消除游标；重连先静态恢复 state.lastFrame 中最后已结算的盘面、余额和累计赢分，再播放消除并请求下一未结算轮，原请求重试幂等返回原回执。
+客户端登录（大厅票据或独立测试身份） → 获取投注列表与state中的服务端请求标识 → spin结算并返回当前轮及下次请求标识 → 后续消除、免费仍调用spin → complete。无需申请下注或提交消除游标；重连先静态恢复 state.lastFrame 中最后已结算的盘面、余额和累计赢分，再播放消除并请求下一未结算轮，原请求重试幂等返回原回执。
 
 实际 HTTP 入口调用 `application/play.Service`，PostgreSQL 负责保存会话、凭据、完整旋转和当前已交付帧。返回帧不含完整未来链。固定测试用户仅第一次初始化 500000 分；登录、刷新、服务或数据库重启不重置余额。
 
-`application/bet.Service` 是先前的一次性整局平台结算用例，当前客户端接口不使用它。`platform.Client`、login 验证用例和适配注册表保留为真实平台接入边界；真实平台逐轮结算还需要结合当前帧状态机接入，不能将网络加减币放入本地数据库事务。
+`application/bet.Service` 是先前的一次性整局平台结算用例，当前客户端接口不使用它。`platform.Client`、login 验证用例和适配注册表保留为真实平台接入边界；大厅逐轮结算已通过持久化待结算计划接入当前帧状态机；网络调用在本地规划事务回滚并保存计划后执行，确认后提交原盘面。
 
-当前服务入口启用业务接口需要明确配置 `testProfile.enabled=true`、数据库环境变量及投注方案，其他配置只启动健康检查。详见 [联调协议](docs/client-api.md)。
+业务接口支持独立测试配置或大厅接入配置；测试模式需 `testProfile.enabled=true`，大厅模式需共享服务密钥及大厅地址，两种身份模式不能混用。两者都需独立数据库及投注方案。详见 [联调协议](docs/client-api.md)。
 
 AG1 uses `"freeAwardSymbolCounts": {"8": 3, "10": 4, "12": 5}` in its server game entry. The existing award weights choose free spins first; the selected award then determines the scatter count for both base triggers and free retriggers. Every positive-weight award must have a mapping to 3, 4 or 5 symbols. Legacy entries without this mapping retain their explicit `triggerSymbolCount`.
 
@@ -139,3 +139,19 @@ The mapping participates in the engine version. The test server configuration ke
 两套库均覆盖快照中所有正权重倍率，并通过数值工具骨架重放校验。
 当前数值配置赠送免费局数为 10/12/14，对应 3/4/5 个胡。
 旧配置和旧库保留为非当前版本，供已开始的下注继续使用；新下注使用新的金底版本。
+
+## 大厅接入与统一钱包
+
+工作目录为`slots_service`，设置独立机台数据库`AISLOTS_DATABASE_URL`，以及与大厅一致的`LOBBY_GAME_SERVICE_TOKEN`后运行：
+
+```sh
+go run ./cmd/slots-server -config configs/server.lobby.json
+```
+
+大厅默认8081，机台默认8080。`launchTicket`经`POST /api/v1/login`兑换游戏会话，相同exchangeId允许恢复丢失的登录响应。新用户不注入测试余额。逐轮资金请求幂等，超时或本地提交失败保留待结算计划，下次state/spin先恢复，不能生成新请求号绕过。两端数据库不共用。完整部署见[大厅游戏接入](../lobby_service/docs/game-integration.md)。
+
+## 整局统计与排行榜回放
+
+付费投注及其全部消除、免费游戏结束后，机台在整局提交事务中写入统计Outbox及玩家游戏序号；后台按玩家流顺序向大厅投递，失败退避重试。统计投递不依赖客户端在线，不重复扣加币。
+
+`POST /internal/rank-replay`仅供共享Bearer鉴权的大厅服务调用，校验已完成局及平台身份后签发只读分享凭据。浏览器通过原回放入口播放，不携带所有者登录会话。统计协议与榜单资格见[游戏统计文档](../lobby_service/docs/game-statistics.md)。
