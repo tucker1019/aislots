@@ -9,8 +9,5 @@ export const theme: ThemeConfig = {
   },
   components: {
     Button: { primaryShadow: 'none', borderRadius: 999, fontWeight: 400 },
-    Segmented: { trackBg: '#f5f5f7', itemSelectedBg: '#ffffff', itemSelectedColor: '#1d1d1f', trackPadding: 4 },
-    Input: { activeShadow: '0 0 0 3px rgb(0 113 227 / 12%)' },
-    Modal: { titleFontSize: 23, titleLineHeight: 1.4, borderRadiusLG: 20 },
   },
 };
