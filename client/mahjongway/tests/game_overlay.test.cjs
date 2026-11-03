@@ -1,0 +1,25 @@
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const ts=require('../../../slot_math/node_modules/typescript');
+require.extensions['.ts']=(module,file)=>module._compile(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,file);
+const {fitGameOverlay}=require('../assets/mahjongway/src/slots/game_overlay.ts');
+test('small iframe overlays stay in portrait bounds and follow zoom; removal releases observers',()=>{
+ const listeners=new Map();let resize,removed,disconnected=0;
+ global.window={addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name)};
+ global.document={documentElement:{}};
+ global.ResizeObserver=class {constructor(fn){resize=fn;}observe(){}disconnect(){disconnected++;}};
+ global.MutationObserver=class {constructor(fn){removed=fn;}observe(){}disconnect(){disconnected++;}};
+ let rect={left:12,top:20,width:390,height:250};
+ const root={style:{},isConnected:true},canvas={getBoundingClientRect:()=>rect};
+ fitGameOverlay(root,canvas);
+ const width=Number.parseFloat(root.style.width),scale=Number(root.style.transform.match(/\((.*)\)/)[1]);
+ assert.ok(Math.abs(width*scale-250*750/1400)<0.001);
+ assert.ok(Math.abs(Number.parseFloat(root.style.left)-(12+(390-width*scale)/2))<0.001);
+ assert.equal(root.style.top,'20px');
+ rect={left:0,top:0,width:390,height:728};resize();
+ assert.ok(Math.abs(Number(root.style.transform.match(/\((.*)\)/)[1])*width-390)<0.001);
+ assert.equal(root.style.left,'0px');
+ root.isConnected=false;removed();
+ assert.equal(listeners.size,0);assert.equal(disconnected,2);
+});

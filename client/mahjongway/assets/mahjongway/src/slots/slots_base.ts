@@ -1,3 +1,4 @@
+import { fitGameOverlay } from './game_overlay';
 import { replayShareURL, defaultApiBase } from '../history/replay_share';
 import type { HistoryReplay } from '../history/history_types';
 import { BottomPanels } from './bottom_panels';
@@ -688,7 +689,7 @@ export class slots_base extends Component {
             style.textContent += '.bet-wheel-column,.bet-wheel-total{box-sizing:border-box;position:relative;height:160px;overflow:auto;scrollbar-width:none;scroll-snap-type:y mandatory;scroll-padding:64px 0;padding:64px 0}.bet-wheel-column button,.bet-wheel-total button{display:block;width:100%;height:32px;scroll-snap-align:center;border:0;background:transparent;color:#777782;font:inherit;font-size:16px;line-height:32px;white-space:nowrap}.bet-wheel-column button.active,.bet-wheel-total button.active{color:#fff}.bet-wheel-column::-webkit-scrollbar,.bet-wheel-total::-webkit-scrollbar{display:none}.bet-selector-bg{top:96px;height:32px}.bet-wheel-lines{height:160px;padding:0;overflow:hidden;display:flex;align-items:center;justify-content:center;transform:none}.bet-wheel-lines span{display:block;height:32px;line-height:32px}.bet-wheel-total{color:#b47850;font-weight:400;transform:none}.bet-wheel-total button{color:#777782}.bet-wheel-total button.active{color:#fff}';
             document.head.append(style);
         }
-        document.body.append(root); this.betOptionsOverlay = root; requestAnimationFrame(() => root.classList.add('visible'));
+        document.body.append(root); fitGameOverlay(root, canvas, 414); this.betOptionsOverlay = root; requestAnimationFrame(() => root.classList.add('visible'));
     }
 
     private totalBet(bet: string, level: number) {
@@ -954,8 +955,10 @@ export class slots_base extends Component {
         root.appendChild(content);
         const game = document.getElementById('GameDiv');
         if (!game) return;
-        if (getComputedStyle(game).position === 'static') game.style.position = 'relative';
-        game.appendChild(root);
+        const canvas = document.getElementById('GameCanvas');
+        if (!(canvas instanceof HTMLCanvasElement)) return;
+        document.body.appendChild(root);
+        fitGameOverlay(root, canvas);
         this.failureDialog = root;
     }
 
@@ -976,8 +979,10 @@ export class slots_base extends Component {
         root.appendChild(content);
         const game = document.getElementById('GameDiv');
         if (!game) return;
-        if (getComputedStyle(game).position === 'static') game.style.position = 'relative';
-        game.appendChild(root);
+        const canvas = document.getElementById('GameCanvas');
+        if (!(canvas instanceof HTMLCanvasElement)) return;
+        document.body.appendChild(root);
+        fitGameOverlay(root, canvas);
         this.failureDialog = root;
     }
 

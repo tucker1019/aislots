@@ -33,13 +33,13 @@
             }
             <% } %>
             /* 首屏由浏览器直接绘制，不依赖引擎、场景或 Asset Bundle。 */
-            #PreviewCover { position: absolute; inset: 0; z-index: 9999; display: flex;
+            #PreviewCover { container-type: inline-size; position: absolute; top: 50%; left: 50%; width: min(100vw, 53.5714vh); height: min(100vh, 186.6667vw); transform: translate(-50%,-50%); z-index: 9999; display: flex;
                 align-items: center; justify-content: center; overflow: hidden; background: #000; }
             #PreviewCover img { display: block; width: 100%; height: auto; max-width: none; }
             #PreviewCover .preview-loading { position: absolute; left: 50%; bottom: 17%; width: min(60%, 520px); aspect-ratio: 447 / 28; transform: translateX(-50%); background: url('./loading/jdt.png') center/100% 100% no-repeat; }
             #PreviewCover .preview-loading-fill { height: 100%; width: 0; overflow: hidden; transition: width .2s ease; }
             #PreviewCover .preview-loading-fill::before { content: ''; display: block; width: 100%; height: 100%; background: url('./loading/jdt1.png') left center/auto 78.5714% no-repeat; }
-            #PreviewCover .start-button { position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%); width: min(42%, 360px); padding: 14px 0; border: 2px solid #ffd96a; border-radius: 8px; color: #6b2100; background: linear-gradient(#ffe89a, #f6a51a); box-shadow: 0 4px 0 #9b3f05, 0 8px 18px rgba(75, 20, 0, .35); font: 700 24px/1 Helvetica, Arial, sans-serif; letter-spacing: 1px; cursor: pointer; }
+            #PreviewCover .start-button { position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%); box-sizing: border-box; width: 42%; padding: 3% 0; border: .45cqw solid #ffd96a; border-radius: 1.8cqw; color: #6b2100; background: linear-gradient(#ffe89a, #f6a51a); box-shadow: 0 .8cqw 0 #9b3f05, 0 1.5cqw 3cqw rgba(75,20,0,.35); font: 700 6cqw/1 Helvetica,Arial,sans-serif; letter-spacing: .2cqw; cursor: pointer; }
             #PreviewCover .start-button:active { transform: translate(-50%, 2px); }
         </style>
     </head>
