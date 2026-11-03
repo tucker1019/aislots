@@ -20,3 +20,9 @@ it('拒绝未知原因和错位宝箱，防止认错奖励',()=>{expect(()=>pars
 
 it('切换窗口和恢复网络不自动刷新邀请',async()=>{setup();await screen.findByText('我的直属下级 3 人，有效人数 2 人');await act(async()=>{focusManager.setFocused(false);focusManager.setFocused(true);window.dispatchEvent(new Event('online'));});expect(fetchInviteChests).toHaveBeenCalledTimes(1);});
 it('超过100个有效邀请可查看下一页宝箱，不截断奖励',async()=>{vi.mocked(fetchInviteChests).mockResolvedValueOnce({...data,hasMore:true,info:{...info,qualifiedCount:101}}).mockResolvedValueOnce({...data,page:2,items:data.items.map((item,i)=>({...item,slot:101+i,rewardId:i===0?'1000':'',status:i===0?'claimable':'locked'}))});setup();fireEvent.click(await screen.findByRole('button',{name:'下一页'}));expect(await screen.findByRole('button',{name:'第 101 个宝箱，可领取'})).toBeEnabled();expect(fetchInviteChests).toHaveBeenLastCalledWith(2,expect.any(AbortSignal));});
+
+it('进入赚钱页邀请区和复制链接不产生重复消息容器key',async()=>{
+ const errors=vi.spyOn(console,'error').mockImplementation(()=>{});
+ Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:vi.fn().mockResolvedValue(undefined)}});
+ try{setup();await screen.findByText('我的直属下级 3 人，有效人数 2 人');fireEvent.click(screen.getByRole('button',{name:'复制'}));expect(await screen.findByText('邀请链接已复制')).toBeInTheDocument();expect(errors.mock.calls.filter(call=>call.some(value=>String(value).includes('message-holder')))).toHaveLength(0);}finally{errors.mockRestore();}
+});

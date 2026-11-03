@@ -515,5 +515,10 @@
   "invite.reason.deposit_count": "注册后 {days} 日内成功存款次数不足：{current} / {required} 次。",
   "invite.reason.deposit_amount": "注册后 {days} 日内累计存款本金不足：{current} / {required}。",
   "invite.reason.bet_amount": "注册后 {days} 日内累计投注额不足：{current} / {required}。",
-  "invite.deadlineNote": "新邀请好友须在注册后 {days} 日内达标；已达标奖励可手动领取。"
+  "invite.deadlineNote": "新邀请好友须在注册后 {days} 日内达标；已达标奖励可手动领取。",
+  "gamePreview.orderId": "平台订单 {id}",
+  "gamePreview.replayLoading": "正在加载…",
+  "gamePreview.replay": "回放",
+  "gamePreview.replayTitle": "订单回放",
+  "gamePreview.replayUnavailable": "暂无回放，请稍后重试"
 }

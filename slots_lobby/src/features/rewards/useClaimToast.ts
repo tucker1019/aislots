@@ -11,5 +11,5 @@ export function useClaimToast() {
   const notify = useCallback(() => {
     void toast.success({ key: 'reward-claim-success', content: t('copy.claimSuccessful'), duration: 2 });
   }, [toast]);
-  return { notify, holder };
+  return { notify, holder, toast };
 }

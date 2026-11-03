@@ -1,6 +1,5 @@
 import {useRef,useState} from 'react';
 import {useMutation,useQuery,useQueryClient} from '@tanstack/react-query';
-import {message} from 'antd';
 import {Icon} from '../../components/Icon';
 import {navigateLobby} from '../../app/useLobbyRoute';
 import {useSessionStore} from '../../stores/session';
@@ -10,13 +9,13 @@ import {useClaimToast} from '../rewards/useClaimToast';
 import {t} from '../../i18n';
 export function InviteChests(){
  const uid=useSessionStore(s=>s.session?.uid);const [page,setPage]=useState(1);const client=useQueryClient();const requests=useRef(new Map<string,string>());
- const {notify,holder}=useClaimToast();const [toast,copyHolder]=message.useMessage({maxCount:1,classNames:{list:'lobby-toast-list'}});
+ const {notify,holder,toast}=useClaimToast();
  const query=useQuery({queryKey:['invite-chests',uid,page],queryFn:({signal})=>fetchInviteChests(page,signal),retry:false,refetchOnWindowFocus:false,refetchOnReconnect:false});
  // Retain the same request ID after a lost response so a retry cannot credit twice.
  const claim=useMutation({mutationFn:async(rewardId:string)=>{let id=requests.current.get(rewardId);if(!id){id=crypto.randomUUID();requests.current.set(rewardId,id);}return claimInviteChest(rewardId,id);},retry:false,onSuccess:()=>{notify();void client.invalidateQueries({queryKey:['invite-chests']});void client.invalidateQueries({queryKey:['invite']});void client.invalidateQueries({queryKey:['lobby','current-profile']});void client.invalidateQueries({queryKey:['wallet-ledger']});}});
  const data=query.data;
  async function copy(){if(!data)return;try{await navigator.clipboard.writeText(data.info.inviteUrl);void toast.success(t('invite.linkCopied'));}catch{void toast.error(t('invite.copyFailed'));}}
- return <>{holder}{copyHolder}<section className="earn-invite" aria-label={t('copy.inviteFriends')}>
+ return <>{holder}<section className="earn-invite" aria-label={t('copy.inviteFriends')}>
  {query.isPending?<p role="status">{t('invite.loading')}</p>:!data?<div role="alert"><p>{t('invite.loadFailed')}</p><button type="button" disabled={query.isFetching} onClick={()=>void query.refetch()}>{t('copy.retry')}</button></div>:<>
  <div className="earn-invite-summary"><span>{t('invite.memberSummary',{count:data.info.invitedCount,qualified:data.info.qualifiedCount})}</span><button type="button" onClick={()=>navigateLobby('invite-friends')}>{t('invite.friends')} ›</button></div>
  <div className="invite-card invite-link"><label htmlFor="earn-invite-link">{t('invite.link')}</label><input id="earn-invite-link" readOnly value={data.info.inviteUrl}/><button type="button" onClick={()=>void copy()}>{t('copy.copy')}</button></div>

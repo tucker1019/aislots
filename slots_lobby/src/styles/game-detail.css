@@ -24,3 +24,13 @@
 .game-metric-live .game-filter-menu { left: 0; right: auto; }
 .game-metrics-error { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--muted); margin-top: 8px; }
 .game-metrics-error button { border: 0; background: transparent; color: var(--blue); }
+
+.game-rank-replay { grid-column: 2 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; color: var(--muted); font-size: 10px; }
+.game-rank-replay > button { position: relative; flex: 0 0 auto; white-space: nowrap; line-height: 16px; margin-left: auto; border: 0; border-radius: 6px; background: #edf3fd; color: var(--blue); padding: 6px 10px; font-size: 11px; }
+.game-rank-replay > span[role=alert] { width: 100%; color: #b45435; }
+.game-rank-replay-modal iframe { display: block; width: 100%; height: min(70dvh,720px); border: 0; background: #17140e; }
+
+.game-rank-replay > button[aria-busy=true] .game-replay-label { visibility: hidden; }
+.game-replay-spinner { position: absolute; inset: 0; margin: auto; width: 12px; height: 12px; box-sizing: border-box; border: 2px solid #bfd2ec; border-top-color: var(--blue); border-radius: 50%; animation: game-replay-spin .7s linear infinite; }
+@keyframes game-replay-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .game-replay-spinner { animation: none; } }

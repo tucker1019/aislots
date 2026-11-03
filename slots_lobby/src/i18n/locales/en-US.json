@@ -515,5 +515,10 @@
   "invite.reason.deposit_count": "Successful deposits within {days} days of registration: {current} / {required}.",
   "invite.reason.deposit_amount": "Deposit principal within {days} days of registration: {current} / {required}.",
   "invite.reason.bet_amount": "Total bets within {days} days of registration: {current} / {required}.",
-  "invite.deadlineNote": "New referrals must qualify within {days} days of registration. Qualified rewards remain available to claim."
+  "invite.deadlineNote": "New referrals must qualify within {days} days of registration. Qualified rewards remain available to claim.",
+  "gamePreview.orderId": "Order {id}",
+  "gamePreview.replayLoading": "Loading…",
+  "gamePreview.replay": "Replay",
+  "gamePreview.replayTitle": "Order replay",
+  "gamePreview.replayUnavailable": "Replay unavailable. Please retry later."
 }
