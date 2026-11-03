@@ -1683,19 +1683,20 @@ func (x *GameRtpReply) GetPercent() string {
 }
 
 type GameLeaderboardItem struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Rank          int32                  `protobuf:"varint,1,opt,name=rank,proto3" json:"rank,omitempty"`
-	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Nickname      string                 `protobuf:"bytes,3,opt,name=nickname,proto3" json:"nickname,omitempty"`
-	AvatarId      int32                  `protobuf:"varint,4,opt,name=avatar_id,json=avatarId,proto3" json:"avatar_id,omitempty"`
-	BetId         string                 `protobuf:"bytes,5,opt,name=bet_id,json=betId,proto3" json:"bet_id,omitempty"`
-	BetAmount     string                 `protobuf:"bytes,6,opt,name=bet_amount,json=betAmount,proto3" json:"bet_amount,omitempty"`
-	WinAmount     string                 `protobuf:"bytes,7,opt,name=win_amount,json=winAmount,proto3" json:"win_amount,omitempty"`
-	Multiplier    string                 `protobuf:"bytes,8,opt,name=multiplier,proto3" json:"multiplier,omitempty"`
-	Streak        int64                  `protobuf:"varint,9,opt,name=streak,proto3" json:"streak,omitempty"`
-	OccurredAt    string                 `protobuf:"bytes,10,opt,name=occurred_at,json=occurredAt,proto3" json:"occurred_at,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Rank            int32                  `protobuf:"varint,1,opt,name=rank,proto3" json:"rank,omitempty"`
+	UserId          string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Nickname        string                 `protobuf:"bytes,3,opt,name=nickname,proto3" json:"nickname,omitempty"`
+	AvatarId        int32                  `protobuf:"varint,4,opt,name=avatar_id,json=avatarId,proto3" json:"avatar_id,omitempty"`
+	BetId           string                 `protobuf:"bytes,5,opt,name=bet_id,json=betId,proto3" json:"bet_id,omitempty"`
+	BetAmount       string                 `protobuf:"bytes,6,opt,name=bet_amount,json=betAmount,proto3" json:"bet_amount,omitempty"`
+	WinAmount       string                 `protobuf:"bytes,7,opt,name=win_amount,json=winAmount,proto3" json:"win_amount,omitempty"`
+	Multiplier      string                 `protobuf:"bytes,8,opt,name=multiplier,proto3" json:"multiplier,omitempty"`
+	Streak          int64                  `protobuf:"varint,9,opt,name=streak,proto3" json:"streak,omitempty"`
+	OccurredAt      string                 `protobuf:"bytes,10,opt,name=occurred_at,json=occurredAt,proto3" json:"occurred_at,omitempty"`
+	PlatformOrderId string                 `protobuf:"bytes,11,opt,name=platform_order_id,json=platformOrderId,proto3" json:"platform_order_id,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *GameLeaderboardItem) Reset() {
@@ -1794,6 +1795,13 @@ func (x *GameLeaderboardItem) GetStreak() int64 {
 func (x *GameLeaderboardItem) GetOccurredAt() string {
 	if x != nil {
 		return x.OccurredAt
+	}
+	return ""
+}
+
+func (x *GameLeaderboardItem) GetPlatformOrderId() string {
+	if x != nil {
+		return x.PlatformOrderId
 	}
 	return ""
 }
@@ -2514,6 +2522,134 @@ func (x *InviteFriendsReply) GetHasMore() bool {
 	return false
 }
 
+type GameRankReplayRequest struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Uid             int64                  `protobuf:"varint,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	Sid             string                 `protobuf:"bytes,2,opt,name=sid,proto3" json:"sid,omitempty"`
+	GameId          string                 `protobuf:"bytes,3,opt,name=game_id,json=gameId,proto3" json:"game_id,omitempty"`
+	PlatformOrderId string                 `protobuf:"bytes,4,opt,name=platform_order_id,json=platformOrderId,proto3" json:"platform_order_id,omitempty"`
+	Board           string                 `protobuf:"bytes,5,opt,name=board,proto3" json:"board,omitempty"`
+	Period          string                 `protobuf:"bytes,6,opt,name=period,proto3" json:"period,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *GameRankReplayRequest) Reset() {
+	*x = GameRankReplayRequest{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameRankReplayRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameRankReplayRequest) ProtoMessage() {}
+
+func (x *GameRankReplayRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameRankReplayRequest.ProtoReflect.Descriptor instead.
+func (*GameRankReplayRequest) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *GameRankReplayRequest) GetUid() int64 {
+	if x != nil {
+		return x.Uid
+	}
+	return 0
+}
+
+func (x *GameRankReplayRequest) GetSid() string {
+	if x != nil {
+		return x.Sid
+	}
+	return ""
+}
+
+func (x *GameRankReplayRequest) GetGameId() string {
+	if x != nil {
+		return x.GameId
+	}
+	return ""
+}
+
+func (x *GameRankReplayRequest) GetPlatformOrderId() string {
+	if x != nil {
+		return x.PlatformOrderId
+	}
+	return ""
+}
+
+func (x *GameRankReplayRequest) GetBoard() string {
+	if x != nil {
+		return x.Board
+	}
+	return ""
+}
+
+func (x *GameRankReplayRequest) GetPeriod() string {
+	if x != nil {
+		return x.Period
+	}
+	return ""
+}
+
+type GameRankReplayReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ReplayUrl     string                 `protobuf:"bytes,1,opt,name=replay_url,json=replayUrl,proto3" json:"replay_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GameRankReplayReply) Reset() {
+	*x = GameRankReplayReply{}
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[34]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameRankReplayReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameRankReplayReply) ProtoMessage() {}
+
+func (x *GameRankReplayReply) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_game_api_proto_msgTypes[34]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameRankReplayReply.ProtoReflect.Descriptor instead.
+func (*GameRankReplayReply) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{34}
+}
+
+func (x *GameRankReplayReply) GetReplayUrl() string {
+	if x != nil {
+		return x.ReplayUrl
+	}
+	return ""
+}
+
 var File_apis_lobby_api_v1_game_api_proto protoreflect.FileDescriptor
 
 const file_apis_lobby_api_v1_game_api_proto_rawDesc = "" +
@@ -2674,7 +2810,7 @@ const file_apis_lobby_api_v1_game_api_proto_rawDesc = "" +
 	"\x06rounds\x18\b \x01(\x03R\x06rounds\x12\x19\n" +
 	"\bhas_data\x18\t \x01(\bR\ahasData\x12\x18\n" +
 	"\apercent\x18\n" +
-	" \x01(\tR\apercent\"\xa9\x02\n" +
+	" \x01(\tR\apercent\"\xd5\x02\n" +
 	"\x13GameLeaderboardItem\x12\x12\n" +
 	"\x04rank\x18\x01 \x01(\x05R\x04rank\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1a\n" +
@@ -2691,7 +2827,8 @@ const file_apis_lobby_api_v1_game_api_proto_rawDesc = "" +
 	"\x06streak\x18\t \x01(\x03R\x06streak\x12\x1f\n" +
 	"\voccurred_at\x18\n" +
 	" \x01(\tR\n" +
-	"occurredAt\"\xba\x01\n" +
+	"occurredAt\x12*\n" +
+	"\x11platform_order_id\x18\v \x01(\tR\x0fplatformOrderId\"\xba\x01\n" +
 	"\x14GameLeaderboardReply\x12<\n" +
 	"\x05items\x18\x01 \x03(\v2&.apis.lobby.api.v1.GameLeaderboardItemR\x05items\x12\x1d\n" +
 	"\n" +
@@ -2757,8 +2894,19 @@ const file_apis_lobby_api_v1_game_api_proto_rawDesc = "" +
 	"\x12InviteFriendsReply\x125\n" +
 	"\x05items\x18\x01 \x03(\v2\x1f.apis.lobby.api.v1.InviteFriendR\x05items\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x19\n" +
-	"\bhas_more\x18\x03 \x01(\bR\ahasMore2\x90\x10\n" +
-	"\vGameService\x12~\n" +
+	"\bhas_more\x18\x03 \x01(\bR\ahasMore\"\xae\x01\n" +
+	"\x15GameRankReplayRequest\x12\x10\n" +
+	"\x03uid\x18\x01 \x01(\x03R\x03uid\x12\x10\n" +
+	"\x03sid\x18\x02 \x01(\tR\x03sid\x12\x17\n" +
+	"\agame_id\x18\x03 \x01(\tR\x06gameId\x12*\n" +
+	"\x11platform_order_id\x18\x04 \x01(\tR\x0fplatformOrderId\x12\x14\n" +
+	"\x05board\x18\x05 \x01(\tR\x05board\x12\x16\n" +
+	"\x06period\x18\x06 \x01(\tR\x06period\"4\n" +
+	"\x13GameRankReplayReply\x12\x1d\n" +
+	"\n" +
+	"replay_url\x18\x01 \x01(\tR\treplayUrl2\x97\x11\n" +
+	"\vGameService\x12\x84\x01\n" +
+	"\x0eGameRankReplay\x12(.apis.lobby.api.v1.GameRankReplayRequest\x1a&.apis.lobby.api.v1.GameRankReplayReply\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/game/rank-replay\x12~\n" +
 	"\fInviteChests\x12 .apis.lobby.api.v1.InviteRequest\x1a$.apis.lobby.api.v1.InviteChestsReply\"&\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/api/activity/invite/chests\x12\x86\x01\n" +
 	"\x10InviteChestClaim\x12 .apis.lobby.api.v1.InviteRequest\x1a#.apis.lobby.api.v1.InviteClaimReply\"+\x82\xd3\xe4\x93\x02%:\x01*\" /api/activity/invite/chest/claim\x12\x81\x01\n" +
 	"\rInviteFriends\x12 .apis.lobby.api.v1.InviteRequest\x1a%.apis.lobby.api.v1.InviteFriendsReply\"'\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/api/activity/invite/friends\x12x\n" +
@@ -2791,7 +2939,7 @@ func file_apis_lobby_api_v1_game_api_proto_rawDescGZIP() []byte {
 	return file_apis_lobby_api_v1_game_api_proto_rawDescData
 }
 
-var file_apis_lobby_api_v1_game_api_proto_msgTypes = make([]protoimpl.MessageInfo, 33)
+var file_apis_lobby_api_v1_game_api_proto_msgTypes = make([]protoimpl.MessageInfo, 35)
 var file_apis_lobby_api_v1_game_api_proto_goTypes = []any{
 	(*GameLaunchRequest)(nil),       // 0: apis.lobby.api.v1.GameLaunchRequest
 	(*GameLaunchReply)(nil),         // 1: apis.lobby.api.v1.GameLaunchReply
@@ -2826,6 +2974,8 @@ var file_apis_lobby_api_v1_game_api_proto_goTypes = []any{
 	(*InviteChestsReply)(nil),       // 30: apis.lobby.api.v1.InviteChestsReply
 	(*InviteFriend)(nil),            // 31: apis.lobby.api.v1.InviteFriend
 	(*InviteFriendsReply)(nil),      // 32: apis.lobby.api.v1.InviteFriendsReply
+	(*GameRankReplayRequest)(nil),   // 33: apis.lobby.api.v1.GameRankReplayRequest
+	(*GameRankReplayReply)(nil),     // 34: apis.lobby.api.v1.GameRankReplayReply
 }
 var file_apis_lobby_api_v1_game_api_proto_depIdxs = []int32{
 	9,  // 0: apis.lobby.api.v1.GameRecordsReply.items:type_name -> apis.lobby.api.v1.GameRecord
@@ -2838,40 +2988,42 @@ var file_apis_lobby_api_v1_game_api_proto_depIdxs = []int32{
 	27, // 7: apis.lobby.api.v1.InviteChestsReply.info:type_name -> apis.lobby.api.v1.InviteInfoReply
 	29, // 8: apis.lobby.api.v1.InviteChestsReply.items:type_name -> apis.lobby.api.v1.InviteChest
 	31, // 9: apis.lobby.api.v1.InviteFriendsReply.items:type_name -> apis.lobby.api.v1.InviteFriend
-	25, // 10: apis.lobby.api.v1.GameService.InviteChests:input_type -> apis.lobby.api.v1.InviteRequest
-	25, // 11: apis.lobby.api.v1.GameService.InviteChestClaim:input_type -> apis.lobby.api.v1.InviteRequest
-	25, // 12: apis.lobby.api.v1.GameService.InviteFriends:input_type -> apis.lobby.api.v1.InviteRequest
-	25, // 13: apis.lobby.api.v1.GameService.InviteInfo:input_type -> apis.lobby.api.v1.InviteRequest
-	25, // 14: apis.lobby.api.v1.GameService.InviteClaim:input_type -> apis.lobby.api.v1.InviteRequest
-	19, // 15: apis.lobby.api.v1.GameService.GameComplete:input_type -> apis.lobby.api.v1.GameCompleteRequest
-	21, // 16: apis.lobby.api.v1.GameService.GameRtp:input_type -> apis.lobby.api.v1.GameStatisticsRequest
-	21, // 17: apis.lobby.api.v1.GameService.GameLeaderboard:input_type -> apis.lobby.api.v1.GameStatisticsRequest
-	16, // 18: apis.lobby.api.v1.GameService.PersonalReport:input_type -> apis.lobby.api.v1.PersonalReportRequest
-	11, // 19: apis.lobby.api.v1.GameService.WalletLedger:input_type -> apis.lobby.api.v1.WalletLedgerRequest
-	11, // 20: apis.lobby.api.v1.GameService.WalletLedgerDetail:input_type -> apis.lobby.api.v1.WalletLedgerRequest
-	8,  // 21: apis.lobby.api.v1.GameService.GameRecords:input_type -> apis.lobby.api.v1.GameRecordsRequest
-	0,  // 22: apis.lobby.api.v1.GameService.GameLaunch:input_type -> apis.lobby.api.v1.GameLaunchRequest
-	2,  // 23: apis.lobby.api.v1.GameService.GameExchange:input_type -> apis.lobby.api.v1.GameExchangeRequest
-	4,  // 24: apis.lobby.api.v1.GameService.GameBalance:input_type -> apis.lobby.api.v1.GameBalanceRequest
-	6,  // 25: apis.lobby.api.v1.GameService.GameSettle:input_type -> apis.lobby.api.v1.GameSettleRequest
-	30, // 26: apis.lobby.api.v1.GameService.InviteChests:output_type -> apis.lobby.api.v1.InviteChestsReply
-	28, // 27: apis.lobby.api.v1.GameService.InviteChestClaim:output_type -> apis.lobby.api.v1.InviteClaimReply
-	32, // 28: apis.lobby.api.v1.GameService.InviteFriends:output_type -> apis.lobby.api.v1.InviteFriendsReply
-	27, // 29: apis.lobby.api.v1.GameService.InviteInfo:output_type -> apis.lobby.api.v1.InviteInfoReply
-	28, // 30: apis.lobby.api.v1.GameService.InviteClaim:output_type -> apis.lobby.api.v1.InviteClaimReply
-	20, // 31: apis.lobby.api.v1.GameService.GameComplete:output_type -> apis.lobby.api.v1.GameCompleteReply
-	22, // 32: apis.lobby.api.v1.GameService.GameRtp:output_type -> apis.lobby.api.v1.GameRtpReply
-	24, // 33: apis.lobby.api.v1.GameService.GameLeaderboard:output_type -> apis.lobby.api.v1.GameLeaderboardReply
-	18, // 34: apis.lobby.api.v1.GameService.PersonalReport:output_type -> apis.lobby.api.v1.PersonalReportReply
-	14, // 35: apis.lobby.api.v1.GameService.WalletLedger:output_type -> apis.lobby.api.v1.WalletLedgerReply
-	15, // 36: apis.lobby.api.v1.GameService.WalletLedgerDetail:output_type -> apis.lobby.api.v1.WalletLedgerDetailReply
-	10, // 37: apis.lobby.api.v1.GameService.GameRecords:output_type -> apis.lobby.api.v1.GameRecordsReply
-	1,  // 38: apis.lobby.api.v1.GameService.GameLaunch:output_type -> apis.lobby.api.v1.GameLaunchReply
-	3,  // 39: apis.lobby.api.v1.GameService.GameExchange:output_type -> apis.lobby.api.v1.GameIdentityReply
-	5,  // 40: apis.lobby.api.v1.GameService.GameBalance:output_type -> apis.lobby.api.v1.GameBalanceReply
-	7,  // 41: apis.lobby.api.v1.GameService.GameSettle:output_type -> apis.lobby.api.v1.GameSettleReply
-	26, // [26:42] is the sub-list for method output_type
-	10, // [10:26] is the sub-list for method input_type
+	33, // 10: apis.lobby.api.v1.GameService.GameRankReplay:input_type -> apis.lobby.api.v1.GameRankReplayRequest
+	25, // 11: apis.lobby.api.v1.GameService.InviteChests:input_type -> apis.lobby.api.v1.InviteRequest
+	25, // 12: apis.lobby.api.v1.GameService.InviteChestClaim:input_type -> apis.lobby.api.v1.InviteRequest
+	25, // 13: apis.lobby.api.v1.GameService.InviteFriends:input_type -> apis.lobby.api.v1.InviteRequest
+	25, // 14: apis.lobby.api.v1.GameService.InviteInfo:input_type -> apis.lobby.api.v1.InviteRequest
+	25, // 15: apis.lobby.api.v1.GameService.InviteClaim:input_type -> apis.lobby.api.v1.InviteRequest
+	19, // 16: apis.lobby.api.v1.GameService.GameComplete:input_type -> apis.lobby.api.v1.GameCompleteRequest
+	21, // 17: apis.lobby.api.v1.GameService.GameRtp:input_type -> apis.lobby.api.v1.GameStatisticsRequest
+	21, // 18: apis.lobby.api.v1.GameService.GameLeaderboard:input_type -> apis.lobby.api.v1.GameStatisticsRequest
+	16, // 19: apis.lobby.api.v1.GameService.PersonalReport:input_type -> apis.lobby.api.v1.PersonalReportRequest
+	11, // 20: apis.lobby.api.v1.GameService.WalletLedger:input_type -> apis.lobby.api.v1.WalletLedgerRequest
+	11, // 21: apis.lobby.api.v1.GameService.WalletLedgerDetail:input_type -> apis.lobby.api.v1.WalletLedgerRequest
+	8,  // 22: apis.lobby.api.v1.GameService.GameRecords:input_type -> apis.lobby.api.v1.GameRecordsRequest
+	0,  // 23: apis.lobby.api.v1.GameService.GameLaunch:input_type -> apis.lobby.api.v1.GameLaunchRequest
+	2,  // 24: apis.lobby.api.v1.GameService.GameExchange:input_type -> apis.lobby.api.v1.GameExchangeRequest
+	4,  // 25: apis.lobby.api.v1.GameService.GameBalance:input_type -> apis.lobby.api.v1.GameBalanceRequest
+	6,  // 26: apis.lobby.api.v1.GameService.GameSettle:input_type -> apis.lobby.api.v1.GameSettleRequest
+	34, // 27: apis.lobby.api.v1.GameService.GameRankReplay:output_type -> apis.lobby.api.v1.GameRankReplayReply
+	30, // 28: apis.lobby.api.v1.GameService.InviteChests:output_type -> apis.lobby.api.v1.InviteChestsReply
+	28, // 29: apis.lobby.api.v1.GameService.InviteChestClaim:output_type -> apis.lobby.api.v1.InviteClaimReply
+	32, // 30: apis.lobby.api.v1.GameService.InviteFriends:output_type -> apis.lobby.api.v1.InviteFriendsReply
+	27, // 31: apis.lobby.api.v1.GameService.InviteInfo:output_type -> apis.lobby.api.v1.InviteInfoReply
+	28, // 32: apis.lobby.api.v1.GameService.InviteClaim:output_type -> apis.lobby.api.v1.InviteClaimReply
+	20, // 33: apis.lobby.api.v1.GameService.GameComplete:output_type -> apis.lobby.api.v1.GameCompleteReply
+	22, // 34: apis.lobby.api.v1.GameService.GameRtp:output_type -> apis.lobby.api.v1.GameRtpReply
+	24, // 35: apis.lobby.api.v1.GameService.GameLeaderboard:output_type -> apis.lobby.api.v1.GameLeaderboardReply
+	18, // 36: apis.lobby.api.v1.GameService.PersonalReport:output_type -> apis.lobby.api.v1.PersonalReportReply
+	14, // 37: apis.lobby.api.v1.GameService.WalletLedger:output_type -> apis.lobby.api.v1.WalletLedgerReply
+	15, // 38: apis.lobby.api.v1.GameService.WalletLedgerDetail:output_type -> apis.lobby.api.v1.WalletLedgerDetailReply
+	10, // 39: apis.lobby.api.v1.GameService.GameRecords:output_type -> apis.lobby.api.v1.GameRecordsReply
+	1,  // 40: apis.lobby.api.v1.GameService.GameLaunch:output_type -> apis.lobby.api.v1.GameLaunchReply
+	3,  // 41: apis.lobby.api.v1.GameService.GameExchange:output_type -> apis.lobby.api.v1.GameIdentityReply
+	5,  // 42: apis.lobby.api.v1.GameService.GameBalance:output_type -> apis.lobby.api.v1.GameBalanceReply
+	7,  // 43: apis.lobby.api.v1.GameService.GameSettle:output_type -> apis.lobby.api.v1.GameSettleReply
+	27, // [27:44] is the sub-list for method output_type
+	10, // [10:27] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name
 	10, // [10:10] is the sub-list for extension extendee
 	0,  // [0:10] is the sub-list for field type_name
@@ -2894,7 +3046,7 @@ func file_apis_lobby_api_v1_game_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_apis_lobby_api_v1_game_api_proto_rawDesc), len(file_apis_lobby_api_v1_game_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   33,
+			NumMessages:   35,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

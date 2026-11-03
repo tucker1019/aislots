@@ -29,7 +29,7 @@ func (f *statsFake) ReadRTP(_ context.Context, _ string, minutes int, now time.T
 }
 func (f *statsFake) ReadLeaderboard(context.Context, string, string, string, time.Time) ([]model.RankView, time.Time, error) {
 	f.reads++
-	return []model.RankView{{UID: 7, Nickname: "Private Account", AvatarID: 2, BetID: "bet", BetAmount: "100", WinAmount: "200", Multiplier: "2.00", Streak: 3, EndedAt: time.Now()}}, time.Now(), f.err
+	return []model.RankView{{PlatformOrderID: "123", UID: 7, Nickname: "Private Account", AvatarID: 2, BetID: "bet", BetAmount: "100", WinAmount: "200", Multiplier: "2.00", Streak: 3, EndedAt: time.Now()}}, time.Now(), f.err
 }
 func TestStatisticsAPIAuthCachePrivacyAndValidation(t *testing.T) {
 	ctx := context.Background()

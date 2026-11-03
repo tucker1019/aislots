@@ -8,6 +8,7 @@ import (
 )
 
 type GameEntry struct {
+	APIURL   string `json:"apiUrl"`
 	Provider string `json:"provider"`
 	Name     string `json:"name"`
 	Enabled  bool   `json:"enabled"`
@@ -39,6 +40,12 @@ func LoadGames(path string) (GameConfig, error) {
 		return c, fmt.Errorf("invalid game identity configuration")
 	}
 	for id, g := range c.Games {
+		if g.APIURL != "" {
+			a, e := url.Parse(g.APIURL)
+			if e != nil || a.Host == "" || (a.Scheme != "http" && a.Scheme != "https") || a.User != nil || a.RawQuery != "" || a.Fragment != "" {
+				return c, fmt.Errorf("invalid game API entry %s", id)
+			}
+		}
 		u, e := url.Parse(g.URL)
 		if id == "" || e != nil || u.Host == "" || (u.Scheme != "http" && u.Scheme != "https") || u.User != nil || u.RawQuery != "" || u.Fragment != "" {
 			return c, fmt.Errorf("invalid game entry %s", id)

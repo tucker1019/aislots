@@ -81,9 +81,18 @@ func TestStatisticsIncrementalIdempotentWindowsAndStreaks(t *testing.T) {
 	if _, err := m.CompleteGame(ctx, bad); err == nil {
 		t.Fatal("gap accepted")
 	}
+	var original LobbyGameCompletion
+	if e = db.Where("game_id=? AND bet_id=?", "AG1", one.BetID).Take(&original).Error; e != nil || original.PlatformOrderID <= 0 {
+		t.Fatal(original, e)
+	}
 	if e = m.RebuildStatistics(ctx, "AG1"); e != nil {
 		t.Fatal("rebuild failed", e)
 	}
+	var rebuilt LobbyGameCompletion
+	if e = db.Where("game_id=? AND bet_id=?", "AG1", one.BetID).Take(&rebuilt).Error; e != nil || rebuilt.PlatformOrderID != original.PlatformOrderID {
+		t.Fatal("platform order changed after rebuild", rebuilt, e)
+	}
+
 	r, e = m.ReadRTP(ctx, "AG1", 5, now)
 	if e != nil || r.Rounds != 3 || r.WinAmount != "230" {
 		t.Fatal("rebuild drift", r, e)

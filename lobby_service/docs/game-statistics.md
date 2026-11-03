@@ -45,3 +45,11 @@ go run ./app/apis/lobby/api/cmd/statistics-rebuild -game AG1 -apply
 ```
 
 重建在游戏级锁和同一事务中清空并重新生成该游戏聚合与候选，只使用已经留存的整局完成通知，保留启用时间，不读取机台库、不回填旧投注，不修改钱包。失败回滚；大体量时在维护窗口执行。最多15秒后各实例查询缓存自然失效。
+
+### Ranked order replay
+
+`lobby_game_completions.platform_order_id` is a platform-generated persistent identity for one complete game chain. It is distinct from the game bet ID and per-frame money request ID. Existing completion rows receive identities during migration; no historical game results are imported. Statistics rebuild preserves these identities.
+
+Leaderboard items include `platformOrderId`. `POST /api/game/rank-replay` accepts the viewer's uid/sid, gameId, platformOrderId, board (`wins`/`multiplier`) and period (`today`/`week`/`all`). It rechecks the current Top 20 and resolves the owner/game bet entirely on the server. Streak replays and arbitrary non-ranked orders are rejected.
+
+Configure the game entry `apiUrl` to its private service address. The platform calls `POST /internal/rank-replay` with the existing service Bearer secret and server-resolved uid/gameId/betId. The game verifies a completed owned bet and its configured platform identity before issuing the existing read-only share token. The response is converted to the configured game URL with only `replay` and `share`; no login token or owner identity is sent to the viewer. Never log full replay URLs or service credentials.

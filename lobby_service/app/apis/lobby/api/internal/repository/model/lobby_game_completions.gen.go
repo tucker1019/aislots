@@ -12,15 +12,16 @@ const TableNameLobbyGameCompletion = "lobby_game_completions"
 
 // LobbyGameCompletion mapped from table <lobby_game_completions>
 type LobbyGameCompletion struct {
-	GameID    string    `gorm:"column:game_id;primaryKey" json:"game_id"`
-	BetID     string    `gorm:"column:bet_id;primaryKey" json:"bet_id"`
-	UID       int64     `gorm:"column:uid;not null" json:"uid"`
-	Sequence  int64     `gorm:"column:sequence;not null" json:"sequence"`
-	BetAmount int64     `gorm:"column:bet_amount;not null" json:"bet_amount"`
-	WinAmount int64     `gorm:"column:win_amount;not null" json:"win_amount"`
-	StartedAt time.Time `gorm:"column:started_at;not null" json:"started_at"`
-	EndedAt   time.Time `gorm:"column:ended_at;not null" json:"ended_at"`
-	Included  bool      `gorm:"column:included;not null" json:"included"`
+	GameID          string    `gorm:"column:game_id;primaryKey" json:"game_id"`
+	BetID           string    `gorm:"column:bet_id;primaryKey" json:"bet_id"`
+	UID             int64     `gorm:"column:uid;not null" json:"uid"`
+	Sequence        int64     `gorm:"column:sequence;not null" json:"sequence"`
+	BetAmount       int64     `gorm:"column:bet_amount;not null" json:"bet_amount"`
+	WinAmount       int64     `gorm:"column:win_amount;not null" json:"win_amount"`
+	StartedAt       time.Time `gorm:"column:started_at;not null" json:"started_at"`
+	EndedAt         time.Time `gorm:"column:ended_at;not null" json:"ended_at"`
+	Included        bool      `gorm:"column:included;not null" json:"included"`
+	PlatformOrderID int64     `gorm:"column:platform_order_id;not null" json:"platform_order_id"`
 }
 
 // TableName LobbyGameCompletion's table name

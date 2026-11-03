@@ -3,6 +3,7 @@ package apis.lobby.api.v1;
 option go_package="apps/pb/apis/lobby/api/v1;v1";
 import "google/api/annotations.proto";
 service GameService {
+ rpc GameRankReplay(GameRankReplayRequest) returns (GameRankReplayReply) {option (google.api.http)={post:"/api/game/rank-replay" body:"*"};}
  rpc InviteChests(InviteRequest) returns (InviteChestsReply) {option (google.api.http)={post:"/api/activity/invite/chests" body:"*"};}
  rpc InviteChestClaim(InviteRequest) returns (InviteClaimReply) {option (google.api.http)={post:"/api/activity/invite/chest/claim" body:"*"};}
  rpc InviteFriends(InviteRequest) returns (InviteFriendsReply) {option (google.api.http)={post:"/api/activity/invite/friends" body:"*"};}
@@ -47,7 +48,7 @@ message GameCompleteRequest {int64 uid=1;string game_id=2 [json_name="gameId"];s
 message GameCompleteReply {bool included=1;}
 message GameStatisticsRequest {optional int64 uid=1;optional string sid=2;string game_id=3 [json_name="gameId"];string window=4;string board=5;string period=6;}
 message GameRtpReply {string game_id=1 [json_name="gameId"];string from=2;string to=3;string updated_at=4 [json_name="updatedAt"];string statistics_since=5 [json_name="statisticsSince"];string bet_amount=6 [json_name="betAmount"];string win_amount=7 [json_name="winAmount"];int64 rounds=8;bool has_data=9 [json_name="hasData"];string percent=10;}
-message GameLeaderboardItem {int32 rank=1;string user_id=2 [json_name="userId"];string nickname=3;int32 avatar_id=4 [json_name="avatarId"];string bet_id=5 [json_name="betId"];string bet_amount=6 [json_name="betAmount"];string win_amount=7 [json_name="winAmount"];string multiplier=8;int64 streak=9;string occurred_at=10 [json_name="occurredAt"];}
+message GameLeaderboardItem {int32 rank=1;string user_id=2 [json_name="userId"];string nickname=3;int32 avatar_id=4 [json_name="avatarId"];string bet_id=5 [json_name="betId"];string bet_amount=6 [json_name="betAmount"];string win_amount=7 [json_name="winAmount"];string multiplier=8;int64 streak=9;string occurred_at=10 [json_name="occurredAt"];string platform_order_id=11 [json_name="platformOrderId"];}
 message GameLeaderboardReply {repeated GameLeaderboardItem items=1;string updated_at=2 [json_name="updatedAt"];string statistics_since=3 [json_name="statisticsSince"];string timezone=4;}
 
 message InviteRequest {string reward_id=4 [json_name="rewardId"];int32 page=5;optional int64 uid=1;optional string sid=2;string request_id=3 [json_name="requestId"];}
@@ -59,3 +60,6 @@ message InviteChest {int64 slot=1;string reward_id=2 [json_name="rewardId"];int6
 message InviteChestsReply {InviteInfoReply info=1;repeated InviteChest items=2;int32 page=3;bool has_more=4 [json_name="hasMore"];}
 message InviteFriend {string uid=1;string account=2;string registered_at=3 [json_name="registeredAt"];int64 deposit_count=4 [json_name="depositCount"];int64 deposit_amount=5 [json_name="depositAmount"];int64 bet_amount=6 [json_name="betAmount"];bool qualified=7;repeated string reasons=8;int32 required_deposit_count=9 [json_name="requiredDepositCount"];int64 required_deposit_amount=10 [json_name="requiredDepositAmount"];int64 required_bet_amount=11 [json_name="requiredBetAmount"];int32 duration_days=12 [json_name="durationDays"];}
 message InviteFriendsReply {repeated InviteFriend items=1;int32 page=2;bool has_more=3 [json_name="hasMore"];}
+
+message GameRankReplayRequest {int64 uid=1;string sid=2;string game_id=3 [json_name="gameId"];string platform_order_id=4 [json_name="platformOrderId"];string board=5;string period=6;}
+message GameRankReplayReply {string replay_url=1 [json_name="replayUrl"];}

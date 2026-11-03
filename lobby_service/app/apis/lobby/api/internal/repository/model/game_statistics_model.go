@@ -10,6 +10,7 @@ import (
 )
 
 type GameCompletion struct {
+	PlatformOrderID                int64
 	UID                            int64
 	GameID, BetID                  string
 	Sequence, BetAmount, WinAmount int64
@@ -24,6 +25,7 @@ type RTPView struct {
 type RankView struct {
 	UID                                     int64
 	BetID, BetAmount, WinAmount, Multiplier string
+	PlatformOrderID                         string
 	Streak                                  int64
 	EndedAt                                 time.Time
 	Nickname                                string
@@ -78,7 +80,13 @@ func (m *GameModel) CompleteGame(ctx context.Context, in GameCompletion) (bool, 
 		if in.Sequence != state.LastSequence+1 {
 			return xerr.ErrGameConflict
 		}
-		if e := tx.Exec(`INSERT INTO lobby_game_completions(game_id,bet_id,uid,sequence,bet_amount,win_amount,started_at,ended_at,included) VALUES(?,?,?,?,?,?,?,?,?)`, in.GameID, in.BetID, in.UID, in.Sequence, in.BetAmount, in.WinAmount, in.StartedAt, in.EndedAt, included).Error; e != nil {
+		query := `INSERT INTO lobby_game_completions(game_id,bet_id,uid,sequence,bet_amount,win_amount,started_at,ended_at,included) VALUES(?,?,?,?,?,?,?,?,?)`
+		args := []any{in.GameID, in.BetID, in.UID, in.Sequence, in.BetAmount, in.WinAmount, in.StartedAt, in.EndedAt, included}
+		if in.PlatformOrderID > 0 {
+			query = `INSERT INTO lobby_game_completions(game_id,bet_id,uid,sequence,bet_amount,win_amount,started_at,ended_at,included,platform_order_id) OVERRIDING SYSTEM VALUE VALUES(?,?,?,?,?,?,?,?,?,?)`
+			args = append(args, in.PlatformOrderID)
+		}
+		if e := tx.Exec(query, args...).Error; e != nil {
 			return e
 		}
 		if !included || in.WinAmount == 0 {
@@ -199,7 +207,7 @@ func (m *GameModel) ReadLeaderboard(ctx context.Context, game, board, period str
 		}
 	}
 	// At most seven Top-50 sets; never reads the raw completion table. User profiles are joined only after LIMIT 20.
-	query := `SELECT ranked.uid,ranked.bet_id,ranked.bet_amount::text,ranked.win_amount::text,ROUND(ranked.win_amount::numeric/ranked.bet_amount,2)::text AS multiplier,ranked.streak,ranked.ended_at,u.nickname,u.avatar_id FROM (SELECT * FROM lobby_game_rank_candidates WHERE game_id=? AND board=? AND period IN ? ORDER BY score DESC,ended_at,entry_key LIMIT 20) ranked JOIN lobby_users u ON u.uid=ranked.uid ORDER BY ranked.score DESC,ranked.ended_at,ranked.entry_key`
+	query := `SELECT completion.platform_order_id::text AS platform_order_id,ranked.uid,ranked.bet_id,ranked.bet_amount::text,ranked.win_amount::text,ROUND(ranked.win_amount::numeric/ranked.bet_amount,2)::text AS multiplier,ranked.streak,ranked.ended_at,u.nickname,u.avatar_id FROM (SELECT * FROM lobby_game_rank_candidates WHERE game_id=? AND board=? AND period IN ? ORDER BY score DESC,ended_at,entry_key LIMIT 20) ranked JOIN lobby_game_completions completion ON completion.game_id=ranked.game_id AND completion.bet_id=ranked.bet_id JOIN lobby_users u ON u.uid=ranked.uid ORDER BY ranked.score DESC,ranked.ended_at,ranked.entry_key`
 	var rows []RankView
 	e := db.Raw(query, game, board, keys).Scan(&rows).Error
 	return rows, since, e
@@ -222,7 +230,7 @@ func (m *GameModel) RebuildStatistics(ctx context.Context, game string) error {
 		}
 		replay := &GameModel{DB: tx, Location: m.Location}
 		for _, row := range records {
-			if _, e := replay.CompleteGame(ctx, GameCompletion{UID: row.UID, GameID: row.GameID, BetID: row.BetID, Sequence: row.Sequence, BetAmount: row.BetAmount, WinAmount: row.WinAmount, StartedAt: row.StartedAt, EndedAt: row.EndedAt}); e != nil {
+			if _, e := replay.CompleteGame(ctx, GameCompletion{PlatformOrderID: row.PlatformOrderID, UID: row.UID, GameID: row.GameID, BetID: row.BetID, Sequence: row.Sequence, BetAmount: row.BetAmount, WinAmount: row.WinAmount, StartedAt: row.StartedAt, EndedAt: row.EndedAt}); e != nil {
 				return e
 			}
 		}

@@ -26,6 +26,7 @@ func New(ctx *svc.ServiceContext) http.Handler {
 	vip := viplogic.New(ctx)
 	newbie := newbielogic.New(ctx)
 	game := gamelogic.New(ctx)
+	mux.HandleFunc("POST /api/game/rank-replay", handler.API(func() *pb.GameRankReplayRequest { return new(pb.GameRankReplayRequest) }, game.GameRankReplay))
 	mux.HandleFunc("POST /api/activity/invite/chests", handler.API(func() *pb.InviteRequest { return new(pb.InviteRequest) }, game.InviteChests))
 	mux.HandleFunc("POST /api/activity/invite/chest/claim", handler.API(func() *pb.InviteRequest { return new(pb.InviteRequest) }, game.InviteChestClaim))
 	mux.HandleFunc("POST /api/activity/invite/friends", handler.API(func() *pb.InviteRequest { return new(pb.InviteRequest) }, game.InviteFriends))
