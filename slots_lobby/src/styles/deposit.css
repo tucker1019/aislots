@@ -1,7 +1,5 @@
-.deposit-page { padding: 20px 0; }
-.deposit-heading > span { font-size: 11px; color: var(--muted); }
-.deposit-heading h1 { font-size: 27px; margin: 5px 0; }
-.deposit-heading p { font-size: 13px; color: var(--muted); }
+.home-content:has(.deposit-page) { padding: 0; }
+.deposit-page { padding: 0; }
 .deposit-test-notice { background: #fff7e8; color: #946222; font-size: 11px; line-height: 1.6; padding: 10px 12px; border-radius: 8px; margin: 16px 0; }
 .deposit-card { border: 1px solid var(--line); border-radius: 12px; padding: 15px 12px; margin-bottom: 12px; }
 .deposit-card h2 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }

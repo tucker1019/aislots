@@ -1,3 +1,4 @@
+import {LoadingState} from '../../components/feedback/LoadingState';
 import {NetworkError} from '../../components/feedback/NetworkError';
 import { WithdrawalRecordDetail } from '../withdrawal/WithdrawalRecordDetail';
 import { t, getLocale } from '../../i18n';
@@ -29,7 +30,7 @@ function RechargeRecordDetail({ orderId, onBack }: { orderId: string; onBack: ()
   return <RecordsLayout title={t('copy.depositDetails')} backLabel={t('copy.backToDepositHistory')} onBack={onBack}>
     {failed ? <NetworkError disabled={profile.isFetching || order.isFetching}
       onRetry={() => { if (profile.isError) void profile.refetch(); else void order.refetch(); }}/>
-      : !data ? <p className="cash-records-feedback" role="status">{t('copy.loadingDepositDetails')}</p>
+      : !data ? <LoadingState label={t('copy.loadingDepositDetails')}/>
       : <article className="cash-receipt">
         <div className="cash-receipt-summary"><span>{t('copy.depositAmount')}</span><strong>+{coinsLabel(data.amount)}</strong>
           <p className={`cash-status-${data.status}`}>{data.status === 'success' ? t('copy.transactionSuccessful') : data.status === 'failed' ? t('copy.transactionFailed') : t('copy.awaitingPaymentConfirmation')}</p></div>

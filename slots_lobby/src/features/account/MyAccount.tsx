@@ -1,3 +1,4 @@
+import {LoadingState} from '../../components/feedback/LoadingState';
 import {NetworkError} from '../../components/feedback/NetworkError';
 import { LanguageSelector } from './LanguageSelector';
 import { t } from '../../i18n';
@@ -8,37 +9,37 @@ import { useSessionStore } from '../../stores/session';
 import { Icon } from '../../components/Icon';
 import type { IconName } from '../../components/Icon';
 import { useAccountProfile } from './useAccountProfile';
-interface AccountAction {id:string;icon:IconName;label:string}
+interface AccountAction {id:string;icon:IconName;label:string;shortLabel?:string}
 const benefits = ():AccountAction[] => [
- {id:'checkin',icon:'calendar',label:t('copy.dailyCheckIn')},
- {id:'weekly',icon:'gift',label:t('copy.weeklyGift')},
- {id:'monthly',icon:'calendar',label:t('copy.monthlyGift')},
- {id:'upgrade',icon:'growth',label:t('copy.levelUpReward')},
- {id:'vip',icon:'crown',label:t('copy.vipCenter')},
+ {id:'checkin',icon:'calendar',label:t('copy.dailyCheckIn'),shortLabel:t('account.shortcut.checkin')},
+ {id:'weekly',icon:'gift',label:t('copy.weeklyGift'),shortLabel:t('account.shortcut.weekly')},
+ {id:'monthly',icon:'calendar',label:t('copy.monthlyGift'),shortLabel:t('account.shortcut.monthly')},
+ {id:'upgrade',icon:'growth',label:t('copy.levelUpReward'),shortLabel:t('account.shortcut.upgrade')},
+ {id:'vip',icon:'crown',label:t('copy.vipCenter'),shortLabel:t('account.shortcut.vip')},
 ];
 const management = ():AccountAction[] => [
- {id:'ledger',icon:'list',label:t('copy.walletTransactions')},
- {id:'records',icon:'transfer',label:t('copy.depositHistory')},
- {id:'wallet',icon:'wallet',label:t('copy.walletManagement')},
- {id:'bets',icon:'list',label:t('copy.betHistory')},
- {id:'report',icon:'report',label:t('copy.personalReport')},
- {id:'invite',icon:'users',label:t('copy.inviteFriends')},
- {id:'agent',icon:'growth',label:t('copy.agentCenter')},
+ {id:'ledger',icon:'list',label:t('copy.walletTransactions'),shortLabel:t('account.shortcut.ledger')},
+ {id:'records',icon:'transfer',label:t('copy.depositHistory'),shortLabel:t('account.shortcut.records')},
+ {id:'wallet',icon:'wallet',label:t('copy.walletManagement'),shortLabel:t('account.shortcut.wallet')},
+ {id:'bets',icon:'list',label:t('copy.betHistory'),shortLabel:t('account.shortcut.bets')},
+ {id:'report',icon:'report',label:t('copy.personalReport'),shortLabel:t('account.shortcut.report')},
+ {id:'invite',icon:'users',label:t('copy.inviteFriends'),shortLabel:t('account.shortcut.invite')},
+ {id:'agent',icon:'growth',label:t('copy.agentCenter'),shortLabel:t('account.shortcut.agent')},
 ];
-function ActionGrid({items,onAction,label}:{items:AccountAction[];onAction:(id:string)=>void;label:string}) {
- return <div className="account-actions" aria-label={label}>{items.map(item=><button type="button" key={item.id} onClick={()=>onAction(item.id)}><span className="account-action-icon" aria-hidden="true"><Icon name={item.icon} size={21}/></span><span>{item.label}</span></button>)}</div>;
+function ActionGrid({items,onAction,label}:{items:AccountAction[];onAction:(id:string)=>void;label:string;shortLabel?:string}) {
+ return <div className="account-actions" aria-label={label}>{items.map(item=><button type="button" key={item.id} aria-label={item.label} title={item.label} onClick={()=>onAction(item.id)}><span className="account-action-icon" aria-hidden="true"><Icon name={item.icon} size={21}/></span><span className="account-action-label">{item.shortLabel??item.label}</span></button>)}</div>;
 }
-export function MyAccount({ onAction, onDeposit, onRecords, onBetRecords, onBenefits, onLedger, onReport, onInvite, onAgent, onWallet, onWithdraw }: { onAction: () => void; onDeposit: () => void; onRecords: () => void; onBetRecords?: () => void; onBenefits?: () => void; onLedger?: () => void; onReport?: () => void; onInvite?: () => void; onAgent?: () => void; onWallet?: () => void; onWithdraw?: () => void }) {
+export function MyAccount({ onAction, onDeposit, onRecords, onBetRecords, onBenefits, onLedger, onReport, onInvite, onAgent, onWallet, onWithdraw, onSettings }: { onAction: () => void; onDeposit: () => void; onRecords: () => void; onBetRecords?: () => void; onBenefits?: () => void; onLedger?: () => void; onReport?: () => void; onInvite?: () => void; onAgent?: () => void; onWallet?: () => void; onWithdraw?: () => void; onSettings?: () => void }) {
   const { data, isPending, isError, isFetching, refetch } = useAccountProfile();
   const uid = useSessionStore(state => state.session?.uid);
   const vip = useQuery({ queryKey: ['lobby', 'benefits', 'vip', uid], queryFn: ({ signal }) => loadVipOverview(signal), enabled: Boolean(uid), retry: false, staleTime: 15000 });
-  if (isPending) return <section className="my-account" role="status">{t('copy.loadingProfile')}</section>;
+  if (isPending) return <section className="my-account"><LoadingState label={t('copy.loadingProfile')}/></section>;
   if (!data) return <section className="my-account"><NetworkError disabled={isFetching} onRetry={()=>void refetch()}/></section>;
   return <section className="my-account" aria-label={t('copy.myAccountDetails')}>
     <div className="account-identity">
       <img src={`/assets/profile/avatar/${data.avatarId}.png`} alt={t('copy.valueSAvatar', {p0: data.nickname})} width={52} height={52} />
       <div className="account-identity-text"><div className="account-name-row"><h1 title={data.nickname}>{data.nickname}</h1>{vip.data ? <span className="account-vip-badge" aria-label={t('copy.vipLevelValue', {p0: vip.data.level})}><Icon name="crown" size={12} />VIP{vip.data.level}</span> : <button type="button" className="account-vip-badge" disabled={vip.isPending || vip.isFetching} onClick={() => void vip.refetch()} aria-label={t('copy.reloadVipLevel')}>{vip.isError ? t('copy.retryVip') : 'VIP…'}</button>}</div><p>{t('common.idLabel')}{data.uid}</p></div>
-      <button type="button" className="account-settings" aria-label={t('copy.settings')} onClick={onAction}><Icon name="settings" size={21} /></button>
+      <button type="button" className="account-settings" aria-label={t('copy.settings')} onClick={onSettings??onAction}><Icon name="settings" size={21} /></button>
       <button type="button" className="account-settings" aria-label={t('copy.messages')} onClick={onAction}><Icon name="mail" size={21} /></button>
     </div>
     <div className="account-balance-card">

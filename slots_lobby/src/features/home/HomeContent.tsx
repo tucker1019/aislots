@@ -7,12 +7,12 @@ import { GameTile } from './GameTile';
 import type { AvailableProvider } from './content';
 import { navigateLobby } from '../../app/useLobbyRoute';
 
-export function HomeContent({ onToast }: { onToast: (text: string) => void }) {
+export function HomeContent() {
   const [selected, setSelected] = useState<AvailableProvider>('hot');
   return <>
     <NoticeBar />
     <PromotionBanner />
-    <ProviderTabs selected={selected} onSelect={setSelected} onComingSoon={() => onToast(t('copy.comingSoon'))} />
+    <ProviderTabs selected={selected} onSelect={setSelected} />
     <section className="home-game-list" aria-label={t('copy.gameList')}>
       <div className="home-game-grid"><GameTile loading={false} onEnter={() => navigateLobby('game')} /></div>
     </section>

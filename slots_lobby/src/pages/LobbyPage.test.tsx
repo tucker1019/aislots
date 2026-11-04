@@ -17,22 +17,20 @@ it('保留资料顶栏，按通知、Banner、厂商、游戏顺序排布，只�
   expect(await screen.findByLabelText('金币余额 123.45')).toBeInTheDocument();
   const main = screen.getByRole('main');
   const regions = Array.from(main.children).map(element => element.getAttribute('aria-label'));
-  expect(regions).toEqual(['通知', '游戏推荐', '游戏厂商', '游戏列表']);
+  expect(regions).toEqual(['通知', '轮播', '游戏厂商', '游戏列表']);
   const providers = within(screen.getByRole('navigation', { name: '游戏厂商' }));
-  expect(providers.getAllByRole('button').map(button => button.textContent)).toHaveLength(5);
+  expect(providers.getAllByRole('button').map(button => button.textContent)).toHaveLength(2);
   expect(providers.getByRole('button', { name: '热门' })).toHaveAttribute('aria-pressed', 'true');
   expect(within(screen.getByRole('region', { name: '游戏列表' })).getAllByRole('button')).toHaveLength(1);
   expect(screen.getByRole('button', { name: '进入麻将胡了' })).toBeEnabled();
 });
-it('AG显示现有游戏，其他厂商弹敬请期待并保持当前列表', async () => {
+it('AG与热门切换显示现有游戏，隐藏未接入厂商', async () => {
   const user = setup();
   await user.click(screen.getByRole('button', { name: 'AG' }));
   for (const provider of ['PG', 'JILI', 'PP']) {
-    await user.click(screen.getByRole('button', { name: provider }));
-    expect(await screen.findByText('敬请期待')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'AG' })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('button', { name: '进入麻将胡了' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: provider })).not.toBeInTheDocument();
   }
+  expect(screen.getByRole('button', { name: '进入麻将胡了' })).toBeInTheDocument();
   await user.click(screen.getByRole('button', { name: '热门' }));
   expect(screen.getByRole('button', { name: '热门' })).toHaveAttribute('aria-pressed', 'true');
 });
@@ -97,3 +95,7 @@ it('我的资金明细入口进入独立路由并隐藏底栏',async()=>{
  const user=setup();await user.click(screen.getByRole('button',{name:'我的'}));await screen.findByText('账户服务');await user.click(screen.getByRole('button',{name:'资金明细'}));expect(window.location.pathname).toBe('/wallet-ledger');expect(screen.getByRole('heading',{name:'资金明细'})).toBeInTheDocument();expect(screen.queryByRole('navigation',{name:'底部导航'})).not.toBeInTheDocument();
 });
 it('赚钱入口有独立路由并选中底栏',async()=>{const user=setup();await user.click(screen.getByRole('button',{name:'赚钱'}));expect(window.location.pathname).toBe('/earn');expect(screen.getByRole('button',{name:'赚钱'})).toHaveAttribute('aria-current','page');expect(screen.getByRole('heading',{name:'反水金额'})).toBeInTheDocument();});
+
+it('我的设置进入个人资料，返回保留我的页入口',async()=>{
+ const user=setup();await user.click(screen.getByRole('button',{name:'我的'}));await user.click(await screen.findByRole('button',{name:'设置'}));expect(await screen.findByRole('heading',{name:'个人资料'})).toBeInTheDocument();expect(window.location.pathname).toBe('/profile');expect(screen.queryByRole('navigation',{name:'底部导航'})).not.toBeInTheDocument();await user.click(screen.getByRole('button',{name:'返回我的'}));expect(window.location.pathname).toBe('/my');
+});

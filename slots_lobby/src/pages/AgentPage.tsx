@@ -1,3 +1,4 @@
+import {LoadingState} from '../components/feedback/LoadingState';
 import {NetworkError} from '../components/feedback/NetworkError';
 import {useClaimToast} from '../features/rewards/useClaimToast';
 import {RecordFilterBar} from '../components/records/RecordFilterBar';
@@ -33,7 +34,7 @@ export function AgentPage({onBack}:{onBack:()=>void}){
  ]}/>:undefined}>
  {holder}
  {['team','report'].includes(view)&&<form className="agent-search" onSubmit={e=>{e.preventDefault();navigate(view,{search:input});}}><input aria-label={t('agent.search')} placeholder={t('agent.search')} value={input} onChange={e=>setInput(e.target.value)} maxLength={64}/><button type="submit">{t('agent.query')}</button>{params.search&&<button type="button" onClick={()=>{setInput('');navigate(view,{search:''});}}>{t('agent.clear')}</button>}</form>}
- {query.isPending?<p role="status">{t('copy.loading')}</p>:query.isError?<NetworkError disabled={query.isFetching} onRetry={()=>void query.refetch()}/>:query.data&&<>
+ {query.isPending?<LoadingState label={t('copy.loading')}/>:query.isError?<NetworkError disabled={query.isFetching} onRetry={()=>void query.refetch()}/>:query.data&&<>
  {view==='center'?<AgentOverview data={query.data} navigate={v=>navigate(v,{targetUid:0,search:''})} onClaim={()=>claim.mutate()} pending={claim.isPending} onCopy={success=>{if(success)void toast.success(t('agent.copied'));else void toast.error(t('agent.copyFailed'));}}/>:view==='report'?<AgentReport data={query.data} onDetail={kind=>navigate('report-details',{kind})}/>:view==='rules'?<section className="agent-card"><h2>{t('agent.rules')}</h2><p>{t('agent.rulesText')}</p><p>{t('agent.previewNote')}</p><AgentTable view="rates" kind="" data={query.data} onMember={()=>undefined} onProvider={()=>undefined}/></section>:<AgentTable view={view} kind={params.kind} data={query.data} onMember={targetUid=>navigate('team',{targetUid,search:''})} onProvider={provider=>navigate('performance-details',{provider})}/>}
  {!['center','report','rules','rates','performance'].includes(view)&&<nav className="agent-pagination" aria-label={t('agent.pagination')}><button type="button" disabled={params.page<=1||query.isFetching} onClick={()=>navigate(view,{page:params.page-1})}>{t('agent.previous')}</button><span>{params.page}</span><button type="button" disabled={!query.data.hasMore||query.isFetching} onClick={()=>navigate(view,{page:params.page+1})}>{t('agent.next')}</button></nav>}
  {filtered&&<p className="agent-note">{query.data.status==='preview'?t('agent.previewNote'):t('agent.settledNote')} · {query.data.timezone}</p>}

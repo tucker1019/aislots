@@ -1,3 +1,4 @@
+import {LoadingState} from '../components/feedback/LoadingState';
 import {NetworkError} from '../components/feedback/NetworkError';
 import { t } from '../i18n';
 import { RecordsLayout } from '../components/records/RecordsLayout';
@@ -37,7 +38,7 @@ export function BetRecordsPage({ onBack }: { onBack: () => void }) {
       </>}
     </div>}>
     {summary && <div className="bet-records-summary"><div><span>{t('copy.bets')}</span><strong>{summary.count}</strong></div><div><span>{t('copy.totalBets')}{summary.currency}{t('common.closeParenthesis')}</span><strong>{betMoney(summary.betAmount)}</strong></div><div><span>{t('copy.netProfit254')}{summary.currency}{t('common.closeParenthesis')}</span><strong className={summary.profit < 0 ? 'bet-loss' : 'bet-gain'}>{betMoney(summary.profit)}</strong></div></div>}
-    {query.isPending ? <div className="bet-records-feedback" role="status">{t('copy.loadingBetHistory')}</div> : !summary ? <NetworkError disabled={query.isFetching} onRetry={() => void query.refetch()}/> : <>
+    {query.isPending ? <LoadingState label={t('copy.loadingBetHistory')}/> : !summary ? <NetworkError disabled={query.isFetching} onRetry={() => void query.refetch()}/> : <>
       {items.length ? <BetRecordList items={items} /> : <div className="bet-records-feedback"><Icon name="list" size={42} /><p>{t('copy.noBetsFound')}</p></div>}
       {query.isError && <p role="alert" className="bet-records-feedback">{t('copy.loadingFailedExistingRecordsArePreservedPlease')}</p>}
       {query.hasNextPage && <button className="bet-records-more" type="button" disabled={query.isFetching} onClick={() => void query.fetchNextPage()}>{query.isFetchingNextPage ? t('copy.loading') : query.isError ? t('copy.retryLoading') : t('copy.loadMore')}</button>}

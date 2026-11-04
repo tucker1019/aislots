@@ -71,9 +71,26 @@ export async function loadAccountProfile(signal?: AbortSignal): Promise<UserProf
   const identity = await ensureSession();
   const params = new URLSearchParams({ uid: String(identity.uid), sid: identity.sid });
   const data = await request('/api/user/user/info?' + params.toString(), { signal });
-  if (!isRecord(data) || data.uid !== identity.uid || typeof data.nickname !== 'string' ||
+  return parseProfile(data,identity.uid);
+}
+
+function parseProfile(data:unknown,uid:number):UserProfile {
+  if (!isRecord(data) || data.uid !== uid || (data.account!==undefined&&typeof data.account!=='string') || typeof data.nickname !== 'string' || (data.account!==undefined&&typeof data.account!=='string') ||
     !Number.isInteger(data.avatarId) || Number(data.avatarId) < 1 || Number(data.avatarId) > 15 ||
     !Number.isSafeInteger(data.coins) || Number(data.coins) < 0)
     throw new Error(t('copy.invalidUserProfilePleaseRetry'));
-  return { uid: identity.uid, nickname: data.nickname, avatarId: Number(data.avatarId), coins: Number(data.coins) };
+  return { account:typeof data.account==='string'?data.account:'',uid:uid, nickname: data.nickname, avatarId: Number(data.avatarId), coins: Number(data.coins) };
+}
+
+function requireCurrent(identity:Session){const current=useSessionStore.getState().session;if(current?.uid!==identity.uid||current.sid!==identity.sid)throw new Error(t('copy.signInStateChangedPleaseRetry'));}
+export async function updateAccountAvatar(avatarId:number){
+ const identity=await ensureSession();requireCurrent(identity);
+ const data=await request('/api/user/user/update',{method:'POST',body:JSON.stringify({uid:identity.uid,sid:identity.sid,avatarId})});
+ requireCurrent(identity);return parseProfile(data,identity.uid);
+}
+export async function bindCustomAccount(account:string,password:string){
+ const identity=await ensureSession();requireCurrent(identity);
+ const data=await request('/api/user/account/uniquecode/bind',{method:'POST',body:JSON.stringify({uid:identity.uid,sid:identity.sid,account,password})});
+ requireCurrent(identity);if(!isSession(data)||data.uid!==identity.uid)throw new Error(t('copy.invalidUserProfilePleaseRetry'));
+ confirmed=data;useSessionStore.getState().setSession(data);return data;
 }

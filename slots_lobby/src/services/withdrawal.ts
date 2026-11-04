@@ -13,3 +13,10 @@ export async function loadWithdrawalTiers(signal?:AbortSignal){const data=await 
 export async function createWithdrawal(tierId:string,channel:string,requestId:string,expectedUid?:number){return parseWithdrawal(await call('withdrawal/create',{tierId,channel,requestId},undefined,expectedUid));}
 export async function fetchWithdrawal(orderId:string,signal?:AbortSignal){const result=parseWithdrawal(await call('withdrawal/info',{orderId},signal));if(result.orderId!==orderId)throw new Error(t('withdrawal.invalid'));return result;}
 export async function reviewWithdrawal(orderId:string,decision:'approve'|'return'){return parseWithdrawal(await call('withdrawal/test-review',{orderId,decision}));}
+
+export interface WithdrawalTurnover {remaining:number;canWithdraw:boolean}
+export function parseWithdrawalTurnover(value:unknown):WithdrawalTurnover{
+ if(!isRecord(value)||!money(value.remaining)||typeof value.canWithdraw!=='boolean'||value.canWithdraw!==(value.remaining===0))throw new Error(t('withdrawal.invalid'));
+ return {remaining:value.remaining,canWithdraw:value.canWithdraw};
+}
+export async function loadWithdrawalTurnover(signal?:AbortSignal){return parseWithdrawalTurnover(await call('withdrawal/turnover',{},signal));}

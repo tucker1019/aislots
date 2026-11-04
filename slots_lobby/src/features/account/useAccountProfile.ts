@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { loadAccountProfile } from '../../services/account';
-export function useAccountProfile() {
+export function useAccountProfile(refreshOnMount = false) {
   const query = useQuery({
     queryKey: ['lobby', 'current-profile'], queryFn: ({ signal }) => loadAccountProfile(signal),
-    retry: false, staleTime: 15000, refetchOnWindowFocus: true,
+    refetchOnMount: refreshOnMount ? 'always' : true, retry: false, staleTime: 15000, refetchOnWindowFocus: true,
   });
   const { refetch } = query;
   useEffect(() => {

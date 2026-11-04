@@ -1,0 +1,26 @@
+import { expect, it, vi } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AgentCommission } from './AgentCommission';
+import { fetchAgent, claimAgent } from '../../services/agent';
+vi.mock('../../stores/session', () => ({ useSessionStore: () => 7 }));
+vi.mock('../../services/agent', () => ({ agentDefaults: { period: 'today' }, fetchAgent: vi.fn(), claimAgent: vi.fn() }));
+it('显示真实待领佣金及AG最高比例，领取失败重试沿用同一请求号，规则进入代理中心', async () => {
+  vi.mocked(fetchAgent).mockResolvedValue({ summary: { claimable: 12300 }, items: [{ provider: 'AG', perTenThousand: 300 }, { provider: 'AG', perTenThousand: 200 }, { provider: 'PG', perTenThousand: 900 }] } as Awaited<ReturnType<typeof fetchAgent>>);
+  vi.mocked(claimAgent).mockRejectedValueOnce(new Error('network')).mockResolvedValueOnce({ claimId: 'test', amount: 12300, coins: 12300 });
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
+  render(<QueryClientProvider client={client}><AgentCommission /></QueryClientProvider>);
+  expect(await screen.findByText('123.00')).toBeInTheDocument();
+  expect(screen.getByText('AG')).toBeInTheDocument();
+  expect(screen.getByText('3%')).toBeInTheDocument();
+  expect(screen.queryByText('PG')).not.toBeInTheDocument();
+  const button = screen.getByRole('button', { name: '领取' });
+  fireEvent.click(button);
+  await waitFor(() => expect(button).toBeEnabled());
+  fireEvent.click(button);
+  await waitFor(() => expect(claimAgent).toHaveBeenCalledTimes(2));
+  expect(vi.mocked(claimAgent).mock.calls[0][0]).toBe(vi.mocked(claimAgent).mock.calls[1][0]);
+  fireEvent.click(screen.getByRole('button', { name: /规则查看/ }));
+  expect(window.location.pathname).toBe('/agent');
+  client.clear();
+});

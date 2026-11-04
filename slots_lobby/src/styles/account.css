@@ -25,7 +25,7 @@
 .account-help button + button { border-top: 1px solid var(--line); }
 .account-help button > span:last-child { margin-left: auto; color: #9b9ba2; font-size: 20px; }
 .account-help-icon { width: 21px; height: 21px; border-radius: 50%; text-align: center; line-height: 21px; color: var(--blue); background: #edf4ff; font-weight: 600; }
-@media(max-width:360px) { .account-balance-card { padding: 12px; gap: 5px; } .account-money-actions button { padding: 8px; } .account-actions button { font-size: 10px; } .account-balance { font-size: 20px; } }
+@media(max-width:360px) { .account-balance-card { padding: 12px; gap: 5px; } .account-money-actions button { padding: 8px; } .account-balance { font-size: 20px; } }
 
 .account-settings,.account-help-icon { display: inline-flex; align-items: center; justify-content: center; }
 .account-balance button { vertical-align: middle; }
@@ -33,7 +33,7 @@
 .account-name-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .account-vip-badge { display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0; padding: 2px 6px; border: 1px solid #c8d9ff; border-radius: 8px; background: #edf3ff; color: #3566c5; font-size: 10px; font-weight: 700; line-height: 14px; white-space: nowrap; }
 
-.wallet-amount { display: inline-grid; vertical-align: middle; }.wallet-amount > span { grid-area: 1 / 1; }.wallet-amount-hidden { visibility: hidden; }.wallet-loading-dots { display: inline-flex; align-items: center; gap: 1px; }.wallet-loading-dots > span { display: inline-block; animation: wallet-dot-bounce .7s ease-in-out infinite; }.wallet-refresh-icon,.wallet-refresh-spinning { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }.wallet-refresh-spinning { animation: wallet-refresh-turn .8s linear infinite; }
+.wallet-amount { display: inline-grid; vertical-align: middle; }.wallet-amount > span { grid-area: 1 / 1; }.wallet-amount-hidden { visibility: hidden; }.wallet-loading-dots { display: inline-flex; align-items: center; justify-content: center; gap: 3px; }.wallet-loading-dots > span { display: inline-block; animation: wallet-dot-bounce .7s ease-in-out infinite; }.wallet-refresh-icon,.wallet-refresh-spinning { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }.wallet-refresh-spinning { animation: wallet-refresh-turn .8s linear infinite; }
 @keyframes wallet-refresh-turn { to { transform: rotate(360deg); } }
 @keyframes wallet-dot-bounce { 0%,100% { transform: translateY(0); opacity: .4; } 50% { transform: translateY(-4px); opacity: 1; } }
 @media(prefers-reduced-motion:reduce) { .wallet-refresh-spinning,.wallet-loading-dots > span { animation: none; } }
@@ -41,3 +41,14 @@
 .account-help .account-language-current { margin-left: auto; color: var(--muted); font-size: 12px; flex: 0 0 auto; }.language-options { display: grid; gap: 16px; width: 100%; padding: 12px 0; }.account-refresh-error { color: #b55348; font-size: 12px; margin-bottom: 12px; }
 
 .account-help .account-language-current + span:last-child { margin-left: 0; }
+
+/* Every shortcut reserves the same text area in both supported languages. */
+.account-actions button { min-width:0; justify-content:flex-start; }
+.account-action-icon { flex-shrink:0; }
+.account-action-label { display:block; width:100%; min-block-size:28px; padding-inline:2px; line-height:14px; text-align:center; overflow-wrap:normal; }
+@media(max-width:380px) {
+ .account-balance-card { flex-wrap:wrap; gap:12px; }
+ .account-balance-card > div:first-child { flex-basis:100%; }
+ .account-balance-card .account-money-actions { width:100%; }
+ .account-money-actions > button { flex:1; min-height:36px; }
+}

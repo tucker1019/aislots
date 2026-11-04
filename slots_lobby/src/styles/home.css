@@ -43,45 +43,35 @@
 .promotion-banner {
   position: relative;
   overflow: hidden;
-  height: 84px;
   border-radius: 10px;
-  background: #491207;
+  background: #edf2fa;
   margin-bottom: 10px;
-  color: #fff3d9;
 }
 
-.promotion-banner > img {
-  position: absolute;
-  inset: 0;
+.promotion-link {
+  display: block;
   width: 100%;
-  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.promotion-link:focus-visible {
+  outline: 2px solid var(--ant-color-primary, #0066cc);
+  outline-offset: -3px;
+}
+
+.promotion-banner img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 5.4 / 1;
   object-fit: cover;
-  object-position: center 50%;
-  opacity: .75;
+  object-position: center;
 }
 
-.promotion-copy {
-  position: relative;
-  padding: 9px 16px;
-}
-
-.promotion-copy > span {
-  font-size: 8px;
-  letter-spacing: 1.8px;
-  color: #f5d199;
-}
-
-.promotion-copy h1 {
-  font-size: 24px;
-  line-height: 1.2;
-  font-weight: 650;
-  margin-top: 1px;
-}
-
-.promotion-copy p {
-  font-size: 10px;
-  margin-top: 3px;
-  color: #f1d9bc;
+.promotion-banner .slick-dots {
+  bottom: 6px;
 }
 
 .provider-tabs {
@@ -128,9 +118,6 @@
 
 .provider-hot .provider-mark { font-size: 23px; font-style: normal; }
 .provider-AG .provider-mark { color: #d66c30; }
-.provider-PG .provider-mark { color: #8a6cce; }
-.provider-JILI .provider-mark { color: #238267; font-size: 17px; }
-.provider-PP .provider-mark { color: #b8882f; }
 
 .home-game-grid {
   display: grid;

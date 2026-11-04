@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { loadAccountProfile } from './account';
+import { bindCustomAccount,updateAccountAvatar,loadAccountProfile } from './account';
 import { useSessionStore } from '../stores/session';
 
 const session = { uid: 7, sid: 's'.repeat(52), expiresAt: '2030-01-01T00:00:00Z' };
-const profile = { uid: 7, nickname: 'player_7', avatarId: 3, coins: 123456 };
+const profile = { account:'',uid: 7, nickname: 'player_7', avatarId: 3, coins: 123456 };
 const ok = (data: unknown) => ({ ok: true, status: 200, json: async () => ({ code: 'OK', data }) });
 beforeEach(() => { localStorage.clear(); useSessionStore.setState({ session: null }); });
 
@@ -45,4 +45,13 @@ describe('大厅身份与资料', () => {
     await expect(loadAccountProfile()).rejects.toThrow(/连接/);
     expect(await loadAccountProfile()).toEqual(profile);
   });
+});
+
+it('绑定通过现有接口保留当前UID，密码不会持久化',async()=>{
+ const current={...session,sid:'b'.repeat(52)};useSessionStore.setState({session:current});const send=vi.fn().mockResolvedValueOnce(ok(current)).mockResolvedValueOnce(ok(current));vi.stubGlobal('fetch',send);
+ await bindCustomAccount('custom_user','test_password_123');const [url,init]=send.mock.calls[1];expect(url).toBe('/api/user/account/uniquecode/bind');expect(JSON.parse(init.body)).toEqual({uid:7,sid:current.sid,account:'custom_user',password:'test_password_123'});expect(localStorage.getItem('aislots-lobby-session')).not.toContain('test_password_123');expect(useSessionStore.getState().session?.uid).toBe(7);
+});
+it('头像更新只提交头像ID并拒绝其他用户的资料响应',async()=>{
+ const current={...session,sid:'a'.repeat(52)};useSessionStore.setState({session:current});const send=vi.fn().mockResolvedValueOnce(ok(current)).mockResolvedValueOnce(ok({...profile,uid:8}));vi.stubGlobal('fetch',send);
+ await expect(updateAccountAvatar(8)).rejects.toThrow();expect(JSON.parse(send.mock.calls[1][1].body)).toEqual({uid:7,sid:current.sid,avatarId:8});
 });

@@ -3,6 +3,8 @@ import {render,screen,fireEvent,waitFor} from '@testing-library/react';
 import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
 import {EarnPage} from './EarnPage';
 import {fetchRebate,claimRebate} from '../services/rebate';
+vi.mock('../features/earn/LossReturn',()=>({LossReturn:()=>null}));
+vi.mock('../features/earn/AgentCommission',()=>({AgentCommission:()=>null}));
 vi.mock('../features/invite/InviteChests',()=>({InviteChests:()=>null}));
 vi.mock('../services/rebate',()=>({fetchRebate:vi.fn(),claimRebate:vi.fn()}));
 const info={activityDate:'2026-11-03',timezone:'Asia/Jakarta',claimableTotal:100,daily:{reward:227,availableAt:'2026-11-04T00:00:00+07:00'},weekly:{reward:12,availableAt:'2026-11-09T00:00:00+07:00'},monthly:{reward:12,availableAt:'2026-12-01T00:00:00+07:00'},platforms:[{name:'AG',dailyRateBps:80,weeklyRateBps:10,monthlyRateBps:10}]};

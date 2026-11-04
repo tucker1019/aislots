@@ -1,6 +1,7 @@
+import {LoadingState} from '../../components/feedback/LoadingState';
 import {NetworkError} from '../../components/feedback/NetworkError';
 import { useState } from 'react';
-import { Alert, Button, Form, Input, message, Spin } from 'antd';
+import { Alert, Button, Form, Input, message } from 'antd';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { loadWalletAccounts, saveWalletAccount } from '../../services/wallet-accounts';
 import type { WalletAccount } from '../../services/wallet-accounts';
@@ -43,7 +44,7 @@ export function WalletManagement({ onBack }: { onBack: () => void }) {
       <Button type="primary" htmlType="submit" block size="large" loading={save.isPending}>{t('wallet.save')}</Button>
     </Form> : <>
       <h2>{t('wallet.channels')}</h2>
-      {query.isPending ? <div className="wallet-feedback" role="status"><Spin /><p>{t('copy.loading')}</p></div> : query.isError && !query.data ?
+      {query.isPending ? <LoadingState/> : query.isError && !query.data ?
         <NetworkError disabled={query.isFetching} onRetry={() => void query.refetch()}/> : <>
         {query.isError && <Alert type="warning" title={t('wallet.loadFailed')} action={<Button onClick={() => void query.refetch()} loading={query.isFetching}>{t('copy.retry')}</Button>} />}
         {query.data?.length === 0 && <p className="wallet-feedback">{t('wallet.empty')}</p>}

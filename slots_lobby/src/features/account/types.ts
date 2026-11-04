@@ -1,5 +1,5 @@
 export interface Session { uid: number; sid: string; expiresAt: string }
-export interface UserProfile { uid: number; nickname: string; avatarId: number; coins: number }
+export interface UserProfile { account?: string; uid: number; nickname: string; avatarId: number; coins: number }
 
 export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;

@@ -1,3 +1,4 @@
+import {LoadingState} from '../components/feedback/LoadingState';
 import {NetworkError} from '../components/feedback/NetworkError';
 import { t } from '../i18n';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -47,7 +48,7 @@ export function CashRecordsPage({ onBack, onComingSoon, orderId }: { onBack: () 
   const loading = profile.isPending || (!profile.isError && query.isPending);
   function retry() { if (profile.isError) void profile.refetch(); else void query.refetch(); }
   return <RecordsLayout title={t('copy.depositHistory')} backLabel={t('copy.backToMyAccount')} onBack={onBack} filters={<RecordFilters kind={kind} period={period} onKind={setKind} onPeriod={value => { setPeriod(value); document.getElementById('root')?.scrollTo({ top: 0 }); }} onComingSoon={onComingSoon} />}>
-    {loading ? <p className="cash-records-feedback" role="status">{t('copy.loadingRecords')}</p>
+    {loading ? <LoadingState label={t('copy.loadingRecords')}/>
       : failed ? <NetworkError disabled={profile.isFetching || query.isFetching} onRetry={retry}/>
       : <><RecordList items={items} onOpen={open} />
         {query.isRefetchError && <p className="cash-records-feedback" role="alert">{t('copy.refreshFailed')}<button type="button" disabled={query.isFetching} onClick={retry}>{t('copy.retry')}</button></p>}

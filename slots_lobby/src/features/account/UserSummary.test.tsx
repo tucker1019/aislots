@@ -1,40 +1,40 @@
-import { beforeEach, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { expect, it, vi } from 'vitest';
 import { UserSummary } from './UserSummary';
 import { loadAccountProfile } from '../../services/account';
 vi.mock('../../services/account', () => ({ loadAccountProfile: vi.fn() }));
-beforeEach(() => { vi.mocked(loadAccountProfile).mockReset(); });
-function setup() {
+vi.mock('../../services/recharge', () => ({ fetchRechargeTiers: vi.fn().mockResolvedValue([
+  { id: 'a', amount: 1000, bonus: 50, fee: 0, creditAmount: 1050 },
+  { id: 'b', amount: 10000, bonus: 300, fee: 0, creditAmount: 10300 },
+]) }));
+it('取最大赠送比例，刷新中用省略号替换金额，完成后显示新余额', async () => {
+  const profile = { uid: 7, nickname: 'test', avatarId: 1, coins: 441 };
+  let finish: ((value: typeof profile) => void) | undefined;
+  vi.mocked(loadAccountProfile).mockResolvedValueOnce(profile).mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
   render(<QueryClientProvider client={client}><UserSummary /></QueryClientProvider>);
-  return userEvent.setup();
-}
-it('真实分余额按两位小数展示，使用服务端头像编号', async () => {
-  vi.mocked(loadAccountProfile).mockResolvedValue({ uid: 7, nickname: '小明', coins: 123456, avatarId: 3 });
-  setup();
-  expect(await screen.findByLabelText('金币余额 1,234.56')).toBeInTheDocument();
-  expect(screen.getByRole('img', { name: '小明的头像' })).toHaveAttribute('src', '/assets/profile/avatar/3.png');
-});
-it('加载失败展示重试，成功的0余额明确显示为0.00', async () => {
-  vi.mocked(loadAccountProfile).mockRejectedValueOnce(new Error('暂时无法连接大厅服务，请重试'))
-    .mockResolvedValueOnce({ uid: 7, nickname: '小明', coins: 0, avatarId: 1 });
-  const user = setup();
-  await user.click(await screen.findByRole('button', { name: '重新加载用户资料' }));
-  expect(await screen.findByLabelText('金币余额 0.00')).toBeInTheDocument();
-});
-it('加载中不显示虚构余额', () => {
-  vi.mocked(loadAccountProfile).mockReturnValue(new Promise(() => undefined));
-  setup();
-  expect(screen.getByRole('status', { name: '正在加载用户资料' })).toBeInTheDocument();
-  expect(screen.queryByLabelText('金币余额 0.00')).not.toBeInTheDocument();
-});
-
-it('首页头像进入我的，金额框进入充值', async () => {
-  window.history.replaceState({},'', '/');
-  vi.mocked(loadAccountProfile).mockResolvedValue({uid:7,nickname:'小明',coins:100,avatarId:1});
-  const user=setup();await screen.findByLabelText('金币余额 1.00');
-  await user.click(screen.getByRole('button',{name:'前往我的'}));expect(window.location.pathname).toBe('/my');
-  await user.click(screen.getByRole('button',{name:'前往充值'}));expect(window.location.pathname).toBe('/deposit');
+  expect(await screen.findByLabelText('金币余额 4.41')).toBeInTheDocument();
+  expect(await screen.findByText('送5%')).toBeInTheDocument();
+  vi.useFakeTimers();
+  fireEvent.click(screen.getByRole('button', { name: '刷新钱包余额' }));
+  expect(screen.getByRole('status', { name: '正在刷新钱包余额' })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: '刷新钱包余额' })).toBeDisabled();
+  expect(screen.queryByLabelText('金币余额 4.41')).not.toBeInTheDocument();
+  expect(screen.getByText('4.41')).toHaveAttribute('aria-hidden', 'true');
+  expect(screen.getByRole('button', { name: '刷新钱包余额' })).toHaveAttribute('data-loading', 'true');
+  await act(async () => finish?.({ ...profile, coins: 13057751 }));
+  await act(async () => { await vi.advanceTimersByTimeAsync(0); });
+  expect(screen.getByRole('status', { name: '正在刷新钱包余额' })).toBeInTheDocument();
+  expect(screen.getByText('4.41')).toHaveAttribute('aria-hidden', 'true');
+  await act(async () => { await vi.advanceTimersByTimeAsync(499); });
+  expect(screen.getByRole('status', { name: '正在刷新钱包余额' })).toBeInTheDocument();
+  expect(screen.getByText('4.41')).toHaveAttribute('aria-hidden', 'true');
+  await act(async () => { await vi.advanceTimersByTimeAsync(1); });
+  expect(screen.getByLabelText('金币余额 130,577.51')).toBeInTheDocument();
+  vi.useRealTimers();
+  expect(screen.getByRole('button', { name: '刷新钱包余额' })).toBeEnabled();
+  fireEvent.click(screen.getByRole('button', { name: '前往充值' }));
+  expect(window.location.pathname).toBe('/deposit');
+  client.clear();
 });

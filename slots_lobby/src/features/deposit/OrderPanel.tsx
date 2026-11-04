@@ -1,9 +1,10 @@
+import {LoadingState} from '../../components/feedback/LoadingState';
 import { t, getLocale } from '../../i18n';
 import { coinsLabel } from '../account/formatCoins';
 import { paymentLink } from '../../services/recharge';
 import type { RechargeOrder } from '../../services/recharge';
 export function OrderPanel({order,loading,error,onRefresh}:{order?:RechargeOrder;loading:boolean;error:boolean;onRefresh:()=>void}) {
- if(!order) return <section className="deposit-card" aria-label={t('copy.depositOrder')}><p role={error?'alert':'status'}>{error?t('copy.orderStatusIsUnavailablePleaseRetry'):t('copy.checkingOrderStatus')}</p><button type="button" disabled={loading} onClick={onRefresh}>{t('copy.refreshOrderStatus')}</button></section>;
+ if(!order) return <section className="deposit-card" aria-label={t('copy.depositOrder')}>{error?<p role="alert">{t('copy.orderStatusIsUnavailablePleaseRetry')}</p>:<LoadingState compact label={t('copy.checkingOrderStatus')}/>}<button type="button" disabled={loading} onClick={onRefresh}>{t('copy.refreshOrderStatus')}</button></section>;
  const url=paymentLink(order.paymentUrl);
  return <section className="deposit-card deposit-order" aria-label={t('copy.depositOrder')}>
   <div className={`order-status status-${order.status}`}><span aria-hidden="true">{order.status==='success'?'✓':order.status==='failed'?'!':'◷'}</span><h2>{order.status==='success'?t('copy.depositSuccessful'):order.status==='failed'?t('copy.depositFailed'):t('copy.awaitingPaymentConfirmation')}</h2></div>

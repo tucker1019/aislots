@@ -1,3 +1,4 @@
+import {LoadingState} from '../components/feedback/LoadingState';
 import {NetworkError} from '../components/feedback/NetworkError';
 import {useQuery} from '@tanstack/react-query';
 import {message} from 'antd';
@@ -14,7 +15,7 @@ export function InvitePage({onBack}:{onBack:()=>void}){
  const info=query.data;
  async function copy(){if(!info)return;try{await navigator.clipboard.writeText(info.inviteUrl);void toast.success(t('invite.linkCopied'));}catch{void toast.error(t('invite.copyFailed'));}}
  return <>{holder}<RecordsLayout title={t('copy.inviteFriends')} backLabel={t('copy.backToMyAccount')} onBack={onBack} className="invite-page">
- {query.isPending?<p className="cash-records-feedback" role="status">{t('invite.loading')}</p>:!info?<NetworkError onRetry={()=>void query.refetch()} disabled={query.isFetching}/>:<>
+ {query.isPending?<LoadingState label={t('invite.loading')}/>:!info?<NetworkError onRetry={()=>void query.refetch()} disabled={query.isFetching}/>:<>
  <section className="invite-card invite-table-wrap"><table><thead><tr><th>{t('invite.effectiveMembers')}</th><th>{t('invite.rewardAmount')}</th></tr></thead><tbody>{Array.from({length:info.rules.displayRows},(_,i)=><tr key={i}><td>≥{i+1}</td><td>{betMoney((i+1)*info.rules.rewardAmount)}</td></tr>)}</tbody></table></section>
  <section className="invite-card invite-link"><label htmlFor="invite-link">{t('invite.link')}</label><input id="invite-link" readOnly value={info.inviteUrl} onFocus={event=>event.currentTarget.select()}/><button type="button" onClick={()=>void copy()}>{t('copy.copy')}</button></section>
  <a className="invite-card invite-support-card" href={info.supportUrl} target="_blank" rel="noopener noreferrer" aria-label={t('invite.support')}><span className="invite-support-icon"><Icon name="help" size={28}/></span><strong>{t('invite.support')}</strong><Icon name="chevron" size={18}/></a>

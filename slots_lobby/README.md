@@ -118,3 +118,5 @@ VIP查看详情：福利中心“VIP中心→查看详情”进入 `/vip`，按�
 ## 取款
 
 “我的→取款”进入 `/withdrawal`，绑定取款账号后选择档位并提交；订单详情支持刷新恢复。开发环境启用服务端 `LOBBY_WITHDRAWAL_TEST_MODE=true` 后展示测试通过、测试退回按钮。提交异常保留原requestId重试；通过直接发放赠送，退回返还本金。规则见 `lobby_service/docs/withdrawal.md`，充值档位保持不变。
+
+取款页通过 `/api/user/withdrawal/turnover` 展示待完成有效流水，未满足时禁止新申请。查询异常不能显示为0，使用公共错误/重试组件；已有未确认订单继续沿用原请求号确认。倍数由大厅 etc/turnover.json 按来源配置，派彩和取款退回本金豁免，历史不追溯。

@@ -1,3 +1,4 @@
+import {LoadingState} from '../../components/feedback/LoadingState';
 import {NetworkError} from '../../components/feedback/NetworkError';
 import { t } from '../../i18n';
 import { useClaimToast } from '../rewards/useClaimToast';
@@ -22,7 +23,7 @@ export function CheckinModal({ onClose }: { onClose: () => void }) {
  return <>{holder}<Modal open centered footer={null} closable={false} width={350} onCancel={() => {if (!claim.isPending) onClose();}} maskClosable={!claim.isPending} keyboard={!claim.isPending} className="checkin-modal" title={null}>
   <section className="checkin-panel" aria-label={t('copy.dailyCheckInRewards')}>
    <header><span className="checkin-eyebrow">DAILY REWARDS</span><h2>{t('copy.dailyCheckInRewards')}</h2><span className="checkin-header-icon" aria-hidden="true"><Icon name="calendar" size={40} /></span></header>
-   {info.isPending ? <p className="checkin-feedback" role="status">{t('copy.loadingCheckInRewards')}</p> : !data ? <NetworkError disabled={info.isFetching} onRetry={()=>void info.refetch()}/> : <>
+   {info.isPending ? <LoadingState compact label={t('copy.loadingCheckInRewards')}/> : !data ? <NetworkError disabled={info.isFetching} onRetry={()=>void info.refetch()}/> : <>
     <div className="checkin-rewards"><div className="checkin-stats"><span>{t('copy.consecutiveCheckIns')} <b>{claimedDays}</b> {t('copy.days')}</span><span>{t('copy.todaySReward')} <b>{betMoney(data.current.reward)}</b></span></div>
      <div className={`checkin-days${data.days.length === 7 ? ' checkin-seven' : ''}`}>
       {data.days.map(row => { const done=row.day<=claimedDays; const current=row.day===data.currentDay; return <div key={row.day} className={`checkin-day${current ? ' current' : ''}${done ? ' claimed' : ''}`} aria-label={t('copy.dayValueRewardValueValue', {p0: row.day, p1: betMoney(row.reward), p2: done ? t('copy.claimed') : current ? t('copy.current') : ''})}>
