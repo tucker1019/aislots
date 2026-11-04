@@ -1,0 +1,6 @@
+.env
+payload/
+acme/
+certificates/
+backups/
+__pycache__/

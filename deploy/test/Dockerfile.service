@@ -1,0 +1,6 @@
+FROM alpine:3.23
+RUN apk add --no-cache ca-certificates tzdata
+ARG BINARY
+COPY payload/bin/${BINARY} /usr/local/bin/server
+USER 10001:10001
+ENTRYPOINT ["/usr/local/bin/server"]

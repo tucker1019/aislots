@@ -1,0 +1,106 @@
+name: aislots-test
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: '3'
+services:
+  lobby-db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aislots_lobby
+      POSTGRES_USER: lobby
+      POSTGRES_PASSWORD: ${LOBBY_DB_PASSWORD:?Set LOBBY_DB_PASSWORD}
+    volumes:
+      - lobby-data:/var/lib/postgresql
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U lobby -d aislots_lobby']
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    logging: *logging
+  game-db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aislots
+      POSTGRES_USER: aislots
+      POSTGRES_PASSWORD: ${GAME_DB_PASSWORD:?Set GAME_DB_PASSWORD}
+    volumes:
+      - game-data:/var/lib/postgresql
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U aislots -d aislots']
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    logging: *logging
+  lobby:
+    build:
+      context: .
+      dockerfile: Dockerfile.service
+      args:
+        BINARY: lobby
+    restart: unless-stopped
+    working_dir: /app/lobby_service
+    environment:
+      LOBBY_HTTP_ADDRESS: 0.0.0.0:8081
+      LOBBY_DATABASE_URL: postgres://lobby:${LOBBY_DB_PASSWORD}@lobby-db:5432/aislots_lobby?sslmode=disable
+      LOBBY_GAME_SERVICE_TOKEN: ${LOBBY_GAME_SERVICE_TOKEN:?Set service token}
+      LOBBY_WITHDRAWAL_TEST_MODE: 'true'
+    volumes:
+      - ./payload/lobby-etc:/app/lobby_service/etc:ro
+    depends_on:
+      lobby-db:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD-SHELL, 'wget -q -O /dev/null http://127.0.0.1:8081/health']
+      interval: 10s
+      timeout: 3s
+      retries: 12
+    logging: *logging
+  game:
+    build:
+      context: .
+      dockerfile: Dockerfile.service
+      args:
+        BINARY: game
+    restart: unless-stopped
+    working_dir: /app/slots_service
+    command: [-config, /app/slots_service/configs/server.test-cloud.json]
+    environment:
+      AISLOTS_DATABASE_URL: postgres://aislots:${GAME_DB_PASSWORD}@game-db:5432/aislots?sslmode=disable
+      LOBBY_GAME_SERVICE_TOKEN: ${LOBBY_GAME_SERVICE_TOKEN}
+    volumes:
+      - ./payload/game-configs:/app/slots_service/configs:ro
+      - ./payload/game-data:/app/slots_service/testdata:ro
+      - ./payload/game-libraries:/app/game_libraries:ro
+    depends_on:
+      game-db:
+        condition: service_healthy
+      lobby:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD-SHELL, 'wget -q -O /dev/null http://127.0.0.1:8080/readyz']
+      interval: 10s
+      timeout: 3s
+      retries: 12
+    logging: *logging
+  web:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./payload/www:/srv/www:ro
+      - ./acme:/srv/acme:ro
+      - ./certificates:/etc/letsencrypt:ro
+    depends_on:
+      game:
+        condition: service_healthy
+    logging: *logging
+volumes:
+  lobby-data:
+  game-data:
