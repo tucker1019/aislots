@@ -90,6 +90,10 @@ func TestWithdrawalFinancialLifecycle(t *testing.T) {
 		}
 	}
 	balance(75200)
+	// Withdrawal bonus is a new credit and must be wagered before the next application.
+	if err = (&ActivityModel{DB: db, Location: time.UTC}).RecordEvent(ctx, LobbyActivityEvent{UID: uid, EventID: "withdrawal-bonus-turnover", EventType: EventGameBet, GameID: "AG1", Amount: 200, OccurredAt: time.Now().UTC().Add(time.Second)}); err != nil {
+		t.Fatal(err)
+	}
 	o, err = m.Create(ctx, uid, token, "return-request", "test1", "200", bonus)
 	if err != nil {
 		t.Fatal(err)

@@ -11,6 +11,7 @@ import (
 
 	"apps/app/apis/lobby/api/internal/config"
 	"apps/app/apis/lobby/api/internal/repository"
+	"apps/app/apis/lobby/api/internal/repository/model"
 	"apps/app/apis/lobby/api/internal/router"
 	"apps/app/apis/lobby/api/internal/server"
 	"apps/app/apis/lobby/api/internal/svc"
@@ -53,6 +54,9 @@ func run() error {
 		return err
 	}
 	if _, err = sqlDB.ExecContext(ctx, migrations.Schema); err != nil {
+		return err
+	}
+	if err = (&model.TurnoverModel{DB: db}).Configure(ctx, c.Turnover); err != nil {
 		return err
 	}
 	repo := repository.New(db, c.Checkin.Location())

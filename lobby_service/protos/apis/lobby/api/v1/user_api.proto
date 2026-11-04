@@ -4,6 +4,8 @@ option go_package = "apps/pb/apis/lobby/api/v1;v1";
 import "google/api/annotations.proto";
 // @Desc: 大厅用户账号
 service UserService {
+ rpc WithdrawalTurnover(UserRequest) returns (WithdrawalTurnoverReply) {option (google.api.http)={post:"/api/user/withdrawal/turnover" body:"*"};}
+
  rpc WithdrawalList(UserRequest) returns (WithdrawalTiersReply) { option (google.api.http) = { post: "/api/user/withdrawal/tiers" body: "*" }; }
  rpc WithdrawalCreate(WithdrawalRequest) returns (WithdrawalOrder) { option (google.api.http) = { post: "/api/user/withdrawal/create" body: "*" }; }
  rpc WithdrawalReview(WithdrawalRequest) returns (WithdrawalOrder) { option (google.api.http) = { post: "/api/user/withdrawal/test-review" body: "*" }; }
@@ -44,6 +46,7 @@ message IdentityReply {
 }
 
 message ProfileReply {
+ string account = 5;
  int64 uid = 1;
  string nickname = 2;
  int32 avatar_id = 3 [json_name = "avatarId"];
@@ -74,3 +77,5 @@ message WithdrawalOrder {
  string order_id=1 [json_name="orderId"];string kind=2;int64 amount=3;int64 fee=4;int64 bonus=5;int64 credit_amount=6 [json_name="creditAmount"];string status=7;string channel=8;string account=9;string name=10;string created_at=11 [json_name="createdAt"];string settled_at=12 [json_name="settledAt"];string payment_url=13 [json_name="paymentUrl"];bool test_mode=14 [json_name="testMode"];string tier_id=15 [json_name="tierId"];string request_id=16 [json_name="requestId"];
 }
 message CashOrdersReply {repeated WithdrawalOrder items=1;string next_cursor=2 [json_name="nextCursor"];}
+
+message WithdrawalTurnoverReply {int64 remaining=1;bool can_withdraw=2 [json_name="canWithdraw"];}

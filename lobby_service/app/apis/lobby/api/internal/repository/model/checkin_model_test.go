@@ -4,44 +4,19 @@ import (
 	"context"
 	"errors"
 	"math"
-	"os"
 	"strings"
 	"sync"
 	"testing"
 	"time"
 
 	"apps/app/apis/lobby/api/internal/config"
-	migrations "apps/deploy/migration"
 	"apps/pkg/coinsource"
 	"apps/pkg/xerr"
-
-	"github.com/jackc/pgx/v5"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 func TestCheckinPostgres(t *testing.T) {
-	url := os.Getenv("LOBBY_INTEGRATION_DATABASE_URL")
-	if url == "" {
-		t.Skip("set LOBBY_INTEGRATION_DATABASE_URL")
-	}
-	parsed, err := pgx.ParseConfig(url)
-	if err != nil || parsed.Database != "aislots_lobby" {
-		t.Fatal("dedicated lobby DB required")
-	}
-	db, err := gorm.Open(postgres.Open(url), &gorm.Config{Logger: logger.Default.LogMode(logger.Silent)})
-	if err != nil {
-		t.Fatal(err)
-	}
-	sqlDB, err := db.DB()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer sqlDB.Close()
-	if err = db.Exec(migrations.Schema).Error; err != nil {
-		t.Fatal(err)
-	}
+	db := vipTestDB(t)
+	var err error
 	ctx := context.Background()
 	token := strings.Repeat("d", 64)
 	now := time.Date(2027, 1, 1, 17, 1, 0, 0, time.UTC) // Jan 2 in Jakarta.
@@ -50,7 +25,7 @@ func TestCheckinPostgres(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		for _, table := range []any{&LobbyCoinLedger{}, &LobbyCheckinClaim{}, &LobbyActivityEvent{}, &LobbyActivityDaily{}, &LobbySession{}, &LobbyWalletBalance{}, &LobbyUser{}} {
+		for _, table := range []any{&LobbyTurnoverEntry{}, &LobbyTurnoverBalance{}, &LobbyCoinLedger{}, &LobbyCheckinClaim{}, &LobbyActivityEvent{}, &LobbyActivityDaily{}, &LobbySession{}, &LobbyWalletBalance{}, &LobbyUser{}} {
 			if e := db.Where("uid = ?", uid).Delete(table).Error; e != nil {
 				t.Error(e)
 			}

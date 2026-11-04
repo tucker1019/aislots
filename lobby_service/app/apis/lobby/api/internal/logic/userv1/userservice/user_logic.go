@@ -11,7 +11,6 @@ import (
 
 	"apps/app/apis/lobby/api/internal/config"
 	"apps/app/apis/lobby/api/internal/repository"
-	"apps/app/apis/lobby/api/internal/repository/model"
 	"apps/app/apis/lobby/api/internal/svc"
 	"apps/pkg/xerr"
 
@@ -24,7 +23,7 @@ type Identity struct {
 	ExpiresAt time.Time `json:"expiresAt"`
 }
 type Service struct {
-	Withdrawal         *model.WithdrawalModel
+	Withdrawal         withdrawalStore
 	WithdrawalTiers    []config.RechargeTier
 	WithdrawalTestMode bool
 	Wallet             repository.WalletStore

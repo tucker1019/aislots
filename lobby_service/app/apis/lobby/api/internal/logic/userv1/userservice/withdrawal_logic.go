@@ -12,6 +12,14 @@ import (
 	"apps/pkg/xerr"
 )
 
+type withdrawalStore interface {
+	Create(context.Context, int64, string, string, string, string, *config.RechargeTier) (*model.LobbyWithdrawalOrder, error)
+	Review(context.Context, int64, string, string, string) (*model.LobbyWithdrawalOrder, error)
+	Info(context.Context, int64, string) (*model.LobbyWithdrawalOrder, error)
+	CashOrders(context.Context, int64, string, time.Time, time.Time, time.Time, string) ([]model.CashOrderRow, error)
+	Remaining(context.Context, int64) (int64, error)
+}
+
 func (s *Service) WithdrawalList(ctx context.Context, r *pb.UserRequest) (*pb.WithdrawalTiersReply, error) {
 	if e := s.walletSession(ctx, r.GetUid(), r.GetSid()); e != nil {
 		return nil, e
@@ -140,4 +148,18 @@ func (s *Service) CashOrders(ctx context.Context, r *pb.WithdrawalRequest) (*pb.
 		out.Items = append(out.Items, item)
 	}
 	return out, nil
+}
+
+func (s *Service) WithdrawalTurnover(ctx context.Context, r *pb.UserRequest) (*pb.WithdrawalTurnoverReply, error) {
+	if e := s.walletSession(ctx, r.GetUid(), r.GetSid()); e != nil {
+		return nil, e
+	}
+	if s.Withdrawal == nil {
+		return nil, xerr.ErrInvalid
+	}
+	left, e := s.Withdrawal.Remaining(ctx, r.GetUid())
+	if e != nil {
+		return nil, e
+	}
+	return &pb.WithdrawalTurnoverReply{Remaining: left, CanWithdraw: left == 0}, nil
 }

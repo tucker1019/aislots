@@ -16,7 +16,7 @@ func profileReply(user *model.Profile, err error) (*pb.ProfileReply, error) {
 	if err != nil {
 		return nil, xerr.Public(err)
 	}
-	return &pb.ProfileReply{Uid: user.UID, Nickname: user.Nickname, AvatarId: user.AvatarID, Coins: user.Coins}, nil
+	return &pb.ProfileReply{Account: user.Account, Uid: user.UID, Nickname: user.Nickname, AvatarId: user.AvatarID, Coins: user.Coins}, nil
 }
 
 func (s *Service) ProfileInfo(ctx context.Context, r *pb.UserRequest) (*pb.ProfileReply, error) {

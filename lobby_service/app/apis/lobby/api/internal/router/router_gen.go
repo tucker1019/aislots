@@ -54,6 +54,7 @@ func New(ctx *svc.ServiceContext) http.Handler {
 	mux.HandleFunc("POST /internal/game/exchange", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameExchangeRequest { return new(pb.GameExchangeRequest) }, game.GameExchange)))
 	mux.HandleFunc("POST /internal/game/balance", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameBalanceRequest { return new(pb.GameBalanceRequest) }, game.GameBalance)))
 	mux.HandleFunc("POST /internal/game/settle", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameSettleRequest { return new(pb.GameSettleRequest) }, game.GameSettle)))
+	mux.HandleFunc("POST /api/user/withdrawal/turnover", handler.API(func() *pb.UserRequest { return new(pb.UserRequest) }, logic.WithdrawalTurnover))
 	mux.HandleFunc("POST /api/user/withdrawal/tiers", handler.API(func() *pb.UserRequest { return new(pb.UserRequest) }, logic.WithdrawalList))
 	mux.HandleFunc("POST /api/user/withdrawal/create", handler.API(func() *pb.WithdrawalRequest { return new(pb.WithdrawalRequest) }, logic.WithdrawalCreate))
 	mux.HandleFunc("POST /api/user/withdrawal/test-review", handler.API(func() *pb.WithdrawalRequest { return new(pb.WithdrawalRequest) }, logic.WithdrawalReview))

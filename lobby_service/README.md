@@ -44,7 +44,7 @@ GoLand：运行种类 Package；包路径 `apps/app/apis/lobby/api`；工作目�
 | `session/renewal` | `{"uid":1,"sid":"..."}` | 恢复登录并续期 |
 | `uniquecode/register` | `{"account":"alice","password":"password123"}` | 创建独立账号 |
 | `uniquecode/login` | `{"uid":1,"sid":"...","account":"alice","password":"password123"}` | 校验当前身份后登录目标账号 |
-| `uniquecode/bind` | `{"uid":1,"sid":"...","account":"alice","password":"password123"}` | 游客绑定，保留 uid |
+| `uniquecode/bind` | `{"uid":1,"sid":"...","account":"alice","password":"password123"}` | 游客绑定，保留 uid，昵称同步为绑定账号 |
 
 成功：`{"code":"OK","data":{"uid":1,"sid":"...","expiresAt":"..."}}`。保持 uid 为 JSON 数字，expiresAt 为 RFC3339 字符串；pb 类型使用 encoding/json 输出，由 handler 映射到客户端约定字段。
 
@@ -73,7 +73,7 @@ GoLand：运行种类 Package；包路径 `apps/app/apis/lobby/api`；工作目�
 
 ## 用户资料
 
-新增 `GET /api/user/user/info`，统一返回 uid、nickname、avatarId、coins；`POST /api/user/user/update` 修改昵称和头像。完整参数与示例见 [用户资料接口文档](docs/user-api.md)。余额按整数分返回，新用户为0，存放在独立钱包余额表；资料接口不提供余额修改能力，充值由独立充值接口负责。
+新增 `GET /api/user/user/info`，统一返回 uid、account、nickname、avatarId、coins；`POST /api/user/user/update` 修改昵称和头像。完整参数与示例见 [用户资料接口文档](docs/user-api.md)。余额按整数分返回，新用户为0，存放在独立钱包余额表；资料接口不提供余额修改能力，充值由独立充值接口负责。
 
 ## 充值与金币 source
 
@@ -140,3 +140,5 @@ source统一维护：[script/coin_sources.py](script/coin_sources.py)，执行 `
 复用永久邀请关系，各厂商独立每日定档并按差额结算，次日可领、未领永久累计、一键合领。提供团队下钻、业绩贡献、代理报表、首存/存款明细及领取记录；测试支付与取款状态沿用现有业务。配置[etc/agent.json](etc/agent.json)，协议与计算示例见[代理接口](docs/agent-api.md)。
 
 取款接口、独立档位及本地测试审核开关见[取款说明](docs/withdrawal.md)。
+
+取款流水要求配置 [etc/turnover.json](etc/turnover.json)，`LOBBY_TURNOVER_CONFIG` 可覆盖。默认各类加币1倍、派彩和取款退回本金0倍；历史不追溯。有效投注同步抵扣，取款前服务端校验剩余要求，详见[规则及接口](docs/turnover.md)。

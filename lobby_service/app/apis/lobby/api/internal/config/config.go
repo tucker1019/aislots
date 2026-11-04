@@ -10,6 +10,7 @@ import (
 )
 
 type Config struct {
+	Turnover           TurnoverConfig
 	Agent              AgentConfig
 	Game               GameConfig
 	Address            string
@@ -46,6 +47,10 @@ func Load() (Config, error) {
 		if err != nil || c.SessionDays < 1 || c.SessionDays > 3650 {
 			return c, fmt.Errorf("LOBBY_SESSION_DAYS must be between 1 and 3650")
 		}
+	}
+	c.Turnover, err = LoadTurnover(os.Getenv("LOBBY_TURNOVER_CONFIG"))
+	if err != nil {
+		return c, err
 	}
 	c.Agent, err = LoadAgent(os.Getenv("LOBBY_AGENT_CONFIG"))
 	if err != nil {

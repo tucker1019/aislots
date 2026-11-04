@@ -37,6 +37,14 @@ func (m *WithdrawalModel) Create(ctx context.Context, uid int64, token, requestI
 		if !errors.Is(e, gorm.ErrRecordNotFound) {
 			return e
 		}
+		// Existing request receipts are returned before checking newly added requirements.
+		left, err := (&TurnoverModel{DB: tx}).Remaining(ctx, uid)
+		if err != nil {
+			return err
+		}
+		if left > 0 {
+			return xerr.ErrWithdrawalTurnover
+		}
 		if tier == nil {
 			return xerr.ErrInvalid
 		}

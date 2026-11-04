@@ -57,7 +57,11 @@ func (m *UserModel) create(ctx context.Context, account, password, token string,
 		if err := tx.Create(&user).Error; err != nil {
 			return err
 		}
-		if err := tx.Model(&user).Update("nickname", "player_"+strconv.FormatInt(user.UID, 10)).Error; err != nil {
+		nickname := account
+		if nickname == "" {
+			nickname = "player_" + strconv.FormatInt(user.UID, 10)
+		}
+		if err := tx.Model(&user).Update("nickname", nickname).Error; err != nil {
 			return err
 		}
 		if err := tx.Exec("INSERT INTO lobby_wallet_balances(uid) VALUES (?)", user.UID).Error; err != nil {
@@ -132,7 +136,7 @@ func (m *UserModel) Bind(ctx context.Context, uid int64, token, account, passwor
 		if err != nil {
 			return err
 		}
-		result := tx.Model(&LobbyUser{}).Where("uid = ? AND account IS NULL", uid).Updates(map[string]any{"account": account, "password_hash": password})
+		result := tx.Model(&LobbyUser{}).Where("uid = ? AND account IS NULL", uid).Updates(map[string]any{"account": account, "password_hash": password, "nickname": account})
 		if result.Error != nil {
 			return result.Error
 		}
@@ -196,6 +200,7 @@ func (m *UserModel) UpdateProfile(ctx context.Context, uid int64, token string, 
 
 // Profile is a read projection of user and wallet, never a writable balance model.
 type Profile struct {
+	Account  string
 	UID      int64
 	Nickname string
 	AvatarID int32
@@ -203,5 +208,5 @@ type Profile struct {
 }
 
 func profileQuery(db *gorm.DB, uid int64) *gorm.DB {
-	return db.Table("lobby_users AS u").Select("u.uid,u.nickname,u.avatar_id,w.coins").Joins("JOIN lobby_wallet_balances AS w ON w.uid = u.uid").Where("u.uid = ?", uid)
+	return db.Table("lobby_users AS u").Select("u.uid,COALESCE(u.account,'') AS account,u.nickname,u.avatar_id,w.coins").Joins("JOIN lobby_wallet_balances AS w ON w.uid = u.uid").Where("u.uid = ?", uid)
 }

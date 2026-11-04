@@ -3,6 +3,7 @@ package apis.lobby.api.errors;
 option go_package = "apps/pb/apis/lobby/api/errors;errors";
 enum UserError {
  USER_ERROR_UNSPECIFIED = 0;
+ USER_ERROR_WITHDRAWAL_TURNOVER = 10010025;
  USER_ERROR_WITHDRAWAL_FUNDS = 10010022;
  USER_ERROR_WITHDRAWAL_ACCOUNT = 10010023;
  USER_ERROR_WITHDRAWAL_TEST_DISABLED = 10010024;

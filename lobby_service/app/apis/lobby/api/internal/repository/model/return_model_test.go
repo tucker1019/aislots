@@ -5,20 +5,15 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"os"
 	"strings"
 	"sync"
 	"testing"
 	"time"
 
 	"apps/app/apis/lobby/api/internal/config"
-	migrations "apps/deploy/migration"
 	"apps/pkg/xerr"
 
-	"github.com/jackc/pgx/v5"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 func TestReturnCalendarAndRounding(t *testing.T) {
@@ -44,26 +39,8 @@ func TestReturnCalendarAndRounding(t *testing.T) {
 }
 
 func TestReturnsPostgres(t *testing.T) {
-	url := os.Getenv("LOBBY_INTEGRATION_DATABASE_URL")
-	if url == "" {
-		t.Skip("set LOBBY_INTEGRATION_DATABASE_URL")
-	}
-	parsed, err := pgx.ParseConfig(url)
-	if err != nil || parsed.Database != "aislots_lobby" {
-		t.Fatal("dedicated lobby database required")
-	}
-	db, err := gorm.Open(postgres.Open(url), &gorm.Config{Logger: logger.Default.LogMode(logger.Silent)})
-	if err != nil {
-		t.Fatal(err)
-	}
-	sqlDB, err := db.DB()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer sqlDB.Close()
-	if err = db.Exec(migrations.Schema).Error; err != nil {
-		t.Fatal(err)
-	}
+	db := vipTestDB(t)
+	var err error
 	ctx := context.Background()
 	loc, _ := time.LoadLocation("Asia/Jakarta")
 	now := time.Date(2026, 6, 1, 12, 0, 0, 0, loc)
@@ -73,7 +50,7 @@ func TestReturnsPostgres(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		for _, table := range []any{&LobbyCoinLedger{}, &LobbyReturnClaim{}, &LobbyReturnBatch{}, &LobbyActivityEvent{}, &LobbyActivityDaily{}, &LobbySession{}, &LobbyWalletBalance{}, &LobbyUser{}} {
+		for _, table := range []any{&LobbyTurnoverEntry{}, &LobbyTurnoverBalance{}, &LobbyCoinLedger{}, &LobbyReturnClaim{}, &LobbyReturnBatch{}, &LobbyActivityEvent{}, &LobbyActivityDaily{}, &LobbySession{}, &LobbyWalletBalance{}, &LobbyUser{}} {
 			if e := db.Where("uid = ?", uid).Delete(table).Error; e != nil {
 				t.Error(e)
 			}
@@ -247,6 +224,9 @@ func TestReturnsPostgres(t *testing.T) {
 		t.Fatal(er)
 	}
 	// A future Tuesday read without claim rows shows old weekly/monthly rewards as expired.
+	if er := db.Where("uid = ?", uid).Delete(&LobbyTurnoverEntry{}).Error; er != nil {
+		t.Fatal(er)
+	}
 	if er := db.Where("uid = ?", uid).Delete(&LobbyCoinLedger{}).Error; er != nil {
 		t.Fatal(er)
 	}

@@ -29,6 +29,7 @@ GET /api/user/user/info?uid=123&sid=YOUR_SID&app_name=zhyx&lca_lang=zh
   "data": {
     "uid": 123,
     "nickname": "player_123",
+    "account": "",
     "avatarId": 7,
     "coins": 0
   }
@@ -39,6 +40,7 @@ GET /api/user/user/info?uid=123&sid=YOUR_SID&app_name=zhyx&lca_lang=zh
 | --- | --- | --- |
 | uid | number | 用户 UID |
 | nickname | string | 昵称 |
+| account | string | 已绑定的自定义账号，游客为空字符串 |
 | avatarId | number | 头像编号，整数 1–15；客户端映射对应图片 |
 | coins | number | 金币余额，整数分单位，100 表示 1.00；客户端展示时 /100 |
 
@@ -88,3 +90,5 @@ GET /api/user/user/info?uid=123&sid=YOUR_SID&app_name=zhyx&lca_lang=zh
 ```json
 {"code":10010002,"message":"会话无效或已过期"}
 ```
+
+游客绑定自定义账号成功后，在同一事务中将 nickname 更新为 account，保持原 uid、头像和钱包。绑定不会额外创建用户；账号冲突时整体回滚，不改变原资料。

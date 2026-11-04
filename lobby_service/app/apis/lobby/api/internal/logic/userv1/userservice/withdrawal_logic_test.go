@@ -46,3 +46,20 @@ func TestWithdrawalAuthTiersAndTestGate(t *testing.T) {
 		}
 	}
 }
+
+func TestTurnoverRequiresSession(t *testing.T) {
+	s, m := setup(t)
+	ctx := context.Background()
+	if _, e := s.WithdrawalTurnover(ctx, &pb.UserRequest{}); !errors.Is(e, xerr.ErrSession) {
+		t.Fatal(e)
+	}
+	r := request()
+	m.EXPECT().Check(ctx, r.GetUid(), Hash(r.GetSid()), gomock.Any()).Return(xerr.ErrSession)
+	if _, e := s.WithdrawalTurnover(ctx, r); !errors.Is(e, xerr.ErrSession) {
+		t.Fatal(e)
+	}
+	m.EXPECT().Check(ctx, r.GetUid(), Hash(r.GetSid()), gomock.Any()).Return(nil)
+	if _, e := s.WithdrawalTurnover(ctx, r); e == nil {
+		t.Fatal("missing withdrawal store accepted")
+	}
+}

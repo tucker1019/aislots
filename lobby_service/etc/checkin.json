@@ -1,13 +1,41 @@
 {
-  "version": "checkin-v1",
+  "version": "checkin-v2",
   "timezone": "Asia/Shanghai",
   "days": [
-    {"requiredBet": 10000, "requiredRecharge": 1000, "reward": 100},
-    {"requiredBet": 20000, "requiredRecharge": 1000, "reward": 200},
-    {"requiredBet": 30000, "requiredRecharge": 2000, "reward": 300},
-    {"requiredBet": 40000, "requiredRecharge": 2000, "reward": 400},
-    {"requiredBet": 50000, "requiredRecharge": 5000, "reward": 500},
-    {"requiredBet": 60000, "requiredRecharge": 5000, "reward": 600},
-    {"requiredBet": 70000, "requiredRecharge": 10000, "reward": 1000}
+    {
+      "requiredRecharge": 1000,
+      "requiredBet": 6800,
+      "reward": 188
+    },
+    {
+      "requiredRecharge": 5000,
+      "requiredBet": 38800,
+      "reward": 388
+    },
+    {
+      "requiredRecharge": 20000,
+      "requiredBet": 168800,
+      "reward": 888
+    },
+    {
+      "requiredRecharge": 50000,
+      "requiredBet": 368800,
+      "reward": 1888
+    },
+    {
+      "requiredRecharge": 100000,
+      "requiredBet": 888800,
+      "reward": 3888
+    },
+    {
+      "requiredRecharge": 500000,
+      "requiredBet": 5888800,
+      "reward": 8888
+    },
+    {
+      "requiredRecharge": 2000000,
+      "requiredBet": 28888800,
+      "reward": 16888
+    }
   ]
 }

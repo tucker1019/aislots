@@ -53,5 +53,11 @@ var payoutSchema string
 //go:embed 018_withdrawals.sql
 var withdrawalSchema string
 
+//go:embed 019_turnover.sql
+var turnoverSchema string
+
+//go:embed 020_bound_account_nickname.sql
+var accountNicknameSchema string
+
 // Schema applies initial schema and backward-compatible upgrades in order.
-var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema + "\n" + gameSchema + "\n" + uidSchema + "\n" + gameStatisticsSchema + "\n" + inviteSchema + "\n" + inviteChestSchema + "\n" + rankReplaySchema + "\n" + agentSchema + "\n" + payoutSchema + "\n" + withdrawalSchema
+var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema + "\n" + gameSchema + "\n" + uidSchema + "\n" + gameStatisticsSchema + "\n" + inviteSchema + "\n" + inviteChestSchema + "\n" + rankReplaySchema + "\n" + agentSchema + "\n" + payoutSchema + "\n" + withdrawalSchema + "\n" + turnoverSchema + "\n" + accountNicknameSchema
