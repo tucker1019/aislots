@@ -13,3 +13,8 @@ it('排行榜显示脱敏昵称和头像，切换连胜榜',async()=>{vi.mocked(
 it('切换时间时保留上次RTP，避免加载占位改变布局',async()=>{vi.mocked(fetchGameRtp).mockResolvedValueOnce({percent:'120.00',rounds:3,hasData:true,from:'2026-11-03T00:00:00Z',to:'2026-11-03T01:00:00Z',updatedAt:'2026-11-03T01:00:00Z',statisticsSince:'2026-11-03T00:00:00Z'}).mockImplementationOnce(()=>new Promise(()=>{}));setup('rtp');await screen.findByText('120.00%');fireEvent.click(screen.getByRole('button',{name:'RTP统计时间'}));fireEvent.click(screen.getByRole('option',{name:'5分钟'}));expect(screen.getByText('120.00%')).toBeInTheDocument();expect(screen.queryByRole('status')).not.toBeInTheDocument();});
 
 it('停留页面不轮询刷新RTP',async()=>{vi.mocked(fetchGameRtp).mockResolvedValue({percent:'97.00',rounds:3,hasData:true,from:'2026-11-03T00:00:00Z',to:'2026-11-03T01:00:00Z',updatedAt:'2026-11-03T01:00:00Z',statisticsSince:'2026-11-03T00:00:00Z'});setup('rtp');await screen.findByText('97.00%');vi.useFakeTimers();try{await act(async()=>{await vi.advanceTimersByTimeAsync(90000);});expect(fetchGameRtp).toHaveBeenCalledTimes(1);}finally{vi.useRealTimers();}});
+
+it('体验账号用独立标签展示，不伪装为普通玩家',async()=>{
+ vi.mocked(fetchLeaderboard).mockResolvedValue({items:[{rank:1,platformOrderId:'1',userId:'demo',nickname:'体***',avatarId:1,betId:'demo-bet',betAmount:'200',winAmount:'500',multiplier:'2.50',streak:1,occurredAt:'2026-11-04T01:00:00Z',experienceAccount:true}],updatedAt:'2026-11-04T01:00:00Z',statisticsSince:'2026-11-03T00:00:00Z',timezone:'UTC'});
+ setup('ranking');expect(await screen.findByText('平台体验账号')).toBeInTheDocument();expect(screen.getByText('体***')).toBeInTheDocument();
+});

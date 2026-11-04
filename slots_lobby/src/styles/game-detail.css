@@ -34,3 +34,5 @@
 .game-replay-spinner { position: absolute; inset: 0; margin: auto; width: 12px; height: 12px; box-sizing: border-box; border: 2px solid #bfd2ec; border-top-color: var(--blue); border-radius: 50%; animation: game-replay-spin .7s linear infinite; }
 @keyframes game-replay-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .game-replay-spinner { animation: none; } }
+
+.game-experience-badge{display:block;width:fit-content;max-width:100%;margin-top:4px;padding:2px 5px;border-radius:4px;background:#edf3fd;color:#426792;font-size:9px;line-height:1.4;overflow-wrap:anywhere}
