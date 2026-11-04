@@ -20,6 +20,7 @@ type LobbyCoinLedger struct {
 	BalanceBefore int64     `gorm:"column:balance_before;not null" json:"balance_before"`
 	BalanceAfter  int64     `gorm:"column:balance_after;not null" json:"balance_after"`
 	CreatedAt     time.Time `gorm:"column:created_at;not null;default:now()" json:"created_at"`
+	AccountType   string    `gorm:"column:account_type;not null;default:real" json:"account_type"`
 }
 
 // TableName LobbyCoinLedger's table name

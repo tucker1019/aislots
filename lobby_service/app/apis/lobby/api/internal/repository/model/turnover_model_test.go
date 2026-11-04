@@ -1,19 +1,21 @@
 package model
 
 import (
-	"apps/app/apis/lobby/api/internal/config"
-	migrations "apps/deploy/migration"
-	"apps/pkg/coinsource"
-	"apps/pkg/xerr"
 	"context"
 	"errors"
 	"fmt"
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/config"
+	migrations "apps/deploy/migration"
+	"apps/pkg/coinsource"
+	"apps/pkg/xerr"
+
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func TestTurnoverConfigurationAndInitialState(t *testing.T) {
@@ -179,7 +181,7 @@ func TestTurnoverEverySourceAndConcurrentUpdates(t *testing.T) {
 		if e = db.Create(&LobbyCoinLedger{UID: uid, OrderID: fmt.Sprint(i), Source: string(source), Delta: 100, BalanceBefore: 0, BalanceAfter: 100, CreatedAt: now}).Error; e != nil {
 			t.Fatal(source, e)
 		}
-		if source != coinsource.SourceGameWin && source != coinsource.SourceWithdrawalRefund {
+		if source != coinsource.SourceGameWin && source != coinsource.SourceWithdrawalRefund && source != coinsource.SourceExperienceFunding {
 			expected += 100
 		}
 	}

@@ -18,6 +18,7 @@ type LobbyUser struct {
 	CreatedAt    time.Time `gorm:"column:created_at;not null;default:now()" json:"created_at"`
 	Nickname     string    `gorm:"column:nickname;not null" json:"nickname"`
 	AvatarID     int32     `gorm:"column:avatar_id;not null" json:"avatar_id"`
+	AccountType  string    `gorm:"column:account_type;not null;default:real" json:"account_type"`
 }
 
 // TableName LobbyUser's table name

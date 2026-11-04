@@ -145,7 +145,7 @@ func (l *Logic) GameLeaderboard(ctx context.Context, r *pb.GameStatisticsRequest
 			if len(name) > 0 {
 				masked = string(name[0]) + "***"
 			}
-			out.Items = append(out.Items, &pb.GameLeaderboardItem{PlatformOrderId: row.PlatformOrderID, Rank: int32(i + 1), UserId: hex.EncodeToString(mac.Sum(nil))[:20], Nickname: masked, AvatarId: row.AvatarID, BetId: row.BetID, BetAmount: row.BetAmount, WinAmount: row.WinAmount, Multiplier: row.Multiplier, Streak: row.Streak, OccurredAt: row.EndedAt.Format(time.RFC3339)})
+			out.Items = append(out.Items, &pb.GameLeaderboardItem{PlatformOrderId: row.PlatformOrderID, Rank: int32(i + 1), UserId: hex.EncodeToString(mac.Sum(nil))[:20], Nickname: masked, AvatarId: row.AvatarID, ExperienceAccount: row.ExperienceAccount, BetId: row.BetID, BetAmount: row.BetAmount, WinAmount: row.WinAmount, Multiplier: row.Multiplier, Streak: row.Streak, OccurredAt: row.EndedAt.Format(time.RFC3339)})
 		}
 		return out, nil
 	})

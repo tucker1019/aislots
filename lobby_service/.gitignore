@@ -1,2 +1,4 @@
 /bin/
 coverage.out
+
+/etc/experience.local.json

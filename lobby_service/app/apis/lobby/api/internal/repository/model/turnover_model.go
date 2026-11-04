@@ -1,9 +1,11 @@
 package model
 
 import (
+	"context"
+
 	"apps/app/apis/lobby/api/internal/config"
 	"apps/pkg/xerr"
-	"context"
+
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -26,11 +28,13 @@ func (m *TurnoverModel) Configure(ctx context.Context, c config.TurnoverConfig) 
 		return tx.Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "source"}}, DoUpdates: clause.AssignmentColumns([]string{"multiplier", "version"})}).Create(&rows).Error
 	})
 }
+
 func (m *TurnoverModel) Remaining(ctx context.Context, uid int64) (int64, error) {
 	var value int64
 	e := m.DB.WithContext(ctx).Raw(`SELECT COALESCE((SELECT remaining FROM lobby_turnover_balances WHERE uid=?),0)`, uid).Scan(&value).Error
 	return value, databaseError(e)
 }
+
 func (m *WithdrawalModel) Remaining(ctx context.Context, uid int64) (int64, error) {
 	if m == nil {
 		return 0, xerr.ErrInvalid

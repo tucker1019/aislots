@@ -20,7 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, table := range []string{"lobby_turnover_activation", "lobby_turnover_rules", "lobby_turnover_balances", "lobby_turnover_entries", "lobby_withdrawal_orders", "lobby_payout_accounts", "lobby_agent_paths", "lobby_agent_queue", "lobby_agent_days", "lobby_agent_personal", "lobby_agent_claims", "lobby_agent_daily", "lobby_agent_contributions", "lobby_invite_codes", "lobby_invite_relations", "lobby_invite_rewards", "lobby_invite_batches", "lobby_game_statistics_epoch", "lobby_game_completions", "lobby_game_rtp_minutes", "lobby_game_streaks", "lobby_game_streak_days", "lobby_game_rank_candidates", "lobby_game_tickets", "lobby_game_settlements", "lobby_users", "lobby_sessions", "lobby_recharge_orders", "lobby_coin_ledger", "lobby_wallet_balances", "lobby_activity_daily", "lobby_activity_events", "lobby_checkin_claims", "lobby_return_batches", "lobby_return_claims", "lobby_vip_states", "lobby_vip_rewards", "lobby_vip_claim_batches", "lobby_newbie_recharges", "lobby_newbie_recharge_tiers", "lobby_newbie_claim_batches"} {
+	for _, table := range []string{"lobby_experience_accounts", "lobby_turnover_activation", "lobby_turnover_rules", "lobby_turnover_balances", "lobby_turnover_entries", "lobby_withdrawal_orders", "lobby_payout_accounts", "lobby_agent_paths", "lobby_agent_queue", "lobby_agent_days", "lobby_agent_personal", "lobby_agent_claims", "lobby_agent_daily", "lobby_agent_contributions", "lobby_invite_codes", "lobby_invite_relations", "lobby_invite_rewards", "lobby_invite_batches", "lobby_game_statistics_epoch", "lobby_game_completions", "lobby_game_rtp_minutes", "lobby_game_streaks", "lobby_game_streak_days", "lobby_game_rank_candidates", "lobby_game_tickets", "lobby_game_settlements", "lobby_users", "lobby_sessions", "lobby_recharge_orders", "lobby_coin_ledger", "lobby_wallet_balances", "lobby_activity_daily", "lobby_activity_events", "lobby_checkin_claims", "lobby_return_batches", "lobby_return_claims", "lobby_vip_states", "lobby_vip_rewards", "lobby_vip_claim_batches", "lobby_newbie_recharges", "lobby_newbie_recharge_tiers", "lobby_newbie_claim_batches"} {
 		if !db.Migrator().HasTable(table) {
 			log.Fatalf("run migration first: missing %s", table)
 		}
@@ -28,6 +28,7 @@ func main() {
 	g := gen.NewGenerator(gen.Config{OutPath: "app/apis/lobby/api/internal/repository/query", ModelPkgPath: "app/apis/lobby/api/internal/repository/model", FieldNullable: true})
 	g.WithDataTypeMap(map[string]func(gorm.ColumnType) string{"numeric": func(gorm.ColumnType) string { return "string" }})
 	g.UseDB(db)
+	g.GenerateModel("lobby_experience_accounts")
 	g.GenerateModel("lobby_turnover_activation")
 	g.GenerateModel("lobby_turnover_rules")
 	g.GenerateModel("lobby_turnover_balances")

@@ -1,10 +1,11 @@
 package model
 
 import (
-	migrations "apps/deploy/migration"
 	"context"
 	"testing"
 	"time"
+
+	migrations "apps/deploy/migration"
 )
 
 func TestBindingSetsAccountAndNicknameAtomically(t *testing.T) {

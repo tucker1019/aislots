@@ -1,15 +1,17 @@
 package userservice
 
 import (
-	"apps/app/apis/lobby/api/internal/config"
-	"apps/app/apis/lobby/api/internal/repository/model"
-	pb "apps/pb/apis/lobby/api/v1"
 	"context"
 	"errors"
-	"go.uber.org/mock/gomock"
 	"strings"
 	"testing"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/config"
+	"apps/app/apis/lobby/api/internal/repository/model"
+	pb "apps/pb/apis/lobby/api/v1"
+
+	"go.uber.org/mock/gomock"
 )
 
 type withdrawalFake struct {
@@ -26,19 +28,24 @@ func (f *withdrawalFake) Create(_ context.Context, _ int64, token, _, _, _ strin
 	f.seenToken = token
 	return f.order(), f.err
 }
+
 func (f *withdrawalFake) Review(context.Context, int64, string, string, string) (*model.LobbyWithdrawalOrder, error) {
 	return f.order(), f.err
 }
+
 func (f *withdrawalFake) Info(context.Context, int64, string) (*model.LobbyWithdrawalOrder, error) {
 	return f.order(), f.err
 }
+
 func (f *withdrawalFake) CashOrders(context.Context, int64, string, time.Time, time.Time, time.Time, string) ([]model.CashOrderRow, error) {
 	return f.rows, f.err
 }
+
 func (f *withdrawalFake) order() *model.LobbyWithdrawalOrder {
 	now := time.Now().UTC()
 	return &model.LobbyWithdrawalOrder{OrderID: "wdr_test", Amount: 5000, Fee: 100, SettledAt: &now, CreatedAt: now}
 }
+
 func TestWithdrawalTurnoverAndRequestReplies(t *testing.T) {
 	s, m := setup(t)
 	ctx := context.Background()

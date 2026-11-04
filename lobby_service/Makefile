@@ -4,7 +4,7 @@ export GOTOOLCHAIN ?= go1.25.0
 source:
 	python3 script/coin_sources.py
 build: source
-	PATH="$(HOME)/go/bin:$$PATH" protoc -I protos -I protos/third_party --go_out=. --go_opt=module=apps --descriptor_set_out=protos/descriptor.pb --include_imports apis/lobby/api/v1/agent_api.proto apis/lobby/api/v1/game_api.proto apis/lobby/api/v1/user_api.proto apis/lobby/api/v1/recharge_api.proto apis/lobby/api/v1/checkin_api.proto apis/lobby/api/v1/return_api.proto apis/lobby/api/v1/vip_api.proto apis/lobby/api/v1/newbie_recharge_api.proto apis/lobby/api/errors/user_error.proto common/errors/error_prefix.proto
+	PATH="$(HOME)/go/bin:$$PATH" protoc -I protos -I protos/third_party --go_out=. --go_opt=module=apps --descriptor_set_out=protos/descriptor.pb --include_imports apis/lobby/api/v1/experience_job.proto apis/lobby/api/v1/agent_api.proto apis/lobby/api/v1/game_api.proto apis/lobby/api/v1/user_api.proto apis/lobby/api/v1/recharge_api.proto apis/lobby/api/v1/checkin_api.proto apis/lobby/api/v1/return_api.proto apis/lobby/api/v1/vip_api.proto apis/lobby/api/v1/newbie_recharge_api.proto apis/lobby/api/errors/user_error.proto common/errors/error_prefix.proto
 	go run ./tools/httpgen
 gen: build
 model:

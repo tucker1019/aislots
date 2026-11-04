@@ -14,7 +14,7 @@ func TestTurnoverDefaultsAndValidation(t *testing.T) {
 	}
 	for source, n := range c.Multipliers {
 		want := int64(1)
-		if source == "game_002" || source == "wdr_002" {
+		if source == "game_002" || source == "wdr_002" || source == "exp_001" {
 			want = 0
 		}
 		if n != want {
@@ -39,7 +39,7 @@ func TestTurnoverDefaultsAndValidation(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "turnover.json")
 	b, _ := json.Marshal(c)
 	for _, content := range []string{string(b) + " {}", `{"version":"v","multipliers":{},"extra":true}`, `{"version":"v","multipliers":{"rch_001":1.5}}`} {
-		if e = os.WriteFile(path, []byte(content), 0600); e != nil {
+		if e = os.WriteFile(path, []byte(content), 0o600); e != nil {
 			t.Fatal(e)
 		}
 		if _, e = LoadTurnover(path); e == nil {

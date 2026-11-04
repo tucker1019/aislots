@@ -142,3 +142,5 @@ source统一维护：[script/coin_sources.py](script/coin_sources.py)，执行 `
 取款接口、独立档位及本地测试审核开关见[取款说明](docs/withdrawal.md)。
 
 取款流水要求配置 [etc/turnover.json](etc/turnover.json)，`LOBBY_TURNOVER_CONFIG` 可覆盖。默认各类加币1倍、派彩和取款退回本金0倍；历史不追溯。有效投注同步抵扣，取款前服务端校验剩余要求，详见[规则及接口](docs/turnover.md)。
+
+平台体验账号：见 [运行配置与数据隔离](docs/experience-accounts.md)。默认关闭；最小版由大厅调度一名账号，通过游戏服 `/internal/auto-round` 自动完成整局，公开榜单明确标注身份，活动与真实用户统计分离。

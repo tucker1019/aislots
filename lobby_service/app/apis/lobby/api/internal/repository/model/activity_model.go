@@ -59,6 +59,13 @@ func (m *ActivityModel) RecordEvent(ctx context.Context, e LobbyActivityEvent) e
 
 // Caller holds the wallet lock, shared with check-in claiming and recharge settlement.
 func recordActivity(tx *gorm.DB, e *LobbyActivityEvent, engines ...*VIPModel) error {
+	var accountType string
+	if err := tx.Table("lobby_users").Select("account_type").Where("uid=?", e.UID).Scan(&accountType).Error; err != nil {
+		return err
+	}
+	if accountType == "experience" {
+		return tx.Exec(`INSERT INTO lobby_experience_events(event_id,uid,event_type,game_id,amount,occurred_at,business_date) VALUES(?,?,?,?,?,?,?) ON CONFLICT(event_id) DO NOTHING`, e.EventID, e.UID, e.EventType, e.GameID, e.Amount, e.OccurredAt, e.BusinessDate).Error
+	}
 	result := tx.Clauses(clause.OnConflict{DoNothing: true}).Create(e)
 	if result.Error != nil {
 		return result.Error

@@ -1,16 +1,17 @@
 package config
 
 import (
-	"apps/pkg/coinsource"
 	"encoding/json"
 	"fmt"
 	"io"
 	"os"
 	"strings"
+
+	"apps/pkg/coinsource"
 )
 
 // Explicit credit registry: adding a new credit source requires a configured multiplier.
-var TurnoverSources = []coinsource.Source{coinsource.SourceRechargeCredit, coinsource.SourceRechargeBonus, coinsource.SourceCheckinReward, coinsource.SourceRebateDaily, coinsource.SourceRebateWeekly, coinsource.SourceRebateMonthly, coinsource.SourceLoserReturn, coinsource.SourceVIPUpgrade, coinsource.SourceVIPWeekly, coinsource.SourceVIPMonthly, coinsource.SourceNewbieRecharge, coinsource.SourceInviteReward, coinsource.SourceAgentCommission, coinsource.SourceWithdrawalBonus, coinsource.SourceGameWin, coinsource.SourceWithdrawalRefund}
+var TurnoverSources = []coinsource.Source{coinsource.SourceExperienceFunding, coinsource.SourceRechargeCredit, coinsource.SourceRechargeBonus, coinsource.SourceCheckinReward, coinsource.SourceRebateDaily, coinsource.SourceRebateWeekly, coinsource.SourceRebateMonthly, coinsource.SourceLoserReturn, coinsource.SourceVIPUpgrade, coinsource.SourceVIPWeekly, coinsource.SourceVIPMonthly, coinsource.SourceNewbieRecharge, coinsource.SourceInviteReward, coinsource.SourceAgentCommission, coinsource.SourceWithdrawalBonus, coinsource.SourceGameWin, coinsource.SourceWithdrawalRefund}
 
 type TurnoverConfig struct {
 	Version     string           `json:"version"`
@@ -30,11 +31,15 @@ func (c TurnoverConfig) Validate() error {
 			return fmt.Errorf("invalid turnover multiplier for %s", source)
 		}
 	}
+	if c.Multipliers[string(coinsource.SourceExperienceFunding)] != 0 {
+		return fmt.Errorf("experience funding must be exempt from turnover")
+	}
 	if c.Multipliers[string(coinsource.SourceGameWin)] != 0 || c.Multipliers[string(coinsource.SourceWithdrawalRefund)] != 0 {
 		return fmt.Errorf("game payouts and withdrawal refunds must be exempt from turnover")
 	}
 	return nil
 }
+
 func LoadTurnover(path string) (TurnoverConfig, error) {
 	var c TurnoverConfig
 	if path == "" {

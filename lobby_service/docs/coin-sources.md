@@ -4,6 +4,7 @@
 
 | 英文枚举 | 流水存储值 | 含义 |
 | --- | --- | --- |
+| `SourceExperienceFunding` | `exp_001` | 平台体验账号初始资金 |
 | `SourceWithdrawalDebit` | `wdr_001` | 取款申请扣除本金 |
 | `SourceWithdrawalRefund` | `wdr_002` | 取款退回返还本金 |
 | `SourceWithdrawalBonus` | `wdr_003` | 取款通过赠送加币 |

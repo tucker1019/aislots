@@ -12,15 +12,16 @@ const TableNameLobbyGameSettlement = "lobby_game_settlements"
 
 // LobbyGameSettlement mapped from table <lobby_game_settlements>
 type LobbyGameSettlement struct {
-	RequestID string    `gorm:"column:request_id;primaryKey" json:"request_id"`
-	UID       int64     `gorm:"column:uid;not null" json:"uid"`
-	GameID    string    `gorm:"column:game_id;not null" json:"game_id"`
-	BetID     string    `gorm:"column:bet_id;not null" json:"bet_id"`
-	Debit     int64     `gorm:"column:debit;not null" json:"debit"`
-	Credit    int64     `gorm:"column:credit;not null" json:"credit"`
-	Status    string    `gorm:"column:status;not null" json:"status"`
-	Coins     int64     `gorm:"column:coins;not null" json:"coins"`
-	CreatedAt time.Time `gorm:"column:created_at;not null;default:now()" json:"created_at"`
+	RequestID   string    `gorm:"column:request_id;primaryKey" json:"request_id"`
+	UID         int64     `gorm:"column:uid;not null" json:"uid"`
+	GameID      string    `gorm:"column:game_id;not null" json:"game_id"`
+	BetID       string    `gorm:"column:bet_id;not null" json:"bet_id"`
+	Debit       int64     `gorm:"column:debit;not null" json:"debit"`
+	Credit      int64     `gorm:"column:credit;not null" json:"credit"`
+	Status      string    `gorm:"column:status;not null" json:"status"`
+	Coins       int64     `gorm:"column:coins;not null" json:"coins"`
+	CreatedAt   time.Time `gorm:"column:created_at;not null;default:now()" json:"created_at"`
+	AccountType string    `gorm:"column:account_type;not null;default:real" json:"account_type"`
 }
 
 // TableName LobbyGameSettlement's table name

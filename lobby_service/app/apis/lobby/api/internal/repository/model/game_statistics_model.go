@@ -31,6 +31,7 @@ type RankView struct {
 	EndedAt                                 time.Time
 	Nickname                                string
 	AvatarID                                int32
+	ExperienceAccount                       bool
 }
 
 func (m *GameModel) CompleteGame(ctx context.Context, in GameCompletion) (bool, error) {
@@ -102,8 +103,14 @@ func (m *GameModel) CompleteGame(ctx context.Context, in GameCompletion) (bool, 
 		if !included {
 			return nil
 		}
-		if e := tx.Exec(`INSERT INTO lobby_game_rtp_minutes(game_id,minute,bet_amount,win_amount,rounds) VALUES(?,?,?,?,1) ON CONFLICT(game_id,minute) DO UPDATE SET bet_amount=lobby_game_rtp_minutes.bet_amount+EXCLUDED.bet_amount,win_amount=lobby_game_rtp_minutes.win_amount+EXCLUDED.win_amount,rounds=lobby_game_rtp_minutes.rounds+1`, in.GameID, in.StartedAt.UTC().Truncate(time.Minute), in.BetAmount, in.WinAmount).Error; e != nil {
+		var accountType string
+		if e := tx.Table("lobby_users").Select("account_type").Where("uid=?", in.UID).Scan(&accountType).Error; e != nil {
 			return e
+		}
+		if accountType != "experience" {
+			if e := tx.Exec(`INSERT INTO lobby_game_rtp_minutes(game_id,minute,bet_amount,win_amount,rounds) VALUES(?,?,?,?,1) ON CONFLICT(game_id,minute) DO UPDATE SET bet_amount=lobby_game_rtp_minutes.bet_amount+EXCLUDED.bet_amount,win_amount=lobby_game_rtp_minutes.win_amount+EXCLUDED.win_amount,rounds=lobby_game_rtp_minutes.rounds+1`, in.GameID, in.StartedAt.UTC().Truncate(time.Minute), in.BetAmount, in.WinAmount).Error; e != nil {
+				return e
+			}
 		}
 		day := in.StartedAt.In(m.Location).Format(time.DateOnly)
 		for _, period := range []string{"day:" + day, "all"} {
@@ -211,7 +218,7 @@ func (m *GameModel) ReadLeaderboard(ctx context.Context, game, board, period str
 		}
 	}
 	// At most seven Top-50 sets; never reads the raw completion table. User profiles are joined only after LIMIT 20.
-	query := `SELECT completion.platform_order_id::text AS platform_order_id,ranked.uid,ranked.bet_id,ranked.bet_amount::text,ranked.win_amount::text,ROUND(ranked.win_amount::numeric/ranked.bet_amount,2)::text AS multiplier,ranked.streak,ranked.ended_at,u.nickname,u.avatar_id FROM (SELECT * FROM lobby_game_rank_candidates WHERE game_id=? AND board=? AND period IN ? ORDER BY score DESC,ended_at,entry_key LIMIT 20) ranked JOIN lobby_game_completions completion ON completion.game_id=ranked.game_id AND completion.bet_id=ranked.bet_id JOIN lobby_users u ON u.uid=ranked.uid ORDER BY ranked.score DESC,ranked.ended_at,ranked.entry_key`
+	query := `SELECT completion.platform_order_id::text AS platform_order_id,ranked.uid,ranked.bet_id,ranked.bet_amount::text,ranked.win_amount::text,ROUND(ranked.win_amount::numeric/ranked.bet_amount,2)::text AS multiplier,ranked.streak,ranked.ended_at,u.nickname,u.avatar_id,(completion.account_type='experience') AS experience_account FROM (SELECT * FROM lobby_game_rank_candidates WHERE game_id=? AND board=? AND period IN ? ORDER BY score DESC,ended_at,entry_key LIMIT 20) ranked JOIN lobby_game_completions completion ON completion.game_id=ranked.game_id AND completion.bet_id=ranked.bet_id JOIN lobby_users u ON u.uid=ranked.uid ORDER BY ranked.score DESC,ranked.ended_at,ranked.entry_key`
 	var rows []RankView
 	e := db.Raw(query, game, board, keys).Scan(&rows).Error
 	return rows, since, e

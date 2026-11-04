@@ -190,7 +190,7 @@ func (m *VIPModel) ClaimVIP(ctx context.Context, uid int64, token, kind, request
 // TickVIP is independent of client login. SQL deadlines survive process restarts.
 func (m *VIPModel) TickVIP(ctx context.Context, now time.Time) error {
 	var missing []int64
-	if err := m.DB.WithContext(ctx).Table("lobby_users u").Select("u.uid").Where("NOT EXISTS (SELECT 1 FROM lobby_vip_states s WHERE s.uid=u.uid)").Order("u.uid").Limit(100).Scan(&missing).Error; err != nil {
+	if err := m.DB.WithContext(ctx).Table("lobby_users u").Select("u.uid").Where("u.account_type='real' AND NOT EXISTS (SELECT 1 FROM lobby_vip_states s WHERE s.uid=u.uid)").Order("u.uid").Limit(100).Scan(&missing).Error; err != nil {
 		return err
 	}
 	var due []int64

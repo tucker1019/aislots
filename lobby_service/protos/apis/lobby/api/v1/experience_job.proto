@@ -1,0 +1,8 @@
+syntax = "proto3";
+package lobby.api.v1;
+option go_package = "apps/pb/apis/lobby/api/v1;v1";
+// Internal job configuration, no public HTTP route. One account / AG1 in MVP.
+message ExperienceJobConfig {
+ bool enabled=1; int64 bet=2; int32 bet_level=3 [json_name="betLevel"];
+ int32 interval_seconds=4 [json_name="intervalSeconds"];int64 initial_coins=5 [json_name="initialCoins"];
+}

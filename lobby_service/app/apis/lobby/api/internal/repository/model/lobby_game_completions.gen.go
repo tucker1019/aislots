@@ -22,6 +22,7 @@ type LobbyGameCompletion struct {
 	EndedAt         time.Time `gorm:"column:ended_at;not null" json:"ended_at"`
 	Included        bool      `gorm:"column:included;not null" json:"included"`
 	PlatformOrderID int64     `gorm:"column:platform_order_id;not null" json:"platform_order_id"`
+	AccountType     string    `gorm:"column:account_type;not null;default:real" json:"account_type"`
 }
 
 // TableName LobbyGameCompletion's table name

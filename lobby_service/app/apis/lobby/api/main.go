@@ -69,7 +69,8 @@ func run() error {
 	workerDone := server.StartPayments(workerCtx, dependencies.Repo.Recharge)
 	vipDone := server.StartVIP(workerCtx, dependencies.Repo.VIP)
 	agentDone := server.StartAgent(workerCtx, dependencies.Repo.Agent)
-	defer func() { cancelWorker(); <-workerDone; <-vipDone; <-agentDone }()
+	experienceDone := server.StartExperience(workerCtx, c, db)
+	defer func() { cancelWorker(); <-workerDone; <-vipDone; <-agentDone; <-experienceDone }()
 	server := &http.Server{Addr: c.Address, Handler: router.New(dependencies), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second}
 
 	done := make(chan error, 1)
