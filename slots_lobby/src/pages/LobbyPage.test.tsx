@@ -35,13 +35,14 @@ it('AG与热门切换显示现有游戏，隐藏未接入厂商', async () => {
   expect(screen.getByRole('button', { name: '热门' })).toHaveAttribute('aria-pressed', 'true');
 });
 
-it('底栏提供五个入口，未开发入口提示敬请期待', async () => {
+it('底栏提供五个入口，优惠进入海报页', async () => {
   const user = setup();
   const navigation = within(screen.getByRole('navigation', { name: '底部导航' }));
   expect(navigation.getAllByRole('button')).toHaveLength(5);
   expect(navigation.getByRole('button', { name: '首页' })).toHaveAttribute('aria-current', 'page');
   await user.click(navigation.getByRole('button', { name: '优惠' }));
-  expect(await screen.findByText('敬请期待')).toBeInTheDocument();
+  expect(window.location.pathname).toBe('/offers');
+  expect(screen.getAllByRole('img')).toHaveLength(7);
 });
 
 it('我的显示真实资料和功能分组，可返回首页', async () => {

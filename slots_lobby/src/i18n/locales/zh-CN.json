@@ -710,5 +710,18 @@
   "loss.window": "昨日返还在今天手动领取，次日零点过期，不补发。",
   "loss.exclusions": "所有游戏合并计算，盈利和亏损相抵；充值赠送、签到、VIP等活动奖励不作为游戏派彩。",
   "loss.preview": "今日金额仅为预估，后续中奖可能使预估减少至零，以领取时服务端统计为准。",
-  "loss.turnover": "领取后按活动配置增加取款所需有效流水。"
+  "loss.turnover": "领取后按活动配置增加取款所需有效流水。",
+  "offers.all": "全部活动",
+  "offers.deposit": "充值活动",
+  "offers.returns": "游戏回馈",
+  "offers.referrals": "推广奖励",
+  "offers.vip": "VIP礼金",
+  "offers.categories": "活动分类",
+  "offers.depositPoster": "充值赠送：充值享好礼",
+  "offers.rebatePoster": "游戏返水：日、周、月多重回馈",
+  "offers.lossPoster": "亏损返还：昨日亏损，今日回馈",
+  "offers.agentPoster": "代理佣金：携手推广，共享收益",
+  "offers.invitePoster": "邀请好友：好友达标享奖励",
+  "offers.weeklyPoster": "每周礼金：VIP每周专属奖励",
+  "offers.monthlyPoster": "每月礼金：VIP每月专属奖励"
 }

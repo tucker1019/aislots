@@ -710,5 +710,18 @@
   "loss.window": "Claim yesterday’s return manually today. It expires at midnight and is not reissued.",
   "loss.exclusions": "All games are combined, with wins offsetting losses. Deposit bonuses, check-in, VIP and other activity rewards are excluded from game payouts.",
   "loss.preview": "Today’s estimate may decrease to zero after further wins. Server calculations at claim time apply.",
-  "loss.turnover": "Claimed rewards add eligible turnover requirements according to the activity configuration."
+  "loss.turnover": "Claimed rewards add eligible turnover requirements according to the activity configuration.",
+  "offers.all": "All offers",
+  "offers.deposit": "Deposits",
+  "offers.returns": "Game rewards",
+  "offers.referrals": "Referrals",
+  "offers.vip": "VIP gifts",
+  "offers.categories": "Offer categories",
+  "offers.depositPoster": "Deposit bonuses: More with every deposit",
+  "offers.rebatePoster": "Betting rebates: Daily, weekly and monthly rewards",
+  "offers.lossPoster": "Loss return: Yesterday’s losses, today’s return",
+  "offers.agentPoster": "Agent commissions: Grow together, earn together",
+  "offers.invitePoster": "Invite friends: Earn when friends qualify",
+  "offers.weeklyPoster": "Weekly VIP gifts: Your weekly reward awaits",
+  "offers.monthlyPoster": "Monthly VIP gifts: A new month, a new reward"
 }

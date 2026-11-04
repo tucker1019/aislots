@@ -9,7 +9,7 @@
 
 .earn-invite .invite-deadline-note{padding:0 14px 10px;margin:0;color:var(--muted);font-size:11px;line-height:1.6;}
 
-.invite-chest-symbol { position: relative; display: inline-flex; width: 32px; height: 32px; flex-shrink: 0; }
+.invite-chest-symbol { position: relative; display: inline-flex; width: 40px; height: 40px; flex-shrink: 0; }
 .invite-chest-check { position: absolute; right: -4px; bottom: -2px; display: grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; background: #538a79; color: white; border: 1px solid #e8f3ee; font-size: 10px; line-height: 1; }
 .invite-chest-pending { position: absolute; inset: 0; display: grid; place-items: center; background: #fff5d9e6; border-radius: 6px; }
 
@@ -21,3 +21,8 @@
 .invite-chest-link input { min-width: 0; text-overflow: ellipsis; }
 .invite-chest-link button { flex-shrink: 0; }
 .invite-chest-modal .ant-modal-footer > button { height: 40px; }
+
+.invite-chest-symbol > img { display: block; width: 40px; height: 40px; object-fit: contain; }
+.invite-chest.is-claimable:not(:disabled) .invite-chest-symbol > img { animation: invite-chest-breathe 1.8s ease-in-out infinite; }
+@keyframes invite-chest-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { .invite-chest.is-claimable:not(:disabled) .invite-chest-symbol > img { animation: none; } }
