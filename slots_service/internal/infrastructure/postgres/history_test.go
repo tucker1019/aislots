@@ -81,7 +81,7 @@ func TestBetHistoryWholeFreeBetReplayReadOnly(t *testing.T) {
 	if err = json.Unmarshal(replay["frames"], &frames); err != nil || len(frames) != 1 {
 		t.Fatal("unsettled future results exposed", len(frames), err)
 	}
-	if string(frames[0]["winAmount"]) != `"10"` || string(frames[0]["stepIndex"]) != "1" {
+	if string(frames[0]["winAmount"]) != `10` || string(frames[0]["stepIndex"]) != "1" {
 		t.Fatal(frames)
 	}
 	var payouts []struct {

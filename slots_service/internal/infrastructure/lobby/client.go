@@ -154,3 +154,12 @@ func (c *Client) Complete(ctx context.Context, in Completion) error {
 	var out struct{ Included bool }
 	return c.call(ctx, "/internal/game/complete", in, &out)
 }
+
+// AutoPlayer accepts only a trusted internal command, under this adapter's configured identity.
+func (c *Client) AutoPlayer(uid int64, country, currency string) (identity.Context, error) {
+	p := identity.Context{Subject: identity.Subject{AppName: c.config.AppName, AppKey: c.config.AppKey, UID: strconv.FormatInt(uid, 10)}, Country: country, Currency: currency}
+	if uid <= 0 || !p.Valid() {
+		return identity.Context{}, play.ErrInvalid
+	}
+	return p, nil
+}

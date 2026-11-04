@@ -189,3 +189,7 @@ curl -H 'Authorization: Bearer <accessToken>' \
 整局完成统计通过服务端outbox投递大厅：SaveTicket complete时同事务写入game_statistics_outbox，按游戏/玩家连续sequence后台重试。客户端不提交RTP和榜单结果；该通知不涉及额外钱包结算。详见大厅docs/game-statistics.md。
 
 平台排行榜回放：`POST /internal/rank-replay` 仅接受配置的大厅服务 Bearer secret，输入大厅核验后的 `{uid,gameId,betId}`。只允许归属匹配且已完成的整局，复用原分享回放凭据；浏览器登录 token 无权调用。公开播放仍使用现有 `shared-replays`，不会登录或下注。
+
+## 内部整局执行
+
+`POST /internal/auto-round` 仅供持有服务凭据的大厅调用，协议见 `protos/auto_round.proto`。复用正常 spin、钱包结算与回放，每局返回完成回执及 betId；大厅使用原 requestId 重试恢复，不影响普通玩家逐轮接口。运行说明见大厅 `docs/experience-accounts.md`。

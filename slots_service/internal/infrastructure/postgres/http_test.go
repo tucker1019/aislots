@@ -61,16 +61,16 @@ func TestHTTPProgressiveProtocol(t *testing.T) {
 		t.Fatal(options)
 	}
 
-	request("POST", "/api/v1/games/AG1/spin", `{"requestId":"x","betAmount":"100","uid":"forged"}`, 400)
+	request("POST", "/api/v1/games/AG1/spin", `{"requestId":"x","bet":"100","betLevel":1,"uid":"forged"}`, 400)
 	state := request("GET", "/api/v1/games/AG1/state", "", 200)
 	var progress play.Status
 	raw, _ := json.Marshal(state)
 	if err := json.Unmarshal(raw, &progress); err != nil || progress.HasNext || progress.RequestID == "" {
 		t.Fatal(progress, err)
 	}
-	body := `{"requestId":"` + progress.RequestID + `","betAmount":"100"}`
+	body := `{"requestId":"` + progress.RequestID + `","bet":"100","betLevel":1}`
 	first := request("POST", "/api/v1/games/AG1/spin", body, 200)
-	if string(first["stepIndex"]) != "1" || string(first["winAmount"]) != `"10"` {
+	if string(first["stepIndex"]) != "1" || string(first["winAmount"]) != `10` {
 		t.Fatal(first)
 	}
 	if _, leaks := first["next"]; leaks {
@@ -89,13 +89,13 @@ func TestHTTPProgressiveProtocol(t *testing.T) {
 	if !progress.HasNext {
 		t.Fatal("missing continuation")
 	}
-	second := request("POST", "/api/v1/games/AG1/spin", `{"requestId":"`+progress.RequestID+`","betAmount":"100"}`, 200)
+	second := request("POST", "/api/v1/games/AG1/spin", `{"requestId":"`+progress.RequestID+`","bet":"100","betLevel":1}`, 200)
 	if string(second["stepIndex"]) != "2" {
 		t.Fatal("did not advance to next unsettled round")
 	}
 	var nextID string
 	_ = json.Unmarshal(second["nextRequestId"], &nextID)
-	final := request("POST", "/api/v1/games/AG1/spin", `{"requestId":"`+nextID+`","betAmount":"100"}`, 200)
+	final := request("POST", "/api/v1/games/AG1/spin", `{"requestId":"`+nextID+`","bet":"100","betLevel":1}`, 200)
 	if string(final["nextAction"]) != `"complete"` {
 		t.Fatal(final)
 	}
