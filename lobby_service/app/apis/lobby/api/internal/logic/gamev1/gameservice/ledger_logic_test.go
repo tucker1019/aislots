@@ -44,7 +44,7 @@ func TestWalletLedgerBusinessTypesAndAuthorization(t *testing.T) {
 	l := &Logic{users: recordUsers{}, store: f, config: config.GameConfig{Currency: "IDR", Games: map[string]config.GameEntry{"AG1": {Provider: "AG", Name: "麻将胡了"}}}}
 	r := &pb.WalletLedgerRequest{Uid: &uid, Sid: &sid, From: "2026-11-03T00:00:00Z", To: "2026-11-04T00:00:00Z", Category: "bet:AG"}
 	out, e := l.WalletLedger(ctx, r)
-	if e != nil || len(out.Items) != 20 || out.NextCursor != "81" || out.Items[0].Type != "AG 投注" || len(f.games) != 1 {
+	if e != nil || len(out.Items) != 20 || out.NextCursor != "81" || out.Items[0].Type != "AG 投注" || out.Items[0].CategoryId != "bet:AG" || len(f.games) != 1 {
 		t.Fatal(out, e)
 	}
 	for _, c := range out.Categories {
@@ -89,7 +89,7 @@ func TestWalletLedgerBusinessTypesAndAuthorization(t *testing.T) {
 	f.err = nil
 	r.Id = "100"
 	detail, e := l.WalletLedgerDetail(ctx, r)
-	if e != nil || detail.Item.Type != "AG 投注" {
+	if e != nil || detail.Item.Type != "AG 投注" || detail.Item.CategoryId != "bet:AG" {
 		t.Fatal(detail, e)
 	}
 	r.Id = "bad"

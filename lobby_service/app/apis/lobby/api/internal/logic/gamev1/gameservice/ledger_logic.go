@@ -61,7 +61,7 @@ func (l *Logic) ledgerCategories() []ledgerCategory {
 }
 
 func (l *Logic) ledgerItem(r model.WalletLedgerRow) *pb.WalletLedgerItem {
-	name := "其他账变"
+	name, categoryID := "其他账变", "other"
 	for _, c := range l.ledgerCategories() {
 		for _, s := range c.sources {
 			if s != r.Source {
@@ -78,10 +78,10 @@ func (l *Logic) ledgerItem(r model.WalletLedgerRow) *pb.WalletLedgerItem {
 					continue
 				}
 			}
-			name = c.name
+			name, categoryID = c.name, c.id
 		}
 	}
-	return &pb.WalletLedgerItem{Id: strconv.FormatInt(r.ID, 10), OrderId: r.OrderID, Type: name, Currency: l.config.Currency, Amount: r.Delta, Balance: r.BalanceAfter, CreatedAt: r.CreatedAt.UTC().Format(time.RFC3339Nano), Remark: name}
+	return &pb.WalletLedgerItem{Id: strconv.FormatInt(r.ID, 10), OrderId: r.OrderID, Type: name, Currency: l.config.Currency, Amount: r.Delta, Balance: r.BalanceAfter, CreatedAt: r.CreatedAt.UTC().Format(time.RFC3339Nano), Remark: name, CategoryId: categoryID}
 }
 
 func (l *Logic) ledgerAuth(ctx context.Context, r *pb.WalletLedgerRequest) (ledgerStore, error) {

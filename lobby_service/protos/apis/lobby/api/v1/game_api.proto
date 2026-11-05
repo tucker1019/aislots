@@ -36,7 +36,7 @@ message GameRecordsReply {repeated GameRecord items=1;int64 count=2;int64 bet_am
 
 message WalletLedgerRequest {optional int64 uid=1;optional string sid=2;string from=3;string to=4;string category=5;string cursor=6;string id=7;}
 message WalletLedgerCategory {string id=1;string name=2;}
-message WalletLedgerItem {string id=1;string order_id=2 [json_name="orderId"];string type=3;string currency=4;int64 amount=5;int64 balance=6;string created_at=7 [json_name="createdAt"];string remark=8;}
+message WalletLedgerItem {string id=1;string order_id=2 [json_name="orderId"];string type=3;string currency=4;int64 amount=5;int64 balance=6;string created_at=7 [json_name="createdAt"];string remark=8;string category_id=9 [json_name="categoryId"];}
 message WalletLedgerReply {repeated WalletLedgerItem items=1;repeated WalletLedgerCategory categories=2;string next_cursor=3 [json_name="nextCursor"];}
 message WalletLedgerDetailReply {WalletLedgerItem item=1;}
 
