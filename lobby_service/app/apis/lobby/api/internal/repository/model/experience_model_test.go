@@ -39,9 +39,9 @@ func TestExperienceAccountIsolationAndRecovery(t *testing.T) {
 	if e != nil || len(ranks) != 1 || !ranks[0].ExperienceAccount {
 		t.Fatal("rank classification", ranks, e)
 	}
-	rtp, e := game.ReadRTP(ctx, "AG1", 60, now.Add(time.Second))
-	if e != nil || rtp.Rounds != 0 {
-		t.Fatal("experience leaked into real RTP", rtp, e)
+	rtp, e := game.ReadRTP(ctx, "AG1", 60, now.Add(time.Minute))
+	if e != nil || rtp.Rounds != 1 {
+		t.Fatal("experience missing from public RTP", rtp, e)
 	}
 	var n int64
 	for _, table := range []string{"lobby_activity_events", "lobby_activity_daily", "lobby_agent_queue", "lobby_vip_states", "lobby_recharge_orders"} {

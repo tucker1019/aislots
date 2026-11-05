@@ -1,1 +1,1 @@
-{"enabled":false,"bet":10,"betLevel":1,"intervalSeconds":20,"initialCoins":10000000}
+{"enabled":true,"createMinSeconds":30,"createMaxSeconds":120,"playMinSeconds":10,"playMaxSeconds":30}

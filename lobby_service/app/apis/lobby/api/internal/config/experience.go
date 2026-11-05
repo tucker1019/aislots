@@ -8,11 +8,11 @@ import (
 )
 
 type ExperienceConfig struct {
-	Enabled         bool  `json:"enabled"`
-	Bet             int64 `json:"bet"`
-	BetLevel        int   `json:"betLevel"`
-	IntervalSeconds int   `json:"intervalSeconds"`
-	InitialCoins    int64 `json:"initialCoins"`
+	CreateMinSeconds int  `json:"createMinSeconds"`
+	CreateMaxSeconds int  `json:"createMaxSeconds"`
+	PlayMinSeconds   int  `json:"playMinSeconds"`
+	PlayMaxSeconds   int  `json:"playMaxSeconds"`
+	Enabled          bool `json:"enabled"`
 }
 
 func LoadExperience(path string) (ExperienceConfig, error) {
@@ -34,8 +34,9 @@ func LoadExperience(path string) (ExperienceConfig, error) {
 	if e = d.Decode(&extra); e != io.EOF {
 		return c, fmt.Errorf("trailing experience configuration")
 	}
-	if c.Bet < 1 || c.Bet > 1000000 || c.BetLevel < 1 || c.BetLevel > 100 || c.IntervalSeconds < 5 || c.IntervalSeconds > 86400 || c.InitialCoins < 1 || c.InitialCoins > 1000000000 {
-		return c, fmt.Errorf("invalid experience configuration")
+	if c.CreateMinSeconds < 1 || c.CreateMaxSeconds < c.CreateMinSeconds || c.PlayMinSeconds < 1 || c.PlayMaxSeconds < c.PlayMinSeconds || c.CreateMaxSeconds > 86400 || c.PlayMaxSeconds > 86400 {
+		return c, fmt.Errorf("invalid experience timing")
 	}
+
 	return c, nil
 }

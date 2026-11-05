@@ -12,14 +12,19 @@ const TableNameLobbyExperienceAccount = "lobby_experience_accounts"
 
 // LobbyExperienceAccount mapped from table <lobby_experience_accounts>
 type LobbyExperienceAccount struct {
-	ID        int32     `gorm:"column:id;primaryKey" json:"id"`
-	UID       int64     `gorm:"column:uid;not null" json:"uid"`
-	RequestID string    `gorm:"column:request_id;not null" json:"request_id"`
-	Bet       int64     `gorm:"column:bet;not null" json:"bet"`
-	BetLevel  int32     `gorm:"column:bet_level;not null" json:"bet_level"`
-	NextAt    time.Time `gorm:"column:next_at;not null;default:now()" json:"next_at"`
-	LastBetID string    `gorm:"column:last_bet_id;not null" json:"last_bet_id"`
-	UpdatedAt time.Time `gorm:"column:updated_at;not null;default:now()" json:"updated_at"`
+	ID         int32     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	UID        int64     `gorm:"column:uid;not null" json:"uid"`
+	RequestID  string    `gorm:"column:request_id;not null" json:"request_id"`
+	Bet        int64     `gorm:"column:bet;not null" json:"bet"`
+	BetLevel   int32     `gorm:"column:bet_level;not null" json:"bet_level"`
+	NextAt     time.Time `gorm:"column:next_at;not null;default:now()" json:"next_at"`
+	LastBetID  string    `gorm:"column:last_bet_id;not null" json:"last_bet_id"`
+	UpdatedAt  time.Time `gorm:"column:updated_at;not null;default:now()" json:"updated_at"`
+	Rounds     int32     `gorm:"column:rounds;not null" json:"rounds"`
+	Stopped    bool      `gorm:"column:stopped;not null" json:"stopped"`
+	StopReason string    `gorm:"column:stop_reason;not null" json:"stop_reason"`
+	Country    string    `gorm:"column:country;not null" json:"country"`
+	Currency   string    `gorm:"column:currency;not null" json:"currency"`
 }
 
 // TableName LobbyExperienceAccount's table name

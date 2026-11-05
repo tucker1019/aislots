@@ -8,7 +8,7 @@ import (
 
 func TestExperienceConfig(t *testing.T) {
 	c, e := LoadExperience("../../../../../../etc/experience.json")
-	if e != nil || c.Bet != 10 || c.Enabled {
+	if e != nil || c.CreateMinSeconds != 30 || !c.Enabled {
 		t.Fatal(c, e)
 	}
 	p := filepath.Join(t.TempDir(), "experience.json")

@@ -183,7 +183,11 @@ func (m *GameModel) ReadRTP(ctx context.Context, game string, minutes int, now t
 		BetAmount, WinAmount, Percent string
 		Rounds                        int64
 	}
-	e := m.DB.WithContext(ctx).Raw(`SELECT COALESCE(SUM(bet_amount),0)::text AS bet_amount,COALESCE(SUM(win_amount),0)::text AS win_amount,COALESCE(SUM(rounds),0) AS rounds,COALESCE(ROUND(SUM(win_amount)*100/NULLIF(SUM(bet_amount),0),2),0)::text AS percent FROM lobby_game_rtp_minutes WHERE game_id=? AND minute>=? AND minute<?`, game, out.From, out.To).Scan(&totals).Error
+	e := m.DB.WithContext(ctx).Raw(`SELECT COALESCE(SUM(bet_amount),0)::text AS bet_amount,COALESCE(SUM(win_amount),0)::text AS win_amount,COALESCE(SUM(rounds),0) AS rounds,COALESCE(ROUND(SUM(win_amount)*100/NULLIF(SUM(bet_amount),0),2),0)::text AS percent FROM (
+ SELECT bet_amount,win_amount,rounds FROM lobby_game_rtp_minutes WHERE game_id=? AND minute>=? AND minute<?
+ UNION ALL
+ SELECT bet_amount::numeric,win_amount::numeric,1 AS rounds FROM lobby_game_completions WHERE game_id=? AND started_at>=? AND started_at<? AND included AND account_type='experience'
+ ) combined`, game, out.From, out.To, game, out.From, out.To).Scan(&totals).Error
 	if e != nil {
 		return out, e
 	}
