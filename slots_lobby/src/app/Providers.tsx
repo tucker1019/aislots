@@ -1,3 +1,4 @@
+import { overlayContainer } from './designViewport';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { ConfigProvider } from 'antd';
@@ -11,5 +12,5 @@ export function Providers({ children }: { children: ReactNode }) {
   const [client] = useState(() => new QueryClient({ defaultOptions: {
     queries: { retry: 1, retryDelay: 500, refetchOnWindowFocus: false },
   } }));
-  return <ConfigProvider locale={getLanguage(locale).antd} theme={theme}><QueryClientProvider client={client}>{children}</QueryClientProvider></ConfigProvider>;
+  return <ConfigProvider getPopupContainer={overlayContainer} locale={getLanguage(locale).antd} theme={theme}><QueryClientProvider client={client}>{children}</QueryClientProvider></ConfigProvider>;
 }

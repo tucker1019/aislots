@@ -1,3 +1,4 @@
+import { overlayContainer } from '../../app/designViewport';
 import {LoadingState} from '../../components/feedback/LoadingState';
 import {NetworkError} from '../../components/feedback/NetworkError';
 import { useState } from 'react';
@@ -13,7 +14,7 @@ import { RecordsLayout } from '../../components/records/RecordsLayout';
 
 export function WalletManagement({ onBack }: { onBack: () => void }) {
   const [selected, setSelected] = useState<WalletAccount | null>(null);
-  const [toast, holder] = message.useMessage();
+  const [toast, holder] = message.useMessage({getContainer:overlayContainer});
   const uid = useSessionStore(state => state.session?.uid);
   const client = useQueryClient();
   const queryKey = ['wallet-accounts', uid];

@@ -20,3 +20,9 @@
 - 修改后检查中英文及 320px 窄屏、长文案、大金额，在浏览器核对标题与金额对齐，不能只依赖 DOM 测试。
 
 - 公共接口失败界面按 [slots-lobby-ui skill](../.agents/skills/slots-lobby-ui/SKILL.md) 实现，复用 NetworkError 组件。
+
+## 设计分辨率适配
+
+- 大厅统一420px设计宽度，小屏按宽整体等比缩放，大屏不放大并居中，高度自然滚动。详见 docs/design-viewport.md。
+- 页面、固定导航、弹窗、下拉和Toast使用统一设计坐标；Modal和message使用app/designViewport.ts的overlayContainer，禁止绕过公共挂载点单独缩放。
+- 不新增依赖物理窗口宽度的排版断点；长文本仍显式定义换行/省略/内部滚动。游戏放大由Cocos自己适配，不能重新挂载iframe。

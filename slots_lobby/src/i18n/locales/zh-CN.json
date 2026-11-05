@@ -724,5 +724,7 @@
   "offers.invitePoster": "邀请好友：好友达标享奖励",
   "offers.weeklyPoster": "每周礼金：VIP每周专属奖励",
   "offers.monthlyPoster": "每月礼金：VIP每月专属奖励",
-  "statistics.experienceAccount": "平台体验账号"
+  "statistics.experienceAccount": "平台体验账号",
+  "gamePreview.betId": "订单 {id}",
+  "gamePreview.platformVerified": "平台验证"
 }

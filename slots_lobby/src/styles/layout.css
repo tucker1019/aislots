@@ -1,6 +1,6 @@
 .site-header {
   height: var(--header-height);
-  padding-top: env(safe-area-inset-top, 0px);
+  padding-top: var(--lobby-safe-top, 0px);
   position: fixed;
   top: 0;
   left: 50%;
@@ -20,7 +20,7 @@
   width: min(100%, var(--content));
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  padding: 7px 8px calc(7px + env(safe-area-inset-bottom, 0px));
+  padding: 7px 8px calc(7px + var(--lobby-safe-bottom, 0px));
   background: #fff;
   border-top: 1px solid var(--line);
   z-index: 30;
@@ -123,12 +123,7 @@
 .header-balance-dots i:nth-child(3) { animation-delay: .3s; }
 @keyframes balance-dot { 0%, 80%, 100% { opacity: .35; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
 @media (prefers-reduced-motion: reduce) { .header-balance-dots i, .header-balance-refresh[data-loading="true"] svg { animation: none; } }
-@media (max-width: 360px) {
-  .header-inner { padding-inline: 10px; gap: 6px; }
-  .header-inner .brand { font-size: 18px; gap: 6px; }
-  .header-account { gap: 6px; }
-  .header-account .header-avatar { width: 32px; height: 32px; }
-}
+
 
 .header-avatar {
   flex-shrink: 0;
@@ -149,7 +144,7 @@
   inset: 0 auto 0 50%;
   transform: translateX(-50%);
   width: min(100%, var(--content));
-  height: 100dvh;
+  height: var(--lobby-height, 100dvh);
   z-index: 50;
   display: flex;
   flex-direction: column;
@@ -161,7 +156,7 @@
   flex: 0 0 auto;
   align-items: center;
   justify-content: space-between;
-  padding: calc(6px + env(safe-area-inset-top, 0px)) 8px 6px;
+  padding: calc(6px + var(--lobby-safe-top, 0px)) 8px 6px;
   font-size: 13px;
 }
 .embedded-game-toolbar button { border: 0; border-radius: 6px; padding: 7px 10px; background: #30271d; color: #fff; cursor: pointer; }

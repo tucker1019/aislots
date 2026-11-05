@@ -1,4 +1,4 @@
-#root:has(.bet-records-page) { padding-bottom: env(safe-area-inset-bottom, 0px); }
+#root:has(.bet-records-page) { padding-bottom: var(--lobby-safe-bottom, 0px); }
 .bet-records-page { padding: 0 0 24px; color: var(--ink); }
 .bet-records-heading { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: center; min-height: 54px; background: rgb(255 255 255 / 95%); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
 .bet-records-heading h1 { margin: 0; font-size: 17px; font-weight: 650; }

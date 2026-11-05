@@ -1,3 +1,4 @@
+import { overlayContainer } from '../app/designViewport';
 import {LoadingState} from '../components/feedback/LoadingState';
 import {NetworkError} from '../components/feedback/NetworkError';
 import {useState} from 'react';
@@ -19,7 +20,7 @@ export function InviteFriendsPage({onBack}:{onBack:()=>void}){
  {data.items.length===0&&<p className="cash-records-feedback">{t('invite.noFriends')}</p>}
  <nav className="invite-pagination" aria-label={t('invite.friendPages')}><button type="button" disabled={page===1} onClick={()=>setPage(p=>p-1)}>{t('invite.previous')}</button><span>{page}</span><button type="button" disabled={!data.hasMore} onClick={()=>setPage(p=>p+1)}>{t('invite.next')}</button></nav>
  </>}
- <Modal open={selected!==null} centered width={400} title={null} footer={null} closable={false} onCancel={()=>setSelected(null)} className="vip-upgrade-modal invite-reason-modal" destroyOnHidden>
+ <Modal getContainer={overlayContainer} open={selected!==null} centered width={400} title={null} footer={null} closable={false} onCancel={()=>setSelected(null)} className="vip-upgrade-modal invite-reason-modal" destroyOnHidden>
   <section className="vip-upgrade-panel" aria-label={t('invite.reasonTitle')}>
    <h2>{t('invite.reasonTitle')}</h2>
    <div className="vip-upgrade-body">

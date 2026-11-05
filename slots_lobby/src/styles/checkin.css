@@ -21,4 +21,3 @@ body:has(.checkin-modal) .ant-modal-mask { backdrop-filter: blur(7px); backgroun
 .checkin-close { display: block; margin: 27px auto 0; width: 32px; height: 32px; border-radius: 50%; border: 1px solid #91abe0; background: #4d79cd; color: #fff; font-size: 25px; line-height: 25px; }
 .checkin-error { font-size: 12px; text-align: center; line-height: 1.5; }.checkin-error { color: #c94141; }
 .checkin-feedback { padding: 30px 10px; text-align: center; color: #677695; }.checkin-feedback button { border: 1px solid #aac1ec; border-radius: 8px; background: #fff; padding: 8px 18px; color: #3967b9; }
-@media(max-width:360px) { .checkin-stats { font-size: 10px; }.checkin-modal { max-width: calc(100vw - 32px); } }

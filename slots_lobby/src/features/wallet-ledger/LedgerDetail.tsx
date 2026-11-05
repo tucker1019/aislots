@@ -1,3 +1,4 @@
+import { overlayContainer } from '../../app/designViewport';
 import {LoadingState} from '../../components/feedback/LoadingState';
 import {NetworkError} from '../../components/feedback/NetworkError';
 import { serverText, t, getLocale } from '../../i18n';
@@ -11,7 +12,7 @@ import { Icon } from '../../components/Icon';
 export function LedgerDetail({id,onBack}:{id:string;onBack:()=>void}){
  const uid=useSessionStore(state=>state.session?.uid);
  const query=useQuery({queryKey:['wallet-ledger-detail',uid,id],queryFn:({signal})=>fetchLedgerDetail(id,signal),retry:false});
- const [toast,holder]=message.useMessage();const row=query.data;
+ const [toast,holder]=message.useMessage({getContainer:overlayContainer});const row=query.data;
  const copy=async()=>{try{await navigator.clipboard.writeText(row?.orderId??'');void toast.success(t('copy.orderNumberCopied'));}catch{void toast.error(t('copy.copyFailedPressAndHoldTheOrder'));}};
  return <RecordsLayout title={t('copy.transactionDetails')} backLabel={t('copy.backToWalletTransactions')} onBack={onBack}>{holder}
  {query.isPending?<LoadingState label={t('copy.loadingDetails')}/>:!row?<NetworkError disabled={query.isFetching} onRetry={()=>void query.refetch()}/>:<>

@@ -1,3 +1,4 @@
+import { overlayContainer } from '../app/designViewport';
 import { OffersPage } from './OffersPage';
 import { LossReturnRulesPage } from './LossReturnRulesPage';
 import {ProfilePage} from './ProfilePage';
@@ -28,8 +29,8 @@ export function LobbyPage() {
   useLanguageStore(state=>state.locale);
   const { view, navigate, orderId } = useLobbyRoute();
   const comingSoon = () => { void toast.info({ key: 'lobby-notice', content: t('copy.comingSoon') }); };
-  const [toast, contextHolder] = message.useMessage({
-    top: view !== 'home' ? 'calc(env(safe-area-inset-top, 0px) + 12px)' : 'calc(var(--header-height) + 12px)', duration: 1.6, maxCount: 1,
+  const [toast, contextHolder] = message.useMessage({getContainer:overlayContainer,
+    top: view !== 'home' ? 'calc(var(--lobby-safe-top, 0px) + 12px)' : 'calc(var(--header-height) + 12px)', duration: 1.6, maxCount: 1,
     classNames: { list: 'lobby-toast-list' },
   });
   if (view === 'game') return <GamePage onBack={() => navigate('home')} />;

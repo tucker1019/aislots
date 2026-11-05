@@ -1,3 +1,4 @@
+import { overlayContainer } from '../app/designViewport';
 import {LoadingState} from '../components/feedback/LoadingState';
 import {NetworkError} from '../components/feedback/NetworkError';
 import {useQuery} from '@tanstack/react-query';
@@ -10,7 +11,7 @@ import {betMoney} from '../features/bet-records/money';
 import {t} from '../i18n';
 export function InvitePage({onBack}:{onBack:()=>void}){
  const uid=useSessionStore(state=>state.session?.uid);
- const [toast,holder]=message.useMessage({maxCount:1,classNames:{list:'lobby-toast-list'}});
+ const [toast,holder]=message.useMessage({getContainer:overlayContainer,maxCount:1,classNames:{list:'lobby-toast-list'}});
  const query=useQuery({queryKey:['invite',uid],queryFn:({signal})=>fetchInviteInfo(signal),retry:false,staleTime:0,refetchOnWindowFocus:false,refetchOnReconnect:false});
  const info=query.data;
  async function copy(){if(!info)return;try{await navigator.clipboard.writeText(info.inviteUrl);void toast.success(t('invite.linkCopied'));}catch{void toast.error(t('invite.copyFailed'));}}

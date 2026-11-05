@@ -1,4 +1,4 @@
-#root:has(.benefits-page) { padding-bottom: env(safe-area-inset-bottom, 0px); }
+#root:has(.benefits-page) { padding-bottom: var(--lobby-safe-bottom, 0px); }
 .benefits-page { padding-bottom: 24px; }
 .benefits-heading { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: center; min-height: 54px; background: rgb(255 255 255 / 95%); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
 .benefits-heading h1 { margin: 0; font-size: 17px; font-weight: 650; }

@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { t } from '../i18n';
 import { useCallback,useEffect,useRef,useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -15,7 +16,7 @@ export function GamePage({onBack}:{onBack:()=>void}){
  useEffect(()=>{alive.current=true;void client.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'none'});if(!url&&!started.current){started.current=true;void reopen();}return()=>{alive.current=false;};},[client,reopen,url]);
  useEffect(()=>{const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')setExpanded(false);};window.addEventListener('keydown',escape);return()=>window.removeEventListener('keydown',escape);},[]);
  function close(){forgetGameEntry();void client.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'all'});onBack();}
- return <section className={`game-detail-shell${expanded?' game-detail-expanded':''}`} role="dialog" aria-modal="true" aria-label={t('gamePreview.dialog')}>
+ const content=<section className={`game-detail-shell${expanded?' game-detail-expanded':''}`} role="dialog" aria-modal="true" aria-label={t('gamePreview.dialog')}>
   <header className="game-detail-toolbar"><button type="button" onClick={close}>{t('copy.backToLobby')}</button><span>{expanded?t('copy.mahjongWays'):t('gamePreview.details')}</span><div>{expanded&&<button type="button" onClick={()=>setExpanded(false)}>{t('gamePreview.shrink')}</button>}<button type="button" disabled={preparing} onClick={()=>void reopen()}>{preparing?t('copy.connecting'):t('copy.reEnter')}</button></div></header>
   <div className="game-detail-content">
    <div className="game-detail-identity"><img src="/assets/lobby/mahjong-cover.jpg" alt={t('gamePreview.cover')}/><div><h1>{t('copy.mahjongWays')}</h1><span className="game-provider-label">AG</span><p>{t('gamePreview.tagline')}</p></div></div>
@@ -28,4 +29,5 @@ export function GamePage({onBack}:{onBack:()=>void}){
    <GameInsights part="ranking"/>
   </div>
  </section>;
+ return createPortal(content,document.body);
 }

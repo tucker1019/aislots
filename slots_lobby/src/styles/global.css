@@ -10,8 +10,8 @@
   --blue: #0066cc;
   --paper: #f5f5f7;
   --line: #e5e5e8;
-  --content: 430px;
-  --header-height: calc(62px + env(safe-area-inset-top, 0px));
+  --content: 420px;
+  --header-height: calc(62px + var(--lobby-safe-top, 0px));
 }
 
 * {
@@ -21,7 +21,7 @@
 body {
   margin: 0;
   min-width: 320px;
-  height: 100dvh;
+  height: var(--lobby-height, 100dvh);
   overflow: hidden;
   background: #e9eaee;
 }
@@ -32,14 +32,14 @@ body {
   isolation: isolate;
   width: 100%;
   max-width: var(--content);
-  height: 100dvh;
+  height: var(--lobby-height, 100dvh);
   margin-inline: auto;
   overflow: hidden auto;
   scrollbar-width: none;
   overscroll-behavior-y: contain;
   background: #fff;
   padding-top: var(--header-height);
-  padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(68px + var(--lobby-safe-bottom, 0px));
 }
 
 #root::-webkit-scrollbar {

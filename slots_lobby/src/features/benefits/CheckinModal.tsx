@@ -1,3 +1,4 @@
+import { overlayContainer } from '../../app/designViewport';
 import {LoadingState} from '../../components/feedback/LoadingState';
 import {NetworkError} from '../../components/feedback/NetworkError';
 import { t } from '../../i18n';
@@ -20,7 +21,7 @@ export function CheckinModal({ onClose }: { onClose: () => void }) {
  }});
  const data = info.data;
  const claimedDays = data ? data.currentDay - (data.claimed ? 0 : 1) : 0;
- return <>{holder}<Modal open centered footer={null} closable={false} width={350} onCancel={() => {if (!claim.isPending) onClose();}} maskClosable={!claim.isPending} keyboard={!claim.isPending} className="checkin-modal" title={null}>
+ return <>{holder}<Modal getContainer={overlayContainer} open centered footer={null} closable={false} width={350} onCancel={() => {if (!claim.isPending) onClose();}} maskClosable={!claim.isPending} keyboard={!claim.isPending} className="checkin-modal" title={null}>
   <section className="checkin-panel" aria-label={t('copy.dailyCheckInRewards')}>
    <header><span className="checkin-eyebrow">DAILY REWARDS</span><h2>{t('copy.dailyCheckInRewards')}</h2><span className="checkin-header-icon" aria-hidden="true"><Icon name="calendar" size={40} /></span></header>
    {info.isPending ? <LoadingState compact label={t('copy.loadingCheckInRewards')}/> : !data ? <NetworkError disabled={info.isFetching} onRetry={()=>void info.refetch()}/> : <>

@@ -1,4 +1,4 @@
-#root:has(.account-route) { padding-top: env(safe-area-inset-top, 0px); }
+#root:has(.account-route) { padding-top: var(--lobby-safe-top, 0px); }
 .my-account { padding: 18px 0 8px; }
 .account-identity { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; }
 .account-identity > img { border-radius: 50%; flex-shrink: 0; }
@@ -25,7 +25,7 @@
 .account-help button + button { border-top: 1px solid var(--line); }
 .account-help button > span:last-child { margin-left: auto; color: #9b9ba2; font-size: 20px; }
 .account-help-icon { width: 21px; height: 21px; border-radius: 50%; text-align: center; line-height: 21px; color: var(--blue); background: #edf4ff; font-weight: 600; }
-@media(max-width:360px) { .account-balance-card { padding: 12px; gap: 5px; } .account-money-actions button { padding: 8px; } .account-balance { font-size: 20px; } }
+
 
 .account-settings,.account-help-icon { display: inline-flex; align-items: center; justify-content: center; }
 .account-balance button { vertical-align: middle; }
@@ -46,9 +46,3 @@
 .account-actions button { min-width:0; justify-content:flex-start; }
 .account-action-icon { flex-shrink:0; }
 .account-action-label { display:block; width:100%; min-block-size:28px; padding-inline:2px; line-height:14px; text-align:center; overflow-wrap:normal; }
-@media(max-width:380px) {
- .account-balance-card { flex-wrap:wrap; gap:12px; }
- .account-balance-card > div:first-child { flex-basis:100%; }
- .account-balance-card .account-money-actions { width:100%; }
- .account-money-actions > button { flex:1; min-height:36px; }
-}

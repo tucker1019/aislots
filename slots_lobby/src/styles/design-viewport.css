@@ -1,0 +1,20 @@
+/* 420 design pixels; physical width is controlled only by this transform. */
+:root { --lobby-scale: 1; --lobby-inverse-scale: 1; --lobby-height: 100dvh; --content: 420px; }
+body { min-width: 0; height: 100dvh; }
+#lobby-viewport { position: fixed; left: 50%; top: 0; width: 420px; height: var(--lobby-height); transform: translateX(-50%) scale(var(--lobby-scale)); transform-origin: center top; isolation: isolate; }
+#root { width: 420px; max-width: none; height: var(--lobby-height); margin: 0; }
+#lobby-overlays { position: absolute; inset: 0; z-index: 100; pointer-events: none; }
+#lobby-overlays > * { pointer-events: auto; }
+#lobby-overlays .ant-modal { max-width: calc(420px - 24px); }
+#lobby-overlays .ant-modal-wrap { height: var(--lobby-height); }
+#lobby-overlays .ant-modal-body { max-height: calc(var(--lobby-height) - 160px); overflow-y: auto; }
+/* This portal is a physical viewport: Cocos handles its own scaling. */
+body > .game-detail-shell { width: 420px; height: var(--lobby-height); transform: translateX(-50%) scale(var(--lobby-scale)); transform-origin: center top; }
+body > .game-detail-expanded { transform: translateX(-50%); width: min(100%, 420px); height: 100dvh; }
+.game-rank-replay { flex-wrap: nowrap; }
+.game-rank-order { flex: 1 1 0; display: flex; align-items: center; gap: 5px; min-width: 0; }
+.game-rank-order-number { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.game-platform-verified { margin-left: 0; flex-shrink: 0; }
+
+:root { --lobby-safe-top: calc(env(safe-area-inset-top, 0px) * var(--lobby-inverse-scale)); --lobby-safe-bottom: calc(env(safe-area-inset-bottom, 0px) * var(--lobby-inverse-scale)); }
+body > .game-detail-expanded { --lobby-safe-top: env(safe-area-inset-top, 0px); --lobby-safe-bottom: env(safe-area-inset-bottom, 0px); }

@@ -4,4 +4,3 @@
 .offers-categories button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: white; font-weight: 650; }
 .offers-posters { display: grid; gap: 12px; min-width: 0; }
 .offers-posters img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 1; object-fit: contain; border-radius: 10px; background: #edf6fa; }
-@media (max-width: 359px) { .offers-layout { grid-template-columns: 62px minmax(0, 1fr); gap: 7px; } .offers-categories button { font-size: 11px; } .offers-posters { gap: 10px; } }

@@ -1,10 +1,11 @@
+import { overlayContainer } from '../../app/designViewport';
 import { serverText, t, getLocale } from '../../i18n';
 import { message } from 'antd';
 import { Icon } from '../../components/Icon';
 import type { BetRecord } from '../../services/bet-records';
 import { betMoney } from './money';
 export function BetRecordList({ items }: { items: BetRecord[] }) {
-  const [toast, holder] = message.useMessage();
+  const [toast, holder] = message.useMessage({getContainer:overlayContainer});
   const copy = async (id: string) => {
     try { await navigator.clipboard.writeText(id); void toast.success(t('copy.transactionIdCopied')); }
     catch { void toast.error(t('copy.copyFailedPressAndHoldTheTransaction')); }

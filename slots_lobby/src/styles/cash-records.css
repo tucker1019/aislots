@@ -1,6 +1,6 @@
-#root:has(.cash-records-route) { padding-bottom: env(safe-area-inset-bottom, 0px); }
+#root:has(.cash-records-route) { padding-bottom: var(--lobby-safe-bottom, 0px); }
 .cash-records-route { padding: 0; }
-.cash-records-page,.cash-record-detail { min-height: calc(100dvh - env(safe-area-inset-top, 0px)); background: var(--paper); }
+.cash-records-page,.cash-record-detail { min-height: calc(var(--lobby-height, 100dvh) - var(--lobby-safe-top, 0px)); background: var(--paper); }
 .cash-records-top { position: sticky; top: 0; z-index: 35; background: #fff; }
 .cash-page-header { height: 50px; display: grid; grid-template-columns: 48px 1fr 48px; align-items: center; border-bottom: 1px solid var(--line); background: #fff; }
 .cash-page-header h1 { margin: 0; font-size: 16px; text-align: center; font-weight: 650; }
@@ -11,7 +11,7 @@
 .cash-filter-bar > button { border: 0; background: #fff; color: var(--blue); font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 7px; }
 .cash-filter-bar > button + button { border-left: 1px solid var(--line); }
 .cash-filter-bar > button[aria-expanded=true] { background: #edf4ff; }
-.cash-filter-backdrop { position: fixed; top: calc(94px + env(safe-area-inset-top, 0px)); bottom: 0; left: 50%; transform: translateX(-50%); width: min(100vw, var(--content)); border: 0; background: rgb(15 25 40 / 12%); backdrop-filter: blur(2px); z-index: 1; }
+.cash-filter-backdrop { position: fixed; top: calc(94px + var(--lobby-safe-top, 0px)); bottom: 0; left: 50%; transform: translateX(-50%); width: min(420px, var(--content)); border: 0; background: rgb(15 25 40 / 12%); backdrop-filter: blur(2px); z-index: 1; }
 .cash-filter-options { position: absolute; top: 100%; left: 0; right: 0; z-index: 2; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 9px; padding: 16px; background: #fff; box-shadow: 0 12px 22px rgb(20 35 60 / 10%); animation: cash-filter-enter 160ms ease-out; }
 .cash-filter-options button { min-height: 39px; border: 1px solid #b6d1f1; border-radius: 7px; color: var(--blue); background: #fff; font-size: 13px; }
 .cash-filter-options button[aria-pressed=true] { background: var(--blue); color: #fff; border-color: var(--blue); }

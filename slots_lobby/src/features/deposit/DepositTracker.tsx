@@ -1,3 +1,4 @@
+import { overlayContainer } from '../../app/designViewport';
 import { t } from '../../i18n';
 import { useEffect } from 'react';
 import { message } from 'antd';
@@ -8,7 +9,7 @@ import { useDepositOrder } from './useDepositOrder';
 export function DepositTracker({onSuccess}:{onSuccess?:()=>void}){
  const uid=useSessionStore(state=>state.session?.uid)??0;
  const intent=useDepositIntent(uid);const order=useDepositOrder(uid,intent);const client=useQueryClient();
- const [toast,holder]=message.useMessage({top:'calc(env(safe-area-inset-top, 0px) + 12px)',maxCount:1,classNames:{list:'lobby-toast-list'}});
+ const [toast,holder]=message.useMessage({getContainer:overlayContainer,top:'calc(var(--lobby-safe-top, 0px) + 12px)',maxCount:1,classNames:{list:'lobby-toast-list'}});
  useEffect(()=>{
   const data=order.data;
   if(!intent||!data||data.status==='pending'||useSessionStore.getState().session?.uid!==uid||readIntent(uid)?.requestId!==intent.requestId)return;

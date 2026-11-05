@@ -724,5 +724,7 @@
   "offers.invitePoster": "Invite friends: Earn when friends qualify",
   "offers.weeklyPoster": "Weekly VIP gifts: Your weekly reward awaits",
   "offers.monthlyPoster": "Monthly VIP gifts: A new month, a new reward",
-  "statistics.experienceAccount": "Platform demo account"
+  "statistics.experienceAccount": "Platform demo account",
+  "gamePreview.betId": "Order {id}",
+  "gamePreview.platformVerified": "Platform verified"
 }

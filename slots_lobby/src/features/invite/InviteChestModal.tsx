@@ -1,3 +1,4 @@
+import { overlayContainer } from '../../app/designViewport';
 import { Button, Input, Modal } from 'antd';
 import { t } from '../../i18n';
 import type { InviteChest } from '../../services/invite-details';
@@ -7,7 +8,7 @@ export function InviteChestModal({ chest, qualifiedCount, inviteUrl, pending, on
   chest: InviteChest; qualifiedCount: number; inviteUrl: string; pending: boolean;
   onClose: () => void; onCopy: () => void; onClaim: () => void;
 }) {
-  return <Modal open centered width={360} title={t('server.inviteReward')} className="invite-chest-modal"
+  return <Modal getContainer={overlayContainer} open centered width={360} title={t('server.inviteReward')} className="invite-chest-modal"
     onCancel={onClose} closable={!pending} maskClosable={!pending} keyboard={!pending}
     footer={<Button block type="primary" autoInsertSpace={false} loading={pending} disabled={pending}
       onClick={chest.status === 'claimable' ? onClaim : onClose}>
