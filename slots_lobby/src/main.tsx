@@ -1,3 +1,4 @@
+import {installLayoutDiagnostics} from './app/layoutDiagnostics';
 import { installDesignViewport } from './app/designViewport';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -18,6 +19,7 @@ import './styles/personal-report.css';
 import './styles/earn.css';
 import { App } from './app/App';
 const disposeViewport=installDesignViewport();
+installLayoutDiagnostics();
 if(import.meta.hot)import.meta.hot.dispose(disposeViewport);
 createRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>);
 
