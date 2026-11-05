@@ -7,3 +7,5 @@ message AutoRoundRequest {
  int64 bet = 4; int32 bet_level = 5; string country = 6; string currency = 7;
 }
 message AutoRoundReply { string status = 1; string request_id = 2; string bet_id = 3; }
+// POST /internal/auto-bets; same service Bearer credential, returns configured legal policy.
+message AutoBetsRequest { int64 uid=1; string game_id=2; string country=3; string currency=4; }

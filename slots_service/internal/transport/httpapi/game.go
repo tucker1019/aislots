@@ -31,6 +31,7 @@ func NewGameRouter(ready func() bool, service *play.Service, origins []string, l
 		secret = replaySecrets[0]
 	}
 	handle("POST /internal/auto-round", autoRoundHandler(service, secret))
+	handle("POST /internal/auto-bets", autoBetsHandler(service, secret))
 	handle("POST /internal/rank-replay", rankReplayHandler(service, secret))
 
 	auth := func(r *http.Request) (play.Session, error) {

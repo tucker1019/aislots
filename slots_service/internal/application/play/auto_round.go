@@ -1,6 +1,7 @@
 package play
 
 import (
+	"aislots/slots_service/internal/application/betlist"
 	"aislots/slots_service/internal/domain/identity"
 	"context"
 	"math"
@@ -102,4 +103,19 @@ func (s *Service) AutoRound(ctx context.Context, r AutoRoundRequest) (AutoRoundR
 		}
 		return nil
 	})
+}
+
+// AutoBets exposes the same legal stakes used by normal players to trusted dispatchers.
+func (s *Service) AutoBets(ctx context.Context, r AutoRoundRequest) (betlist.Policy, error) {
+	provider, ok := s.launcher.(interface {
+		AutoPlayer(int64, string, string) (identity.Context, error)
+	})
+	if !ok || r.UID <= 0 || r.GameID != "AG1" {
+		return betlist.Policy{}, ErrInvalid
+	}
+	p, err := provider.AutoPlayer(r.UID, r.Country, r.Currency)
+	if err != nil {
+		return betlist.Policy{}, err
+	}
+	return s.Bets(ctx, Session{Player: p, GameID: r.GameID, ExpiresAt: time.Now().Add(time.Hour)}, r.GameID)
 }

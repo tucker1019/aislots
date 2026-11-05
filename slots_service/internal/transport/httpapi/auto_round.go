@@ -24,3 +24,21 @@ func autoRoundHandler(s *play.Service, secret string) func(http.ResponseWriter, 
 		return nil
 	}
 }
+
+func autoBetsHandler(s *play.Service, secret string) func(http.ResponseWriter, *http.Request) error {
+	return func(w http.ResponseWriter, r *http.Request) error {
+		if len(secret) < 32 || subtle.ConstantTimeCompare([]byte(r.Header.Get("Authorization")), []byte("Bearer "+secret)) != 1 {
+			return play.ErrUnauthorized
+		}
+		var in play.AutoRoundRequest
+		if err := decode(w, r, &in); err != nil {
+			return err
+		}
+		out, err := s.AutoBets(r.Context(), in)
+		if err != nil {
+			return err
+		}
+		success(w, out)
+		return nil
+	}
+}
