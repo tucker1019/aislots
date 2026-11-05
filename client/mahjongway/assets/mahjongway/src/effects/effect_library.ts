@@ -40,14 +40,14 @@ export const symbolPaths: Record<number, string> = {
 export class EffectLibrary {
     static prefabs = new Map<string, Prefab>();
     static async load() {
-        const names = [...NAMES, 'control_spin', 'control_stop', 'control_turbo', 'control_autostop', 'panel_free', 'mult_panel'];
+        const names = [...NAMES, 'control_spin', 'control_stop', 'control_turbo', 'control_autostop', 'panel_free', 'mult_panel', 'bonus_bg_particle'];
         let loaded = 0;
         reportLoadingProgress(44);
         await Promise.all(
             names.map(
                 async (name) => {
                     const path =
-                        (name.startsWith('control_') || name === 'panel_free' || name === 'mult_panel')
+                        (name.startsWith('control_') || name === 'panel_free' || name === 'mult_panel' || name === 'bonus_bg_particle')
                             ? 'mahjong_effects/' + name
                             : ROOT + 'load/prefab/games/' + name;
                     const asset = await new Promise<Prefab>((resolve, reject) =>

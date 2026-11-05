@@ -92,7 +92,6 @@
       var opening = document.getElementById('AGOpening');
       var logo = opening.querySelector('svg');
       var cover = document.getElementById('LoadingScreen') || document.getElementById('PreviewCover');
-      var image = cover.querySelector('img');
       var ready = false, minimumElapsed = false, removed = false;
       var observer;
       function fit() {
@@ -135,25 +134,17 @@
         opening.style.opacity = '0';
         setTimeout(function () { opening.remove(); }, 300);
         window.removeEventListener('resize', fit);
-        image.removeEventListener('load', loaded);
+        window.removeEventListener('aislots-scene-rendered', sceneRendered);
         if (observer) observer.disconnect();
       }
-      function loaded() {
-        if (!image.complete || image.naturalWidth === 0) return;
-        // decode 确保封面像素已经可绘制，避免移除黑层后闪空白。
-        var decoded = image.decode ? image.decode() : Promise.resolve();
-        decoded.then(function () { ready = true; finish(); }).catch(function () {
-          if (image.complete && image.naturalWidth > 0) { ready = true; finish(); }
-        });
-      }
+      function sceneRendered() { ready = true; finish(); }
+      window.addEventListener('aislots-scene-rendered', sceneRendered, { once: true });
       fit();
       window.addEventListener('resize', fit);
       if (typeof ResizeObserver !== 'undefined') {
         observer = new ResizeObserver(fit);
         observer.observe(cover);
       }
-      image.addEventListener('load', loaded);
-      loaded(); // 命中浏览器缓存时可能早于监听完成加载。
       // 从首帧开始计时，不能把首次绘制前的脚本耗时算入这一秒。
       requestAnimationFrame(function () {
         setTimeout(function () { minimumElapsed = true; finish(); }, 1000);

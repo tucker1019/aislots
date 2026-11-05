@@ -1,3 +1,4 @@
+import { setStopArtwork } from './stop_control';
 import { SymbolTooltip } from './symbol_tooltip';
 import { FreePanelView } from './free_panel';
 import { GameAudio } from '../audio/game_audio';
@@ -59,6 +60,8 @@ export class GameEffects extends Component {
     private controls = new Map<string, NativeEffect>();
     private wasRolling = false;
     private freePanelView: FreePanelView = null;
+    private bonusParticle: NativeEffect = null;
+    private bonusParticleVisible = false;
     private symbolTooltip: SymbolTooltip = null;
     private previousMultiplier = -1;
     private previousFactors = '';
@@ -83,6 +86,9 @@ export class GameEffects extends Component {
         this.overlay.addComponent(BlockInputEvents);
         this.overlay.active = false;
         this.installControls();
+        this.bonusParticle = EffectLibrary.create('bonus_bg_particle', this.node);
+        // 对应参考 ui_reel：在盘面和静态装饰之上、弹窗之下显示。
+        this.bonusParticle.node.setSiblingIndex(this.overlay.getSiblingIndex());
         // 使用原项目独立的自动停止美术；场景已有节点时直接复用。
         if (!this.find(this.node, 'btn_autostop')) {
             const panel = this.find(this.node, 'panel1');
@@ -136,6 +142,7 @@ export class GameEffects extends Component {
     private updateControls() {
         const flow = this.node.getChildByName('roll')?.getComponent('slots_base') as Component & {
             state: number;
+            click_stop: boolean;
             fast: boolean;
             autoSpinRunning: boolean;
             freePanelActive: boolean;
@@ -144,17 +151,31 @@ export class GameEffects extends Component {
         if (!flow) return;
         this.symbolTooltip?.update(0, flow.state === 0 && !flow.autoSpinRunning);
         this.freePanelView?.update(!!flow.freePanelActive, flow.freeSpinsRemaining || 0);
+        this.updateBonusParticle(!!flow.freePanelActive);
         const rolling = flow.state === 1 || flow.state === 2;
         if (rolling && !this.wasRolling) {
             const stop = this.controls.get('control_stop');
             if (stop?.node.getComponent(Animation)?.getState('spin_click')) stop.play('spin_click');
         }
         this.wasRolling = rolling;
+        const stop = this.controls.get('control_stop');
+        if (stop) setStopArtwork(stop.node, flow.click_stop || !rolling);
         const turbo = this.controls.get('control_turbo');
         if (turbo) {
             turbo.node.getChildByPath('txt_turbo_on').active = flow.fast;
             turbo.node.getChildByPath('txt_turbo_off').active = !flow.fast;
             turbo.node.getChildByPath('txt_turbo_on/turbo_lightning').active = flow.fast;
+        }
+    }
+    private updateBonusParticle(visible: boolean) {
+        if (!this.bonusParticle || visible === this.bonusParticleVisible) return;
+        this.bonusParticleVisible = visible;
+        if (visible) {
+            this.bonusParticle.reset();
+            this.bonusParticle.loops();
+        } else {
+            this.bonusParticle.node.getComponent(Animation)?.stop();
+            this.bonusParticle.hide();
         }
     }
     private refreshSoundButton() {
