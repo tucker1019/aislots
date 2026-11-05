@@ -97,7 +97,7 @@ VIP查看详情：福利中心“VIP中心→查看详情”进入 `/vip`，按�
 
 我的页面底部提供语言选择，支持简体中文和英文，使用本机`aislots-language`保存选择，默认简体中文。语言切换即时更新大厅、Ant Design组件、数字/日期格式，不刷新页面，不改变用户名、交易ID或路由。游戏iframe内部的语言由游戏客户端自身负责。
 
-界面文案统一放在`src/i18n/locales/zh-CN.json`和`en-US.json`，通过类型安全的`t(key, params)`读取。`src/i18n/config.ts`集中注册语言、语言名称和Ant Design locale；新增语言时补齐同结构JSON及注册项。不得用翻译后的文案作路由、接口字段或业务ID。已知服务端报表/账变标签经`serverText`转换，用户输入不参与翻译。`npm run check:i18n`检查新增内联中文文案，build默认执行；测试同时核对语言key及插值参数一致。
+界面文案统一放在`src/i18n/locales/zh-TW.json`和`en-US.json`，通过类型安全的`t(key, params)`读取。`src/i18n/config.ts`集中注册语言、语言名称和Ant Design locale；新增语言时补齐同结构JSON及注册项。不得用翻译后的文案作路由、接口字段或业务ID。语言仅保留繁体中文（zh-TW）与英文（en-US），旧简体语言偏好自动迁移。服务端报表与账变按稳定英文业务ID映射翻译，禁止中文key或中文文案反查，用户输入不参与翻译。`npm run check:i18n`检查新增内联中文文案，build默认执行；测试同时核对语言key及插值参数一致。
 
 邀请好友：我的→邀请好友，路由`/invite`。规则、阶梯单价、邀请链接、客服地址和统计均读取服务端；客服图标打开Telegram，不展示下载APP或收款资料入口。首次创建游客时提交URL中的inviteCode，失败可重试，身份创建成功后清除邀请参数；已有身份忽略并清除邀请码。手动领取邀请奖励后刷新余额与个人报表并显示统一领取成功Toast。
 

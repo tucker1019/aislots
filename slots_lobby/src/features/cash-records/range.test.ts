@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
 import { recordRange } from './range';
-it('今天昨天按本地午夜划分，结束边界不含次日；跨年近7/30天包含今天', () => {
+it('今天昨天按本地午夜劃分，結束邊界不含次日；跨年近7/30天包含今天', () => {
   const now = new Date(2026, 0, 2, 15, 30);
   expect(recordRange('today', now)).toEqual({ from: new Date(2026, 0, 2).toISOString(), to: new Date(2026, 0, 3).toISOString() });
   expect(recordRange('yesterday', now)).toEqual({ from: new Date(2026, 0, 1).toISOString(), to: new Date(2026, 0, 2).toISOString() });

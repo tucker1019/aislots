@@ -3,7 +3,7 @@
 - 路由：`/offers`；底栏优惠入口。
 - 7 个活动：充值赠送、游戏返水、亏损返还、代理佣金、邀请好友、每周礼金、每月礼金。
 - 左侧分类筛选；海报为普通图片，不绑定点击事件、不显示品牌。
-- 图片路径：`public/assets/lobby/offers/{活动id}-{zh|en}.webp`，每张 960×320，3:1，WebP quality 86。原始图保留在生成工具输出目录。
+- 图片路径：`public/assets/lobby/offers/{活动id}-{zh-tw|en}.webp`，每张 960×320，3:1，WebP quality 86。原始图保留在生成工具输出目录。
 - 用 `width/height` 和 `aspect-ratio` 预留空间，首屏图片优先加载，后续 lazy loading。
 - 随大厅中英文切换图片，alt 文案在多语言 JSON 中维护。
 - 海报只介绍活动，不写固定奖励数字，避免与后续服务端配置修改不一致。
@@ -14,7 +14,7 @@
 
 > ONE finished mobile casino promotional banner, 3:1 wide landscape intended 960x320. No brand/logo/URL. Premium polished 3D mobile game advertising; rich cyan teal glossy rounded beveled panel with luminous rim, pale neutral surround. Consistent luxurious cheerful campaign style. Large immaculate Chinese/English typography LEFT 65%, thematic illustration RIGHT 30%. Safe margins 4%, no cropping of words. Exact supplied text only. White bold readable headline with gold accents. Single finished banner, no mockup, no UI, no extra text.
 
-| ID | 中文标题 / 副标题 / 小字 | English title / subtitle / supporting line | 插画 |
+| ID | 繁體中文標題 / 副标题 / 小字 | English title / subtitle / supporting line | 插画 |
 | --- | --- | --- | --- |
 | deposit | 充值赠送 / 充值享好礼 / 多档充值 · 奖励随行 | Deposit bonuses / More with every deposit / Flexible amounts · Extra rewards | 蓝色钱包和金币 |
 | rebate | 游戏返水 / 每一份投注 都有回馈 / 日 · 周 · 月 多重返水 | Betting rebates / More play. More rewards. / Daily · Weekly · Monthly | 蓝宝石筹码和金币 |

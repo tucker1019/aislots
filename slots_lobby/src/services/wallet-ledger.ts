@@ -1,11 +1,12 @@
 import { t } from '../i18n';
 import { ensureSession, request } from './account';
 import { isRecord } from '../features/account/types';
-export interface LedgerItem { id:string; orderId:string; type:string; currency:string; amount:number; balance:number; createdAt:string; remark:string }
+export interface LedgerItem { id:string; orderId:string; type:string; currency:string; amount:number; balance:number; createdAt:string; remark:string; categoryId?:string }
 export interface LedgerPage { items:LedgerItem[]; categories:{id:string;name:string}[]; nextCursor:string }
 export function parseLedgerItem(value:unknown):LedgerItem {
  if(!isRecord(value)||!['id','orderId','type','currency','createdAt','remark'].every(key=>typeof value[key]==='string')||!Number.isSafeInteger(value.amount)||!Number.isSafeInteger(value.balance)||Number(value.balance)<0||!Number.isFinite(Date.parse(String(value.createdAt))))throw new Error(t('copy.invalidWalletTransactionResponse'));
- return {id:String(value.id),orderId:String(value.orderId),type:String(value.type),currency:String(value.currency),amount:Number(value.amount),balance:Number(value.balance),createdAt:String(value.createdAt),remark:String(value.remark)};
+ if(value.categoryId!==undefined&&typeof value.categoryId!=='string')throw new Error(t('copy.invalidTransactionCategory'));
+ return {...(typeof value.categoryId==='string'?{categoryId:value.categoryId}:{}),id:String(value.id),orderId:String(value.orderId),type:String(value.type),currency:String(value.currency),amount:Number(value.amount),balance:Number(value.balance),createdAt:String(value.createdAt),remark:String(value.remark)};
 }
 async function call(path:string,fields:Record<string,string>,signal?:AbortSignal){const identity=await ensureSession();return request(path,{method:'POST',signal,body:JSON.stringify({uid:identity.uid,sid:identity.sid,...fields})},t('copy.walletTransactionsAreUnavailablePleaseRetry'));}
 export async function fetchLedger(from:string,to:string,category:string,cursor:string,signal?:AbortSignal):Promise<LedgerPage>{

@@ -26,3 +26,5 @@
 - 大厅统一420px设计宽度，小屏按宽整体等比缩放，大屏不放大并居中，高度自然滚动。详见 docs/design-viewport.md。
 - 页面、固定导航、弹窗、下拉和Toast使用统一设计坐标；Modal和message使用app/designViewport.ts的overlayContainer，禁止绕过公共挂载点单独缩放。
 - 不新增依赖物理窗口宽度的排版断点；长文本仍显式定义换行/省略/内部滚动。游戏放大由Cocos自己适配，不能重新挂载iframe。
+
+- 多语言使用英文语义 key（如 `copy.walletBalance`），禁止中文 key 或根据中文文案反查 key；服务端展示项按稳定英文业务 ID 映射，未知项保留服务端原文。

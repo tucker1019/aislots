@@ -9,12 +9,12 @@ const base:AgentData={summary:Object.fromEntries(agentSummaryKeys.map(k=>[k,0]))
 function mount(){return render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false,gcTime:0}}})}><AgentPage onBack={vi.fn()}/></QueryClientProvider>);}
 beforeEach(()=>{vi.mocked(fetchAgent).mockReset();vi.mocked(claimAgent).mockReset();window.history.replaceState({},'','/agent');});
 it('does not claim a zero balance or show removed share channels',async()=>{
- vi.mocked(fetchAgent).mockResolvedValue(base);mount();expect(await screen.findByRole('button',{name:'领取'})).toBeDisabled();expect(screen.queryByText('防封链接')).not.toBeInTheDocument();expect(screen.queryByText('微信')).not.toBeInTheDocument();
- fireEvent.click(screen.getByRole('button',{name:'更多信息 ›'}));expect(await screen.findByText('暂无数据')).toBeInTheDocument();expect(window.location.search).toContain('view=team');
+ vi.mocked(fetchAgent).mockResolvedValue(base);mount();expect(await screen.findByRole('button',{name:'領取'})).toBeDisabled();expect(screen.queryByText('防封鏈接')).not.toBeInTheDocument();expect(screen.queryByText('微信')).not.toBeInTheDocument();
+ fireEvent.click(screen.getByRole('button',{name:'更多信息 ›'}));expect(await screen.findByText('暫無數據')).toBeInTheDocument();expect(window.location.search).toContain('view=team');
 });
 it('claims settled rewards once and displays confirmation',async()=>{
- vi.mocked(fetchAgent).mockResolvedValue({...base,summary:{...base.summary,claimable:232000}});vi.mocked(claimAgent).mockResolvedValue({claimId:'claim',amount:232000,coins:232000});mount();fireEvent.click(await screen.findByRole('button',{name:'领取'}));expect(await screen.findByText('佣金领取成功')).toBeInTheDocument();expect(claimAgent).toHaveBeenCalledTimes(1);
+ vi.mocked(fetchAgent).mockResolvedValue({...base,summary:{...base.summary,claimable:232000}});vi.mocked(claimAgent).mockResolvedValue({claimId:'claim',amount:232000,coins:232000});mount();fireEvent.click(await screen.findByRole('button',{name:'領取'}));expect(await screen.findByText('傭金領取成功')).toBeInTheDocument();expect(claimAgent).toHaveBeenCalledTimes(1);
 });
 it('query errors show retry, never a fake zero commission',async()=>{
- vi.mocked(fetchAgent).mockRejectedValue(new Error('offline'));mount();expect(await screen.findByRole('alert')).toHaveTextContent('网络异常，请重试');expect(screen.queryByRole('button',{name:'领取'})).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'重试'})).toBeInTheDocument();
+ vi.mocked(fetchAgent).mockRejectedValue(new Error('offline'));mount();expect(await screen.findByRole('alert')).toHaveTextContent('網絡異常，請重試');expect(screen.queryByRole('button',{name:'領取'})).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'重試'})).toBeInTheDocument();
 });

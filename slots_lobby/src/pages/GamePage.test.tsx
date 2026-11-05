@@ -16,30 +16,30 @@ function setup() {
   render(<QueryClientProvider client={client}><GamePage onBack={onBack} /></QueryClientProvider>);
   return { onBack, client, user: userEvent.setup() };
 }
-it('同一大厅内iframe加载游戏，刷新恢复原入口，返回前使钱包缓存过期', async () => {
+it('同一大廳內iframe加載遊戲，刷新恢復原入口，返回前使錢包緩存過期', async () => {
   rememberGameEntry(first); const { onBack, client, user } = setup();
-  const frame = screen.getByTitle('AG1 麻将胡了');
+  const frame = screen.getByTitle('AG1 麻將胡了');
   expect(frame).toHaveAttribute('src', first);
   expect(frame).toHaveAttribute('referrerpolicy', 'no-referrer');
-  expect(screen.getByText('正在加载游戏…')).toBeInTheDocument();
+  expect(screen.queryByText('正在加載遊戲…')).not.toBeInTheDocument();
   fireEvent.load(frame);
-  expect(screen.queryByText('正在加载游戏…')).not.toBeInTheDocument();
+  expect(screen.queryByText('正在加載遊戲…')).not.toBeInTheDocument();
   expect(client.getQueryState(['lobby', 'current-profile'])?.isInvalidated).toBe(true);
   expect(launchGame).not.toHaveBeenCalled();
-  await user.click(screen.getByRole('button', { name: '返回大厅' }));
+  await user.click(screen.getByRole('button', { name: '返回大廳' }));
   expect(onBack).toHaveBeenCalledOnce();
 });
-it('详情打开时申请入口，失败后可重试', async () => {
- vi.mocked(launchGame).mockRejectedValueOnce(new Error('服务暂时不可用')).mockResolvedValueOnce(first);
+it('詳情打開時申請入口，失敗後可重試', async () => {
+ vi.mocked(launchGame).mockRejectedValueOnce(new Error('服務暫時不可用')).mockResolvedValueOnce(first);
  const {user}=setup();
- expect(await screen.findByRole('alert')).toHaveTextContent('服务暂时不可用');
- await user.click(screen.getByRole('button',{name:'重试加载'}));
- await waitFor(()=>expect(screen.getByTitle('AG1 麻将胡了')).toHaveAttribute('src',first));
+ expect(await screen.findByRole('alert')).toHaveTextContent('服務暫時不可用');
+ await user.click(screen.getByRole('button',{name:'重試加載'}));
+ await waitFor(()=>expect(screen.getByTitle('AG1 麻將胡了')).toHaveAttribute('src',first));
  expect(launchGame).toHaveBeenCalledTimes(2);
 });
-it('放大和缩回保留同一个iframe节点和src，不再申请入口',async()=>{
- rememberGameEntry(first);const {user}=setup();const frame=screen.getByTitle('AG1 麻将胡了');
- await user.click(screen.getByRole('button',{name:/放大游玩/}));expect(screen.getByRole('dialog')).toHaveClass('game-detail-expanded');expect(screen.getByTitle('AG1 麻将胡了')).toBe(frame);
- await user.click(screen.getByRole('button',{name:'缩回小窗'}));expect(screen.getByRole('dialog')).not.toHaveClass('game-detail-expanded');expect(screen.getByTitle('AG1 麻将胡了')).toBe(frame);expect(frame).toHaveAttribute('src',first);expect(launchGame).not.toHaveBeenCalled();
- expect(screen.getByRole('tab',{name:'最大连胜'})).toBeInTheDocument();await user.click(screen.getByRole('tab',{name:'最大连胜'}));expect(await screen.findByText('暂无上榜记录')).toBeInTheDocument();
+it('放大和縮回保留同一個iframe節點和src，不再申請入口',async()=>{
+ rememberGameEntry(first);const {user}=setup();const frame=screen.getByTitle('AG1 麻將胡了');
+ await user.click(screen.getByRole('button',{name:/放大遊玩/}));expect(screen.getByRole('dialog')).toHaveClass('game-detail-expanded');expect(screen.getByTitle('AG1 麻將胡了')).toBe(frame);
+ await user.click(screen.getByRole('button',{name:'縮回小窗'}));expect(screen.getByRole('dialog')).not.toHaveClass('game-detail-expanded');expect(screen.getByTitle('AG1 麻將胡了')).toBe(frame);expect(frame).toHaveAttribute('src',first);expect(launchGame).not.toHaveBeenCalled();
+ expect(screen.getByRole('tab',{name:'最大連勝'})).toBeInTheDocument();await user.click(screen.getByRole('tab',{name:'最大連勝'}));expect(await screen.findByText('暫無上榜記錄')).toBeInTheDocument();
 });

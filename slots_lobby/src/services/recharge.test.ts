@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
 import { parseTiers } from './recharge';
-it('充值金额必须是安全整数分，到账一致且赠送手续费互斥', () => {
+it('充值金額必須是安全整數分，到賬一致且贈送手續費互斥', () => {
  const tier={id:'a',amount:1000,bonus:0,fee:20,creditAmount:980};
  expect(parseTiers({items:[tier]})).toEqual([tier]);
  expect(parseTiers({items:[]})).toEqual([]);

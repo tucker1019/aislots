@@ -11,9 +11,9 @@ const data={activityDate:'2026-11-04',timezone:'Asia/Shanghai',claimable:100,los
 it('shows server loss and preview; claims the current activity day once and clears claimable',async()=>{
  vi.mocked(fetchLossReturn).mockResolvedValue(data);vi.mocked(claimLossReturn).mockResolvedValue(100);const user=setup();
  expect(await screen.findByText('100.00')).toBeInTheDocument();expect(screen.getByText('10%')).toBeInTheDocument();
- await user.click(screen.getByRole('button',{name:/^领取$/}));expect(await screen.findByText('领取成功')).toBeInTheDocument();expect(claimLossReturn).toHaveBeenCalledExactlyOnceWith('2026-11-04',expect.anything());expect(screen.getByRole('button',{name:/^领取$/})).toBeDisabled();
+ await user.click(screen.getByRole('button',{name:/^領取$/}));expect(await screen.findByText('領取成功')).toBeInTheDocument();expect(claimLossReturn).toHaveBeenCalledExactlyOnceWith('2026-11-04',expect.anything());expect(screen.getByRole('button',{name:/^領取$/})).toBeDisabled();
 });
 it('retries failed data without claiming and navigates to the rules',async()=>{
- vi.mocked(fetchLossReturn).mockRejectedValueOnce(new Error('offline')).mockResolvedValue(data);const user=setup();await user.click(await screen.findByRole('button',{name:'重试'}));expect(await screen.findByText('100.00')).toBeInTheDocument();expect(claimLossReturn).not.toHaveBeenCalled();
- await user.click(screen.getByRole('button',{name:'规则查看 ›'}));expect(window.location.pathname).toBe('/earn/loss-return/rules');expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+ vi.mocked(fetchLossReturn).mockRejectedValueOnce(new Error('offline')).mockResolvedValue(data);const user=setup();await user.click(await screen.findByRole('button',{name:'重試'}));expect(await screen.findByText('100.00')).toBeInTheDocument();expect(claimLossReturn).not.toHaveBeenCalled();
+ await user.click(screen.getByRole('button',{name:'規則查看 ›'}));expect(window.location.pathname).toBe('/earn/loss-return/rules');expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });

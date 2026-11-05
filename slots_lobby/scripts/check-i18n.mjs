@@ -6,6 +6,12 @@ import {fileURLToPath,URL} from 'node:url';
 import ts from 'typescript';
 const root=fileURLToPath(new URL('../src',import.meta.url));
 const issues=[];
+const catalogs=['zh-TW','en-US'].map(locale=>({locale,messages:JSON.parse(fs.readFileSync(path.join(root,'i18n/locales',`${locale}.json`),'utf8'))}));
+for(const {locale,messages} of catalogs){
+ for(const key of Object.keys(messages))if(!/^[A-Za-z][A-Za-z0-9_-]*(?:\.[A-Za-z][A-Za-z0-9_-]*)*$/.test(key))issues.push(`${locale}: use an English semantic message key: ${key}`);
+}
+if(JSON.stringify(Object.keys(catalogs[0].messages).sort())!==JSON.stringify(Object.keys(catalogs[1].messages).sort()))issues.push('locale message keys must match');
+
 function scan(directory){
  for(const entry of fs.readdirSync(directory,{withFileTypes:true})){
   const file=path.join(directory,entry.name);

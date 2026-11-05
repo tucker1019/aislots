@@ -3,7 +3,7 @@
 body { min-width: 0; height: 100dvh; }
 #lobby-viewport { position: fixed; left: 50%; top: 0; width: 420px; height: var(--lobby-height); transform: translateX(-50%) scale(var(--lobby-scale)); transform-origin: center top; isolation: isolate; }
 #root { width: 420px; max-width: none; height: var(--lobby-height); margin: 0; }
-#lobby-overlays { position: absolute; inset: 0; z-index: 100; pointer-events: none; }
+#lobby-overlays { position: fixed; top: 0; left: 50%; width: 420px; height: var(--lobby-height); transform: translateX(-50%) scale(var(--lobby-scale)); transform-origin: center top; z-index: 1000; pointer-events: none; isolation: isolate; }
 #lobby-overlays > * { pointer-events: auto; }
 #lobby-overlays .ant-modal { max-width: calc(420px - 24px); }
 #lobby-overlays .ant-modal-wrap { height: var(--lobby-height); }
@@ -18,3 +18,8 @@ body > .game-detail-expanded { transform: translateX(-50%); width: min(100%, 420
 
 :root { --lobby-safe-top: calc(env(safe-area-inset-top, 0px) * var(--lobby-inverse-scale)); --lobby-safe-bottom: calc(env(safe-area-inset-bottom, 0px) * var(--lobby-inverse-scale)); }
 body > .game-detail-expanded { --lobby-safe-top: env(safe-area-inset-top, 0px); --lobby-safe-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* Browser font inflation must not override the shared design-coordinate scaling. */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+#root > main { width: 100%; min-width: 0; max-width: 100%; }
+.account-name-row h1 { flex: 1 1 0; }

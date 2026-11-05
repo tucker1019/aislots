@@ -2,7 +2,7 @@
 
 设计宽度420px，比例min(屏幕宽/420,1)，大屏居中，小屏整页等比缩小，不按屏幕宽度重新排列组件。高度为可用视口高度/比例，根节点内纵向滚动。
 
-`app/designViewport.ts`负责初始化、窗口及visualViewport高度变化；`styles/design-viewport.css`定义画布、固定层、弹窗及游戏放大的边界。`index.html`中lobby-viewport包含root和lobby-overlays。安全区转换到设计坐标，避免缩小后留白不足。
+`app/designViewport.ts`负责初始化、窗口及visualViewport高度变化；`styles/design-viewport.css`定义画布、固定层、弹窗及游戏放大的边界。`index.html`中lobby-viewport包含root；lobby-overlays作为body下独立的同尺寸缩放顶层，与游戏详情portal互不嵌套，保证弹窗不被游戏详情盖住。安全区转换到设计坐标，避免缩小后留白不足。
 
 新增弹窗必须使用`overlayContainer`作为getContainer，下拉使用Providers的getPopupContainer，message.useMessage也使用同一容器。不要把弹层挂到body后另外缩放。避免添加依赖物理窗口宽度的media断点；减少动画和hover查询仍可使用。
 

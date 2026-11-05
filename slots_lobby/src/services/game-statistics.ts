@@ -24,7 +24,7 @@ export function parseLeaderboard(data:unknown):GameLeaderboard{
 async function load(path:string,fields:Record<string,string>,signal?:AbortSignal){const identity=await ensureSession();return request(path,{method:'POST',signal,body:JSON.stringify({uid:identity.uid,sid:identity.sid,gameId:'AG1',...fields})},t('statistics.failed'));}
 export async function fetchGameRtp(window:RtpWindow,signal?:AbortSignal){return parseGameRtp(await load('/api/game/rtp',{window},signal));}
 export async function fetchLeaderboard(board:RankBoard,period:RankPeriod,signal?:AbortSignal){return parseLeaderboard(await load('/api/game/leaderboard',{board,period},signal));}
-export function statisticsMoney(value:string){const number=BigInt(value);return (number/100n).toLocaleString('zh-CN')+'.'+String(number%100n).padStart(2,'0');}
+export function statisticsMoney(value:string){const number=BigInt(value);return (number/100n).toLocaleString('zh-TW')+'.'+String(number%100n).padStart(2,'0');}
 
 export async function fetchRankReplay(platformOrderId:string,board:RankBoard,period:RankPeriod){
  const data=await load('/api/game/rank-replay',{platformOrderId,board,period});

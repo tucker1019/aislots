@@ -7,8 +7,8 @@ const profile = { account:'',uid: 7, nickname: 'player_7', avatarId: 3, coins: 1
 const ok = (data: unknown) => ({ ok: true, status: 200, json: async () => ({ code: 'OK', data }) });
 beforeEach(() => { localStorage.clear(); useSessionStore.setState({ session: null }); });
 
-describe('大厅身份与资料', () => {
-  it('首次创建游客并读取真实资料，并发请求共用一次登录', async () => {
+describe('大廳身份與資料', () => {
+  it('首次創建遊客並讀取真實資料，併發請求共用一次登錄', async () => {
     const request = vi.fn().mockResolvedValueOnce(ok(session)).mockResolvedValue(ok(profile));
     vi.stubGlobal('fetch', request);
     const result = await Promise.all([loadAccountProfile(), loadAccountProfile()]);
@@ -19,16 +19,16 @@ describe('大厅身份与资料', () => {
     expect(saved).toContain(session.sid);
     expect(saved).not.toContain('coins');
   });
-  it('有身份先续期；会话失效保留原身份且不创建其他游客', async () => {
+  it('有身份先續期；會話失效保留原身份且不創建其他遊客', async () => {
     useSessionStore.setState({ session: { ...session, sid: 'x'.repeat(52) } });
     const request = vi.fn().mockResolvedValue({ ok: false, status: 401, json: async () => ({ code: 10010002 }) });
     vi.stubGlobal('fetch', request);
-    await expect(loadAccountProfile()).rejects.toThrow(/会话/);
+    await expect(loadAccountProfile()).rejects.toThrow(/會話/);
     expect(request).toHaveBeenCalledTimes(1);
     expect(request.mock.calls[0][0]).toBe('/api/user/account/session/renewal');
     expect(useSessionStore.getState().session?.uid).toBe(7);
   });
-  it('续期成功后资料匹配当前用户；拒绝错误金额与头像', async () => {
+  it('續期成功後資料匹配當前用戶；拒絕錯誤金額與頭像', async () => {
     useSessionStore.setState({ session: { ...session, sid: 'y'.repeat(52) } });
     const request = vi.fn().mockResolvedValueOnce(ok(session)).mockResolvedValueOnce(ok(profile));
     vi.stubGlobal('fetch', request);
@@ -36,22 +36,22 @@ describe('大厅身份与资料', () => {
     for (const invalid of [{ ...profile, uid: 8 }, { ...profile, coins: '123' },
       { ...profile, coins: Number.MAX_SAFE_INTEGER + 1 }, { ...profile, avatarId: 16 }]) {
       request.mockResolvedValueOnce(ok(invalid));
-      await expect(loadAccountProfile()).rejects.toThrow(/资料/);
+      await expect(loadAccountProfile()).rejects.toThrow(/資料/);
     }
   });
-  it('网络失败可重新请求，不把异常显示为0余额', async () => {
+  it('網絡失敗可重新請求，不把異常顯示為0餘額', async () => {
     const request = vi.fn().mockRejectedValueOnce(new TypeError('failed')).mockResolvedValueOnce(ok(session)).mockResolvedValueOnce(ok(profile));
     vi.stubGlobal('fetch', request);
-    await expect(loadAccountProfile()).rejects.toThrow(/连接/);
+    await expect(loadAccountProfile()).rejects.toThrow(/連接/);
     expect(await loadAccountProfile()).toEqual(profile);
   });
 });
 
-it('绑定通过现有接口保留当前UID，密码不会持久化',async()=>{
+it('綁定通過現有接口保留當前UID，密碼不會持久化',async()=>{
  const current={...session,sid:'b'.repeat(52)};useSessionStore.setState({session:current});const send=vi.fn().mockResolvedValueOnce(ok(current)).mockResolvedValueOnce(ok(current));vi.stubGlobal('fetch',send);
  await bindCustomAccount('custom_user','test_password_123');const [url,init]=send.mock.calls[1];expect(url).toBe('/api/user/account/uniquecode/bind');expect(JSON.parse(init.body)).toEqual({uid:7,sid:current.sid,account:'custom_user',password:'test_password_123'});expect(localStorage.getItem('aislots-lobby-session')).not.toContain('test_password_123');expect(useSessionStore.getState().session?.uid).toBe(7);
 });
-it('头像更新只提交头像ID并拒绝其他用户的资料响应',async()=>{
+it('頭像更新只提交頭像ID並拒絕其他用戶的資料響應',async()=>{
  const current={...session,sid:'a'.repeat(52)};useSessionStore.setState({session:current});const send=vi.fn().mockResolvedValueOnce(ok(current)).mockResolvedValueOnce(ok({...profile,uid:8}));vi.stubGlobal('fetch',send);
  await expect(updateAccountAvatar(8)).rejects.toThrow();expect(JSON.parse(send.mock.calls[1][1].body)).toEqual({uid:7,sid:current.sid,avatarId:8});
 });
