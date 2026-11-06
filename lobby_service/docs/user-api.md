@@ -4,6 +4,16 @@
 
 用户昵称、头像和金币统一从 `/api/user/user/info` 获取，登录接口继续只返回 `uid、sid、expiresAt`。登录成功后调用本查询接口。
 
+## 账号登录与注册
+
+- 未登录浏览首页和优惠不创建用户，不分配 UID，不建立会话。
+- `POST /api/user/account/uniquecode/register`：提交 `account、password`，可附带 `inviteCode`；成功创建账号、钱包、会话及邀请关系，同一事务返回 `uid、sid、expiresAt`。
+- `POST /api/user/account/uniquecode/login`：只需 `account、password`，不要求已有 UID/SID。成功签发新会话。
+- 账号 3–64 字节，首尾不得有空格；密码 8–72 字节。密码使用 bcrypt 保存，不记录明文。
+- 公开 `POST /api/user/account/visitor/login` 已关闭，返回参数错误，不创建任何用户。
+- 现有有效会话仍走 `session/renewal`；无效会话要求重新账号登录，不回退游客。
+- 旧游客数据保留，不做迁移或删除；体验账号后台调度独立运行。
+
 ## 查询用户信息
 
 `GET /api/user/user/info`
@@ -92,3 +102,9 @@ GET /api/user/user/info?uid=123&sid=YOUR_SID&app_name=zhyx&lca_lang=zh
 ```
 
 游客绑定自定义账号成功后，在同一事务中将 nickname 更新为 account，保持原 uid、头像和钱包。绑定不会额外创建用户；账号冲突时整体回滚，不改变原资料。
+
+## 安全中心
+
+- `POST /api/user/account/password/update`：`uid、sid、oldPassword、newPassword`。校验有效会话、旧密码和新密码格式，且新旧不可相同；成功更新 bcrypt 哈希并原子注销该账号全部会话，返回 `{success:true}`，客户端清理身份并要求重新登录。错误密码不注销会话。
+- `POST /api/user/account/logout`：`uid、sid`。只注销当前会话，已注销会话重复请求仍成功。客户端二次确认后才提交，成功后清除身份及个人缓存并返回首页。
+- 并发安全：登录验证旧哈希后创建会话前再次在用户锁内比较哈希，避免密码修改后仍创建旧密码会话。

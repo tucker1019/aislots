@@ -33,10 +33,9 @@ func request() *pb.UserRequest {
 func TestUserLogic_VisitorAndRegister(t *testing.T) {
 	ctx := context.Background()
 	l, m := setup(t)
-	m.EXPECT().Create(ctx, "", "", gomock.Any(), gomock.Any()).Return(int64(7), nil)
 	v, err := l.VisitorLogin(ctx, request())
-	if err != nil || v.Uid != 7 || len(v.Sid) != 52 {
-		t.Fatal(v, err)
+	if err == nil || v != nil {
+		t.Fatal("visitor endpoint must be disabled")
 	}
 	m.EXPECT().Create(ctx, "alice", gomock.Any(), gomock.Any(), gomock.Any()).DoAndReturn(func(_ context.Context, _ string, hash, token string, expiry time.Time) (int64, error) {
 		if bcrypt.CompareHashAndPassword([]byte(hash), []byte("password123")) != nil || len(token) != 64 || time.Until(expiry) < 59*24*time.Hour {
@@ -51,10 +50,7 @@ func TestUserLogic_VisitorAndRegister(t *testing.T) {
 	if _, err = l.UniqueCodeRegister(ctx, &pb.UserRequest{Account: "a", Password: "x"}); !errors.Is(err, xerr.ErrInvalid) {
 		t.Fatal(err)
 	}
-	m.EXPECT().Create(ctx, "", "", gomock.Any(), gomock.Any()).Return(int64(0), xerr.ErrExists)
-	if _, err = l.VisitorLogin(ctx, request()); !errors.Is(err, xerr.ErrExists) {
-		t.Fatal(err)
-	}
+
 }
 
 func TestUserLogic_Renewal(t *testing.T) {
@@ -79,14 +75,11 @@ func TestUserLogic_Login(t *testing.T) {
 	l, m := setup(t)
 	ctx := context.Background()
 	req := request()
-	if _, err := l.UniqueCodeLogin(ctx, &pb.UserRequest{}); !errors.Is(err, xerr.ErrSession) {
+	req.Uid = nil
+	req.Sid = nil
+	if _, err := l.UniqueCodeLogin(ctx, &pb.UserRequest{}); !errors.Is(err, xerr.ErrCredentials) {
 		t.Fatal(err)
 	}
-	m.EXPECT().Check(ctx, int64(7), gomock.Any(), gomock.Any()).Return(xerr.ErrSession)
-	if _, err := l.UniqueCodeLogin(ctx, req); !errors.Is(err, xerr.ErrSession) {
-		t.Fatal(err)
-	}
-	m.EXPECT().Check(ctx, int64(7), gomock.Any(), gomock.Any()).Return(nil).Times(4)
 	m.EXPECT().Credentials(ctx, "alice").Return(int64(0), "", xerr.ErrCredentials)
 	if _, err := l.UniqueCodeLogin(ctx, req); !errors.Is(err, xerr.ErrCredentials) {
 		t.Fatal(err)

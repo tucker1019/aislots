@@ -4,6 +4,9 @@ option go_package = "apps/pb/apis/lobby/api/v1;v1";
 import "google/api/annotations.proto";
 // @Desc: 大厅用户账号
 service UserService {
+ rpc PasswordUpdate(SecurityRequest) returns (SecurityReply) { option (google.api.http) = { post: "/api/user/account/password/update" body: "*" }; }
+ rpc SessionLogout(SecurityRequest) returns (SecurityReply) { option (google.api.http) = { post: "/api/user/account/logout" body: "*" }; }
+
  rpc WithdrawalTurnover(UserRequest) returns (WithdrawalTurnoverReply) {option (google.api.http)={post:"/api/user/withdrawal/turnover" body:"*"};}
 
  rpc WithdrawalList(UserRequest) returns (WithdrawalTiersReply) { option (google.api.http) = { post: "/api/user/withdrawal/tiers" body: "*" }; }
@@ -79,3 +82,6 @@ message WithdrawalOrder {
 message CashOrdersReply {repeated WithdrawalOrder items=1;string next_cursor=2 [json_name="nextCursor"];}
 
 message WithdrawalTurnoverReply {int64 remaining=1;bool can_withdraw=2 [json_name="canWithdraw"];}
+
+message SecurityRequest { optional int64 uid=1; optional string sid=2; string old_password=3 [json_name="oldPassword"]; string new_password=4 [json_name="newPassword"]; }
+message SecurityReply { bool success=1; }

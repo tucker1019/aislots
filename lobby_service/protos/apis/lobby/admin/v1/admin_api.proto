@@ -1,0 +1,34 @@
+syntax = "proto3";
+package apis.lobby.admin.v1;
+option go_package = "apps/pb/apis/lobby/admin/v1;adminv1";
+import "google/api/annotations.proto";
+message LoginRequest {string username=1;string password=2;}
+message Identity {string username=1;string role=2;}
+message Empty {}
+message Query {string q=1;string cursor=2;int32 limit=3;string kind=4;string status=5;}
+message MemberRequest {string uid=1;}
+message ReviewRequest {string kind=1;string order_id=2;string decision=3;string reason=4;string request_id=5;}
+message ReviewResponse {string order_id=1;string status=2;}
+message OverviewResponse {int64 members=1;int64 pending_deposits=2;int64 pending_withdrawals=3;string today_deposits=4;string today_withdrawals=5;}
+message Member {string uid=1;string account=2;string nickname=3;int32 avatar_id=4;int32 vip_level=5;string coins=6;string created_at=7;optional string last_login_at=8;}
+message MembersResponse {repeated Member items=1;string next_cursor=2;}
+message Wallet {string coins=1;string turnover_required=2;}
+message Account {string channel=1;string account=2;string name=3;}
+message Ledger {string id=1;string type=2;string amount=3;string balance=4;string created_at=5;}
+message MemberResponse {Member member=1;Wallet wallet=2;repeated Account accounts=3;repeated Ledger ledger=4;}
+message Order {string order_id=1;string uid=2;string kind=3;string status=4;string amount=5;string fee=6;string bonus=7;string credit_amount=8;string channel=9;string account=10;string name=11;string created_at=12;optional string settled_at=13;}
+message OrdersResponse {repeated Order items=1;string next_cursor=2;}
+message AuditEntry {string id=1;string username=2;string action=3;string target=4;string reason=5;string created_at=6;}
+message AuditResponse {repeated AuditEntry items=1;string next_cursor=2;}
+enum ErrorCode {ERROR_UNSPECIFIED=0;INVALID=1;UNAUTHORIZED=2;FORBIDDEN=3;CONFLICT=4;RATE_LIMITED=5;INTERNAL=6;NOT_FOUND=7;}
+service AdminService {
+rpc Login(LoginRequest)returns(Identity){option(google.api.http)={post:"/admin/api/login" body:"*"};}
+rpc Me(Empty)returns(Identity){option(google.api.http)={get:"/admin/api/me"};}
+rpc Logout(Empty)returns(Empty){option(google.api.http)={post:"/admin/api/logout" body:"*"};}
+rpc Overview(Empty)returns(OverviewResponse){option(google.api.http)={get:"/admin/api/overview"};}
+rpc Members(Query)returns(MembersResponse){option(google.api.http)={get:"/admin/api/members"};}
+rpc Member(MemberRequest)returns(MemberResponse){option(google.api.http)={get:"/admin/api/members/{uid}"};}
+rpc Orders(Query)returns(OrdersResponse){option(google.api.http)={get:"/admin/api/orders"};}
+rpc Review(ReviewRequest)returns(ReviewResponse){option(google.api.http)={post:"/admin/api/orders/review" body:"*"};}
+rpc Audit(Query)returns(AuditResponse){option(google.api.http)={get:"/admin/api/audit"};}
+}

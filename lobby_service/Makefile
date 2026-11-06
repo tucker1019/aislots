@@ -3,8 +3,8 @@ export GOTOOLCHAIN ?= go1.25.0
 .PHONY: build gen test lint format model mock run
 source:
 	python3 script/coin_sources.py
-build: source
-	PATH="$(HOME)/go/bin:$$PATH" protoc -I protos -I protos/third_party --go_out=. --go_opt=module=apps --descriptor_set_out=protos/descriptor.pb --include_imports apis/lobby/api/v1/experience_job.proto apis/lobby/api/v1/agent_api.proto apis/lobby/api/v1/game_api.proto apis/lobby/api/v1/user_api.proto apis/lobby/api/v1/recharge_api.proto apis/lobby/api/v1/checkin_api.proto apis/lobby/api/v1/return_api.proto apis/lobby/api/v1/vip_api.proto apis/lobby/api/v1/newbie_recharge_api.proto apis/lobby/api/errors/user_error.proto common/errors/error_prefix.proto
+build: source admin-build
+	PATH="$(HOME)/go/bin:$$PATH" protoc -I protos -I protos/third_party --go_out=. --go_opt=module=apps --descriptor_set_out=protos/descriptor.pb --include_imports apis/lobby/api/v1/content_api.proto apis/lobby/api/v1/experience_job.proto apis/lobby/api/v1/agent_api.proto apis/lobby/api/v1/game_api.proto apis/lobby/api/v1/user_api.proto apis/lobby/api/v1/recharge_api.proto apis/lobby/api/v1/checkin_api.proto apis/lobby/api/v1/return_api.proto apis/lobby/api/v1/vip_api.proto apis/lobby/api/v1/newbie_recharge_api.proto apis/lobby/api/errors/user_error.proto common/errors/error_prefix.proto
 	go run ./tools/httpgen
 gen: build
 model:
@@ -19,3 +19,11 @@ format:
 	sh script/format.sh
 run:
 	go run ./app/apis/lobby/api
+
+.PHONY: admin-build
+admin-build:
+	PATH="$(HOME)/go/bin:$$PATH" protoc -I protos -I protos/third_party --go_out=. --go_opt=module=apps --descriptor_set_out=protos/admin_descriptor.pb --include_imports apis/lobby/admin/v1/admin_api.proto apis/lobby/admin/config/v1/config_api.proto
+	go run ./tools/adminhttpgen
+
+.PHONY: admin-config-build
+admin-config-build: admin-build

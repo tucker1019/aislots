@@ -10,6 +10,7 @@ import (
 )
 
 type Config struct {
+	Content            ContentConfig
 	Turnover           TurnoverConfig
 	Agent              AgentConfig
 	Game               GameConfig
@@ -57,6 +58,10 @@ func Load() (Config, error) {
 		return c, err
 	}
 	c.Game, err = LoadGames(os.Getenv("LOBBY_GAMES_CONFIG"))
+	if err != nil {
+		return c, err
+	}
+	c.Content, err = LoadContent(os.Getenv("LOBBY_CONTENT_CONFIG"))
 	if err != nil {
 		return c, err
 	}

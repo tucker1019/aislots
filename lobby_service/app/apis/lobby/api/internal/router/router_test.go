@@ -91,7 +91,8 @@ func TestUserLifecycle(t *testing.T) {
 		}
 		return response.Data
 	}
-	visitor := call("visitor/login?app_name=lobby&uuid=device", "{}", 200)
+	call("visitor/login", "{}", 400)
+	visitor := call("uniquecode/register", `{"account":"alice","password":"password123"}`, 200)
 	if len(visitor.SID) != 52 || store.token == visitor.SID {
 		t.Fatal("sid must be random and stored hashed")
 	}
@@ -102,12 +103,11 @@ func TestUserLifecycle(t *testing.T) {
 		t.Fatal("session not renewed")
 	}
 	call("session/renewal?uid=2", "{"+identity+"}", 400)
-	call("uniquecode/bind", "{"+identity+`,"account":"alice","password":"password123"}`, 200)
 	if store.password == "password123" {
 		t.Fatal("plaintext password")
 	}
-	call("uniquecode/login", "{"+identity+`,"account":"alice","password":"incorrect"}`, 401)
-	login := call("uniquecode/login", "{"+identity+`,"account":"alice","password":"password123"}`, 200)
+	call("uniquecode/login", `{"account":"alice","password":"incorrect"}`, 401)
+	login := call("uniquecode/login", `{"account":"alice","password":"password123"}`, 200)
 	if login.UID != visitor.UID || login.SID == visitor.SID {
 		t.Fatal("login identity incorrect")
 	}

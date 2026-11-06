@@ -10,11 +10,7 @@ import (
 	"time"
 
 	"apps/app/apis/lobby/api/internal/config"
-	"apps/app/apis/lobby/api/internal/repository"
-	"apps/app/apis/lobby/api/internal/repository/model"
-	"apps/app/apis/lobby/api/internal/router"
 	"apps/app/apis/lobby/api/internal/server"
-	"apps/app/apis/lobby/api/internal/svc"
 	migrations "apps/deploy/migration"
 	"apps/pkg/xlog"
 
@@ -56,22 +52,12 @@ func run() error {
 	if _, err = sqlDB.ExecContext(ctx, migrations.Schema); err != nil {
 		return err
 	}
-	if err = (&model.TurnoverModel{DB: db}).Configure(ctx, c.Turnover); err != nil {
+	runtime, err := server.NewRuntime(ctx, db, c)
+	if err != nil {
 		return err
 	}
-	repo := repository.New(db, c.Checkin.Location())
-	repo.ConfigureVIP(db, c.VIP, c.Checkin.Location())
-	repo.ConfigureNewbie(db, c.Newbie)
-	repo.ConfigureInvite(db, c.Invite)
-	repo.ConfigureAgent(db, c.Agent, c.Game.Games, c.Checkin.Location())
-	dependencies := svc.New(c, repo)
-	workerCtx, cancelWorker := context.WithCancel(ctx)
-	workerDone := server.StartPayments(workerCtx, dependencies.Repo.Recharge)
-	vipDone := server.StartVIP(workerCtx, dependencies.Repo.VIP)
-	agentDone := server.StartAgent(workerCtx, dependencies.Repo.Agent)
-	experienceDone := server.StartExperience(workerCtx, c, db)
-	defer func() { cancelWorker(); <-workerDone; <-vipDone; <-agentDone; <-experienceDone }()
-	server := &http.Server{Addr: c.Address, Handler: router.New(dependencies), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second}
+	defer runtime.Close()
+	server := &http.Server{Addr: c.Address, Handler: runtime, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second}
 
 	done := make(chan error, 1)
 	go func() { done <- server.ListenAndServe() }()

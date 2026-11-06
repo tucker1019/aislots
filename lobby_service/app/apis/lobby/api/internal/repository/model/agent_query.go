@@ -105,6 +105,19 @@ func (m *AgentModel) Query(ctx context.Context, q AgentQuery, now time.Time) (*A
 	for p := range m.Config.Providers {
 		out.Providers = append(out.Providers, p)
 	}
+	// Ensure the code before opening the repeatable-read statistics snapshot.
+	// Concurrent invite requests may insert the same UID: ON CONFLICT is safe at
+	// read committed, but inside repeatable read PostgreSQL can return SQLSTATE 40001.
+	if q.Action == "center" {
+		var code LobbyInviteCode
+		lookup := m.DB.WithContext(ctx).Where("uid=?", q.UID).Take(&code).Error
+		if errors.Is(lookup, gorm.ErrRecordNotFound) {
+			lookup = m.DB.WithContext(ctx).Clauses(clause.OnConflict{DoNothing: true}).Create(&LobbyInviteCode{UID: q.UID, Code: rand.Text()}).Error
+		}
+		if lookup != nil {
+			return nil, lookup
+		}
+	}
 	err := m.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		target, e := m.resolveTarget(tx, q)
 		if e != nil {
@@ -154,9 +167,6 @@ func (m *AgentModel) Query(ctx context.Context, q AgentQuery, now time.Time) (*A
 		switch q.Action {
 		case "center":
 			var code LobbyInviteCode
-			if e = tx.Clauses(clause.OnConflict{DoNothing: true}).Create(&LobbyInviteCode{UID: q.UID, Code: rand.Text()}).Error; e != nil {
-				return e
-			}
 			if e = tx.Where("uid=?", q.UID).Take(&code).Error; e != nil {
 				return e
 			}

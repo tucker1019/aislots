@@ -39,6 +39,10 @@ func (m *UserModel) Create(ctx context.Context, account, password, token string,
 	return m.create(ctx, account, password, token, expiry, "")
 }
 
+func (m *UserModel) CreateRegisteredInvited(ctx context.Context, account, password, token string, expiry time.Time, code string) (int64, error) {
+	return m.create(ctx, account, password, token, expiry, code)
+}
+
 func (m *UserModel) CreateInvited(ctx context.Context, token string, expiry time.Time, code string) (int64, error) {
 	return m.create(ctx, "", "", token, expiry, code)
 }

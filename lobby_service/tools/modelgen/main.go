@@ -28,6 +28,12 @@ func main() {
 	g := gen.NewGenerator(gen.Config{OutPath: "app/apis/lobby/api/internal/repository/query", ModelPkgPath: "app/apis/lobby/api/internal/repository/model", FieldNullable: true})
 	g.WithDataTypeMap(map[string]func(gorm.ColumnType) string{"numeric": func(gorm.ColumnType) string { return "string" }})
 	g.UseDB(db)
+	for _, table := range []string{"lobby_return_rate_rules", "lobby_admin_users", "lobby_admin_sessions", "lobby_admin_audits", "lobby_admin_reviews", "lobby_admin_configs", "lobby_admin_config_versions", "lobby_admin_config_releases", "lobby_admin_runtime_state"} {
+		if !db.Migrator().HasTable(table) {
+			log.Fatalf("run migration first: missing %s", table)
+		}
+		g.GenerateModel(table)
+	}
 	g.GenerateModel("lobby_experience_accounts")
 	g.GenerateModel("lobby_experience_schedule")
 	g.GenerateModel("lobby_turnover_activation")

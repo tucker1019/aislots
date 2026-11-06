@@ -46,7 +46,8 @@ func TestReturnLogic(t *testing.T) {
 	}
 	now := time.Date(2026, 6, 1, 0, 0, 0, 0, l.location)
 	section := func(kind string) *model.ReturnSection {
-		return &model.ReturnSection{Claim: &model.ReturnPeriod{LobbyReturnClaim: model.LobbyReturnClaim{Kind: kind, Reward: 100, BetAmount: 10000, WinAmount: 8000}, Status: "claimable", AvailableAt: now, ExpiresAt: now.AddDate(0, 0, 1)}, Preview: &model.ReturnPeriod{Status: "preview", AvailableAt: now.AddDate(0, 0, 1), ExpiresAt: now.AddDate(0, 0, 2)}}
+		rate := map[string]int32{model.ReturnDaily: 80, model.ReturnWeekly: 10, model.ReturnMonthly: 10, model.ReturnLoser: 1000}[kind]
+		return &model.ReturnSection{Claim: &model.ReturnPeriod{LobbyReturnClaim: model.LobbyReturnClaim{Kind: kind, RateBps: rate, Reward: 100, BetAmount: 10000, WinAmount: 8000}, Status: "claimable", AvailableAt: now, ExpiresAt: now.AddDate(0, 0, 1)}, Preview: &model.ReturnPeriod{LobbyReturnClaim: model.LobbyReturnClaim{Kind: kind, RateBps: rate}, Status: "preview", AvailableAt: now.AddDate(0, 0, 1), ExpiresAt: now.AddDate(0, 0, 2)}}
 	}
 	store.EXPECT().ReadReturns(ctx, uid, gomock.Any(), model.GroupRebate, cfg, l.location, gomock.Any()).Return(&model.ReturnView{Date: "2026-06-01", Total: 300, Sections: []*model.ReturnSection{section(model.ReturnDaily), section(model.ReturnWeekly), section(model.ReturnMonthly)}}, nil)
 	out, err := l.RebateInfo(ctx, request())
@@ -79,5 +80,35 @@ func TestReturnLogic(t *testing.T) {
 		if err != nil || receipt.TotalReward != 10 || receipt.Coins != 110 || len(receipt.Items) != 1 || receipt.Items[0].LossAmount != 0 || receipt.Items[0].ExpiresAt != "2026-06-02T00:00:00+07:00" {
 			t.Fatal(receipt, err)
 		}
+	}
+}
+
+func TestPlatformRatesUseCurrentPeriodPreview(t *testing.T) {
+	ctx := context.Background()
+	store := mocks.NewMockReturnStore(gomock.NewController(t))
+	cfg := config.ReturnConfig{DailyRateBps: 900, WeeklyRateBps: 800, MonthlyRateBps: 700, LoserReturnRateBps: 600}
+	l := New(svc.New(config.Config{Game: config.GameConfig{Games: map[string]config.GameEntry{"AG1": {Enabled: true, Provider: "AG"}}}, Returns: cfg, Checkin: config.CheckinConfig{Timezone: "Asia/Jakarta"}}, &repository.Repository{Returns: store}))
+	uid := int64(7)
+	sid := strings.Repeat("a", 52)
+	req := &pb.ReturnRequest{Uid: &uid, Sid: &sid}
+	section := func(kind string, rate int32) *model.ReturnSection {
+		return &model.ReturnSection{Claim: &model.ReturnPeriod{LobbyReturnClaim: model.LobbyReturnClaim{Kind: kind, RateBps: 123}}, Preview: &model.ReturnPeriod{LobbyReturnClaim: model.LobbyReturnClaim{Kind: kind, RateBps: rate}}}
+	}
+	// Zero is an effective current rate, not a missing value to replace with config.
+	store.EXPECT().ReadReturns(ctx, uid, gomock.Any(), model.GroupRebate, cfg, l.location, gomock.Any()).Return(&model.ReturnView{Sections: []*model.ReturnSection{section(model.ReturnDaily, 0), section(model.ReturnWeekly, 20), section(model.ReturnMonthly, 30)}}, nil)
+	out, e := l.RebateInfo(ctx, req)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if len(out.Platforms) != 1 || out.Platforms[0].DailyRateBps != 0 || out.Platforms[0].WeeklyRateBps != 20 || out.Platforms[0].MonthlyRateBps != 30 {
+		t.Fatalf("advertised future config rates: %+v", out.Platforms)
+	}
+	store.EXPECT().ReadReturns(ctx, uid, gomock.Any(), model.GroupLoser, cfg, l.location, gomock.Any()).Return(&model.ReturnView{Sections: []*model.ReturnSection{section(model.ReturnLoser, 0)}}, nil)
+	loser, e := l.LoserReturnInfo(ctx, req)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if loser.Daily.Preview.RateBps != 0 || loser.Daily.Claim.RateBps != 123 {
+		t.Fatalf("loser period rates rewritten %+v", loser.Daily)
 	}
 }

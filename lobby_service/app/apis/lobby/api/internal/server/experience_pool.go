@@ -1,6 +1,7 @@
 package server
 
 import (
+	"apps/app/apis/lobby/api/internal/adminconfig"
 	"apps/app/apis/lobby/api/internal/config"
 	"apps/app/apis/lobby/api/internal/repository/model"
 	"apps/pkg/xlog"
@@ -53,6 +54,10 @@ func nearestExperienceBet(amounts []int64, lines, maxLevel int, target int64) (i
 }
 func experiencePoolTick(ctx context.Context, c config.Config, db *gorm.DB) error {
 	cfg, e := config.LoadExperience(os.Getenv("LOBBY_EXPERIENCE_CONFIG"))
+	if e != nil {
+		return e
+	}
+	cfg, e = adminconfig.LoadExperiencePublished(ctx, db, cfg)
 	if e != nil {
 		return e
 	}

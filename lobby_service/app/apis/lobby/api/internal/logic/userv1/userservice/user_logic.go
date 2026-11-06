@@ -71,11 +71,8 @@ func (s *Service) Renew(ctx context.Context, uid int64, sid string) (Identity, e
 }
 
 func (s *Service) Login(ctx context.Context, uid int64, sid, account, password string) (Identity, error) {
-	if uid <= 0 || len(sid) != 52 {
-		return Identity{}, xerr.ErrSession
-	}
-	if err := s.Store.Check(ctx, uid, Hash(sid), time.Now().UTC()); err != nil {
-		return Identity{}, err
+	if !valid(account, password) {
+		return Identity{}, xerr.ErrCredentials
 	}
 	target, hash, err := s.Store.Credentials(ctx, account)
 	if err != nil {
@@ -85,7 +82,13 @@ func (s *Service) Login(ctx context.Context, uid int64, sid, account, password s
 		return Identity{}, xerr.ErrCredentials
 	}
 	token, expiry := s.token()
-	err = s.Store.NewSession(ctx, target, Hash(token), expiry)
+	if store, ok := s.Store.(interface {
+		NewPasswordSession(context.Context, int64, string, string, time.Time) error
+	}); ok {
+		err = store.NewPasswordSession(ctx, target, hash, Hash(token), expiry)
+	} else {
+		err = s.Store.NewSession(ctx, target, Hash(token), expiry)
+	}
 	return Identity{target, token, expiry}, err
 }
 
@@ -119,5 +122,28 @@ func (s *Service) CreateInvited(ctx context.Context, code string) (Identity, err
 	}
 	token, expiry := s.token()
 	uid, err := store.CreateInvited(ctx, Hash(token), expiry, code)
+	return Identity{uid, token, expiry}, err
+}
+
+// Register creates the account, wallet, session and optional invite relation atomically.
+func (s *Service) Register(ctx context.Context, account, password, inviteCode string) (Identity, error) {
+	if inviteCode == "" {
+		return s.Create(ctx, account, password, false)
+	}
+	if !valid(account, password) || len(inviteCode) > 64 || strings.TrimSpace(inviteCode) != inviteCode {
+		return Identity{}, xerr.ErrInvalid
+	}
+	store, ok := s.Store.(interface {
+		CreateRegisteredInvited(context.Context, string, string, string, time.Time, string) (int64, error)
+	})
+	if !ok {
+		return Identity{}, xerr.ErrInvalid
+	}
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return Identity{}, err
+	}
+	token, expiry := s.token()
+	uid, err := store.CreateRegisteredInvited(ctx, account, string(hash), Hash(token), expiry, inviteCode)
 	return Identity{uid, token, expiry}, err
 }

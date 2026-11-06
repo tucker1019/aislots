@@ -1,0 +1,39 @@
+{
+  "announcements": {
+    "zh-TW": [
+      "歡迎來到 AISlots，祝您遊戲愉快。"
+    ],
+    "en-US": [
+      "Welcome to AISlots. Enjoy your games."
+    ]
+  },
+  "banners": [
+    {
+      "id": "referral",
+      "enabled": true,
+      "imageZhTw": "/assets/lobby/promotions/referral-200-zh-tw-v1.webp",
+      "imageEnUs": "/assets/lobby/promotions/referral-200-en-v1.webp",
+      "altZhTw": "推薦一人，獎勵200",
+      "altEnUs": "Refer a friend, earn 200",
+      "route": "/earn"
+    },
+    {
+      "id": "deposit",
+      "enabled": true,
+      "imageZhTw": "/assets/lobby/promotions/deposit-bonus-5-zh-tw-v1.webp",
+      "imageEnUs": "/assets/lobby/promotions/deposit-bonus-5-en-v1.webp",
+      "altZhTw": "錢包百億補貼，筆筆贈5%",
+      "altEnUs": "Get a 5% bonus on every deposit",
+      "route": "/deposit"
+    },
+    {
+      "id": "cashback",
+      "enabled": true,
+      "imageZhTw": "/assets/lobby/promotions/cashback-1-zh-tw-v1.webp",
+      "imageEnUs": "/assets/lobby/promotions/cashback-1-en-v1.webp",
+      "altZhTw": "投注無需遞增，直接返水1%",
+      "altEnUs": "Get 1% cashback without increasing your bet",
+      "route": "/earn"
+    }
+  ]
+}

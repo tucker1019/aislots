@@ -5,6 +5,7 @@ import (
 	"apps/app/apis/lobby/api/internal/handler"
 	agentlogic "apps/app/apis/lobby/api/internal/logic/agentv1/agentservice"
 	checkinlogic "apps/app/apis/lobby/api/internal/logic/checkinv1/checkinservice"
+	contentlogic "apps/app/apis/lobby/api/internal/logic/contentv1/contentservice"
 	gamelogic "apps/app/apis/lobby/api/internal/logic/gamev1/gameservice"
 	newbielogic "apps/app/apis/lobby/api/internal/logic/newbiev1/newbieservice"
 	rechargelogic "apps/app/apis/lobby/api/internal/logic/rechargev1/rechargeservice"
@@ -26,8 +27,10 @@ func New(ctx *svc.ServiceContext) http.Handler {
 	returns := returnlogic.New(ctx)
 	vip := viplogic.New(ctx)
 	newbie := newbielogic.New(ctx)
+	content := contentlogic.New(ctx)
 	agent := agentlogic.New(ctx)
 	game := gamelogic.New(ctx)
+	mux.HandleFunc("GET /api/lobby/content", handler.API(func() *pb.LobbyContentRequest { return new(pb.LobbyContentRequest) }, content.Content))
 	mux.HandleFunc("POST /api/agent/info", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentCenter))
 	mux.HandleFunc("POST /api/agent/team", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentTeam))
 	mux.HandleFunc("POST /api/agent/performance", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentPerformance))
@@ -54,6 +57,8 @@ func New(ctx *svc.ServiceContext) http.Handler {
 	mux.HandleFunc("POST /internal/game/exchange", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameExchangeRequest { return new(pb.GameExchangeRequest) }, game.GameExchange)))
 	mux.HandleFunc("POST /internal/game/balance", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameBalanceRequest { return new(pb.GameBalanceRequest) }, game.GameBalance)))
 	mux.HandleFunc("POST /internal/game/settle", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameSettleRequest { return new(pb.GameSettleRequest) }, game.GameSettle)))
+	mux.HandleFunc("POST /api/user/account/password/update", handler.API(func() *pb.SecurityRequest { return new(pb.SecurityRequest) }, logic.PasswordUpdate))
+	mux.HandleFunc("POST /api/user/account/logout", handler.API(func() *pb.SecurityRequest { return new(pb.SecurityRequest) }, logic.SessionLogout))
 	mux.HandleFunc("POST /api/user/withdrawal/turnover", handler.API(func() *pb.UserRequest { return new(pb.UserRequest) }, logic.WithdrawalTurnover))
 	mux.HandleFunc("POST /api/user/withdrawal/tiers", handler.API(func() *pb.UserRequest { return new(pb.UserRequest) }, logic.WithdrawalList))
 	mux.HandleFunc("POST /api/user/withdrawal/create", handler.API(func() *pb.WithdrawalRequest { return new(pb.WithdrawalRequest) }, logic.WithdrawalCreate))

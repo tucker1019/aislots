@@ -17,10 +17,7 @@ func reply(id Identity, err error) (*pb.IdentityReply, error) {
 }
 
 func (l *Service) VisitorLogin(ctx context.Context, r *pb.UserRequest) (*pb.IdentityReply, error) {
-	if r.InviteCode == "" {
-		return reply(l.Create(ctx, "", "", true))
-	}
-	return reply(l.CreateInvited(ctx, r.InviteCode))
+	return nil, xerr.Public(xerr.ErrInvalid)
 }
 
 func (l *Service) SessionRenewal(ctx context.Context, r *pb.UserRequest) (*pb.IdentityReply, error) {
@@ -28,7 +25,7 @@ func (l *Service) SessionRenewal(ctx context.Context, r *pb.UserRequest) (*pb.Id
 }
 
 func (l *Service) UniqueCodeRegister(ctx context.Context, r *pb.UserRequest) (*pb.IdentityReply, error) {
-	return reply(l.Create(ctx, r.Account, r.Password, false))
+	return reply(l.Register(ctx, r.Account, r.Password, r.InviteCode))
 }
 
 func (l *Service) UniqueCodeLogin(ctx context.Context, r *pb.UserRequest) (*pb.IdentityReply, error) {

@@ -1,0 +1,27 @@
+syntax="proto3";
+package apis.lobby.admin.config.v1;
+option go_package="apps/pb/apis/lobby/admin/config/v1;adminconfigv1";
+import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/empty.proto";
+// Config routes exist solely on the independent administrator listener.
+service ConfigService {
+ rpc List(google.protobuf.Empty) returns (ConfigList) { option (google.api.http)={get:"/admin/api/configs"}; }
+ rpc Detail(ConfigKey) returns (ConfigDetail) { option (google.api.http)={get:"/admin/api/configs/{key}"}; }
+ rpc Draft(ConfigDraft) returns (ConfigDetail) { option (google.api.http)={post:"/admin/api/configs/{key}/draft" body:"*"}; }
+ rpc Validate(ConfigValidate) returns (ConfigValidity) { option (google.api.http)={post:"/admin/api/configs/{key}/validate" body:"*"}; }
+ rpc Publish(ConfigPublish) returns (ConfigDetail) { option (google.api.http)={post:"/admin/api/configs/{key}/publish" body:"*"}; }
+ rpc Rollback(ConfigRollback) returns (ConfigDetail) { option (google.api.http)={post:"/admin/api/configs/{key}/rollback" body:"*"}; }
+}
+message ConfigKey { string key=1; }
+message ConfigDraft { string key=1; google.protobuf.Value document=2; int64 expected_version=3 [json_name="expectedVersion"]; string reason=4; }
+message ConfigValidate { string key=1; google.protobuf.Value document=2; }
+message ConfigPublish { string key=1; int64 expected_version=2 [json_name="expectedVersion"]; string reason=3; string request_id=4 [json_name="requestId"]; }
+message ConfigRollback { string key=1; int64 version=2; int64 expected_version=3 [json_name="expectedVersion"]; string reason=4; string request_id=5 [json_name="requestId"]; }
+message ConfigValidity { bool valid=1; }
+message ConfigSection { string key=1; string label=2; string description=3; int64 published_version=4 [json_name="publishedVersion"]; int64 draft_version=5 [json_name="draftVersion"]; bool has_draft=6 [json_name="hasDraft"]; }
+message ConfigHistory { int64 version=1; string status=2; string username=3; string created_at=4 [json_name="createdAt"]; string reason=5; }
+message ConfigDetail { string key=1; string label=2; google.protobuf.Value published=3; google.protobuf.Value draft=4; int64 published_version=5 [json_name="publishedVersion"]; int64 draft_version=6 [json_name="draftVersion"]; repeated ConfigHistory history=7; }
+message ConfigList { repeated ConfigSection items=1; }
+
+enum ConfigErrorCode {CONFIG_ERROR_UNSPECIFIED=0; CONFIG_CONFLICT=1; CONFIG_NOT_FOUND=2; CONFIG_UNAVAILABLE=3; CONFIG_INVALID=4;}

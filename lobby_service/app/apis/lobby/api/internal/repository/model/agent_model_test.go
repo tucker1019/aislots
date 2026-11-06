@@ -259,3 +259,53 @@ func TestAgentDeepBindingRoundingSnapshotsAndDeposits(t *testing.T) {
 		t.Fatal("lost correction")
 	}
 }
+
+func TestConcurrentAgentCenterCreatesOneInviteCode(t *testing.T) {
+	db := vipTestDB(t)
+	user := LobbyUser{Nickname: "concurrent-agent", AvatarID: 1}
+	if err := db.Create(&user).Error; err != nil {
+		t.Fatal(err)
+	}
+	m := &AgentModel{DB: db, Config: config.AgentConfig{Providers: map[string][]config.AgentTier{}}, Location: time.UTC}
+	const count = 12
+	start := make(chan struct{})
+	codes := make(chan string, count)
+	errs := make(chan error, count)
+	var wg sync.WaitGroup
+	for i := 0; i < count; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			<-start
+			v, err := m.Query(context.Background(), AgentQuery{UID: user.UID, Action: "center", Period: "today", Page: 1}, time.Now())
+			if err != nil {
+				errs <- err
+				return
+			}
+			codes <- v.InviteURL
+		}()
+	}
+	close(start)
+	wg.Wait()
+	close(errs)
+	close(codes)
+	for err := range errs {
+		t.Error(err)
+	}
+	var expected string
+	for code := range codes {
+		if code == "" {
+			t.Error("missing invite code")
+		}
+		if expected == "" {
+			expected = code
+		}
+		if code != expected {
+			t.Error("invite code changed")
+		}
+	}
+	var rows int64
+	if err := db.Model(&LobbyInviteCode{}).Where("uid=?", user.UID).Count(&rows).Error; err != nil || rows != 1 {
+		t.Fatalf("codes=%d err=%v", rows, err)
+	}
+}

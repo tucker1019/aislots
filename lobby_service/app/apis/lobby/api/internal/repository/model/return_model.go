@@ -69,7 +69,11 @@ func readReturns(tx *gorm.DB, uid int64, group string, c config.ReturnConfig, lo
 	view := &ReturnView{Date: activityDate(now, loc)}
 	for _, kind := range returnKinds(group) {
 		start, current, end := returnBounds(now, loc, kind)
-		claim, err := sumReturnPeriod(tx, uid, kind, start, current, rateFor(c, kind))
+		claimRate, err := effectiveReturnRate(tx, c, kind, start)
+		if err != nil {
+			return nil, err
+		}
+		claim, err := sumReturnPeriod(tx, uid, kind, start, current, claimRate)
 		if err != nil {
 			return nil, err
 		}
@@ -92,7 +96,11 @@ func readReturns(tx *gorm.DB, uid int64, group string, c config.ReturnConfig, lo
 			}
 			view.Total += claim.Reward
 		}
-		preview, err := sumReturnPeriod(tx, uid, kind, current, end, rateFor(c, kind))
+		previewRate, err := effectiveReturnRate(tx, c, kind, current)
+		if err != nil {
+			return nil, err
+		}
+		preview, err := sumReturnPeriod(tx, uid, kind, current, end, previewRate)
 		if err != nil {
 			return nil, err
 		}

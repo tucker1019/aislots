@@ -54,7 +54,7 @@ func (l *Logic) RebateInfo(ctx context.Context, r *pb.ReturnRequest) (*pb.Rebate
 	}
 	sort.Strings(names)
 	for _, name := range names {
-		out.Platforms = append(out.Platforms, &pb.RebatePlatform{Name: name, DailyRateBps: l.config.DailyRateBps, WeeklyRateBps: l.config.WeeklyRateBps, MonthlyRateBps: l.config.MonthlyRateBps})
+		out.Platforms = append(out.Platforms, &pb.RebatePlatform{Name: name, DailyRateBps: out.Daily.Preview.RateBps, WeeklyRateBps: out.Weekly.Preview.RateBps, MonthlyRateBps: out.Monthly.Preview.RateBps})
 	}
 	return out, nil
 }

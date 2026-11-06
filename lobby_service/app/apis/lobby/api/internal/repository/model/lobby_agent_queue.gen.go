@@ -8,8 +8,8 @@ const TableNameLobbyAgentQueue = "lobby_agent_queue"
 
 // LobbyAgentQueue mapped from table <lobby_agent_queue>
 type LobbyAgentQueue struct {
-	BusinessDate string `gorm:"column:business_date;not null" json:"business_date"`
 	ID           int64  `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	BusinessDate string `gorm:"column:business_date;not null" json:"business_date"`
 	EventID      string `gorm:"column:event_id;not null" json:"event_id"`
 }
 
