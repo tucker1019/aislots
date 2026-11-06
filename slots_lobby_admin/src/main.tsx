@@ -1,0 +1,10 @@
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { App as AntApp, ConfigProvider } from 'antd';
+import zhCN from 'antd/locale/zh_CN';
+import { App } from './App';
+import { ApiError } from './services/client';
+import './styles.css';
+const client = new QueryClient({ defaultOptions: { queries: { retry: (count, error) => !(error instanceof ApiError && error.status < 500) && count < 1, refetchOnWindowFocus: false, staleTime: 20_000 }, mutations: { retry: false } } });
+ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><QueryClientProvider client={client}><ConfigProvider locale={zhCN} theme={{ token: { colorPrimary: '#205c68', colorBgLayout: '#f3f2ed', colorText: '#24343c', fontFamily: 'Nunito, sans-serif', borderRadius: 8, controlHeight: 38 }, components: { Table: { headerBg: '#f7f8f7', headerColor: '#65757b' }, Modal: { titleFontSize: 18, titleLineHeight: 1.5 } } }}><AntApp><App /></AntApp></ConfigProvider></QueryClientProvider></React.StrictMode>);
