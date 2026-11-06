@@ -1,0 +1,4 @@
+.claim-badge-anchor { position:relative; overflow:visible; }
+.claim-badge { position:absolute; z-index:3; right:-6px; top:-6px; min-width:17px; height:17px; padding:0 3px; display:inline-flex; align-items:center; justify-content:center; border-radius:10px; background:#f04452; color:#fff; border:1px solid var(--theme-border,#fff); font-size:10px; font-weight:650; line-height:15px; white-space:nowrap; pointer-events:none; box-shadow:0 0 0 0 #f0445240; animation:claim-breathe 1.7s ease-in-out infinite; }
+@keyframes claim-breathe { 0%,100% { box-shadow:0 0 0 0 #f0445240; opacity:1; } 50% { box-shadow:0 0 0 4px #f0445200; opacity:.75; } }
+@media(prefers-reduced-motion:reduce){.claim-badge { animation:none; }}

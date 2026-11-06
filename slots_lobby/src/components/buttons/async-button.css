@@ -1,0 +1,4 @@
+.async-button { position:relative; }
+.async-button-content { display:inline-flex; align-items:center; justify-content:center; gap:inherit; }
+.async-button-spinner { position:absolute; left:50%; top:50%; width:14px; height:14px; margin:-7px 0 0 -7px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:async-button-spin .7s linear infinite; pointer-events:none; }
+@keyframes async-button-spin { to { transform:rotate(360deg); } }

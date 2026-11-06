@@ -1,8 +1,9 @@
+import {AsyncAntButton as Button} from '../../components/buttons/AsyncButton';
 import { overlayContainer } from '../../app/designViewport';
 import {LoadingState} from '../../components/feedback/LoadingState';
 import {NetworkError} from '../../components/feedback/NetworkError';
 import { useState } from 'react';
-import { Alert, Button, Form, Input, message } from 'antd';
+import {Alert,Form,Input,message} from 'antd';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { loadWalletAccounts, saveWalletAccount } from '../../services/wallet-accounts';
 import type { WalletAccount } from '../../services/wallet-accounts';

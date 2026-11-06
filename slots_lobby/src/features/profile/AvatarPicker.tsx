@@ -1,7 +1,8 @@
+import {AsyncAntButton as Button} from '../../components/buttons/AsyncButton';
 import { overlayContainer } from '../../app/designViewport';
 import {useState} from 'react';
 import {useMutation} from '@tanstack/react-query';
-import {Alert,Button,Modal} from 'antd';
+import {Alert,Modal} from 'antd';
 import {updateAccountAvatar} from '../../services/account';
 import {useProfileUpdate} from './useProfileUpdate';
 import {t} from '../../i18n';

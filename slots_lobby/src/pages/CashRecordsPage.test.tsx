@@ -1,3 +1,5 @@
+import {beforeEach as authenticatedFixture} from 'vitest';
+import {useSessionStore} from '../stores/session';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -76,3 +78,5 @@ it('失敗訂單顯示實際到賬0，不將配置中的預計到賬當作已入
   expect(screen.getByText('實際到賬').parentElement).toHaveTextContent('0.00');
   expect(screen.queryByText('99.80')).not.toBeInTheDocument();
 });
+
+authenticatedFixture(()=>useSessionStore.setState({session:{uid:7,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'}}));

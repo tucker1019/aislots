@@ -28,3 +28,7 @@
 - 不新增依赖物理窗口宽度的排版断点；长文本仍显式定义换行/省略/内部滚动。游戏放大由Cocos自己适配，不能重新挂载iframe。
 
 - 多语言使用英文语义 key（如 `copy.walletBalance`），禁止中文 key 或根据中文文案反查 key；服务端展示项按稳定英文业务 ID 映射，未知项保留服务端原文。
+
+## 异步按钮
+
+- 点击请求接口的按钮遵守 [async-button-states skill](../.agents/skills/async-button-states/SKILL.md)：请求中只显示居中的小圆圈旋转动画，原文字隐藏但保留占位，按钮大小及位置不变，全程防重复触发。

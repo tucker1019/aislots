@@ -1,9 +1,10 @@
 import { t, getLocale } from '../../i18n';
 import { Icon } from '../../components/Icon';
 import { coinsLabel } from '../account/formatCoins';
+import type { WithdrawalOrder } from '../../services/withdrawal';
 import type { RechargeOrder } from '../../services/recharge';
 const orderStatusLabels = () => ({ pending: t('copy.pendingConfirmation'), success: t('copy.orderSuccessful'), failed: t('copy.orderFailed') } as const);
-export function RecordList({ items, onOpen }: { items: RechargeOrder[]; onOpen: (id: string) => void }) {
+export function RecordList({ items, onOpen }: { items: (RechargeOrder | WithdrawalOrder)[]; onOpen: (id: string) => void }) {
   if (!items.length) return <section className="cash-records-empty" aria-label={t('copy.noData')}>
     <span className="cash-empty-art" aria-hidden="true"><Icon name="list" size={48} /><span>◷</span></span>
     <p>{t('copy.noData')}</p>

@@ -1,32 +1,32 @@
 #root:has(.benefits-page) { padding-bottom: var(--lobby-safe-bottom, 0px); }
 .benefits-page { padding-bottom: 24px; }
-.benefits-heading { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: center; min-height: 54px; background: rgb(255 255 255 / 95%); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+.benefits-heading { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: center; min-height: 54px; background: var(--theme-glass,rgb(255 255 255 / 95%)); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
 .benefits-heading h1 { margin: 0; font-size: 17px; font-weight: 650; }
 .benefits-heading > button { position: absolute; left: 0; width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: transparent; color: var(--blue); }
 .benefits-heading > button svg { transform: rotate(180deg); }
 .benefits-cards { display: grid; gap: 10px; padding-top: 15px; }
-.benefit-card { background: #f5f7fb; border: 1px solid #e9edf4; border-radius: 13px; padding: 11px 12px; }
-.benefit-card > header { display: flex; align-items: center; gap: 9px; padding-bottom: 11px; border-bottom: 1px solid #e2e7ef; }
+.benefit-card { background: var(--theme-blue-tint,#f5f7fb); border: 1px solid var(--theme-border-blue,#e9edf4); border-radius: 13px; padding: 11px 12px; }
+.benefit-card > header { display: flex; align-items: center; gap: 9px; padding-bottom: 11px; border-bottom: 1px solid var(--theme-border-blue,#e2e7ef); }
 .benefit-card h2 { font-size: 14px; font-weight: 650; margin: 0; }
-.benefit-card header > strong { margin-left: auto; color: #b17b20; font-size: 17px; font-variant-numeric: tabular-nums; }
+.benefit-card header > strong { margin-left: auto; color: var(--theme-gold-text,#b17b20); font-size: 17px; font-variant-numeric: tabular-nums; }
 .benefit-icon { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; }
-.benefit-icon-purple { background: #ede4ff; color: #8b4dcc; }.benefit-icon-blue { background: #e1ebff; color: #4c78d3; }.benefit-icon-rose { background: #ffe3eb; color: #cf5478; }.benefit-icon-green { background: #dcf4ec; color: #268e72; }.benefit-icon-gold { background: #fff0cd; color: #b47e1d; }
+.benefit-icon-purple { background: var(--theme-violet-tint,#ede4ff); color: var(--theme-violet-text,#8b4dcc); }.benefit-icon-blue { background: var(--theme-blue-tint,#e1ebff); color: var(--theme-blue-text,#4c78d3); }.benefit-icon-rose { background: var(--theme-red-tint,#ffe3eb); color: var(--theme-red-text,#cf5478); }.benefit-icon-green { background: var(--theme-green-tint,#dcf4ec); color: var(--theme-green-text,#268e72); }.benefit-icon-gold { background: var(--theme-gold-tint,#fff0cd); color: var(--theme-gold-text,#b47e1d); }
 .benefit-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 10px; }
 .benefit-card-bottom p { flex: 1; margin: 0; font-size: 11px; line-height: 1.6; color: var(--muted); overflow-wrap: anywhere; }
-.benefit-card-bottom button,.benefits-feedback button { flex-shrink: 0; border: 1px solid #c1d6f2; background: #fff; color: var(--blue); border-radius: 7px; padding: 7px 10px; font-size: 11px; min-height: 32px; }
+.benefit-card-bottom button,.benefits-feedback button { flex-shrink: 0; border: 1px solid var(--theme-border-blue,#c1d6f2); background: var(--theme-surface,#fff); color: var(--blue); border-radius: 7px; padding: 7px 10px; font-size: 11px; min-height: 32px; }
 .benefit-card-bottom button:disabled,.benefits-feedback button:disabled { opacity: .5; cursor: default; }
-.benefit-card-bottom button:active:not(:disabled) { background: #eaf2ff; }
-.benefits-feedback { padding: 24px 12px; text-align: center; color: var(--muted); font-size: 13px; background: #f5f7fb; border-radius: 13px; }
+.benefit-card-bottom button:active:not(:disabled) { background: var(--theme-blue-tint,#eaf2ff); }
+.benefits-feedback { padding: 24px 12px; text-align: center; color: var(--muted); font-size: 13px; background: var(--theme-blue-tint,#f5f7fb); border-radius: 13px; }
 .benefits-note { margin: 4px 2px 0; font-size: 11px; line-height: 1.6; color: var(--muted); }
 
 body:has(.vip-upgrade-modal) .ant-modal-mask { backdrop-filter: blur(7px); background: rgb(20 24 39 / 65%); }
 .vip-upgrade-modal .ant-modal-container,.vip-upgrade-modal .ant-modal-content { background: transparent; padding: 0; box-shadow: none; }
-.vip-upgrade-panel { overflow: hidden; border-radius: 14px; background: #f5f7fb; box-shadow: 0 14px 45px rgb(0 0 0 / 20%); }
-.vip-upgrade-panel h2 { margin: 0; padding: 14px; text-align: center; font-size: 16px; color: #385b95; background: linear-gradient(120deg,#e0e8fa,#edf3ff); }
+.vip-upgrade-panel { overflow: hidden; border-radius: 14px; background: var(--theme-blue-tint,#f5f7fb); box-shadow: 0 14px 45px rgb(0 0 0 / 20%); }
+.vip-upgrade-panel h2 { margin: 0; padding: 14px; text-align: center; font-size: 16px; color: var(--theme-blue-text,#385b95); background: linear-gradient(120deg,var(--theme-blue-tint,#e0e8fa),var(--theme-blue-tint,#edf3ff)); }
 .vip-upgrade-body { padding: 18px 15px 14px; }
-.vip-upgrade-progress { margin-bottom: 16px; }.vip-upgrade-progress > div:first-child { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--muted); }.vip-upgrade-progress b { color: #ad7b20; }.vip-upgrade-progress .ant-progress { margin-top: 8px; }
-.vip-upgrade-home { width: 100%; min-height: 42px; border: 0; border-radius: 9px; background: var(--blue); color: #fff; font-weight: 600; font-size: 14px; }
-.vip-upgrade-close { display: block; margin: 22px auto 0; width: 30px; height: 30px; border-radius: 50%; border: 1px solid #a3bce3; background: #517bc5; color: #fff; font-size: 24px; line-height: 24px; }
+.vip-upgrade-progress { margin-bottom: 16px; }.vip-upgrade-progress > div:first-child { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--muted); }.vip-upgrade-progress b { color: var(--theme-gold-text,#ad7b20); }.vip-upgrade-progress .ant-progress { margin-top: 8px; }
+.vip-upgrade-home { width: 100%; min-height: 42px; border: 0; border-radius: 9px; background: var(--theme-action,var(--blue)); color: #fff; font-weight: 600; font-size: 14px; }
+.vip-upgrade-close { display: block; margin: 22px auto 0; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--theme-border-blue,#a3bce3); background: #517bc5; color: #fff; font-size: 24px; line-height: 24px; }
 .vip-upgrade-notice { color: var(--muted); font-size: 13px; line-height: 1.7; margin: 0 0 18px; }
 
-.vip-salary-error { margin: 0; color: #c13f3f; font-size: 12px; line-height: 1.6; }.vip-salary-error button { margin-left: 8px; border: 1px solid #c6d8f3; border-radius: 6px; padding: 5px 9px; color: var(--blue); background: #fff; }
+.vip-salary-error { margin: 0; color: var(--theme-red-text,#c13f3f); font-size: 12px; line-height: 1.6; }.vip-salary-error button { margin-left: 8px; border: 1px solid var(--theme-border-blue,#c6d8f3); border-radius: 6px; padding: 5px 9px; color: var(--blue); background: var(--theme-surface,#fff); }

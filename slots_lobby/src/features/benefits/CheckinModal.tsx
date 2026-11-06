@@ -1,3 +1,5 @@
+import {ClaimBadge} from '../rewards/ClaimBadge';
+import {AsyncButton} from '../../components/buttons/AsyncButton';
 import { overlayContainer } from '../../app/designViewport';
 import {LoadingState} from '../../components/feedback/LoadingState';
 import {NetworkError} from '../../components/feedback/NetworkError';
@@ -14,7 +16,7 @@ export function CheckinModal({ onClose }: { onClose: () => void }) {
  const client = useQueryClient();
  const {notify,holder}=useClaimToast();
  const info = useQuery({queryKey:['lobby','checkin-detail',uid],queryFn:({signal})=>loadCheckinInfo(signal),retry:false,staleTime:0,refetchOnWindowFocus:false});
- const claim = useMutation({mutationFn:claimCheckin,retry:false,onSuccess:()=>{
+ const claim = useMutation({meta:{claimUid:uid,claimIndicator:'checkin'},mutationFn:claimCheckin,retry:false,onSuccess:()=>{
   notify();
   client.setQueryData(['lobby','checkin-detail',uid], info.data ? {...info.data,claimed:true,canClaim:false} : undefined);
   void client.invalidateQueries({queryKey:['lobby','current-profile']});
@@ -34,7 +36,7 @@ export function CheckinModal({ onClose }: { onClose: () => void }) {
     </div>
     <div className="checkin-progress"><p>{t('copy.walletDeposits')} <b className={data.rechargeAmount>=data.current.requiredRecharge?'met':''}>{betMoney(data.rechargeAmount)}</b> / {betMoney(data.current.requiredRecharge)}</p><p>{t('copy.requiredBets')} <b className={data.validBet>=data.current.requiredBet?'met':''}>{betMoney(data.validBet)}</b> / {betMoney(data.current.requiredBet)}</p></div>
     {claim.isError && <p className="checkin-error" role="alert">{claim.error.message}</p>}
-    <button className="checkin-claim" type="button" disabled={claim.isPending || data.claimed || !data.canClaim || info.isFetching} onClick={()=>claim.mutate(data.activityDate)}>{claim.isPending?t('copy.checkingIn'):data.claimed?t('copy.checkedInToday'):!data.canClaim?t('copy.meetDepositAndBettingRequirementsToCheck'):t('copy.checkInNow')}</button>
+    <AsyncButton loading={claim.isPending} className="checkin-claim" type="button" disabled={claim.isPending || data.claimed || !data.canClaim || info.isFetching} onClick={()=>claim.mutate(data.activityDate)}>{data.claimed?t('copy.checkedInToday'):!data.canClaim?t('copy.meetDepositAndBettingRequirementsToCheck'):t('copy.checkInNow')}<ClaimBadge active={data.canClaim&&!data.claimed&&data.current.reward>0}/></AsyncButton>
    </>}
   </section>
   <button className="checkin-close" type="button" aria-label={t('copy.closeCheckIn')} disabled={claim.isPending} onClick={onClose}>×</button>

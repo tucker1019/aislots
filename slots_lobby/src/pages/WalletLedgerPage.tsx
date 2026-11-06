@@ -1,3 +1,4 @@
+import {AsyncButton} from '../components/buttons/AsyncButton';
 import {ledgerLabel} from '../i18n/server-labels';
 import {LoadingState} from '../components/feedback/LoadingState';
 import {NetworkError} from '../components/feedback/NetworkError';
@@ -33,7 +34,7 @@ export function WalletLedgerPage({onBack,id}:{onBack:()=>void;id?:string}){
  {query.isPending?<LoadingState label={t('copy.loadingWalletTransactions')}/>:query.isError&&!query.data?<NetworkError disabled={query.isFetching} onRetry={()=>void query.refetch()}/>:<>
  {items.length===0?<div className="cash-records-empty"><Icon name="list" size={42}/><p>{t('copy.noWalletTransactions')}</p></div>:<div className="ledger-list">{items.map(row=><button className="ledger-row" type="button" key={row.id} onClick={()=>open(row.id)}><span className="cash-record-icon"><Icon name="wallet" size={20}/></span><span className="ledger-description"><strong>{ledgerLabel(row.categoryId,row.type)}</strong><time dateTime={row.createdAt}>{new Date(row.createdAt).toLocaleString(getLocale(),{hour12:false})}</time></span><span className="ledger-result"><strong className={row.amount<0?'bet-loss':'bet-gain'}>{row.amount>0?'+':''}{betMoney(row.amount)}</strong><span>{t('copy.accountBalance')} {betMoney(row.balance)}</span></span><Icon name="chevron" size={14}/></button>)}</div>}
  {query.isError&&<p className="cash-records-feedback" role="alert">{t('copy.loadingFailedExistingRecordsArePreserved')}</p>}
- {query.hasNextPage?<button type="button" className="cash-load-more" disabled={query.isFetching} onClick={()=>void query.fetchNextPage()}>{query.isFetchingNextPage?t('copy.loading'):query.isError?t('copy.retryLoading'):t('copy.loadMore')}</button>:items.length>0&&<p className="cash-records-end">{t('copy.allRecordsLoaded')}</p>}
+ {query.hasNextPage?<AsyncButton loading={query.isFetchingNextPage} type="button" className="cash-load-more" disabled={query.isFetching} onClick={()=>void query.fetchNextPage()}>{query.isError?t('copy.retryLoading'):t('copy.loadMore')}</AsyncButton>:items.length>0&&<p className="cash-records-end">{t('copy.allRecordsLoaded')}</p>}
  </>}
  </RecordsLayout>;
 }

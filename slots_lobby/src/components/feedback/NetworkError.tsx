@@ -1,4 +1,5 @@
-import {Button} from 'antd';
+import {AsyncAntButton as Button} from '../buttons/AsyncButton';
+
 import {t} from '../../i18n';
 import './network-error.css';
 interface Props {onRetry:()=>void;disabled?:boolean}

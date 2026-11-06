@@ -1,3 +1,4 @@
+import {AsyncButton} from '../components/buttons/AsyncButton';
 import {LoadingState} from '../components/feedback/LoadingState';
 import {NetworkError} from '../components/feedback/NetworkError';
 import { t } from '../i18n';
@@ -41,7 +42,7 @@ export function BetRecordsPage({ onBack }: { onBack: () => void }) {
     {query.isPending ? <LoadingState label={t('copy.loadingBetHistory')}/> : !summary ? <NetworkError disabled={query.isFetching} onRetry={() => void query.refetch()}/> : <>
       {items.length ? <BetRecordList items={items} /> : <div className="bet-records-feedback"><Icon name="list" size={42} /><p>{t('copy.noBetsFound')}</p></div>}
       {query.isError && <p role="alert" className="bet-records-feedback">{t('copy.loadingFailedExistingRecordsArePreservedPlease')}</p>}
-      {query.hasNextPage && <button className="bet-records-more" type="button" disabled={query.isFetching} onClick={() => void query.fetchNextPage()}>{query.isFetchingNextPage ? t('copy.loading') : query.isError ? t('copy.retryLoading') : t('copy.loadMore')}</button>}
+      {query.hasNextPage && <AsyncButton loading={query.isFetchingNextPage} className="bet-records-more" type="button" disabled={query.isFetching} onClick={() => void query.fetchNextPage()}>{query.isError ? t('copy.retryLoading') : t('copy.loadMore')}</AsyncButton>}
     </>}
     <p className="bet-records-note">{t('copy.freeGamesAndCascadePayoutsBelongTo')}</p>
   </RecordsLayout>;

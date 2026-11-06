@@ -1,3 +1,5 @@
+import {ClaimBadge} from '../rewards/ClaimBadge';
+import {AsyncButton} from '../../components/buttons/AsyncButton';
 import { useRef } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { LoadingState } from '../../components/feedback/LoadingState';
@@ -17,7 +19,7 @@ export function AgentCommission() {
   const key = ['agent', uid, 'center', agentDefaults] as const;
   const info = useQuery({ queryKey: key, queryFn: ({ signal }) => fetchAgent('center', agentDefaults, signal), enabled: !!uid, retry: false, refetchOnWindowFocus: false, refetchOnReconnect: false });
   const rates = useQuery({ queryKey: ['agent', uid, 'rates', agentDefaults], queryFn: ({ signal }) => fetchAgent('rates', agentDefaults, signal), enabled: !!uid, retry: false, refetchOnWindowFocus: false, refetchOnReconnect: false });
-  const claim = useMutation({
+  const claim = useMutation({meta:{claimUid:uid,claimIndicator:'agent'},
     mutationFn: () => { requestId.current ??= crypto.randomUUID(); return claimAgent(requestId.current); }, retry: false,
     onError: () => { void toast.error(t('agent.claimFailed')); },
     onSuccess: () => {
@@ -36,7 +38,7 @@ export function AgentCommission() {
     {failed && <NetworkError disabled={info.isFetching || rates.isFetching} onRetry={() => { if (info.isError) void info.refetch(); if (rates.isError) void rates.refetch(); }} />}
     {!info.data || !rates.data ? !failed && <LoadingState compact label={t('copy.loading')} /> : <>
       <div className="rebate-claim-row"><span>{t('agent.claimable')} <strong>{betMoney(info.data.summary.claimable)}</strong></span>
-        <button type="button" disabled={claim.isPending || info.isFetching || info.isError || info.data.summary.claimable <= 0} aria-busy={claim.isPending} onClick={() => claim.mutate()}>{claim.isPending ? t('copy.claiming') : t('agent.claim')}</button>
+        <AsyncButton loading={claim.isPending} type="button" disabled={claim.isPending || info.isFetching || info.isError || info.data.summary.claimable <= 0} aria-busy={claim.isPending} onClick={() => claim.mutate()}>{t('agent.claim')}<ClaimBadge active={info.data.summary.claimable>0}/></AsyncButton>
       </div>
       <div className="rebate-platforms"><div><span>AG</span><strong>{maxRate === null ? '—' : `${maxRate.toLocaleString(getLocale(), { maximumFractionDigits: 4 })}%`}</strong></div></div>
     </>}

@@ -32,3 +32,5 @@ import './styles/agent.css';
 import './styles/offers.css';
 
 import './styles/design-viewport.css';
+
+import './styles/theme.css';

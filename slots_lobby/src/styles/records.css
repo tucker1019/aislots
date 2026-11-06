@@ -1,9 +1,9 @@
 /* Shared contract: #root scrolls; title and filters remain in one sticky block. */
 #root:has(.records-route) { padding-bottom: var(--lobby-safe-bottom, 0px); }
 .records-route { padding: 0; }
-.records-page { min-height: calc(var(--lobby-height, 100dvh) - var(--lobby-safe-top, 0px)); background: #fff; }
-.records-page-top { position: sticky; top: 0; z-index: 35; background: #fff; }
-.records-page-header { height: 50px; display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; align-items: center; border-bottom: 1px solid var(--line); background: #fff; }
+.records-page { min-height: calc(var(--lobby-height, 100dvh) - var(--lobby-safe-top, 0px)); background: var(--theme-surface,#fff); }
+.records-page-top { position: sticky; top: 0; z-index: 35; background: var(--theme-surface,#fff); }
+.records-page-header { height: 50px; display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; align-items: center; border-bottom: 1px solid var(--line); background: var(--theme-surface,#fff); }
 .records-page-header h1 { margin: 0; font-size: 16px; text-align: center; font-weight: 650; }
 .records-page-header > button { border: 0; background: transparent; color: var(--blue); height: 44px; display: grid; place-items: center; }
 .records-page-header > button svg { transform: rotate(180deg); }

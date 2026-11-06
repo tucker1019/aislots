@@ -1,3 +1,5 @@
+import {beforeEach as authenticatedFixture} from 'vitest';
+import {useSessionStore} from '../stores/session';
 import type * as VipModule from './vip-details';
 import type * as AccountModule from './account';
 import { beforeEach, expect, it, vi } from 'vitest';
@@ -72,3 +74,5 @@ it('跨級獎勵逐級領取，領取一級不影響另一級',async()=>{
  fireEvent.click(screen.getByRole('button',{name:'VIP2'}));expect(screen.getByRole('button',{name:'晉級獎勵領取'})).toBeEnabled();
  fireEvent.click(screen.getByRole('button',{name:'晉級獎勵領取'}));await waitFor(()=>expect(claimVipReward).toHaveBeenCalledWith('upgrade','2026-11-03',expect.any(String),'level-2'));
 });
+
+authenticatedFixture(()=>useSessionStore.setState({session:{uid:7,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'}}));

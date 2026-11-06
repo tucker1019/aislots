@@ -1,3 +1,4 @@
+import {AsyncButton} from '../components/buttons/AsyncButton';
 import {reportLabel} from '../i18n/server-labels';
 import {LoadingState} from '../components/feedback/LoadingState';
 import {NetworkError} from '../components/feedback/NetworkError';
@@ -18,7 +19,7 @@ export function PersonalReportPage({onBack}:{onBack:()=>void}){
  <p className="report-note">{t('copy.depositsCountPrincipalOnlyDepositsAndWithdrawals')}</p>
  <p className="report-note">{t('copy.statisticsTimezone')}{query.data.timezone} {t('copy.unitYuanUnavailableFeaturesShowSupportedMetrics')}</p>
  <p className="report-updating" role="status">{query.isFetching?t('copy.updatingReport'):t('copy.basedOnActualActivityAndCreditTimes')}</p>
- {query.isError&&<p role="alert" className="report-note">{t('copy.updateFailedExistingDataIsPreserved')}<button type="button" onClick={()=>void query.refetch()}>{t('copy.retry')}</button></p>}
+ {query.isError&&<p role="alert" className="report-note">{t('copy.updateFailedExistingDataIsPreserved')}<AsyncButton loading={query.isFetching} type="button" onClick={()=>void query.refetch()}>{t('copy.retry')}</AsyncButton></p>}
  </>}
  </RecordsLayout>;
 }

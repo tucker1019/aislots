@@ -10,7 +10,7 @@ import {createRecharge,fetchRechargeOrder} from '../../services/recharge';
 vi.mock('../../services/recharge',()=>({createRecharge:vi.fn(),fetchRechargeOrder:vi.fn(),paymentLink:()=>undefined}));
 const tier={id:'a',amount:1000,bonus:0,fee:20,creditAmount:980};
 const pending={...tier,orderId:'order-1',paymentUrl:'',createdAt:'2026-11-03T00:00:00Z',status:'pending' as const};
-beforeEach(()=>{sessionStorage.clear();useSessionStore.getState().setSession({uid:7,sid:'s'.repeat(52),expiresAt:'2099-01-01T00:00:00Z'});vi.mocked(createRecharge).mockReset();vi.mocked(fetchRechargeOrder).mockReset();});
+beforeEach(()=>{vi.spyOn(window,'open').mockReturnValue({opener:null,close:vi.fn(),location:{replace:vi.fn()}} as unknown as Window);sessionStorage.clear();useSessionStore.getState().setSession({uid:7,sid:'s'.repeat(52),expiresAt:'2099-01-01T00:00:00Z'});vi.mocked(createRecharge).mockReset();vi.mocked(fetchRechargeOrder).mockReset();});
 it('離開頁面仍跟蹤，到賬刷新餘額，未展示記錄只過期',async()=>{
  const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});const notice=vi.fn();let balance=100;const profile=vi.fn(async()=>balance);client.setQueryData(['cash-records',7],{items:[]});
  vi.mocked(createRecharge).mockResolvedValue({orderId:'order-1',paymentUrl:'',status:'pending'});vi.mocked(fetchRechargeOrder).mockResolvedValue(pending);

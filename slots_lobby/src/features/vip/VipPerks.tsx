@@ -1,3 +1,5 @@
+import {ClaimBadge} from '../rewards/ClaimBadge';
+import {AsyncButton} from '../../components/buttons/AsyncButton';
 import { t } from '../../i18n';
 import { useClaimToast } from '../rewards/useClaimToast';
 import { useRef, useState } from 'react';
@@ -18,7 +20,7 @@ export function VipPerks({ info, tier }: { info: VipDetails; tier: VipLevel }) {
     client.invalidateQueries({queryKey:['lobby','benefits','vip',uid]}),
     client.invalidateQueries({queryKey:['lobby','current-profile']}),
   ]); };
-  const claim = useMutation({mutationFn:({kind,id,rewardId}:{kind:VipRewardKind;id:string;rewardId:string})=>claimVipReward(kind,info.activityDate,id,rewardId), retry:false,
+  const claim = useMutation({meta:{claimUid:uid,claimIndicator:'vip'},mutationFn:({kind,id,rewardId}:{kind:VipRewardKind;id:string;rewardId:string})=>claimVipReward(kind,info.activityDate,id,rewardId), retry:false,
     onSuccess:async (amount,variables)=>{
       notify();
       client.setQueryData<VipDetails>(['lobby','vip-details',uid],old=>old ? variables.kind==='upgrade'
@@ -37,7 +39,7 @@ export function VipPerks({ info, tier }: { info: VipDetails; tier: VipLevel }) {
   return <>{holder}<div className="vip-perks">{rows.map(row=>{
     const received=row.reward?.status==='claimed';
     const canClaim=row.reward?.status==='claimable' && row.reward.amount>0;
-    return <article key={row.kind}><Icon name={row.icon} size={27} /><strong>{betMoney(row.reward && (canClaim||received)?row.reward.amount:row.amount)}</strong><span>{row.title}</span><button type="button" className={`vip-claim${received?' vip-claim-received':''}`} disabled={!canClaim||claim.isPending} aria-label={`${row.title}${received?t('copy.claimed076'):canClaim?t('copy.claim'):t('copy.levelBenefits')}`} onClick={()=>{
+    return <article key={row.kind}><Icon name={row.icon} size={27} /><strong>{betMoney(row.reward && (canClaim||received)?row.reward.amount:row.amount)}</strong><span>{row.title}</span><AsyncButton loading={claim.isPending&&claim.variables?.kind===row.kind} type="button" className={`vip-claim${received?' vip-claim-received':''}`} disabled={!canClaim||claim.isPending} aria-label={`${row.title}${received?t('copy.claimed076'):canClaim?t('copy.claim'):t('copy.levelBenefits')}`} onClick={()=>{
       if (!canClaim||busy.current) return;
       busy.current=true;setNotice('');
       // Reuse the request after a lost response; do not issue a new claim identity on retry.
@@ -45,6 +47,6 @@ export function VipPerks({ info, tier }: { info: VipDetails; tier: VipLevel }) {
       const key=`${uid}:${row.kind}:${info.activityDate}:${rewards}`;
       let id=requests.current.get(key);if (!id) { id=crypto.randomUUID();requests.current.set(key,id); }
       claim.mutate({kind:row.kind,id,rewardId:row.reward!.rewardId});
-    }}>{claim.isPending&&claim.variables?.kind===row.kind?t('copy.claiming'):received?t('copy.claimed076'):canClaim?t('copy.claim'):t('copy.levelBenefits')}</button></article>;
+    }}>{received?t('copy.claimed076'):canClaim?t('copy.claim'):t('copy.levelBenefits')}<ClaimBadge active={canClaim&&!received}/></AsyncButton></article>;
   })}</div><p className="benefits-note">{t('vip.claimScope')}</p>{notice&&<p className="vip-claim-notice" role="status">{notice}</p>}</>;
 }

@@ -1,3 +1,5 @@
+import {beforeEach as authenticatedFixture} from 'vitest';
+import {useSessionStore} from '../../stores/session';
 import {beforeEach,expect,it,vi} from 'vitest';
 import {render,screen,fireEvent,waitFor,act} from '@testing-library/react';
 import {QueryClient,QueryClientProvider,focusManager} from '@tanstack/react-query';
@@ -28,3 +30,5 @@ it('進入賺錢頁邀請區和複製鏈接不產生重復消息容器key',async
 });
 
 it('未達標寶箱顯示獎勵和有效邀請進度，不發起領取',async()=>{setup();fireEvent.click(await screen.findByRole('button',{name:'第 3 個寶箱，未達標'}));expect(await screen.findByRole('dialog',{name:'邀請獎勵'})).toBeInTheDocument();expect(screen.getByText('2 / 3')).toBeInTheDocument();expect(claimInviteChest).not.toHaveBeenCalled();fireEvent.click(screen.getByRole('button',{name:'知道了'}));await waitFor(()=>expect(screen.queryByRole('dialog')).not.toBeInTheDocument());});
+
+authenticatedFixture(()=>useSessionStore.setState({session:{uid:7,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'}}));

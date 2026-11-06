@@ -1,0 +1,32 @@
+import {beforeEach,expect,it,vi} from 'vitest';
+import {render,screen,fireEvent,waitFor} from '@testing-library/react';
+import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
+import {AuthModal} from './AuthModal';
+import {useAuthStore} from '../../stores/auth';
+import {useSessionStore} from '../../stores/session';
+import {authenticateAccount} from '../../services/account';
+import {navigateLobby} from '../../app/useLobbyRoute';
+import {t} from '../../i18n';
+vi.mock('../../services/account',()=>({authenticateAccount:vi.fn()}));
+beforeEach(()=>{useAuthStore.getState().close();useSessionStore.setState({session:null});vi.clearAllMocks();history.replaceState({},'','/');});
+it('未登录允许优惠，其他路由保留原页并请求登录',()=>{navigateLobby('offers');expect(location.pathname).toBe('/offers');navigateLobby('game');expect(location.pathname).toBe('/offers');expect(useAuthStore.getState().open).toBe(true);expect(useSessionStore.getState().session).toBeNull();});
+it('登录成功后继续原操作，提交只包含账号密码',async()=>{const resume=vi.fn();vi.mocked(authenticateAccount).mockResolvedValue({uid:9,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'});useAuthStore.getState().show('login',resume);render(<QueryClientProvider client={new QueryClient()}><AuthModal/></QueryClientProvider>);fireEvent.change(screen.getByLabelText(t('auth.account')),{target:{value:'alice'}});fireEvent.change(screen.getByLabelText(t('auth.password')),{target:{value:'password123'}});fireEvent.submit(document.querySelector('form')!);await waitFor(()=>expect(resume).toHaveBeenCalledTimes(1));expect(authenticateAccount).toHaveBeenCalledWith('login','alice','password123');expect(useAuthStore.getState().open).toBe(false);});
+it('身份建立后不会清除新挂载的资料查询',async()=>{
+ const identity={uid:9,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'};
+ const client=new QueryClient({defaultOptions:{queries:{retry:false}}});
+ vi.mocked(authenticateAccount).mockImplementation(async()=>{useSessionStore.getState().setSession(identity);client.setQueryData(['lobby','current-profile',9],{uid:9,coins:188,avatarId:3});return identity;});
+ useAuthStore.getState().show('register');
+ render(<QueryClientProvider client={client}><AuthModal/></QueryClientProvider>);
+ fireEvent.change(screen.getByLabelText(t('auth.account')),{target:{value:'alice'}});
+ fireEvent.change(screen.getByLabelText(t('auth.password'),{exact:true}),{target:{value:'password123'}});
+ fireEvent.change(screen.getByLabelText(t('auth.confirm')),{target:{value:'password123'}});
+ fireEvent.submit(document.querySelector('form')!);
+ await waitFor(()=>expect(useAuthStore.getState().open).toBe(false));
+ expect(client.getQueryData(['lobby','current-profile',9])).toEqual({uid:9,coins:188,avatarId:3});
+});
+it('登录失败使用错误Toast，不在表单内插入提示块',async()=>{
+ vi.mocked(authenticateAccount).mockRejectedValue(new Error('test-auth-error'));
+ useAuthStore.getState().show('login');render(<QueryClientProvider client={new QueryClient()}><AuthModal/></QueryClientProvider>);
+ fireEvent.change(screen.getByLabelText(t('auth.account')),{target:{value:'alice'}});fireEvent.change(screen.getByLabelText(t('auth.password')),{target:{value:'password123'}});fireEvent.submit(document.querySelector('form')!);
+ expect(await screen.findByText('test-auth-error')).toBeInTheDocument();expect(document.querySelector('.ant-message-error')).not.toBeNull();expect(document.querySelector('form .ant-alert')).toBeNull();expect(useAuthStore.getState().open).toBe(true);
+});

@@ -1,32 +1,32 @@
 .home-content:has(.deposit-page) { padding: 0; }
 .deposit-page { padding: 0; }
-.deposit-test-notice { background: #fff7e8; color: #946222; font-size: 11px; line-height: 1.6; padding: 10px 12px; border-radius: 8px; margin: 16px 0; }
+.deposit-test-notice { background: var(--theme-gold-tint,#fff7e8); color: var(--theme-gold-text,#946222); font-size: 11px; line-height: 1.6; padding: 10px 12px; border-radius: 8px; margin: 16px 0; }
 .deposit-card { border: 1px solid var(--line); border-radius: 12px; padding: 15px 12px; margin-bottom: 12px; }
 .deposit-card h2 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
 .deposit-card p { font-size: 12px; line-height: 1.6; color: var(--muted); }
 .deposit-tiers { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; }
-.deposit-tiers button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: 1px solid var(--line); background: white; position: relative; min-height: 74px; padding: 19px 3px 7px; border-radius: 9px; color: var(--ink); }
+.deposit-tiers button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: 1px solid var(--line); background: var(--theme-surface,white); position: relative; min-height: 74px; padding: 19px 3px 7px; border-radius: 9px; color: var(--ink); }
 .deposit-tiers strong { font-size: 13px; }
 .deposit-tiers span { font-size: 9px; color: var(--muted); }
-.deposit-tiers button[aria-pressed="true"] { border-color: var(--blue); background: #edf4ff; color: var(--blue); }
+.deposit-tiers button[aria-pressed="true"] { border-color: var(--blue); background: var(--theme-blue-tint,#edf4ff); color: var(--blue); }
 .deposit-tiers button:disabled { opacity: .65; }
 .deposit-card dl { margin: 0; }
 .deposit-card dl > div { display: flex; justify-content: space-between; gap: 12px; margin: 10px 0; font-size: 12px; }
 .deposit-card dt { flex-shrink: 0; color: var(--muted); }
 .deposit-card dd { margin: 0; text-align: right; overflow-wrap: anywhere; }
 .deposit-summary dl > div:last-child { font-weight: 650; color: var(--blue); border-top: 1px solid var(--line); padding-top: 12px; font-size: 16px; }
-.deposit-submit,.deposit-payment { display: block; width: 100%; padding: 13px; border: 0; border-radius: 10px; background: var(--blue); color: white; text-align: center; font-size: 14px; margin: 12px 0; }
+.deposit-submit,.deposit-payment { display: block; width: 100%; padding: 13px; border: 0; border-radius: 10px; background: var(--theme-action,var(--blue)); color: white; text-align: center; font-size: 14px; margin: 12px 0; }
 .deposit-submit:disabled { opacity: .5; }
-.deposit-error { font-size: 12px; color: #b42318; margin: 10px 0; }
+.deposit-error { font-size: 12px; color: var(--theme-red-text,#b42318); margin: 10px 0; }
 .order-status { display: flex; align-items: center; gap: 9px; color: var(--blue); }
 .order-status h2 { margin: 0; }
 .order-status > span { font-size: 26px; }
-.status-success { color: #258255; }
-.status-failed { color: #b42318; }
+.status-success { color: var(--theme-green-text,#258255); }
+.status-failed { color: var(--theme-red-text,#b42318); }
 .deposit-order > p { margin: 9px 0; }
-.deposit-card > button { min-height: 40px; border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--blue); padding: 8px 14px; }
+.deposit-card > button { min-height: 40px; border: 1px solid var(--line); border-radius: 8px; background: var(--theme-surface,white); color: var(--blue); padding: 8px 14px; }
 
-.deposit-tiers .deposit-tier-symbol { display: flex; align-items: center; justify-content: center; width: 23px; height: 23px; border-radius: 50%; background: #fff6dc; color: #ac8031; margin-bottom: 0; }
+.deposit-tiers .deposit-tier-symbol { display: flex; align-items: center; justify-content: center; width: 23px; height: 23px; border-radius: 50%; background: var(--theme-gold-tint,#fff6dc); color: var(--theme-gold-text,#ac8031); margin-bottom: 0; }
 .deposit-tiers .deposit-tier-badge { position: absolute; top: -1px; color: #fff; padding: 3px 5px; font-size: 9px; font-weight: 600; line-height: 1.2; white-space: nowrap; }
 .deposit-tiers .tier-bonus { right: -1px; background: #dc3542; border-radius: 0 9px 0 7px; }
 .deposit-tiers .tier-fee { left: -1px; background: #e88928; border-radius: 9px 0 7px 0; }

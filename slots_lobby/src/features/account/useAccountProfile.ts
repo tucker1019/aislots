@@ -1,9 +1,12 @@
+import {useSessionStore} from '../../stores/session';
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { loadAccountProfile } from '../../services/account';
 export function useAccountProfile(refreshOnMount = false) {
+  const session=useSessionStore(state=>state.session);
   const query = useQuery({
-    queryKey: ['lobby', 'current-profile'], queryFn: ({ signal }) => loadAccountProfile(signal),
+    enabled:!!session,
+    queryKey: ['lobby', 'current-profile',session?.uid], queryFn: ({ signal }) => loadAccountProfile(signal),
     refetchOnMount: refreshOnMount ? 'always' : true, retry: false, staleTime: 15000, refetchOnWindowFocus: true,
   });
   const { refetch } = query;

@@ -1,0 +1,33 @@
+:root { color-scheme:light; }
+:root[data-theme="dark"] {
+ color-scheme:dark;
+ color:#e6edf6;
+ background:#0b1019;
+ --ink:#e6edf6;
+ --muted:#a0aec0;
+ --blue:#8abeff;
+ --paper:#202d3d;
+ --line:#35465c;
+ --theme-surface:#1a2533;
+ --theme-soft:#202d3d;
+ --theme-disabled:#2a394c;
+ --theme-border:#35465c;
+ --theme-border-blue:#365779;
+ --theme-blue-tint:#1b3250;
+ --theme-violet-tint:#322747;
+ --theme-green-tint:#173b33;
+ --theme-gold-tint:#3d3220;
+ --theme-red-tint:#45292f;
+ --theme-ink:#e6edf6;
+ --theme-muted:#a0aec0;
+ --theme-blue-text:#8abeff;
+ --theme-violet-text:#c4a8ff;
+ --theme-green-text:#69d7af;
+ --theme-gold-text:#efbc71;
+ --theme-red-text:#ff9b9b;
+ --theme-action:#1769c4;
+ --theme-glass:rgb(17 25 35 / 94%);
+}
+:root[data-theme="dark"] body { background:#0b1019; }
+:root[data-theme="dark"] #root { background:#111923; }
+:root[data-theme="dark"] ::selection { background:#2c5c91; color:#fff; }

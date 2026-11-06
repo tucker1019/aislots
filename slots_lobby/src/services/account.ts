@@ -1,3 +1,4 @@
+import {useAuthStore} from '../stores/auth';
 import { pendingInviteCode, clearInviteCode } from './invite-binding';
 import { t, getLocale } from '../i18n';
 import { isRecord, isSession } from '../features/account/types';
@@ -25,10 +26,10 @@ export async function request(path: string, init: RequestInit = {}, failureMessa
       cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer',
       headers: { Accept: 'application/json', 'Accept-Language':getLocale(), ...(init.body ? { 'Content-Type': 'application/json' } : {}) },
     });
-    if (response.status === 401) throw new Error(t('copy.sessionExpiredPleaseSignInAgain'));
     const body: unknown = await response.json().catch(() => { throw new Error(t('copy.invalidLobbyResponsePleaseRetry')); });
-    if (isRecord(body) && body.code === 10010002)
-      throw new Error(t('copy.sessionExpiredPleaseSignInAgain'));
+    if (response.status === 401 && ((isRecord(body)&&body.code===10010003)||/\/uniquecode\/(login|register)$/.test(path))) throw new Error(failureMessage);
+    if (response.status === 401) { useSessionStore.getState().clearSession(); useAuthStore.getState().show(); throw new Error(t('copy.sessionExpiredPleaseSignInAgain')); }
+    if (isRecord(body) && body.code === 10010002) { useSessionStore.getState().clearSession(); useAuthStore.getState().show(); throw new Error(t('copy.sessionExpiredPleaseSignInAgain')); }
     if (!response.ok || !isRecord(body) || body.code !== 'OK')
       throw new Error(failureMessage);
     return body.data;
@@ -47,20 +48,19 @@ let confirmed: Session | null = null;
 let pending: Promise<Session> | undefined;
 export function ensureSession(): Promise<Session> {
   const stored = useSessionStore.getState().session;
-  const inviteCode=pendingInviteCode(Boolean(stored));
+  if (!stored) { useAuthStore.getState().show(); return Promise.reject(new Error(t('auth.required'))); }
   if (stored && confirmed?.sid === stored.sid && confirmed.uid === stored.uid && Date.parse(confirmed.expiresAt) > Date.now())
     return Promise.resolve(confirmed);
-  // 登录不绑定组件的取消信号，避免 StrictMode 重挂载重复创建游客。
+  // 续期不绑定组件的取消信号，StrictMode 重挂载时共用同一次续期。
   if (pending) return pending;
   pending = (async () => {
-    const data = await request('/api/user/account/' + (stored ? 'session/renewal' : 'visitor/login'), {
-      method: 'POST', body: JSON.stringify(stored ? { uid: stored.uid, sid: stored.sid } : inviteCode ? {inviteCode} : {}),
+    const data = await request('/api/user/account/session/renewal', {
+      method: 'POST', body: JSON.stringify({uid:stored.uid,sid:stored.sid}),
     });
     if (!isSession(data) || (stored && data.uid !== stored.uid)) throw new Error(t('copy.invalidSignInResponsePleaseRetry'));
     const current = useSessionStore.getState().session;
     if (current?.sid !== stored?.sid || current?.uid !== stored?.uid) throw new Error(t('copy.signInStateChangedPleaseRetry'));
     useSessionStore.getState().setSession(data);
-    clearInviteCode();
     confirmed = data;
     return data;
   })().finally(() => { pending = undefined; });
@@ -93,4 +93,11 @@ export async function bindCustomAccount(account:string,password:string){
  const data=await request('/api/user/account/uniquecode/bind',{method:'POST',body:JSON.stringify({uid:identity.uid,sid:identity.sid,account,password})});
  requireCurrent(identity);if(!isSession(data)||data.uid!==identity.uid)throw new Error(t('copy.invalidUserProfilePleaseRetry'));
  confirmed=data;useSessionStore.getState().setSession(data);return data;
+}
+
+export async function authenticateAccount(mode:'login'|'register',account:string,password:string){
+ const inviteCode=mode==='register'?pendingInviteCode(false):undefined;
+ const data=await request('/api/user/account/uniquecode/'+mode,{method:'POST',body:JSON.stringify({account,password,...(inviteCode?{inviteCode}:{})})},t('auth.failed'));
+ if(!isSession(data))throw new Error(t('copy.invalidSignInResponsePleaseRetry'));
+ confirmed=data;useSessionStore.getState().setSession(data);clearInviteCode();return data;
 }

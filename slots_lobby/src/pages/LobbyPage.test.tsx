@@ -1,3 +1,5 @@
+import {beforeEach as authenticatedFixture} from 'vitest';
+import {useSessionStore} from '../stores/session';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -53,8 +55,10 @@ it('我的顯示真實資料和功能分組，可返回首頁', async () => {
   expect(screen.getByText('ID：7')).toBeInTheDocument();
   expect(screen.getByRole('button', { name: '每日簽到' })).toBeInTheDocument();
   await user.click(screen.getByRole('button', { name: '安全中心' }));
-  expect(await screen.findByText('敬請期待')).toBeInTheDocument();
-  await user.click(navigation.getByRole('button', { name: '首頁' }));
+  expect(await screen.findByRole('heading',{name:'賬戶安全'})).toBeInTheDocument();
+  expect(window.location.pathname).toBe('/security');
+  await user.click(screen.getByRole('button',{name:'返回我的'}));
+  await user.click(screen.getByRole('button', { name: '首頁' }));
   expect(screen.getByRole('navigation', { name: '遊戲廠商' })).toBeInTheDocument();
 });
 
@@ -100,3 +104,5 @@ it('賺錢入口有獨立路由並選中底欄',async()=>{const user=setup();awa
 it('我的設置進入個人資料，返回保留我的頁入口',async()=>{
  const user=setup();await user.click(screen.getByRole('button',{name:'我的'}));await user.click(await screen.findByRole('button',{name:'設置'}));expect(await screen.findByRole('heading',{name:'個人資料'})).toBeInTheDocument();expect(window.location.pathname).toBe('/profile');expect(screen.queryByRole('navigation',{name:'底部導航'})).not.toBeInTheDocument();await user.click(screen.getByRole('button',{name:'返回我的'}));expect(window.location.pathname).toBe('/my');
 });
+
+authenticatedFixture(()=>useSessionStore.setState({session:{uid:7,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'}}));

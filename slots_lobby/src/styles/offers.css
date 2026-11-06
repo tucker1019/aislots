@@ -1,6 +1,6 @@
 .offers-layout { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 10px; align-items: start; }
 .offers-categories { position: sticky; top: 62px; display: grid; gap: 10px; }
-.offers-categories button { border: 1px solid var(--line); border-radius: 8px; padding: 10px 4px; min-height: 40px; background: #f2f5fb; color: var(--muted); font: inherit; font-size: 12px; line-height: 1.35; overflow-wrap: anywhere; cursor: pointer; }
-.offers-categories button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: white; font-weight: 650; }
+.offers-categories button { border: 1px solid var(--line); border-radius: 8px; padding: 10px 4px; min-height: 40px; background: var(--theme-blue-tint,#f2f5fb); color: var(--muted); font: inherit; font-size: 12px; line-height: 1.35; overflow-wrap: anywhere; cursor: pointer; }
+.offers-categories button[aria-pressed="true"] { background: var(--theme-action,var(--blue)); border-color: var(--blue); color: white; font-weight: 650; }
 .offers-posters { display: grid; gap: 12px; min-width: 0; }
-.offers-posters img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 1; object-fit: contain; border-radius: 10px; background: #edf6fa; }
+.offers-posters img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 1; object-fit: contain; border-radius: 10px; background: var(--theme-blue-tint,#edf6fa); }

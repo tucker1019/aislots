@@ -1,9 +1,10 @@
+import {beforeEach as authenticatedFixture} from 'vitest';
+import {useSessionStore} from '../../stores/session';
 import { expect, it, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AgentCommission } from './AgentCommission';
 import { fetchAgent, claimAgent } from '../../services/agent';
-vi.mock('../../stores/session', () => ({ useSessionStore: () => 7 }));
 vi.mock('../../services/agent', () => ({ agentDefaults: { period: 'today' }, fetchAgent: vi.fn(), claimAgent: vi.fn() }));
 it('顯示真實待領傭金及AG最高比例，領取失敗重試沿用同一請求號，規則進入代理中心', async () => {
   vi.mocked(fetchAgent).mockResolvedValue({ summary: { claimable: 12300 }, items: [{ provider: 'AG', perTenThousand: 300 }, { provider: 'AG', perTenThousand: 200 }, { provider: 'PG', perTenThousand: 900 }] } as Awaited<ReturnType<typeof fetchAgent>>);
@@ -24,3 +25,5 @@ it('顯示真實待領傭金及AG最高比例，領取失敗重試沿用同一�
   expect(window.location.pathname).toBe('/agent');
   client.clear();
 });
+
+authenticatedFixture(()=>useSessionStore.setState({session:{uid:7,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'}}));

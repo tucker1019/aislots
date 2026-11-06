@@ -1,7 +1,8 @@
+import {AsyncAntButton as Button} from '../../components/buttons/AsyncButton';
 import {LoadingState} from '../../components/feedback/LoadingState';
 import {useRef,useState} from 'react';
 import {useMutation,useQuery,useQueryClient} from '@tanstack/react-query';
-import {Alert,Button,Select} from 'antd';
+import {Alert,Select} from 'antd';
 import {loadWalletAccounts} from '../../services/wallet-accounts';
 import {createWithdrawal} from '../../services/withdrawal';
 import type {WithdrawalTier} from '../../services/withdrawal';

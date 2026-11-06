@@ -44,7 +44,7 @@
   position: relative;
   overflow: hidden;
   border-radius: 10px;
-  background: #edf2fa;
+  background: var(--theme-blue-tint,#edf2fa);
   margin-bottom: 10px;
 }
 
@@ -97,12 +97,12 @@
 }
 
 .provider-tab:hover {
-  background: #f5f5f7;
+  background: var(--theme-soft,#f5f5f7);
 }
 
 .provider-tab[aria-pressed="true"] {
   color: var(--blue);
-  background: #edf4ff;
+  background: var(--theme-blue-tint,#edf4ff);
 }
 
 .provider-mark {
@@ -117,7 +117,7 @@
 }
 
 .provider-hot .provider-mark { font-size: 23px; font-style: normal; }
-.provider-AG .provider-mark { color: #d66c30; }
+.provider-AG .provider-mark { color: var(--theme-gold-text,#d66c30); }
 
 .home-game-grid {
   display: grid;
@@ -185,6 +185,11 @@
 }
 
 .lobby-toast-list .ant-message-notice {
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--theme-border-blue,#cbd5e1);
   box-shadow: 0 5px 18px rgb(25 45 75 / 16%);
 }
+
+.notice-retry { display:grid;place-items:center;flex:0 0 24px;width:24px;height:24px;border:0;border-radius:6px;background:transparent;color:var(--theme-blue,#0066cc); }
+
+.notice-retry:disabled svg { animation:notice-spin .7s linear infinite; }
+@keyframes notice-spin { to { transform:rotate(360deg); } }

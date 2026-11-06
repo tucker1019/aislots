@@ -1,3 +1,5 @@
+import {beforeEach as authenticatedFixture} from 'vitest';
+import {useSessionStore} from '../stores/session';
 import {beforeEach,expect,it,vi} from 'vitest';
 import {render,screen,fireEvent,waitFor} from '@testing-library/react';
 import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
@@ -16,3 +18,5 @@ it('真實預估及平台比例，不顯示具體遊戲，領取使用活動日�
 });
 it('無金額不能領取，規則可以展開',async()=>{vi.mocked(fetchRebate).mockResolvedValue({...info,claimableTotal:0});setup();expect(await screen.findByRole('button',{name:'領取'})).toBeDisabled();fireEvent.click(screen.getByRole('button',{name:/規則查看/}));expect(window.location.pathname).toBe('/earn/rules');});
 it('錯誤顯示重試',async()=>{vi.mocked(fetchRebate).mockRejectedValue(new Error('network'));setup();expect(await screen.findByRole('button',{name:'重試'})).toBeEnabled();});
+
+authenticatedFixture(()=>useSessionStore.setState({session:{uid:7,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'}}));

@@ -1,22 +1,22 @@
 #root:has(.bet-records-page) { padding-bottom: var(--lobby-safe-bottom, 0px); }
 .bet-records-page { padding: 0 0 24px; color: var(--ink); }
-.bet-records-heading { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: center; min-height: 54px; background: rgb(255 255 255 / 95%); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+.bet-records-heading { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: center; min-height: 54px; background: var(--theme-glass,rgb(255 255 255 / 95%)); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
 .bet-records-heading h1 { margin: 0; font-size: 17px; font-weight: 650; }
 .bet-records-heading > button { position: absolute; left: 0; width: 44px; height: 44px; border: 0; background: transparent; color: var(--blue); display: grid; place-items: center; }
 .bet-records-heading > button svg { transform: rotate(180deg); }
 .bet-records-filters { position: relative; display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
 .bet-records-filters > span,.bet-records-filters > button { display: grid; place-content: center; min-height: 43px; font-size: 13px; }
 .bet-records-filters > button { display: flex; align-items: center; justify-content: center; gap: 9px; color: var(--blue); border: 0; border-left: 1px solid var(--line); background: transparent; }
-.bet-period-options { position: absolute; top: 100%; left: 0; right: 0; z-index: 4; display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; padding: 16px 12px; background: #fff; box-shadow: 0 10px 25px rgb(30 50 80 / 12%); }
-.bet-period-options button,.bet-records-more,.bet-records-feedback button { padding: 10px; border: 1px solid #c1d6f2; border-radius: 9px; background: #fff; color: var(--blue); font-size: 13px; }
-.bet-period-options button[aria-pressed=true] { background: var(--blue); color: #fff; border-color: var(--blue); }
-.bet-records-summary { display: grid; grid-template-columns: .7fr 1.2fr 1.2fr; gap: 10px; padding: 14px 12px; border-radius: 12px; background: #f3f6fa; }
+.bet-period-options { position: absolute; top: 100%; left: 0; right: 0; z-index: 4; display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; padding: 16px 12px; background: var(--theme-surface,#fff); box-shadow: 0 10px 25px rgb(30 50 80 / 12%); }
+.bet-period-options button,.bet-records-more,.bet-records-feedback button { padding: 10px; border: 1px solid var(--theme-border-blue,#c1d6f2); border-radius: 9px; background: var(--theme-surface,#fff); color: var(--blue); font-size: 13px; }
+.bet-period-options button[aria-pressed=true] { background: var(--theme-action,var(--blue)); color: #fff; border-color: var(--blue); }
+.bet-records-summary { display: grid; grid-template-columns: .7fr 1.2fr 1.2fr; gap: 10px; padding: 14px 12px; border-radius: 12px; background: var(--theme-blue-tint,#f3f6fa); }
 .bet-records-summary div { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
 .bet-records-summary span { font-size: 10px; color: var(--muted); }
 .bet-records-summary strong { font-size: 13px; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
 .bet-record-day { margin: 18px 2px 10px; color: var(--muted); font-weight: 400; font-size: 12px; }
-.bet-record-card { border: 1px solid #e6ebf2; border-radius: 12px; overflow: hidden; margin-bottom: 12px; background: #fff; }
-.bet-record-card > header { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 11px 13px; background: #edf4ff; color: #2862ab; font-size: 12px; }
+.bet-record-card { border: 1px solid var(--theme-border-blue,#e6ebf2); border-radius: 12px; overflow: hidden; margin-bottom: 12px; background: var(--theme-surface,#fff); }
+.bet-record-card > header { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 11px 13px; background: var(--theme-blue-tint,#edf4ff); color: var(--theme-blue-text,#2862ab); font-size: 12px; }
 .bet-record-card time { font-size: 11px; }
 .bet-record-body { padding: 13px; font-size: 12px; }
 .bet-record-body h3 { margin: 0 0 13px; font-size: 14px; font-weight: 650; }
@@ -24,12 +24,12 @@
 .bet-record-amounts span { color: var(--muted); }
 .bet-record-amounts b { color: var(--ink); font-weight: 500; margin-left: 4px; }
 .bet-record-body p { margin: 12px 0; }
-.bet-loss { color: #d64045; }.bet-gain { color: #16844e; }
+.bet-loss { color: var(--theme-red-text,#d64045); }.bet-gain { color: var(--theme-green-text,#16844e); }
 .bet-record-body footer { display: flex; gap: 8px; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 8px; color: var(--muted); font-size: 11px; }
 .bet-record-body footer span { overflow-wrap: anywhere; user-select: text; }
-.bet-record-body footer button { flex-shrink: 0; width: 32px; height: 32px; display: grid; place-items: center; color: var(--blue); border: 0; border-radius: 6px; background: #f3f7fc; }
+.bet-record-body footer button { flex-shrink: 0; width: 32px; height: 32px; display: grid; place-items: center; color: var(--blue); border: 0; border-radius: 6px; background: var(--theme-blue-tint,#f3f7fc); }
 .bet-records-feedback { padding: 100px 16px; text-align: center; color: var(--muted); font-size: 13px; }
-.bet-records-feedback > svg { color: #9eb9da; }
+.bet-records-feedback > svg { color: var(--theme-blue-text,#9eb9da); }
 .bet-records-more { display: block; min-width: 140px; margin: 20px auto; }
 .bet-records-more:disabled { opacity: .55; }
 .bet-records-note { font-size: 11px; color: var(--muted); line-height: 1.6; margin: 22px 4px 0; }

@@ -1,7 +1,7 @@
 :root {
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
-  color: #1d1d1f;
-  background: #fff;
+  color: var(--theme-ink,#1d1d1f);
+  background: var(--theme-surface,#fff);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -23,7 +23,7 @@ body {
   min-width: 320px;
   height: var(--lobby-height, 100dvh);
   overflow: hidden;
-  background: #e9eaee;
+  background: var(--theme-blue-tint,#e9eaee);
 }
 
 /* 同一套竖版页面：宽屏居中，窄屏铺满，页面在大厅内部滚动。 */
@@ -37,7 +37,7 @@ body {
   overflow: hidden auto;
   scrollbar-width: none;
   overscroll-behavior-y: contain;
-  background: #fff;
+  background: var(--theme-surface,#fff);
   padding-top: var(--header-height);
   padding-bottom: calc(68px + var(--lobby-safe-bottom, 0px));
 }
@@ -81,8 +81,8 @@ img {
 }
 
 ::selection {
-  background: #cce4ff;
-  color: #1d1d1f;
+  background: var(--theme-blue-tint,#cce4ff);
+  color: var(--theme-ink,#1d1d1f);
 }
 
 :focus-visible {

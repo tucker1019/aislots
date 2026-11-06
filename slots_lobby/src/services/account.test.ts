@@ -8,25 +8,26 @@ const ok = (data: unknown) => ({ ok: true, status: 200, json: async () => ({ cod
 beforeEach(() => { localStorage.clear(); useSessionStore.setState({ session: null }); });
 
 describe('大廳身份與資料', () => {
-  it('首次創建遊客並讀取真實資料，併發請求共用一次登錄', async () => {
+  it('已有身份併發讀取資料只續期一次', async () => {
+    useSessionStore.setState({session});
     const request = vi.fn().mockResolvedValueOnce(ok(session)).mockResolvedValue(ok(profile));
     vi.stubGlobal('fetch', request);
     const result = await Promise.all([loadAccountProfile(), loadAccountProfile()]);
     expect(result).toEqual([profile, profile]);
-    expect(request.mock.calls.filter(([url]) => String(url).endsWith('/visitor/login'))).toHaveLength(1);
+    expect(request.mock.calls.filter(([url]) => String(url).endsWith('/session/renewal'))).toHaveLength(1);
     expect(useSessionStore.getState().session).toEqual(session);
     const saved = localStorage.getItem('aislots-lobby-session');
     expect(saved).toContain(session.sid);
     expect(saved).not.toContain('coins');
   });
-  it('有身份先續期；會話失效保留原身份且不創建其他遊客', async () => {
+  it('有身份先續期；會話失效清除身份且不創建其他遊客', async () => {
     useSessionStore.setState({ session: { ...session, sid: 'x'.repeat(52) } });
     const request = vi.fn().mockResolvedValue({ ok: false, status: 401, json: async () => ({ code: 10010002 }) });
     vi.stubGlobal('fetch', request);
     await expect(loadAccountProfile()).rejects.toThrow(/會話/);
     expect(request).toHaveBeenCalledTimes(1);
     expect(request.mock.calls[0][0]).toBe('/api/user/account/session/renewal');
-    expect(useSessionStore.getState().session?.uid).toBe(7);
+    expect(useSessionStore.getState().session).toBeNull();
   });
   it('續期成功後資料匹配當前用戶；拒絕錯誤金額與頭像', async () => {
     useSessionStore.setState({ session: { ...session, sid: 'y'.repeat(52) } });
@@ -40,6 +41,7 @@ describe('大廳身份與資料', () => {
     }
   });
   it('網絡失敗可重新請求，不把異常顯示為0餘額', async () => {
+    useSessionStore.setState({session:{...session,sid:'n'.repeat(52)}});
     const request = vi.fn().mockRejectedValueOnce(new TypeError('failed')).mockResolvedValueOnce(ok(session)).mockResolvedValueOnce(ok(profile));
     vi.stubGlobal('fetch', request);
     await expect(loadAccountProfile()).rejects.toThrow(/連接/);

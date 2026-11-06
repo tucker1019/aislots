@@ -1,5 +1,7 @@
+import {ClaimBadge} from '../rewards/ClaimBadge';
+import {AsyncAntButton as Button} from '../../components/buttons/AsyncButton';
 import { overlayContainer } from '../../app/designViewport';
-import { Button, Input, Modal } from 'antd';
+import {Input,Modal} from 'antd';
 import { t } from '../../i18n';
 import type { InviteChest } from '../../services/invite-details';
 import { betMoney } from '../bet-records/money';
@@ -12,7 +14,7 @@ export function InviteChestModal({ chest, qualifiedCount, inviteUrl, pending, on
     onCancel={onClose} closable={!pending} maskClosable={!pending} keyboard={!pending}
     footer={<Button block type="primary" autoInsertSpace={false} loading={pending} disabled={pending}
       onClick={chest.status === 'claimable' ? onClaim : onClose}>
-      {chest.status === 'claimable' ? t('copy.claim') : t('copy.gotIt')}
+      {chest.status === 'claimable' ? t('copy.claim') : t('copy.gotIt')}<ClaimBadge active={chest.status==='claimable'&&chest.amount>0}/>
     </Button>}>
     <dl className="invite-chest-details">
       <div><dt>{t('invite.rewardAmount')}</dt><dd>{betMoney(chest.amount)}</dd></div>

@@ -1,6 +1,7 @@
+import {AsyncAntButton as Button} from '../../components/buttons/AsyncButton';
 import { overlayContainer } from '../../app/designViewport';
 import {useMutation} from '@tanstack/react-query';
-import {Alert,Button,Form,Input,Modal} from 'antd';
+import {Alert,Form,Input,Modal} from 'antd';
 import {bindCustomAccount} from '../../services/account';
 import {useProfileUpdate} from './useProfileUpdate';
 import {t} from '../../i18n';

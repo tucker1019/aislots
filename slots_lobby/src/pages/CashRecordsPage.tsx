@@ -1,3 +1,4 @@
+import {AsyncButton} from '../components/buttons/AsyncButton';
 import {LoadingState} from '../components/feedback/LoadingState';
 import {NetworkError} from '../components/feedback/NetworkError';
 import { t } from '../i18n';
@@ -51,9 +52,9 @@ export function CashRecordsPage({ onBack, onComingSoon, orderId }: { onBack: () 
     {loading ? <LoadingState label={t('copy.loadingRecords')}/>
       : failed ? <NetworkError disabled={profile.isFetching || query.isFetching} onRetry={retry}/>
       : <><RecordList items={items} onOpen={open} />
-        {query.isRefetchError && <p className="cash-records-feedback" role="alert">{t('copy.refreshFailed')}<button type="button" disabled={query.isFetching} onClick={retry}>{t('copy.retry')}</button></p>}
+        {query.isRefetchError && <p className="cash-records-feedback" role="alert">{t('copy.refreshFailed')}<AsyncButton loading={query.isFetching} type="button" disabled={query.isFetching} onClick={retry}>{t('copy.retry')}</AsyncButton></p>}
         {query.isFetchNextPageError && <p className="cash-records-feedback" role="alert">{t('copy.unableToLoadMorePleaseRetry')}</p>}
-        {query.hasNextPage ? <button type="button" className="cash-load-more" disabled={query.isFetching} onClick={() => { void query.fetchNextPage(); }}>{query.isFetchingNextPage ? t('copy.loading266') : query.isFetchNextPageError ? t('copy.retryLoadingMore') : t('copy.loadMore')}</button>
+        {query.hasNextPage ? <AsyncButton loading={query.isFetchingNextPage} type="button" className="cash-load-more" disabled={query.isFetching} onClick={() => { void query.fetchNextPage(); }}>{query.isFetchNextPageError ? t('copy.retryLoadingMore') : t('copy.loadMore')}</AsyncButton>
           : items.length > 0 && <p className="cash-records-end">{t('copy.allRecordsLoaded')}</p>}
       </>}
   </RecordsLayout>;

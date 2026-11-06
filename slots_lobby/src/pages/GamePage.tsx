@@ -1,3 +1,4 @@
+import {AsyncButton} from '../components/buttons/AsyncButton';
 import { createPortal } from 'react-dom';
 import { t } from '../i18n';
 import { useCallback,useEffect,useRef,useState } from 'react';
@@ -17,13 +18,13 @@ export function GamePage({onBack}:{onBack:()=>void}){
  useEffect(()=>{const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')setExpanded(false);};window.addEventListener('keydown',escape);return()=>window.removeEventListener('keydown',escape);},[]);
  function close(){forgetGameEntry();void client.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'all'});onBack();}
  const content=<section className={`game-detail-shell${expanded?' game-detail-expanded':''}`} role="dialog" aria-modal="true" aria-label={t('gamePreview.dialog')}>
-  <header className="game-detail-toolbar"><button type="button" onClick={close}>{t('copy.backToLobby')}</button><span>{expanded?t('copy.mahjongWays'):t('gamePreview.details')}</span><div>{expanded&&<button type="button" onClick={()=>setExpanded(false)}>{t('gamePreview.shrink')}</button>}<button type="button" disabled={preparing} onClick={()=>void reopen()}>{preparing?t('copy.connecting'):t('copy.reEnter')}</button></div></header>
+  <header className="game-detail-toolbar"><button type="button" onClick={close}>{t('copy.backToLobby')}</button><span>{expanded?t('copy.mahjongWays'):t('gamePreview.details')}</span><div>{expanded&&<button type="button" onClick={()=>setExpanded(false)}>{t('gamePreview.shrink')}</button>}<AsyncButton loading={preparing} type="button" disabled={preparing} onClick={()=>void reopen()}>{t('copy.reEnter')}</AsyncButton></div></header>
   <div className="game-detail-content">
    <div className="game-detail-identity"><img src="/assets/lobby/mahjong-cover.jpg" alt={t('gamePreview.cover')}/><div><h1>{t('copy.mahjongWays')}</h1><span className="game-provider-label">AG</span><p>{t('gamePreview.tagline')}</p></div></div>
    <GameInsights part="rtp"/>
    <div className="game-preview"><div className="game-preview-frame">
     {url&&<iframe key={url} src={url} title={t('copy.ag1MahjongWays')} allow="autoplay; fullscreen; clipboard-write" allowFullScreen referrerPolicy="no-referrer" onError={()=>{setError(t('copy.gameFailedToLoadPleaseReEnter'));}}/>}
-    {error&&<div className="game-preview-error" role="alert"><p>{error}</p><button type="button" disabled={preparing} onClick={()=>void reopen()}>{t('gamePreview.retry')}</button></div>}
+    {error&&<div className="game-preview-error" role="alert"><p>{error}</p><AsyncButton loading={preparing} type="button" disabled={preparing} onClick={()=>void reopen()}>{t('gamePreview.retry')}</AsyncButton></div>}
    </div><div className="game-preview-actions"><span>{t('gamePreview.preview')}</span><button type="button" disabled={!url||preparing} onClick={()=>setExpanded(true)}>{t('gamePreview.expand')}</button></div></div>
    <GameInsights part="ranking"/>
   </div>
