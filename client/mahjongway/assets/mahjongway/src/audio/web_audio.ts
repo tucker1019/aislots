@@ -49,13 +49,23 @@ export class WebAudioMixer {
                 .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}: ${name}`); return response.arrayBuffer(); })
                 .then(data => this.ensure()?.decodeAudioData(data));
             this.buffers.set(name, pending);
-            pending.catch(() => this.buffers.delete(name));
+            pending.catch(() => { if (this.buffers.get(name) === pending) this.buffers.delete(name); });
         }
         return this.buffers.get(name);
     }
     preload(names: string[]) {
         this.ensure();
         for (const name of names) void this.buffer(name).catch(error => this.report(name, error));
+    }
+    async load(names: string[], progress: () => void) {
+        const results = await Promise.allSettled(names.map(async name => {
+            await this.buffer(name);
+            progress();
+        }));
+        if (results.some(result => result.status === 'rejected')) throw new Error('免费音效加载失败');
+    }
+    release(names: string[]) {
+        for (const name of names) this.buffers.delete(name);
     }
     unlock = () => {
         const context = this.ensure();

@@ -10,6 +10,10 @@ const EFFECTS = ['symbolShrink', 'symbolWild', 'symbolCollapse', 'symbolScatter'
     'menu_icon_press', 'slider_effect', 'voxPayoutMultiSym01', 'voxPayoutMultiSym02',
     'infoboardTotalwin', 'infoboardTotalwinMedwinEnd', 'infoboardTotalwinBigwin', 'freespinWon',
     ...Object.values(VOICES), ...[2, 3, 4, 5, 6, 10].map(n => `voxMultiply${n}x`)];
+const FREE_AUDIO = ['bgm_bonus_loop', ...[
+    'bgmBonusIntro', 'uiStart', 'uiCollect', 'bgmTotalwinMain', 'bgmTotalwinEnd',
+    'fsMultiplyRefresh', 'freespinWon', 'voxMultiply6x', 'voxMultiply10x',
+].map(name => 'games/' + name)];
 /** 游戏事件到音频的唯一映射。符号使用本项目 ID，不套用参考项目的 ID。 */
 export class GameAudio {
     constructor(private mixer = new WebAudioMixer()) {}
@@ -22,14 +26,18 @@ export class GameAudio {
     initialize() {
         try { this.muted = localStorage.getItem('aislots-audio-muted') === 'true'; } catch {}
         this.mixer.setMuted(this.muted); this.mixer.attach();
-        this.mixer.preload(['bgm_mg', 'bgm_bonus_loop', ...EFFECTS.map(name => 'games/' + name)]);
+        this.mixer.preload(['bgm_mg', ...EFFECTS.map(name => 'games/' + name).filter(name => !FREE_AUDIO.includes(name))]);
         if (typeof window !== 'undefined') window.addEventListener('aislots-started', this.start, { once: true });
     }
+    get freeAssetCount() { return FREE_AUDIO.length; }
+    loadFree(progress: () => void) { return this.mixer.load(FREE_AUDIO, progress); }
+    releaseFree() { this.mixer.release(FREE_AUDIO); }
     private start = () => {
         this.started = true;
+        const free = this.mode === 'bgm_bonus_loop';
         this.mode = '';
         (this.mixer as any).unlock?.();
-        this.setMode(false);
+        this.setMode(free);
     };
     get isMuted() { return this.muted; }
     toggleMuted() {

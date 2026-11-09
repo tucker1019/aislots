@@ -14,13 +14,22 @@ const ROOT = 'mahjong_effects/mahjongway/res/';
 const NAMES = [
     'cell_win',
     'pop_free_tri',
-    'pop_free_again',
-    'pop_free_end',
     'big_win',
     'node_anti',
     'bw_particle_a',
     'bw_particle_b',
 ];
+const FREE_PREFABS = ['pop_free_again', 'pop_free_end', 'panel_free', 'bonus_bg_particle'];
+
+function loadPrefab(name: string) {
+    const path = name.startsWith('pop_') || NAMES.includes(name)
+        ? ROOT + 'load/prefab/games/' + name
+        : 'mahjong_effects/' + name;
+    return new Promise<Prefab>((resolve, reject) =>
+        resources.load(path, Prefab, (error, data) => error ? reject(error) : resolve(data)),
+    );
+}
+
 function reportLoadingProgress(value: number) {
     if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('aislots-loading-progress', { detail: { progress: value } }));
 }
@@ -40,21 +49,13 @@ export const symbolPaths: Record<number, string> = {
 export class EffectLibrary {
     static prefabs = new Map<string, Prefab>();
     static async load() {
-        const names = [...NAMES, 'control_spin', 'control_stop', 'control_turbo', 'control_autostop', 'panel_free', 'mult_panel', 'bonus_bg_particle'];
+        const names = [...NAMES, 'control_spin', 'control_stop', 'control_turbo', 'control_autostop', 'mult_panel'];
         let loaded = 0;
         reportLoadingProgress(44);
         await Promise.all(
             names.map(
                 async (name) => {
-                    const path =
-                        (name.startsWith('control_') || name === 'panel_free' || name === 'mult_panel' || name === 'bonus_bg_particle')
-                            ? 'mahjong_effects/' + name
-                            : ROOT + 'load/prefab/games/' + name;
-                    const asset = await new Promise<Prefab>((resolve, reject) =>
-                        resources.load(path, Prefab, (error, data) =>
-                            error ? reject(error) : resolve(data),
-                        ),
-                    );
+                    const asset = await loadPrefab(name);
                     this.prefabs.set(name, asset);
                     loaded++;
                     reportLoadingProgress(44 + Math.round(34 * loaded / names.length));
@@ -63,6 +64,22 @@ export class EffectLibrary {
         );
 
     }
+    static get freeAssetCount() { return FREE_PREFABS.length; }
+
+    static async loadFree(progress: () => void) {
+        const results = await Promise.allSettled(FREE_PREFABS.map(async name => {
+            const asset = (await loadPrefab(name)).addRef();
+            progress();
+            return { name, asset };
+        }));
+        const loaded = results.flatMap(result => result.status === 'fulfilled' ? [result.value] : []);
+        if (loaded.length !== FREE_PREFABS.length) {
+            loaded.forEach(({ asset }) => asset.decRef());
+            throw new Error('免费特效加载失败');
+        }
+        return loaded;
+    }
+
     static create(name: string, parent: Node) {
         const prefab = this.prefabs.get(name);
         if (!prefab) throw new Error('特效未加载：' + name);

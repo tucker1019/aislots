@@ -93,34 +93,15 @@ export class GameEffects extends Component {
         this.overlay.addComponent(BlockInputEvents);
         this.overlay.active = false;
         this.installControls();
-        this.bonusParticle = EffectLibrary.create('bonus_bg_particle', this.node);
-        // 对应参考 ui_reel：在盘面和静态装饰之上、弹窗之下显示。
-        this.bonusParticle.node.setSiblingIndex(this.overlay.getSiblingIndex());
         // 使用原项目独立的自动停止美术；场景已有节点时直接复用。
         if (!this.find(this.node, 'btn_autostop')) {
             const panel = this.find(this.node, 'panel1');
             if (panel) EffectLibrary.create('control_autostop', panel).node.name = 'btn_autostop';
         }
         const layout = this.find(this.node, 'layout_bottom');
-        this.bottomParticle = layout?.getChildByName('bonus_bg_particle');
         this.infoBar = layout?.getChildByName('ib_bar');
         this.winBar = layout?.getChildByName('node_win_big');
         this.resetBottomWin();
-        const normal = layout?.getChildByName('panel1'), menu = layout?.getChildByName('panel2');
-        if (layout && normal && menu) {
-            let panel = layout.getChildByName('panel_free');
-            if (!panel) {
-                panel = EffectLibrary.create('panel_free', layout).node;
-                panel.name = 'panel_free';
-                // 适配当前金额栏：给原版双行提示和 150 高度数字留出空间。
-                panel.setPosition(normal.position.x, normal.position.y + 75, normal.position.z);
-            }
-            this.freePanelView = new FreePanelView({ root: panel, normal, menu,
-                remaining: panel.getChildByName('remaining_fs'), last: panel.getChildByName('last_fs'),
-                counter: panel.getChildByPath('remaining_fs/fnt_1').getComponent(Label),
-                footer: ['info', 'lab_coin', 'lab_bet', 'lab_win'].map(name => this.find(this.node, name)).filter(Boolean),
-            });
-        }
         const board = this.find(this.node, 'roll');
         if (board) this.symbolTooltip = new SymbolTooltip(board, () => this.sound('slider_effect'));
         board?.emit('flow-changed');
@@ -148,6 +129,88 @@ export class GameEffects extends Component {
             this.controls.set(name, effect);
         }
     }
+    private freePanelNode: Node = null;
+    private freeLoad: Promise<void> = null;
+    private freeGeneration = 0;
+    private freeAssets: Awaited<ReturnType<typeof EffectLibrary.loadFree>> = [];
+    private introLoading = false;
+    private retryFreeLoad: (() => void) = null;
+
+    prepareFree(onProgress = (_percent: number) => {}) {
+        if (this.freeLoad) return this.freeLoad;
+        const generation = this.freeGeneration;
+        const total = EffectLibrary.freeAssetCount + this.audio.freeAssetCount;
+        let completed = 0;
+        const progress = () => {
+            if (generation === this.freeGeneration) onProgress(Math.floor(++completed * 100 / total));
+        };
+        this.freeLoad = Promise.allSettled([
+            EffectLibrary.loadFree(progress),
+            this.audio.loadFree(progress),
+        ]).then(([visuals, audio]) => {
+            if (generation !== this.freeGeneration || visuals.status === 'rejected' || audio.status === 'rejected') {
+                if (visuals.status === 'fulfilled') visuals.value.forEach(({ asset }) => asset.decRef());
+                if (generation !== this.freeGeneration) return;
+                this.freeLoad = null;
+                throw new Error('免费资源加载失败');
+            }
+            this.freeAssets = visuals.value;
+            for (const { name, asset } of this.freeAssets) EffectLibrary.prefabs.set(name, asset);
+            this.createFreeViews();
+        });
+        return this.freeLoad;
+    }
+
+    private createFreeViews() {
+        this.bonusParticle = EffectLibrary.create('bonus_bg_particle', this.node);
+        // 对应参考 ui_reel：在盘面和静态装饰之上、弹窗之下显示。
+        this.bonusParticle.node.setSiblingIndex(this.overlay.getSiblingIndex());
+        const layout = this.find(this.node, 'layout_bottom');
+        if (layout) {
+            this.bottomParticle = EffectLibrary.create('bonus_bg_particle', layout).node;
+            this.bottomParticle.setPosition(0, 192.981, 0);
+            this.bottomParticle.setScale(1.7, 1.7, 1);
+            this.bottomParticle.setSiblingIndex(0);
+        }
+        const normal = layout?.getChildByName('panel1'), menu = layout?.getChildByName('panel2');
+        if (layout && normal && menu) {
+            const panel = EffectLibrary.create('panel_free', layout).node;
+            panel.name = 'panel_free';
+            // 适配当前金额栏：给原版双行提示和 150 高度数字留出空间。
+            panel.setPosition(normal.position.x, normal.position.y + 75, normal.position.z);
+            this.freePanelNode = panel;
+            this.freePanelView = new FreePanelView({ root: panel, normal, menu,
+                remaining: panel.getChildByName('remaining_fs'), last: panel.getChildByName('last_fs'),
+                counter: panel.getChildByPath('remaining_fs/fnt_1').getComponent(Label),
+                footer: ['info', 'lab_coin', 'lab_bet', 'lab_win'].map(name => this.find(this.node, name)).filter(Boolean),
+            });
+        }
+    }
+
+    releaseFree() {
+        this.freeGeneration++;
+        this.freeLoad = null;
+        this.updateBonusParticle(false);
+        this.freePanelView?.update(false, 0);
+        this.freePanelView = null;
+        this.freePanelNode?.destroy();
+        this.freePanelNode = null;
+        this.bottomParticle?.destroy();
+        this.bottomParticle = null;
+        this.bonusParticle?.destroy();
+        this.bonusParticle = null;
+        for (const name of ['pop_free_again', 'pop_free_end']) {
+            this.popups.get(name)?.destroy();
+            this.popups.delete(name);
+        }
+        for (const { name, asset } of this.freeAssets) {
+            EffectLibrary.prefabs.delete(name);
+            asset.decRef();
+        }
+        this.freeAssets = [];
+        this.audio.releaseFree();
+    }
+
     refreshControls() { this.updateControls(); }
 
     private updateControls() {
@@ -449,6 +512,8 @@ export class GameEffects extends Component {
             (resolve) =>
                 (this.popupFinish = () => {
                     this.popupFinish = null;
+                    this.introLoading = false;
+                    this.retryFreeLoad = null;
                     this.audio.stopTransient();
                     this.audio.stopPopup();
                     this.popupTick = null;
@@ -461,7 +526,7 @@ export class GameEffects extends Component {
                     this.coins = [];
                     effect.hide();
                     this.overlay.active = false;
-                    this.overlay.off(Node.EventType.TOUCH_END, this.dismiss, this);
+                    this.overlay.off(Node.EventType.TOUCH_END, this.dismissOverlay, this);
                     effect.node
                         .getComponentsInChildren(Button)
                         .forEach((button) =>
@@ -497,7 +562,7 @@ export class GameEffects extends Component {
         effect.node
             .getComponentsInChildren(Button)
             .forEach((button) => button.node.on(Button.EventType.CLICK, this.dismiss, this));
-        this.overlay.on(Node.EventType.TOUCH_END, this.dismiss, this);
+        this.overlay.on(Node.EventType.TOUCH_END, this.dismissOverlay, this);
         setup(effect);
         return result;
     }
@@ -508,8 +573,16 @@ export class GameEffects extends Component {
         this.stopTransientAudio();
     }
 
+    private dismissOverlay() {
+        if (this.popupName !== 'pop_free_tri') this.dismiss();
+    }
+
     dismiss() {
         if (!this.popupFinish) return false;
+        if (this.introLoading) {
+            this.retryFreeLoad?.();
+            return true;
+        }
         if (this.popupAge < 0.5 || this.popupClosing || this.lastDismissAge === this.popupAge)
             return true;
         this.lastDismissAge = this.popupAge;
@@ -524,7 +597,7 @@ export class GameEffects extends Component {
         this.popupExit?.();
         return true;
     }
-    intro(count: number) {
+    intro(count: number, autoDismiss = false) {
         return this.popup(
             'pop_free_tri',
             (effect) => {
@@ -535,11 +608,55 @@ export class GameEffects extends Component {
                     ?.getComponent(Sprite);
                 if (subtitle) subtitle.enabled = false;
                 effect.play('pop_tri_free', 'panel');
-                this.sound('bgmBonusIntro');
-                this.sound('maJiangHuLe');
-                this.sound('fastspinSuccess');
+                const button = effect.node.getChildByPath('panel/button');
+                const spinner = effect.node.getChildByPath('panel/bonus_lading');
+                let labelNode = spinner.parent.getChildByName('bonus_lab');
+                if (!labelNode) {
+                    labelNode = new Node('bonus_lab');
+                    labelNode.layer = spinner.layer;
+                    spinner.parent.addChild(labelNode);
+                    labelNode.setPosition(spinner.position.x, spinner.position.y - 55);
+                    labelNode.addComponent(Label).fontSize = 28;
+                    labelNode.on(Node.EventType.TOUCH_END, () => this.retryFreeLoad?.());
+                }
+                const label = labelNode.getComponent(Label);
+                const finish = this.popupFinish;
+                const load = () => {
+                    this.retryFreeLoad = null;
+                    this.introLoading = true;
+                    spinner.active = labelNode.active = true;
+                    button.active = false;
+                    label.string = '0%';
+                    void this.prepareFree(percent => {
+                        if (this.popupFinish === finish) label.string = percent + '%';
+                    }).then(() => {
+                        if (this.popupFinish !== finish) return;
+                        this.introLoading = false;
+                        spinner.active = labelNode.active = false;
+                        button.active = true;
+                        this.popupAge = 0;
+                        this.lastDismissAge = -1;
+                        this.popupTimeout = autoDismiss ? 8 : Infinity;
+                        this.sound('bgmBonusIntro');
+                        this.sound('maJiangHuLe');
+                        this.sound('fastspinSuccess');
+                    }).catch(() => {
+                        if (this.popupFinish !== finish) return;
+                        spinner.active = false;
+                        label.string = '加载失败，点击重试';
+                        this.retryFreeLoad = load;
+                    });
+                };
+                this.popupTick = age => spinner.setRotationFromEuler(0, 0, -age * 360);
+                this.introLoading = true;
+                button.active = false;
+                spinner.active = labelNode.active = true;
+                label.string = '0%';
+                this.scheduleOnce(() => {
+                    if (this.popupFinish === finish) load();
+                });
             },
-            8,
+            Infinity,
         );
     }
     retrigger(count: number) {
@@ -666,6 +783,7 @@ export class GameEffects extends Component {
         this.symbolTooltip?.destroy();
         this.popupFinish?.();
         this.find(this.node, 'btn_sound')?.off(Node.EventType.TOUCH_END, this.toggleSound, this);
+        this.releaseFree();
         this.audio.destroy();
     }
 }

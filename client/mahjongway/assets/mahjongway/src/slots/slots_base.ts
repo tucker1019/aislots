@@ -403,6 +403,8 @@ export class slots_base extends Component {
                 this.freePanelShown = false;
                 this.freeSpinsLeft = 0;
                 this.effects?.refreshControls();
+                this.effects?.setAudioMode(false);
+                this.effects?.releaseFree();
                 this.current = null;
                 this.boards = initialStrips();
                 this.reels.forEach((reel, column) => reel.showBoard(this.boards[column]));
@@ -450,6 +452,7 @@ export class slots_base extends Component {
                 this.labels();
                 // 先释放免费面板缓存的可见状态，再恢复回放前的菜单。
                 this.effects?.refreshControls();
+                if (!snapshot.freePanelShown) this.effects?.releaseFree();
                 restorePanels?.();
                 this.historyPage.resume();
             }
@@ -731,7 +734,11 @@ export class slots_base extends Component {
                 (c) => this.picks[c](),
                 cascade || (restore && first) ? this.boards : undefined,
             );
-            this.effects?.setAudioMode(frame.mode === 'free');
+            if (frame.mode === 'free' && !(restore && first && frame.nextAction === 'complete')) {
+                await this.effects?.prepareFree();
+                if (!running()) return;
+            }
+            this.effects?.setAudioMode(frame.mode === 'free' && !(restore && first && frame.nextAction === 'complete'));
             if (frame.mode === 'free' && !(restore && first && frame.nextAction === 'complete')) {
                 this.freePanelShown = true;
                 if (frame.triggeredFree) {
@@ -876,13 +883,12 @@ export class slots_base extends Component {
                 if (frame.mode === 'free') {
                     await this.effects?.freeEnd(frame.totalWinAmount);
                     if (!running()) return;
-                    this.effects?.setAudioMode(false);
                 }
                 this.finish();
                 return;
             }
             if (frame.nextAction === 'start_free') {
-                if (frame.mode === 'base') await this.effects?.intro(frame.freeRemaining);
+                if (frame.mode === 'base') await this.effects?.intro(frame.freeRemaining, !!replay);
                 else if (frame.triggeredFree) {
                     await this.effects?.retrigger(frame.awardedFreeSpins ?? frame.freeRemaining);
                     await this.countAddedFreeSpins(frame.freeRemaining, running);
@@ -986,6 +992,8 @@ export class slots_base extends Component {
         this.state = 0;
         this.click_stop = false;
         this.notifyFlowChanged();
+        this.effects?.setAudioMode(false);
+        this.effects?.releaseFree();
     }
 
     /** 出错后恢复操作和静止盘面，避免无结果时无限滚动。 */
