@@ -12,7 +12,12 @@ import (
 
 // Per-player stream locks allow other players to progress when one delivery needs retry.
 func (s *Store) FlushStatistics(ctx context.Context) error {
-	if s.lobby == nil {
+	return s.flushStatistics(ctx, time.Time{})
+}
+
+func (s *Store) flushStatistics(ctx context.Context, stopAt time.Time) error {
+	budgetSpent := func() bool { return !stopAt.IsZero() && !time.Now().Before(stopAt) }
+	if s.lobby == nil || budgetSpent() {
 		return nil
 	}
 	conn, e := s.pool.Acquire(ctx)
@@ -40,6 +45,9 @@ func (s *Store) FlushStatistics(ctx context.Context) error {
 	}
 	var firstError error
 	for _, stream := range streams {
+		if budgetSpent() {
+			break
+		}
 		scope, _ := json.Marshal(stream)
 		var locked bool
 		if e = conn.QueryRow(ctx, "SELECT pg_try_advisory_lock(hashtextextended($1,20261103))", string(scope)).Scan(&locked); e != nil {
@@ -49,7 +57,7 @@ func (s *Store) FlushStatistics(ctx context.Context) error {
 			continue
 		}
 		runErr := func() error {
-			for i := 0; i < 20; i++ {
+			for i := 0; i < 20 && !budgetSpent(); i++ {
 				var id int64
 				var event lobby.Completion
 				event.GameID = stream[0]
@@ -103,8 +111,10 @@ func (s *Store) RunStatistics(ctx context.Context) {
 			if time.Now().Before(next) {
 				continue
 			}
-			run, cancel := context.WithTimeout(ctx, 15*time.Second)
-			err := s.FlushStatistics(run)
+			// Stop taking new events after 15s and let the in-flight delivery finish.
+			stopAt := time.Now().Add(15 * time.Second)
+			run, cancel := context.WithDeadline(ctx, stopAt.Add(10*time.Second))
+			err := s.flushStatistics(run, stopAt)
 			cancel()
 			if err != nil && ctx.Err() == nil {
 				slog.Warn("game statistics delivery pending; will retry", "error", err)
