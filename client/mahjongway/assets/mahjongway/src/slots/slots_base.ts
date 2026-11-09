@@ -734,7 +734,10 @@ export class slots_base extends Component {
                 (c) => this.picks[c](),
                 cascade || (restore && first) ? this.boards : undefined,
             );
-            if (frame.mode === 'free' && !(restore && first && frame.nextAction === 'complete')) {
+            // 免费首帧由 pop_free_tri 负责触发懒加载并展示进度；
+            // 后续免费帧直接复用已加载资源。恢复到进行中的免费局时，仍需确保资源已就绪。
+            if (frame.mode === 'free' && frame.nextAction !== 'start_free' &&
+                !(restore && first && frame.nextAction === 'complete')) {
                 await this.effects?.prepareFree();
                 if (!running()) return;
             }

@@ -30,7 +30,9 @@ export class GameAudio {
         if (typeof window !== 'undefined') window.addEventListener('aislots-started', this.start, { once: true });
     }
     get freeAssetCount() { return FREE_AUDIO.length; }
-    loadFree(progress: () => void) { return this.mixer.load(FREE_AUDIO, progress); }
+    loadFree(progress: () => void) {
+        return this.mixer.load(FREE_AUDIO, progress);
+    }
     releaseFree() { this.mixer.release(FREE_AUDIO); }
     private start = () => {
         this.started = true;

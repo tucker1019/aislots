@@ -142,7 +142,10 @@ export class GameEffects extends Component {
         const total = EffectLibrary.freeAssetCount + this.audio.freeAssetCount;
         let completed = 0;
         const progress = () => {
-            if (generation === this.freeGeneration) onProgress(Math.floor(++completed * 100 / total));
+            if (generation === this.freeGeneration) {
+                const percent = Math.floor(++completed * 100 / total);
+                onProgress(percent);
+            }
         };
         this.freeLoad = Promise.allSettled([
             EffectLibrary.loadFree(progress),
