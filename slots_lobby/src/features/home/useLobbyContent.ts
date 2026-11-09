@@ -9,6 +9,7 @@ function fallback():LobbyContent{
 }
 const defaultContent=fallback();
 export function useLobbyContent(){
- const query=useQuery<LobbyContent>({queryKey:['lobby','display-content'],queryFn:({signal})=>fetchLobbyContent(signal),placeholderData:defaultContent,staleTime:300000,retry:false,refetchOnWindowFocus:false});
+ // Public content can finish and populate the shared cache across StrictMode remounts.
+ const query=useQuery<LobbyContent>({queryKey:['lobby','display-content'],queryFn:()=>fetchLobbyContent(),placeholderData:defaultContent,staleTime:300000,retry:false,refetchOnWindowFocus:false});
  return{...query,data:query.data??defaultContent};
 }

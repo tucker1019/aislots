@@ -15,7 +15,7 @@
 
 /* Keep metric geometry stable while requests change; reserve scrollbars for long boards. */
 .game-detail-content { scrollbar-gutter: stable; overflow-anchor: none; }
-.game-metrics { display: grid; grid-template-columns: 1.3fr 1fr .8fr 1fr; align-items: center; min-height: 47px; }
+.game-metrics { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, .8fr) minmax(0, 1fr); align-items: center; min-height: 47px; }
 .game-metric { min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; border-left: 1px solid var(--line); }
 .game-metric:first-child { border-left: 0; }
 .game-metric > strong { font-size: 14px; font-weight: 650; line-height: 22px; white-space: nowrap; font-variant-numeric: tabular-nums; }
@@ -43,11 +43,12 @@
 
 .rtp-summary { position: relative; width: 100%; }
 .rtp-summary-value { display: flex; align-items: center; justify-content: center; gap: 3px; height: 22px; white-space: nowrap; font-size: 13px; line-height: 22px; font-variant-numeric: tabular-nums; }
-.rtp-summary-value > strong { display: inline-flex; flex: 0 0 auto; align-items: center; white-space: nowrap; font-size: 13px; line-height: 22px; }
-.rtp-summary-value button { flex: 0 0 auto; border: 0; padding: 2px; background: transparent; color: var(--theme-muted,#8a979b); cursor: pointer; font-size: 13px; }
+.rtp-headline { flex: 0 1 10ch; min-width: 0; text-align: end; overflow: hidden; text-overflow: ellipsis; }
+.rtp-direction { display: inline-block; width: 1em; text-align: center; }
+.rtp-summary-value button { flex: 0 0 20px; height: 22px; border: 0; padding: 2px; background: transparent; color: var(--theme-muted,#8a979b); cursor: pointer; font-size: 13px; }
 .rtp-up { color: var(--theme-green-text,#00ae78); }
 .rtp-down { color: var(--theme-red-text,#ef4949); }
 .rtp-equal { color: var(--theme-muted,#8c999d); }
 .rtp-popover { position: absolute; top: calc(100% + 5px); left: 0; z-index: 20; width: 150px; padding: 7px; border-radius: 8px; border: 1px solid var(--line); background: var(--theme-surface,#fff); box-shadow: 0 8px 24px rgb(20 40 70 / 16%); }
-.rtp-period { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 6px; margin: 3px 0; border-radius: 3px; background: var(--theme-blue-tint,#f0f3f8); color: var(--muted); font-size: 11px; white-space: nowrap; }
+.rtp-period { min-height: 23px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 6px; margin: 3px 0; border-radius: 3px; background: var(--theme-blue-tint,#f0f3f8); color: var(--muted); font-size: 11px; white-space: nowrap; }
 .rtp-period strong { font-size: 11px; font-variant-numeric: tabular-nums; }

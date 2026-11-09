@@ -21,12 +21,12 @@ export function VipPerks({ info, tier }: { info: VipDetails; tier: VipLevel }) {
     client.invalidateQueries({queryKey:['lobby','current-profile']}),
   ]); };
   const claim = useMutation({meta:{claimUid:uid,claimIndicator:'vip'},mutationFn:({kind,id,rewardId}:{kind:VipRewardKind;id:string;rewardId:string})=>claimVipReward(kind,info.activityDate,id,rewardId), retry:false,
-    onSuccess:async (amount,variables)=>{
+    onSuccess:async (_amount,variables)=>{
       notify();
       client.setQueryData<VipDetails>(['lobby','vip-details',uid],old=>old ? variables.kind==='upgrade'
         ? {...old,upgradeRewards:old.upgradeRewards.map(row=>row.rewardId===variables.rewardId?{...row,status:'claimed'}:row)}
         : {...old,[variables.kind]:{...old[variables.kind],status:'claimed'}} : old);
-      setNotice(t('copy.claimedValue', {p0: betMoney(amount)}));await refresh();
+      await refresh();
     },
     onError:async()=>{setNotice(t('copy.claimResultIsUnconfirmedRefreshingNowRetry'));await refresh();},
     onSettled:()=>{busy.current=false;},

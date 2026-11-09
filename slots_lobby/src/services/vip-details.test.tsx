@@ -48,7 +48,7 @@ it('真實待領獎勵可領，成功刷新為已領取，未解鎖等級不可�
  fireEvent.click(await screen.findByRole('button',{name:'晉級獎勵領取'}));
  expect(await screen.findByRole('button',{name:'晉級獎勵已領取'})).toBeDisabled();
  expect(claimVipReward).toHaveBeenCalledWith('upgrade','2026-11-03',expect.any(String),'upgrade-1');
- expect(screen.getByRole('status')).toHaveTextContent('已領取 3.00');
+ expect(screen.queryByText('已領取 3.00', {exact:true})).not.toBeInTheDocument();
  expect(await screen.findByText('領取成功',{exact:true})).toBeInTheDocument();
  fireEvent.click(screen.getByRole('button',{name:'VIP2'}));expect(screen.getByRole('button',{name:'晉級獎勵等級權益'})).toBeDisabled();
 });
