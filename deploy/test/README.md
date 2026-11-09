@@ -15,8 +15,10 @@
 先构建大厅 `slots_lobby` 及 Cocos AG1 Web Mobile，均使用相对/同源 API，不携带本机环境变量。
 
 ```sh
+(cd slots_lobby_admin && npm run build -- --base=/ops/)
 python3 deploy/test/prepare.py --origin https://YOUR_ORIGIN --output /tmp/aislots-test-release
 (cd lobby_service && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags='-s -w' -o /tmp/aislots-test-release/payload/bin/lobby ./app/apis/lobby/api)
+(cd lobby_service && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags='-s -w' -o /tmp/aislots-test-release/payload/bin/admin ./app/apis/lobby/api/admin)
 (cd slots_service && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags='-s -w' -o /tmp/aislots-test-release/payload/bin/game ./cmd/slots-server)
 ```
 
@@ -51,3 +53,9 @@ HTTP公网IP不属于浏览器安全上下文，`crypto.randomUUID`、剪贴板�
 ## 云防火墙
 
 只需网页80/443和受限SSH22，数据库及服务内部端口不公开。如果主机本地健康检查通过而公网无法访问，检查云控制台实例防火墙入站规则。
+
+## 后台测试入口
+
+同一公网IP的 `/ops/` 为大厅运营后台，`/admin/api/` 仅代理独立后台容器。构建后台时使用 `npm run build -- --base=/ops/`；打包同时编译后台Linux二进制至`payload/bin/admin`。后台不映射宿主机端口，开启Secure Cookie，并只允许`PUBLIC_ORIGIN`（默认现有HTTPS IP）。
+
+远程管理员通过独立初始化命令创建随机口令，不复制本地管理员、玩家数据或本地弱口令。私密登录资料单独保存在服务器和操作者私有目录，不写入发布包、Git或网页静态目录。域名解析可用后，再按用户确认的子域名配置独立站点。

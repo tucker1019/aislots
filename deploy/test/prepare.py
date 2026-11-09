@@ -36,6 +36,7 @@ invite = json.loads(invite_path.read_text())
 invite['baseUrl'] = origin + '/'
 invite_path.write_text(json.dumps(invite, ensure_ascii=False, indent=2) + '\n')
 shutil.copytree(repo / 'slots_lobby/dist', payload / 'www')
+shutil.copytree(repo / 'slots_lobby_admin/dist', payload / 'www/ops')
 shutil.copytree(repo / 'client/mahjongway/build/web-mobile', payload / 'www/games/ag1')
 shutil.copytree(repo / 'game_libraries/AG1', payload / 'game-libraries/AG1')
 shutil.copytree(repo / 'slots_service/testdata/deployments', payload / 'game-data/deployments')

@@ -59,6 +59,32 @@ services:
       timeout: 3s
       retries: 12
     logging: *logging
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.service
+      args:
+        BINARY: admin
+    restart: unless-stopped
+    working_dir: /app/lobby_service
+    environment:
+      LOBBY_ADMIN_ADDRESS: 0.0.0.0:8082
+      LOBBY_ADMIN_ORIGINS: ${PUBLIC_ORIGIN:-https://43.160.234.135}
+      LOBBY_ADMIN_COOKIE_SECURE: 'true'
+      LOBBY_DATABASE_URL: postgres://lobby:${LOBBY_DB_PASSWORD}@lobby-db:5432/aislots_lobby?sslmode=disable
+      LOBBY_GAME_SERVICE_TOKEN: ${LOBBY_GAME_SERVICE_TOKEN}
+      LOBBY_WITHDRAWAL_TEST_MODE: 'true'
+    volumes:
+      - ./payload/lobby-etc:/app/lobby_service/etc:ro
+    depends_on:
+      lobby:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD-SHELL, 'wget -S -O /dev/null http://127.0.0.1:8082/admin/api/me 2>&1 | grep -q "401"']
+      interval: 10s
+      timeout: 3s
+      retries: 12
+    logging: *logging
   game:
     build:
       context: .
@@ -98,6 +124,8 @@ services:
       - ./acme:/srv/acme:ro
       - ./certificates:/etc/letsencrypt:ro
     depends_on:
+      admin:
+        condition: service_healthy
       game:
         condition: service_healthy
     logging: *logging
