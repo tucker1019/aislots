@@ -6,7 +6,8 @@ export default defineConfig(({ mode }) => ({
     name: 'lobby-cover-cache',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        if (/^\/assets\/lobby\/(?:games\/[\w-]+\.png|mahjong-icon\.png)(?:\?|$)/.test(req.url ?? '')) {
+        const url = (req as { url?: string }).url ?? '';
+        if (/^\/assets\/lobby\/(?:games\/[\w-]+\.png|mahjong-icon\.png)(?:\?|$)/.test(url)) {
           res.setHeader('Cache-Control', 'public, max-age=3600');
         }
         next();
