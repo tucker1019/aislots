@@ -129,7 +129,7 @@
   display: block;
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1.06;
+  aspect-ratio: 218 / 284;
   padding: 0;
   border: 0;
   border-radius: 9px;
@@ -141,34 +141,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 25%;
-}
-
-.game-provider {
-  position: absolute;
-  left: 6px;
-  top: 6px;
-  border-radius: 3px;
-  background: #633000b3;
-  color: #fff;
-  font-size: 9px;
-  line-height: 1;
-  padding: 3px 4px;
-  font-weight: 650;
-}
-
-.game-name {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 7px 3px;
-  background: #c35c0e;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.2;
-  text-align: center;
 }
 
 /* Toast挂载于body，消息层和竖版大厅保持同一条中线。 */

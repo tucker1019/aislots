@@ -20,7 +20,7 @@ export function GamePage({onBack}:{onBack:()=>void}){
  const content=<section className={`game-detail-shell${expanded?' game-detail-expanded':''}`} role="dialog" aria-modal="true" aria-label={t('gamePreview.dialog')}>
   <header className="game-detail-toolbar"><button type="button" onClick={close}>{t('copy.backToLobby')}</button><span>{expanded?t('copy.mahjongWays'):t('gamePreview.details')}</span><div>{expanded&&<button type="button" onClick={()=>setExpanded(false)}>{t('gamePreview.shrink')}</button>}<AsyncButton loading={preparing} type="button" disabled={preparing} onClick={()=>void reopen()}>{t('copy.reEnter')}</AsyncButton></div></header>
   <div className="game-detail-content">
-   <div className="game-detail-identity"><img src="/assets/lobby/mahjong-cover.jpg" alt={t('gamePreview.cover')}/><div><h1>{t('copy.mahjongWays')}</h1><span className="game-provider-label">AG</span><p>{t('gamePreview.tagline')}</p></div></div>
+   <div className="game-detail-identity"><img src="/assets/lobby/mahjong-icon.png" alt={t('gamePreview.cover')}/><div><h1>{t('copy.mahjongWays')}</h1><span className="game-provider-label">AG</span><p>{t('gamePreview.tagline')}</p></div></div>
    <GameInsights part="rtp"/>
    <div className="game-preview"><div className="game-preview-frame">
     {url&&<iframe key={url} src={url} title={t('copy.ag1MahjongWays')} allow="autoplay; fullscreen; clipboard-write" allowFullScreen referrerPolicy="no-referrer" onError={()=>{setError(t('copy.gameFailedToLoadPleaseReEnter'));}}/>}

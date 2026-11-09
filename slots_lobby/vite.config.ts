@@ -2,7 +2,17 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 const lobbyProxy = { '/api/lobby': { target: 'http://127.0.0.1:8081', changeOrigin: true }, '/api/agent': {target: 'http://127.0.0.1:8081',changeOrigin: true}, '/api/vip': { target: 'http://127.0.0.1:8081', changeOrigin: true }, '/api/activity': { target: 'http://127.0.0.1:8081', changeOrigin: true }, '/api/recharge': { target: 'http://127.0.0.1:8081', changeOrigin: true }, '/api/game': { target: 'http://127.0.0.1:8081', changeOrigin: true }, '/api/user': { target: 'http://127.0.0.1:8081', changeOrigin: true } };
 export default defineConfig(({ mode }) => ({
-  plugins: [react()],
+  plugins: [react(), {
+    name: 'lobby-cover-cache',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (/^\/assets\/lobby\/(?:games\/[\w-]+\.png|mahjong-icon\.png)(?:\?|$)/.test(req.url ?? '')) {
+          res.setHeader('Cache-Control', 'public, max-age=3600');
+        }
+        next();
+      });
+    },
+  }],
   server: { proxy: lobbyProxy },
   preview: { proxy: lobbyProxy },
   // 测试与开发优化缓存隔离，避免并行检查后浏览器拿到失效依赖。
