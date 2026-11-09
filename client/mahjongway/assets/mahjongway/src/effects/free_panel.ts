@@ -1,5 +1,5 @@
 interface Toggle { active: boolean }
-interface Counter { string: string }
+interface Counter { string: string; node?: FooterNode }
 interface FooterNode {
     position: { x: number; y: number; z: number };
     setPosition(x: number, y: number, z: number): void;
@@ -10,10 +10,18 @@ export class FreePanelView {
     private normalBefore = true;
     private menuBefore = false;
     private footerHomes: { x: number; y: number; z: number }[] = [];
+    private readonly counterHome?: { x: number; y: number; z: number };
     constructor(private nodes: {
         root: Toggle; normal: Toggle; menu: Toggle;
         remaining: Toggle; last: Toggle; counter: Counter; footer?: FooterNode[];
-    }) {}
+    }) {
+        const position = nodes.counter.node?.position;
+        if (position) this.counterHome = { x: position.x, y: position.y, z: position.z };
+    }
+    setCounterLift(lift: number) {
+        const home = this.counterHome;
+        if (home) this.nodes.counter.node?.setPosition(home.x, home.y + lift, home.z);
+    }
     update(visible: boolean, remaining: number) {
         const n = this.nodes;
         if (visible) {
@@ -31,6 +39,7 @@ export class FreePanelView {
             n.counter.string = String(count);
         } else {
             n.root.active = false;
+            this.setCounterLift(0);
             if (this.showing) {
                 n.normal.active = this.normalBefore; n.menu.active = this.menuBefore;
                 (n.footer || []).forEach((node, i) => {

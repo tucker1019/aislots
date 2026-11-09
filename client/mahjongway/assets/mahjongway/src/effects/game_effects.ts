@@ -179,6 +179,10 @@ export class GameEffects extends Component {
             turbo.node.getChildByPath('txt_turbo_on/turbo_lightning').active = flow.fast;
         }
     }
+    setFreeCounterLift(lift: number) {
+        this.freePanelView?.setCounterLift(lift);
+    }
+
     resetBottomWin() {
         this.bottomWinTier = 0;
         this.stopBottomWinCount();
@@ -189,7 +193,7 @@ export class GameEffects extends Component {
     }
 
     showBottomWin(amount: string, tier: number, total: boolean, count?: { minor: string; seconds: number }) {
-        if (!this.winBar || !this.infoBar) return;
+        if (!this.winBar || !this.infoBar) return 0;
         this.stopBottomNotice();
         this.infoBar.active = false;
         this.winBar.active = true;
@@ -198,6 +202,14 @@ export class GameEffects extends Component {
             ? 'win_end' : tier === 2 ? 'win_a_to_b' : 'win_a';
         if (!total) this.winBar.children.forEach(node => { node.active = false; });
         animation?.play(clip);
+        // win_end does not activate the background after the children are reset.
+        if (clip === 'win_end') {
+            const selected = tier === 2 ? 'ib_bar_b' : 'ib_bar_a';
+            for (const name of ['ib_bar_a', 'ib_bar_b', 'ib_bar_c']) {
+                const background = this.winBar.getChildByName(name);
+                if (background) background.active = name === selected;
+            }
+        }
         this.bottomWinTier = tier;
         const sound = tier === 3 ? 'infoboardTotalwinBigwin'
             : tier === 2 ? 'infoboardTotalwinMedwinEnd' : 'infoboardTotalwin';
@@ -223,6 +235,9 @@ export class GameEffects extends Component {
                 .call(() => { award.string = amount; })
                 .start();
         }
+        const state = animation?.getState(clip);
+        const clipSeconds = state && state.speed > 0 ? state.duration / state.speed : 0;
+        return Math.max(clipSeconds, count?.seconds ?? 0);
     }
 
     private stopBottomWinCount() {

@@ -44,10 +44,11 @@
 
     /* 独立于 Cocos 的首屏；黑底覆盖窗口，Logo 按游戏区域等比适配。 */
     #AGOpening { position: fixed; inset: 0; z-index: 2147483647; background: #000; opacity: 1; transition: opacity .3s ease; }
-    #AGOpening > svg { position: absolute; left: 50%; top: 50%; width: min(58vw, 31.0714vh); height: auto; transform: translate(-50%, -50%); overflow: visible; animation: ag-reveal .3s ease-out both; }
+    #AGOpening > svg { position: absolute; left: 50%; top: 50%; width: min(58vw, 31.0714vh); height: auto; transform: translate(-50%, -50%); overflow: visible; animation: ag-reveal 2.8s ease-out infinite; }
     @keyframes ag-reveal {
-      from { opacity: 0; transform: translate(-50%, -50%) scale(1.12); }
-      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(1.12); }
+      22%, 68% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      82%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
     }
     @media (prefers-reduced-motion: reduce) {
       #AGOpening { transition: none; }

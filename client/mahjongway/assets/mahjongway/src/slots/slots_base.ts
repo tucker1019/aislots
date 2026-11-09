@@ -53,6 +53,7 @@ export class slots_base extends Component {
     error = '';
     private performanceCapture: RuntimePerformance = null;
     private reels: slots_r[] = [];
+    private updateCascadeWait?: (dt: number) => void;
     private picks: SpinCellPicker[] = [];
     private api: GameApi;
     private historyPage: HistoryPage = null;
@@ -480,7 +481,7 @@ export class slots_base extends Component {
         this.notifyFlowChanged();
         this.reels.forEach((r) => r.startRoll());
         try {
-            await this.play(await this.api.spin(this.bet, this.betLevel));
+            await this.play(await this.api.spin(this.bet, this.betLevel), false, undefined, !fromAuto);
             return true;
         } catch (e) {
             this.fail(e);
@@ -714,7 +715,7 @@ export class slots_base extends Component {
 
     reelStopped(quick: boolean) { this.effects?.reelStopped(quick); }
 
-    private async play(frame: Frame, restore = false, replay?: ReplaySession) {
+    private async play(frame: Frame, restore = false, replay?: ReplaySession, manualSpin = false) {
         const running = () => this.alive && (!replay || replay.active);
         let first = true;
         while (running()) {
@@ -733,7 +734,15 @@ export class slots_base extends Component {
             this.effects?.setAudioMode(frame.mode === 'free');
             if (frame.mode === 'free' && !(restore && first && frame.nextAction === 'complete')) {
                 this.freePanelShown = true;
-                this.freeSpinsLeft = frame.freeRemaining;
+                if (frame.triggeredFree) {
+                    // 服务端从首帧就包含追加次数，等追加提示结束后再显示。
+                    const beforeAward = frame.awardedFreeSpins === undefined
+                        ? this.freeSpinsLeft - (cascade ? 0 : 1)
+                        : frame.freeRemaining - frame.awardedFreeSpins;
+                    this.freeSpinsLeft = Math.max(0, beforeAward);
+                } else {
+                    this.freeSpinsLeft = frame.freeRemaining;
+                }
             }
             this.current = frame;
             this.boards = strips;
@@ -813,6 +822,14 @@ export class slots_base extends Component {
             this.labels();
             this.notifyFlowChanged();
             const winning = new Set(frame.wins.flatMap((w) => w.cellIds));
+            if (manualSpin && first && frame.mode === 'base' && frame.nextAction === 'complete'
+                && !winning.size && Number(frame.spinWinAmount) === 0) {
+                this.balance = frame.balance;
+                this.winAmount = frame.totalWinAmount;
+                this.labels();
+                this.finish();
+                return;
+            }
             if (winning.size) {
                 await this.pause(ROUND_TRANSITION_DELAY);
                 if (!running()) return;
@@ -851,8 +868,8 @@ export class slots_base extends Component {
                 const count = type === 0 && stake > 0n && BigInt(frame.spinWinAmount) >= stake * 5n
                     ? { minor: frame.spinWinAmount, seconds: 0.8 }
                     : undefined;
-                this.effects?.showBottomWin?.(formatMoney(frame.spinWinAmount), tier, true, count);
-                if (count) await this.pause(count.seconds);
+                const totalWinSeconds = this.effects?.showBottomWin?.(formatMoney(frame.spinWinAmount), tier, true, count);
+                if (totalWinSeconds) await this.pause(totalWinSeconds);
             }
             if (!running()) return;
             if (frame.nextAction === 'complete') {
@@ -866,8 +883,10 @@ export class slots_base extends Component {
             }
             if (frame.nextAction === 'start_free') {
                 if (frame.mode === 'base') await this.effects?.intro(frame.freeRemaining);
-                else if (frame.triggeredFree)
+                else if (frame.triggeredFree) {
                     await this.effects?.retrigger(frame.awardedFreeSpins ?? frame.freeRemaining);
+                    await this.countAddedFreeSpins(frame.freeRemaining, running);
+                }
                 if (!running()) return;
                 this.freePanelShown = true;
                 this.freeSpinsLeft = frame.freeRemaining;
@@ -875,9 +894,58 @@ export class slots_base extends Component {
             if (!running()) return;
             this.notifyFlowChanged();
             // 回放永远从历史队列取帧，禁止退回实时开奖接口。
-            frame = replay ? replay.advance() : await this.api.spin(this.bet, this.betLevel);
+            frame = replay ? replay.advance() : await this.requestNextFrame(frame.nextAction === 'continue');
             if (!frame) { this.finish(); return; }
             first = false;
+        }
+    }
+
+    private async requestNextFrame(waitingForCascade: boolean) {
+        if (!waitingForCascade) return this.api.spin(this.bet, this.betLevel);
+
+        const cells = this.reels.flatMap(reel => reel.node.children
+            .filter(node => node.active && node.getComponent(slots_cell))
+            .map(node => {
+                const { x, y, z } = node.position;
+                return { node, x, y, z };
+            }));
+        let elapsed = 0;
+        let shaking = false;
+        this.updateCascadeWait = dt => {
+            elapsed += dt;
+            if (elapsed < 1) return;
+            shaking = true;
+            cells.forEach(({ node, x, y, z }, index) => {
+                const time = elapsed - 1 - index * 0.013;
+                if (time < 0) return;
+                const offset = 1.5 * Math.sin(time * 2 * Math.PI * 5);
+                node.setPosition(x + offset, y, z);
+            });
+        };
+        try {
+            return await this.api.spin(this.bet, this.betLevel);
+        } finally {
+            this.updateCascadeWait = undefined;
+            if (this.alive && shaking) {
+                cells.forEach(({ node, x, y, z }) => node.setPosition(x, y, z));
+            }
+        }
+    }
+
+    private async countAddedFreeSpins(target: number, running: () => boolean) {
+        while (running() && this.freeSpinsLeft < target) {
+            for (const lift of [8, 14]) {
+                this.effects?.setFreeCounterLift(lift);
+                await this.pause(0.016);
+                if (!running()) return;
+            }
+            this.freeSpinsLeft++;
+            this.notifyFlowChanged();
+            for (const lift of [9, 4, 0]) {
+                this.effects?.setFreeCounterLift(lift);
+                await this.pause(0.016);
+                if (!running()) return;
+            }
         }
     }
 
@@ -1060,6 +1128,7 @@ export class slots_base extends Component {
 
     /** 大帧拆成小步推进转轴，避免低帧率时一次跨过多个回卷边界。 */
     update(dt: number) {
+        this.updateCascadeWait?.(dt);
         this.performanceCapture?.setPhase(
             this.reels.some((r) => r.state === 5)
                 ? 'cascade'
