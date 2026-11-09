@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta name="referrer" content="no-referrer">
+  <meta charset="utf-8">
+
+  <title>Cocos Creator | <%= projectName %></title>
+
+  <!--http://www.html5rocks.com/en/mobile/mobifying/-->
+  <meta name="viewport"
+        content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true"/>
+
+  <!--https://developer.apple.com/library/safari/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- force webkit on 360 -->
+  <meta name="renderer" content="webkit"/>
+  <meta name="force-rendering" content="webkit"/>
+  <!-- force edge on IE -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="msapplication-tap-highlight" content="no">
+
+  <!-- force full screen on some browser -->
+  <meta name="full-screen" content="yes"/>
+  <meta name="x5-fullscreen" content="true"/>
+  <meta name="360-fullscreen" content="true"/>
+
+  <!--fix fireball/issues/3568 -->
+  <!--<meta name="browsermode" content="application">-->
+  <meta name="x5-page-mode" content="app">
+
+  <!--<link rel="apple-touch-icon" href=".png" />-->
+  <!--<link rel="apple-touch-icon-precomposed" href=".png" />-->
+
+  <link rel="stylesheet" type="text/css" href="<%= cssUrl %>"/>
+  <style>
+    #GameCanvas { background: transparent !important; }
+    body { background: #000; }
+    #LoadingScreen {
+      position: absolute;
+      top: 50%; left: 50%; width: min(100vw, calc(53.5714vh + 4px)); height: min(100vh, calc(186.6667vw + 4px)); transform: translate(-50%, -50%); container-type: inline-size; aspect-ratio: 750 / 1400; z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: transparent;
+    }
+    #LoadingScreen img { display: block; width: 100%; height: auto; max-width: none; object-fit: initial; }
+    #LoadingScreen .loading-progress { position: absolute; left: 50%; bottom: 17%; width: 60%; aspect-ratio: 447 / 28; transform: translateX(-50%); background: url('loading/jdt.png') center/100% 100% no-repeat; }
+    #LoadingScreen .loading-progress-fill { height: 100%; width: 0; overflow: hidden; transition: width .2s ease; }
+    #LoadingScreen .loading-progress-fill::before { content: ''; display: block; width: 100%; height: 100%; background: url('loading/jdt1.png') left center/auto 78.5714% no-repeat; }
+    #LoadingScreen .start-button { position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%); box-sizing: border-box; width: 42%; padding: 3% 0; border: .45cqw solid #ffd96a; border-radius: 1.8cqw; color: #6b2100; background: linear-gradient(#ffe89a, #f6a51a); box-shadow: 0 .8cqw 0 #9b3f05, 0 1.5cqw 3cqw rgba(75,20,0,.35); font: 700 6cqw/1 Helvetica,Arial,sans-serif; letter-spacing: .2cqw; cursor: pointer; }
+    #LoadingScreen .start-button:active { transform: translate(-50%, 2px); }
+
+    /* 独立于 Cocos 的首屏；黑底覆盖窗口，Logo 按游戏区域等比适配。 */
+    #AGOpening { position: fixed; inset: 0; z-index: 2147483647; background: #000; opacity: 1; transition: opacity .3s ease; }
+    #AGOpening > svg { position: absolute; left: 50%; top: 50%; width: min(58vw, 31.0714vh); height: auto; transform: translate(-50%, -50%); overflow: visible; animation: ag-reveal 2.8s ease-out infinite; }
+    @keyframes ag-reveal {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(1.12); }
+      22%, 68% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      82%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #AGOpening { transition: none; }
+      #AGOpening > svg { animation: none; }
+    }
+
+</style>
+
+</head>
+<body>
+  <div id="AGOpening" role="status" aria-label="AG 加载中">
+    <svg viewBox="0 0 200 112" aria-hidden="true">
+      <rect x="50" y="12" width="100" height="88" rx="8" fill="#ae252a"/>
+      <rect x="55" y="17" width="90" height="78" rx="5" fill="none" stroke="#f3dbc0" stroke-opacity=".45"/>
+      <text x="99" y="72" text-anchor="middle" fill="#fff0d9" font-family="Georgia, serif"
+        font-size="48" font-weight="700" letter-spacing="-4">AG</text>
+    </svg>
+  </div>
+
+  <div id="GameDiv" cc_exact_fit_screen="true">
+    <div id="LoadingScreen" aria-label="Loading">
+      <img src="loading/1025.jpg" alt="" />
+      <div class="loading-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="loading-progress-fill"></div></div>
+      <button id="StartButton" class="start-button" type="button" hidden>START</button>
+    </div>
+    <div id="Cocos3dGameContainer">
+      <canvas id="GameCanvas" oncontextmenu="event.preventDefault()" tabindex="99"></canvas>
+    </div>
+
+  <script>
+    (function () {
+      var opening = document.getElementById('AGOpening');
+      var logo = opening.querySelector('svg');
+      var cover = document.getElementById('LoadingScreen') || document.getElementById('PreviewCover');
+      var ready = false, minimumElapsed = false, removed = false;
+      var observer;
+      function fit() {
+        var rect = cover.getBoundingClientRect();
+        if (rect.width <= 0 || rect.height <= 0) return;
+        logo.style.width = Math.min(rect.width * .58, rect.height * .4) + 'px';
+        logo.style.left = rect.left + rect.width / 2 + 'px';
+        logo.style.top = rect.top + rect.height / 2 + 'px';
+      }
+      function finish() {
+        if (removed || !ready || !minimumElapsed) return;
+        removed = true;
+        opening.style.opacity = '0';
+        setTimeout(function () { opening.remove(); }, 300);
+        window.removeEventListener('resize', fit);
+        window.removeEventListener('aislots-scene-rendered', sceneRendered);
+        if (observer) observer.disconnect();
+      }
+      function sceneRendered() { ready = true; finish(); }
+      window.addEventListener('aislots-scene-rendered', sceneRendered, { once: true });
+      fit();
+      window.addEventListener('resize', fit);
+      if (typeof ResizeObserver !== 'undefined') {
+        observer = new ResizeObserver(fit);
+        observer.observe(cover);
+      }
+      // 从首帧开始计时，不能把首次绘制前的脚本耗时算入这一秒。
+      requestAnimationFrame(function () {
+        setTimeout(function () { minimumElapsed = true; finish(); }, 1000);
+      });
+    }());
+  </script>
+  <%- include(cocosTemplate, {}) %>
+</body>
+</html>

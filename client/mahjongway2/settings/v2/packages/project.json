@@ -1,0 +1,14 @@
+{
+  "__version__": "1.0.6",
+  "general": {
+    "designResolution": {
+      "height": 1400,
+      "width": 750
+    },
+    "downloadMaxConcurrency": 50
+  },
+  "script": {
+    "preserveSymlinks": true
+  },
+  "custom_joint_texture_layouts": []
+}

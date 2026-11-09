@@ -1,0 +1,60 @@
+import { Application } from '<%= applicationJS %>';
+
+// 监听必须早于场景启动，避免状态接口很快返回时漏掉首屏完成信号。
+const firstBoardReady = new Promise(resolve => {
+    window.addEventListener('aislots-board-ready', resolve, { once: true });
+});
+
+const canvas = document.getElementById('GameCanvas');
+const $p = canvas.parentElement;
+const bcr = $p.getBoundingClientRect();
+canvas.width = bcr.width;
+canvas.height = bcr.height;
+
+function topLevelImport (url) {
+    return System.import(url);
+}
+
+const application = new Application();
+let cocosEngine;
+const loadingScreen = document.getElementById('LoadingScreen');
+const progressBar = loadingScreen?.querySelector('.loading-progress');
+const progressFill = loadingScreen?.querySelector('.loading-progress-fill');
+function setLoadingProgress(value) {
+    const current = Number(progressBar?.getAttribute('aria-valuenow') || 0);
+    const percent = Math.max(current, Math.max(0, Math.min(100, value)));
+    if (progressFill) progressFill.style.width = `${percent}%`;
+    if (progressBar) progressBar.setAttribute('aria-valuenow', String(percent));
+}
+setLoadingProgress(8);
+window.addEventListener('aislots-board-ready', () => setLoadingProgress(100), { once: true });
+window.addEventListener('aislots-loading-progress', event => setLoadingProgress(event.detail?.progress || 0));
+
+topLevelImport('cc')
+.then((engine) => {
+    cocosEngine = engine;
+    setLoadingProgress(22);
+    engine.macro.ENABLE_TRANSPARENT_CANVAS = true;
+    return application.init(engine);
+}).then(() => {
+    setLoadingProgress(38);
+    return application.start();
+}).then(() => { setLoadingProgress(42); return firstBoardReady; }).then(() => {
+    // 首屏牌面初始化后再等待实际绘制，不能以图片加载或引擎初始化代替。
+    cocosEngine.director.once(cocosEngine.Director.EVENT_AFTER_DRAW, () => {
+        window.dispatchEvent(new Event('aislots-scene-rendered'));
+    });
+    setLoadingProgress(100);
+    const startButton = document.getElementById('StartButton');
+    if (!loadingScreen || !startButton) return;
+    const begin = () => {
+        window.dispatchEvent(new Event('aislots-started'));
+        loadingScreen.remove();
+    };
+    const params = new URLSearchParams(location.search);
+    if (params.has('replay') || params.has('share')) { begin(); return; }
+    startButton.hidden = false;
+    startButton.addEventListener('click', begin, { once: true });
+}).catch((err) => {
+    console.error(err);
+});

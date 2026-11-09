@@ -1,0 +1,160 @@
+# HTML history QA — 2026-10-30
+
+Scope: in-game History menu, HTML overlay confined to game viewport, filtered bet history and static per-round details. Reference: user-supplied eleven history screenshots from 2026-10-30.
+
+Implemented reference structure: dark list/header/tabs, alternating transaction rows, winning elimination count, filtered totals footer, custom inclusive date range up to seven days, static normal/free detail with multiplier, five-column active board, prior/next navigation, expandable payout calculation. Localized labels are Chinese; existing card artwork is exported locally. No animated replay.
+
+## Verified
+
+- 46 client tests pass, including history money precision, date boundaries, viewport fitting, and preservation of spin nonce across history reads.
+- TypeScript typecheck passes.
+- Go tests with PostgreSQL pass; go vet and build pass.
+- Live read-only API check against existing test account: filtered summary includes all 1494 matching records while page limit is 1; detail rounds/payout totals valid; state and wallet identical before/after history reads.
+- History endpoints exclude future/unsettled boards and mutable spin request tokens.
+
+## Visual verification blocked
+
+CUA reports the Mac is locked and the browser connection is unavailable. No new screenshot or successful browser interaction is claimed. Requested unlock through the task UI. Pending: compare list, date picker, first/last round detail against references; verify menu-to-history click, scrolling, expanded formulas, overlay positioning and close behavior in the running browser.
+
+## Intentional differences
+
+- Chinese labels; values use the game's actual currency scale and line count rather than the reference's fixed bet-level factor.
+- Static per-round details only; animation playback is outside this request.
+- History currently uses the existing test user's records and login, without resetting its balance.
+
+## Follow-up: built-money crash fixed
+
+Native Chrome exposed a reproducible BigInt-to-Math.pow failure after Cocos downlevel compilation. Added an ES2015 transpilation regression test; it failed before the fix and passes afterward. Replaced BigInt exponentiation with exact decimal string construction. All 46 client tests and TypeScript checks pass. Cocos web build completed; built money/fraction code inspected to confirm no Math.pow remains. Final visual recheck was interrupted by repeated browser-control timeouts.
+
+## Preview/backend version mismatch
+
+Verified live API schemas: 8080 returns the old items/nextCursor schema without profitAmount or round counts; 8081 returns the updated summary/amountScale schema. Creator preview defaults to 8080, whereas the build verification URL overrides api to 8081. Added network-boundary validation for list and static-detail responses, with a restart-service message rather than rendering incomplete data. All 47 client tests and TypeScript checks pass. The user's IDE process on 8080 was preserved; it must be rerun to load the current Go code.
+
+## History artwork verification
+
+2026-10-30: restored native scatter_bg behind Hu, extracted actual dark/lit multiplier sprites (1/2/3/4/5/6/10) and main_top_c wood strip from the game's TexturePacker atlases. Verified after a full Creator preview reload: four multiplier images render, original wooden background is visible, and a settled history board displays Hu with its native glow. Proof: history-art-check.png. TypeScript check, 50 client tests and web-mobile build pass.
+
+## Floating history navigation
+
+Replaced the circular source image used for round navigation with directional chevrons. Navigation buttons are absolutely positioned siblings of the detail scroll container, centered on the detail viewport; they do not occupy document flow and remain visible while scrolling payout details.
+
+## Overlay scrollbar
+
+Native scrollbar space is disabled in history list and detail. A separate absolutely positioned thumb overlays the right edge, supports pointer dragging, and uses ResizeObserver to follow content expansion and viewport size. Observers are disconnected whenever the history screen is replaced or closed.
+
+## Free-mode inactive x2 color
+
+Matched the native multipliers prefab gray_1 sprList[1] to atlas frame x2_b (UUID suffix 5f64a). Exported this red free-mode variant separately; history selects it only for inactive x2 in free mode. Normal-mode inactive x2 and the gold active x2 retain their original frames. TypeScript check passes.
+
+## Scatter glow black background
+
+The source scatter_bg PNG is fully opaque, including black corners. History now exports the glow separately and draws it with screen blending behind the transparent Hu foreground. Verified in Creator preview on a settled round containing Hu: computed mix-blend-mode is screen, foreground remains transparent and the black rectangle is absent. Proof: history-scatter-blend-check.png.
+
+## Load-more reading position
+
+Replaced full-screen reconstruction during pagination with in-place row append. Existing scroll container, rows and table header remain mounted; requests only disable the current load-more button. Responses preserve the scroll position at arrival time, and the first appended row receives a thin inset boundary line. Errors retain existing records for retry. Saved list position is restored only after the floating-scroll wrapper is mounted.
+
+Verified in Creator preview: row count 20 -> 40, scrollTop 496 -> 496, previous last-row y 581.234375 -> 581.234375, single header retained. Proof: history-pagination-position-check.png. All 54 client tests and TypeScript check pass; web-mobile build completed.
+
+## Chinese HTML rules — 2026-10-30
+
+- Regulations / Rule opens a DOM overlay inside the game area using the history theme and floating scrollbar. Corrected the swapped Rule/Paytable scene node names to match their visible labels.
+- Translated the supplied reference, preserving the explicitly requested 3 Hu → 12 free spins, +2 per additional Hu wording. Server awards were not changed.
+- Browser verified the visible Regulations button, Chinese content, scrolling (scrollTop 1080), free-spin wording, return/close and reopening. Scroll clientWidth and offsetWidth both 386; closing removes the overlay and restores canvas pointer events.
+- Verification: 54 client tests and TypeScript passed; final scene button change also passed the 4 panel tests. Cocos web-mobile build finished successfully.
+- Evidence: `rules-page-check.png`, `rules-free-text-check.png`.
+
+## Chinese HTML paytable — 2026-10-30
+
+- Payment Table button opens a game-area DOM overlay sharing the history/rules theme, lifecycle and floating scrollbar.
+- Includes the supplied eight symbol payout rows, Wild/Scatter, gold-to-Wild illustration, base/free multipliers, original 12-spin wording and 1,024 Ways calculation example. Uses existing game art, including the ingot base under Wild.
+- Browser verified 8 payout cards, all images loaded, scroll content and close restoring canvas input. Scroll widths both 386 px; no reserved scrollbar gutter.
+- Validation: TypeScript and 54 client tests passed; regenerated art passed all 6 history tests. Final web-mobile build completed successfully.
+- Evidence: `paytable-page-check.png`.
+
+## Independent Web Audio — 2026-10-30
+
+- Replaced GameEffects AudioSource/AudioClip playback with WebAudioMixer and game-specific GameAudio rules. Static reference MP3s ship in preview and web-mobile templates.
+- Covers normal/free music, reel start/stop, actual-symbol award voices (second at 0.6s), combined voices, gold/Wild at 0.3s, multiplier voices, and popup loops/end cues. Sound toggles all buses and persists preference.
+- Automated checks: 62 tests pass, including stale-load cancellation, decoded-buffer reuse, delayed-source cancellation, destruction, symbol-ID mapping, music transitions, unlock/mute and asset availability. TypeScript and final web-mobile build pass.
+- Browser verification: before START `web-audio / suspended`; after START `running`; Sound toggles muted true/false and speaker icon. No warnings or errors captured. Preview MP3 returns HTTP 200; final build includes 66 MP3 files.
+- Evidence: `audio-web-check.png`. Subjective listening comparison was not performed by the automation.
+
+### Symbol voice interruption fix — 2026-10-30
+
+- Symbol voices shared `voice:main` with multiplier announcements and were cancelled again when entering popups or another award. Symbol playback now uses independent one-shot sources, matching the reference; multiplier announcements have their own slot.
+- Regression test confirms both symbol sources (including the delayed second voice) remain alive across multiplier, popup and subsequent award events. All 63 tests and TypeScript passed. Final web-mobile output contains the updated separate multiplier slot.
+
+### Confirmed missing-symbol-voice root cause — 2026-10-30
+
+- Actual browser award `[4,7]` produced shrink/prize sounds but zero payout voice requests. Inspecting the generated Cocos bundle showed `[...new Set(...)]` compiled into `[].concat(new Set(...))`; filtering this array returned no valid symbol IDs.
+- Replaced spread with `Array.from(new Set(...))`. Added a regression test using Creator's Babel loose spread transformation, in addition to the existing TypeScript tests. All 64 tests passed, including the same `[4,7]` symbol pair.
+- AudioDebug provides bounded DOM diagnostics to verify actual browser requests/start events instead of relying solely on source tests.
+
+## Native auto-stop control and lifecycle — 2026-11-02
+
+- Imported the reference auto-stop art and bitmap digits as editable `resources/mahjong_effects/control_autostop.prefab`. Runtime reuses a scene `btn_autostop` if present; otherwise creates it inside panel1 and binds the current controller. No original business callbacks were copied.
+- Auto mode shows this button instead of normal Spin/Stop, including the 0.25-second interval. The count includes the current complete paid/free chain and decreases only on completion. Auto-stop cancels future paid games and leaves the current chain running.
+- Generation isolation prevents stopped jobs from decrementing below zero or overwriting a replacement job. Manual spin and duplicate AUTO starts are blocked while the runner is active.
+- Browser verified reference-style counter decrement, cancel restoring normal Stop while reels still move, then idle Spin with no subsequent automatic spin. Observed free-entry timeout continuing without manual confirmation; no console warnings/errors.
+- Five runner/prefab tests plus two focused client tests passed. TypeScript and web-mobile build passed. Full-suite failures were reproduced with pre-change HEAD sources (7 explicit failures plus cascading cancelled tests); those pulled-code failures were not introduced here.
+- Evidence: `autospin-button-check.png`.
+
+### Auto-stop prefab editor ownership fix — 2026-11-02
+
+- Scene extraction omitted node PrefabInfo and component CompPrefabInfo and retained scene-only object flags. Repaired current asset in place, preserving UUID/layout; importer now uses the same repair helper. Repair is idempotent.
+- Six focused tests passed, including editor ownership links for every node/component.
+- Native Cocos Creator 3.8.8 verified: cleared old console messages, double-clicked control_autostop, and selected its root. Editor title switched to control_autostop.prefab; tree contains auto_spin/lab_autoNum; inspector shows UITransform/Button/Widget; console remained empty.
+- Evidence: `autostop-prefab-editor-check.png`.
+
+## Free-spin remaining panel — 2026-11-02
+
+- Imported reference panel_free as an editable prefab with full editor ownership metadata. Current freeRemaining drives the counter; zero selects last_fs throughout the final free round/cascades. Restoring a completed historic frame does not reopen the panel.
+- Normal/menu controls are hidden during free play; the money footer shifts down once and restores its original positions at feature completion. Panel placement leaves room for the reference double-line caption and large bitmap digits.
+- Five focused tests and TypeScript passed; final web-mobile build completed. Browser display tested against an isolated temporary API fixture: remaining count visible, money footer separated, normal controls/footer restored after completion. Fixture did not touch actual wallet/records; temporary server and tabs were stopped.
+- Evidence: free-panel-check.png.
+
+## Same-column winning-effect depth — 2026-11-02
+
+- Reused cell win anchors in the shared award layer retained old sibling order, while logical cell indices can wrap after rolling. Reel award now sorts anchors by actual world Y, top first/bottom last, so lower tiles cover upper tiles.
+- Three ordering tests and two focused reel/highlight integration tests passed. TypeScript passed; web-mobile build completed.
+
+## 2026-11-02 游戏动画回放
+
+- History 行与加载更多追加的行均提供独立「回放」按钮，没有嵌套 button。
+- 实测真实交易 NTXSM2CJF5SIS76DCSXS6UIQIM：首转、中奖和补落到第2轮，显示回放结束，无控制台错误。
+- 实测真实交易 TGR5U5SAWGGQHBPEXJLB5XASGO：共17轮，正常进入免费并播至免费结算弹窗。
+- 退出后保留40条已加载记录与非零滚动位置；关闭列表后，原始盘面、2697.75余额、2.00投注与0.10赢分恢复。
+- 新增分页、跨交易拦截、取消、只读API与 nonce、免费链、补落、退出恢复及中奖回调移除测试。回放相关11项通过；相关现有独立模块18项通过。
+- 原有 history.test.cjs 有3项旧断言与当前货币显示/下注参数不一致；本次未修改这些实现，也未声称全量客户端套件通过。
+- 截图：game-replay-check.png、game-replay-free-check.png。
+
+### 回放底部面板修正
+
+回放开始立即切到 panel1，普通控制按钮保留样式但由回放遮挡层与逻辑门禁阻止下注。退出先同步免费面板状态，再恢复进入前的菜单与坐标，取消旧的面板 Tween 回调以避免覆盖。
+实测 JPMVDRNRZ44PFENQO7YPPBIWPE 回放显示 panel1，退出返回原 panel2，盘面及2728.75余额恢复。6项面板测试和2项回放状态测试通过，类型检查及web-mobile构建通过。截图 replay-panel1-check.png。
+
+## 2026-11-02 分享回放
+
+- 真实交易 ONQW5MONE2SLRFU5L5RUBVZHM3 的回放左侧分享按钮成功生成链接，显示已复制。
+- 新窗口直接打开 JPMVDRNRZ44PFENQO7YPPBIWPE 的分享链接，START前没有开始回放，点击后从第1/5轮播至结束，显示panel1和历史赢分47.20，余额隐藏为“—”，支持再次分享与重新播放。
+- 实测链接只含replay与share参数，没有平台身份或登录token。公开HTTP接口在不提供Authorization时返回结果，钱包与推进标识已脱敏。
+- PostgreSQL独立schema测试通过：本人创建、非本人拒绝、匿名读取、完整免费9轮分页、交易/游戏绑定、伪造凭据拒绝、不能当登录token使用、服务重建仍可读取、钱包和nonce不变。
+- 27项相关客户端测试、类型检查、Go应用/HTTP测试、go vet、web-mobile构建通过。全量真实数据库测试另有两项原有协议断言失败（旧下注参数、历史金额字符串），本次未修改这些协议实现。
+- IAB一个后台实例截图未绘制WebGL，前台真实窗口正常完成回放；截图 shared-replay-check.png 为前台验证。
+
+### 分享交互调整
+
+- 分享页余额为六个 ASCII 星号 `******`；预览及 web-mobile 分享入口资源就绪后自动移除封面，不显示 START，普通游戏保留 START。
+- 重新播放复用已取全的历史数据和现有场景/控制栏，先取消旧动画，再从第一轮播放。实测重播后封面/START均不存在，分享按钮的已复制状态与链接仍保留，证明没有重载文档。
+- 顶部分享按钮由“分享”变“已复制”前后均为47.3125×28.3125px；列表按钮均为35.671875×24.15625px，回放按钮位置不变。
+- 列表分享位于回放左侧；直接分享不打开详情或回放。加载更多后40条记录同时有40个分享和40个回放按钮。
+- 32项相关测试、类型检查、web-mobile构建通过；截图 shared-replay-refined-check.png、history-share-buttons-check.png。
+
+### AG1大厅用户接入
+
+通过隔离数据库中的大厅游客充值、签发票据进入构建客户端，浏览器确认票据已从URL移除。首次展示余额1007.00、赢分7.00；刷新后使用游戏会话恢复同一盘面和金额，没有重新兑换票据或推进spin，控制台错误为空。截图ag1-lobby-session-check.png。两端HTTP实测充值到账102000分，下注2000分，3轮赢700分，最终大厅及游戏余额100700分。另有数据库测试覆盖普通+免费9轮及响应丢失/本地写入失败后的恢复。
+
+### iframe与FPS面板
+
+大厅实际进入/game/AG1并创建AG1 iframe，票据兑换成功后子页面移除票据。Cocos构建客户端实测FPS/Draw Call统计面板消失，控制台无错误，截图fps-hidden-check.png。相关测试覆盖iframe入口恢复、返回时钱包缓存失效、重新进入失败重试、同一已兑换票据刷新不再兑换；大厅23项测试、lint、类型检查与构建通过。

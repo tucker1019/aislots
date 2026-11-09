@@ -1,0 +1,155 @@
+{
+  "ver": "1.0.8",
+  "importer": "sprite-atlas",
+  "imported": true,
+  "uuid": "043c9790-98b3-4814-a875-49d717ed2387",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "50964": {
+      "importer": "sprite-frame",
+      "uuid": "043c9790-98b3-4814-a875-49d717ed2387@50964",
+      "displayName": "",
+      "id": "50964",
+      "name": "bw_coin_pile",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": true,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 1,
+        "trimY": 1,
+        "width": 570,
+        "height": 311,
+        "rawWidth": 570,
+        "rawHeight": 311,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "ef29962c-c81e-4ee5-b682-3aba031d1822@6c48a",
+        "atlasUuid": "043c9790-98b3-4814-a875-49d717ed2387"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "85a17": {
+      "importer": "sprite-frame",
+      "uuid": "043c9790-98b3-4814-a875-49d717ed2387@85a17",
+      "displayName": "",
+      "id": "85a17",
+      "name": "bw_cash_pile",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 1,
+        "trimY": 573,
+        "width": 217,
+        "height": 216,
+        "rawWidth": 217,
+        "rawHeight": 216,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "ef29962c-c81e-4ee5-b682-3aba031d1822@6c48a",
+        "atlasUuid": "043c9790-98b3-4814-a875-49d717ed2387"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "b159c": {
+      "importer": "sprite-frame",
+      "uuid": "043c9790-98b3-4814-a875-49d717ed2387@b159c",
+      "displayName": "",
+      "id": "b159c",
+      "name": "bw_yuanbao_pile",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 1,
+        "offsetY": 0,
+        "trimX": 220,
+        "trimY": 573,
+        "width": 130,
+        "height": 145,
+        "rawWidth": 148,
+        "rawHeight": 145,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "ef29962c-c81e-4ee5-b682-3aba031d1822@6c48a",
+        "atlasUuid": "043c9790-98b3-4814-a875-49d717ed2387"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "atlasTextureName": "b3d2d99f-2401-4463-bc7d-d0d3b140e63a.d9d8e.png",
+    "format": 2,
+    "uuid": "043c9790-98b3-4814-a875-49d717ed2387",
+    "textureUuid": "ef29962c-c81e-4ee5-b682-3aba031d1822@6c48a"
+  }
+}
