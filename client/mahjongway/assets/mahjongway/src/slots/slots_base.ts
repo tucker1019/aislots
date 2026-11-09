@@ -476,7 +476,7 @@ export class slots_base extends Component {
         this.click_stop = false;
         this.error = '';
         this.hideAwardShade();
-        if (!this.activeBet) { this.effects?.resetMultiplier(); this.effects?.spinSound(); }
+        if (!this.activeBet) { this.effects?.resetBottomWin?.(); this.effects?.resetMultiplier(); this.effects?.spinSound(); }
         this.notifyFlowChanged();
         this.reels.forEach((r) => r.startRoll());
         try {
@@ -764,6 +764,7 @@ export class slots_base extends Component {
                 // Stop 只作用于当前旋转；自动进入下一免费局时重新允许完整转轴过程。
                 // 第一帧仍保留请求期间的手动停止意图。
                 if (!first) this.click_stop = false;
+                this.effects?.resetBottomWin?.();
                 // 新一局（包含免费局）在转轴开始时切换倍率，续传则使用实际档位。
                 this.effects?.multiplier(
                     frame.cascadeFactors,
@@ -830,6 +831,10 @@ export class slots_base extends Component {
             if (!running()) {
                 return;
             }
+            if (winning.size && Number(frame.winAmount) > 0) {
+                const tier = Number(frame.winAmount) >= Number(frame.betAmount) * 3 ? 2 : 1;
+                this.effects?.showBottomWin?.(formatMoney(frame.winAmount), tier, false);
+            }
             await this.rollSettlement(frame, running);
             if (!running()) return;
             // 已结束的下注只恢复静态结果，不在每次刷新时重播大奖或免费结算弹窗。
@@ -837,9 +842,17 @@ export class slots_base extends Component {
                 this.finish();
                 return;
             }
-            if (!winning.size && frame.spinWinAmount) {
+            if (!winning.size && Number(frame.spinWinAmount) > 0) {
                 const type = bigWinType(frame.spinWinAmount, frame.betAmount);
                 if (type > 0) await this.effects?.bigWin(frame.spinWinAmount, type, frame.betAmount);
+                if (!running()) return;
+                const tier = type > 0 ? 3 : Number(frame.spinWinAmount) >= Number(frame.betAmount) * 3 ? 2 : 1;
+                const stake = BigInt(frame.betAmount);
+                const count = type === 0 && stake > 0n && BigInt(frame.spinWinAmount) >= stake * 5n
+                    ? { minor: frame.spinWinAmount, seconds: 0.8 }
+                    : undefined;
+                this.effects?.showBottomWin?.(formatMoney(frame.spinWinAmount), tier, true, count);
+                if (count) await this.pause(count.seconds);
             }
             if (!running()) return;
             if (frame.nextAction === 'complete') {

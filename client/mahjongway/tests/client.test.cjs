@@ -61,8 +61,8 @@ test('source prefabs contain no old platform controllers or serialized callbacks
   for(const obj of data)if(obj.__type__&&!obj.__type__.startsWith('cc.'))assert.equal(obj.__type__,'fa1638wUmZDrIAAJvGGnFR2',name);
  }
 });
-test('native presentation count-up preserves integer money and 5/15/50 thresholds',()=>{
- assert.equal(rollMoney('9007199254740993000',.5),'4,503,599,627,370,496,500');assert.equal(bigWinType('499','100'),0);assert.equal(bigWinType('500','100'),1);assert.equal(bigWinType('1500','100'),2);assert.equal(bigWinType('5000','100'),3);
+test('native presentation count-up preserves integer money and 10/25/60 thresholds',()=>{
+ assert.equal(rollMoney('9007199254740993000',.5),'4,503,599,627,370,496,500');assert.equal(bigWinType('999','100'),0);assert.equal(bigWinType('1000','100'),1);assert.equal(bigWinType('2500','100'),2);assert.equal(bigWinType('6000','100'),3);
 });
 test('anticipation excludes preview/free/turbo and releases all waits on stop',()=>{
  const board=[11,11,2,2,2].map(s=>[{symbolId:11},{symbolId:s},{symbolId:2},{symbolId:2},{symbolId:2}]);

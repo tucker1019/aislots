@@ -22,7 +22,7 @@
 - `assets/mahjongway/src/effects/`：预制体加载与姿态重置、弹窗/金币演出、Scatter期待时序。只保留原 MWSpriteCtrl 的图片切换接口，不引入旧平台或旧网络模块。
 - 已接入普通消除、金底翻百搭、百搭/Scatter待机及Scatter停轴闪光、免费进入/追加/结算、大奖、倍率条、期待光框及转动/停止/Turbo按钮动画。消除等待原生 Animation 完成，保留原动画 speed。
 - cell 初始化35个后复用，特效按cell缓存，金币按类型回收；补牌保持统一速度并增加落地回弹。
-- 原版大奖门槛为投注额5/15/50倍，只读取服务端已结算的 spinWinAmount。免费倍率仍读独立配置，不假设普通倍率乘2；因此免费进入弹窗中原美术“倍率固定翻倍”的字幕隐藏。
+- 客户端大奖门槛为投注额10/25/60倍，只读取服务端已结算的 spinWinAmount。免费倍率仍读独立配置，不假设普通倍率乘2；因此免费进入弹窗中原美术“倍率固定翻倍”的字幕隐藏。
 - 弹窗点击可跳过计数或继续，超时自动结束，不向服务端发送动画确认；刷新后先静态恢复最后已结算盘面、余额和累计赢分，再继续下一未结算轮。
 
 更新源资源：从仓库根目录运行 `python3 client/mahjongway/tools/import_effects.py /Users/yaozhao/cccProject/mahjongway1_1025`。工具保留UUID、递归复制依赖并剔除旧业务组件和按钮回调；会覆盖已迁入的同名资源，手工修改前请先保存自己的版本。
@@ -60,7 +60,7 @@ python3 -m http.server 5180 --bind 127.0.0.1 --directory client/mahjongway/build
 
 首屏 cell 延迟至登录、投注列表和状态接口返回后创建：有 lastFrame 就直接使用其盘面，无历史记录则使用 slots/initial_board.ts 的固定展示牌面（不参与开奖）。HTML 封面等待 aislots-board-ready 通知后的首帧才揭开；build 的 START 也在初始盘面准备好后显示。
 
-Big/Mega/Super Win now count through each presentation tier instead of opening directly at the final tier. Big upgrades at 15x stake, Mega at 50x, and the final tier finishes at the settled win. The existing 8-second count duration is shared across tiers; displayed integer money never resets on upgrade. Clicking to skip still shows the final tier and total immediately. Threshold progression is in effects/big_win_progression.ts; native title, pile and VFX transitions are in effects/big_win_visuals.ts.
+Big/Mega/Super Win now count through each presentation tier instead of opening directly at the final tier. Big upgrades at 25x stake, Mega at 60x, and the final tier finishes at the settled win. The existing 8-second count duration is shared across tiers; displayed integer money never resets on upgrade. Clicking to skip still shows the final tier and total immediately. Threshold progression is in effects/big_win_progression.ts; native title, pile and VFX transitions are in effects/big_win_visuals.ts.
 
 Rule opens an in-game HTML rules overlay using the history theme and floating scrollbar. The supplied Indonesian rules are translated into Chinese in rules/rules_content.ts. Per explicit content approval, the reference rule of 3 scatters awarding 12 free spins (+2 per additional scatter) is preserved; this static documentation does not change the server award mapping. Closing the page restores game input without sending gameplay requests.
 

@@ -10,6 +10,7 @@ import {
     Component,
     Node,
     Label,
+    Layout,
     Sprite,
     UIOpacity,
     UITransform,
@@ -62,6 +63,12 @@ export class GameEffects extends Component {
     private freePanelView: FreePanelView = null;
     private bonusParticle: NativeEffect = null;
     private bonusParticleVisible = false;
+    private bottomParticle: Node = null;
+    private infoBar: Node = null;
+    private winBar: Node = null;
+    private infoMode: boolean | null = null;
+    private infoIndex = 0;
+    private bottomWinTier = 0;
     private symbolTooltip: SymbolTooltip = null;
     private previousMultiplier = -1;
     private previousFactors = '';
@@ -95,6 +102,10 @@ export class GameEffects extends Component {
             if (panel) EffectLibrary.create('control_autostop', panel).node.name = 'btn_autostop';
         }
         const layout = this.find(this.node, 'layout_bottom');
+        this.bottomParticle = layout?.getChildByName('bonus_bg_particle');
+        this.infoBar = layout?.getChildByName('ib_bar');
+        this.winBar = layout?.getChildByName('node_win_big');
+        this.resetBottomWin();
         const normal = layout?.getChildByName('panel1'), menu = layout?.getChildByName('panel2');
         if (layout && normal && menu) {
             let panel = layout.getChildByName('panel_free');
@@ -152,6 +163,7 @@ export class GameEffects extends Component {
         this.symbolTooltip?.update(0, flow.state === 0 && !flow.autoSpinRunning);
         this.freePanelView?.update(!!flow.freePanelActive, flow.freeSpinsRemaining || 0);
         this.updateBonusParticle(!!flow.freePanelActive);
+        if (this.infoBar?.active) this.showBottomNotice(!!flow.freePanelActive);
         const rolling = flow.state === 1 || flow.state === 2;
         if (rolling && !this.wasRolling) {
             const stop = this.controls.get('control_stop');
@@ -167,9 +179,100 @@ export class GameEffects extends Component {
             turbo.node.getChildByPath('txt_turbo_on/turbo_lightning').active = flow.fast;
         }
     }
+    resetBottomWin() {
+        this.bottomWinTier = 0;
+        this.stopBottomWinCount();
+        this.winBar?.getComponent(Animation)?.stop();
+        if (this.winBar) this.winBar.active = false;
+        if (this.infoBar) this.infoBar.active = true;
+        this.refreshControls();
+    }
+
+    showBottomWin(amount: string, tier: number, total: boolean, count?: { minor: string; seconds: number }) {
+        if (!this.winBar || !this.infoBar) return;
+        this.stopBottomNotice();
+        this.infoBar.active = false;
+        this.winBar.active = true;
+        const animation = this.winBar.getComponent(Animation);
+        const clip = tier === 3 ? 'win_c' : total || (tier === 2 && this.bottomWinTier === 2)
+            ? 'win_end' : tier === 2 ? 'win_a_to_b' : 'win_a';
+        if (!total) this.winBar.children.forEach(node => { node.active = false; });
+        animation?.play(clip);
+        this.bottomWinTier = tier;
+        const sound = tier === 3 ? 'infoboardTotalwinBigwin'
+            : tier === 2 ? 'infoboardTotalwinMedwinEnd' : 'infoboardTotalwin';
+        this.sound(this.bonusParticleVisible ? 'freespinWon' : sound);
+        const info = this.winBar.getChildByName('num_info');
+        info.active = true;
+        const award = info.getChildByName('award').getComponent(Label);
+        Tween.stopAllByTarget(award);
+        const layout = info.getComponent(Layout);
+        if (layout) layout.enabled = true;
+        info.getChildByName('info_win').getComponent(MWSpriteCtrl)?.setSpriteIndex(total ? 1 : 0);
+        award.string = amount;
+        if (count) {
+            // Measure the final amount once so digit changes cannot shift the title.
+            award.updateRenderData(true);
+            layout?.updateLayout(true);
+            if (layout) layout.enabled = false;
+            award.string = rollMoney(count.minor, 0);
+            tween(award)
+                .to(count.seconds, {}, {
+                    onUpdate: (_, progress) => { award.string = rollMoney(count.minor, progress); },
+                })
+                .call(() => { award.string = amount; })
+                .start();
+        }
+    }
+
+    private stopBottomWinCount() {
+        const award = this.winBar?.getChildByPath('num_info/award')?.getComponent(Label);
+        if (award) Tween.stopAllByTarget(award);
+    }
+
+    private showBottomNotice(free: boolean) {
+        if (this.infoMode === free) return;
+        this.stopBottomNotice();
+        this.infoMode = free;
+        this.infoIndex = Math.floor(Math.random() * 5);
+        const mask = this.infoBar.getChildByName('mask');
+        const text = mask.getChildByName('info_main');
+        const sprite = text.getComponent(MWSpriteCtrl);
+        const rotate = () => {
+            sprite.setSpriteIndex(free ? 5 : this.infoIndex);
+            this.infoIndex = (this.infoIndex + 1) % 5;
+            const width = text.getComponent(UITransform).width;
+            const available = mask.getComponent(UITransform).width;
+            const y = text.position.y;
+            Tween.stopAllByTarget(text);
+            text.setPosition(width > available ? (width - available) / 2 + 30 : 0, y, 0);
+            if (width > available) {
+                tween(text).delay(0.5)
+                    .to(4.4, { position: new Vec3(-(available + width) / 2 - 5, y, 0) })
+                    .start();
+            }
+        };
+        rotate();
+        tween(this.infoBar).repeatForever(tween<Node>().delay(5).call(rotate)).start();
+    }
+
+    private stopBottomNotice() {
+        this.infoMode = null;
+        if (!this.infoBar) return;
+        Tween.stopAllByTarget(this.infoBar);
+        const text = this.infoBar.getChildByPath('mask/info_main');
+        if (text) Tween.stopAllByTarget(text);
+    }
+
     private updateBonusParticle(visible: boolean) {
         if (!this.bonusParticle || visible === this.bonusParticleVisible) return;
         this.bonusParticleVisible = visible;
+        if (this.bottomParticle) {
+            this.bottomParticle.active = visible;
+            const animation = this.bottomParticle.getComponent(Animation);
+            if (visible) animation?.play();
+            else animation?.stop();
+        }
         if (visible) {
             this.bonusParticle.reset();
             this.bonusParticle.loops();
@@ -543,6 +646,8 @@ export class GameEffects extends Component {
         });
     }
     onDestroy() {
+        this.stopBottomWinCount();
+        this.stopBottomNotice();
         this.symbolTooltip?.destroy();
         this.popupFinish?.();
         this.find(this.node, 'btn_sound')?.off(Node.EventType.TOUCH_END, this.toggleSound, this);
@@ -559,16 +664,4 @@ export function rollMoney(amount: string, progress: number) {
     const value = negative ? -minor : minor;
     return (negative ? '-' : '') + (Number(value) / 100).toFixed(2);
 }
-export function bigWinType(amount: string, bet: string) {
-    const win = BigInt(amount),
-        stake = BigInt(bet);
-    return stake <= BigInt(0)
-        ? 0
-        : win >= stake * BigInt(50)
-          ? 3
-          : win >= stake * BigInt(15)
-            ? 2
-            : win >= stake * BigInt(5)
-              ? 1
-              : 0;
-}
+export { bigWinType } from './big_win_progression';
