@@ -1,7 +1,11 @@
 {
-  "name": "mahjongway",
-  "uuid": "d9a48377-0c68-4877-b206-33014e7bc623",
-  "creator": {
-    "version": "3.8.8"
-  }
+	"name": "mahjongway",
+	"uuid": "d9a48377-0c68-4877-b206-33014e7bc623",
+	"creator": {
+		"version": "3.8.8"
+	},
+	"pink": {
+		"uuid": "3d68c5c6-d319-45c3-a7da-420426d6b865",
+		"version": "1.127.0"
+	}
 }
