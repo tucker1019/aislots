@@ -144,7 +144,12 @@ func fail(w http.ResponseWriter, r *http.Request, err error) {
 	if public.Status >= 500 {
 		xlog.Error(r.Context(), "lobby request failed", "path", r.URL.Path, "error", err)
 	}
-	respond(w, r, public.Status, map[string]any{"code": public.Code.Number(), "message": public.Message})
+	body := map[string]any{"code": public.Code.Number(), "message": public.Message}
+	if public.RemainingTurnover > 0 {
+		body["remainingTurnover"] = public.RemainingTurnover
+		body["turnoverItems"] = public.TurnoverItems
+	}
+	respond(w, r, public.Status, body)
 }
 
 func respond(w http.ResponseWriter, r *http.Request, status int, value any) {

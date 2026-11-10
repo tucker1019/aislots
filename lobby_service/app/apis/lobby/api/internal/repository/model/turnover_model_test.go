@@ -239,6 +239,11 @@ func TestTurnoverWithdrawalGateAndRefund(t *testing.T) {
 	if _, e = w.Create(ctx, uid, "withdraw-turnover", "new-request-0002", "test1", "test", tier); !errors.Is(e, xerr.ErrWithdrawalTurnover) {
 		t.Fatal("gate bypassed", e)
 	}
+	public := xerr.Public(e)
+	if len(public.TurnoverItems) != 1 || public.TurnoverItems[0].Amount != 100 ||
+		public.TurnoverItems[0].Required != public.RemainingTurnover || public.TurnoverItems[0].Completed != 0 {
+		t.Fatalf("unexpected turnover breakdown: %+v", public.TurnoverItems)
+	}
 	retry, e := w.Create(ctx, uid, "withdraw-turnover", "first-request-0001", "test1", "test", tier)
 	if e != nil || retry.OrderID != first.OrderID {
 		t.Fatal("old receipt blocked", retry, e)

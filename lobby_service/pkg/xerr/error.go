@@ -7,10 +7,12 @@ import (
 )
 
 type Error struct {
-	Code    codes.UserError
-	Message string
-	Status  int
-	cause   error
+	Code              codes.UserError
+	Message           string
+	Status            int
+	RemainingTurnover int64
+	TurnoverItems     []TurnoverItem
+	cause             error
 }
 
 func (e *Error) Error() string { return e.Message }

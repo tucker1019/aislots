@@ -43,7 +43,11 @@ func (m *WithdrawalModel) Create(ctx context.Context, uid int64, token, requestI
 			return err
 		}
 		if left > 0 {
-			return xerr.ErrWithdrawalTurnover
+			items, err := (&TurnoverModel{DB: tx}).activeItems(ctx, uid, left)
+			if err != nil {
+				return err
+			}
+			return xerr.WithdrawalTurnover(left, items)
 		}
 		if tier == nil {
 			return xerr.ErrInvalid

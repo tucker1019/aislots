@@ -52,7 +52,7 @@ func TestStatisticsAPIAuthCachePrivacyAndValidation(t *testing.T) {
 		t.Fatal("cache mutation", out, e)
 	}
 	rank, e := l.GameLeaderboard(ctx, r)
-	if e != nil || rank.Items[0].Nickname != "P***" || rank.Items[0].UserId == "7" || len(rank.Items[0].UserId) != 20 {
+	if e != nil || rank.Items[0].Nickname != "Private Account" || rank.Items[0].UserId == "7" || len(rank.Items[0].UserId) != 20 {
 		t.Fatal(rank, e)
 	}
 	if _, e = l.GameLeaderboard(ctx, r); e != nil {

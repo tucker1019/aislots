@@ -1691,21 +1691,20 @@ func (x *GameRtpReply) GetPercent() string {
 }
 
 type GameLeaderboardItem struct {
-	state             protoimpl.MessageState `protogen:"open.v1"`
-	ExperienceAccount bool                   `protobuf:"varint,12,opt,name=experience_account,json=experienceAccount,proto3" json:"experience_account,omitempty"`
-	Rank              int32                  `protobuf:"varint,1,opt,name=rank,proto3" json:"rank,omitempty"`
-	UserId            string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Nickname          string                 `protobuf:"bytes,3,opt,name=nickname,proto3" json:"nickname,omitempty"`
-	AvatarId          int32                  `protobuf:"varint,4,opt,name=avatar_id,json=avatarId,proto3" json:"avatar_id,omitempty"`
-	BetId             string                 `protobuf:"bytes,5,opt,name=bet_id,json=betId,proto3" json:"bet_id,omitempty"`
-	BetAmount         string                 `protobuf:"bytes,6,opt,name=bet_amount,json=betAmount,proto3" json:"bet_amount,omitempty"`
-	WinAmount         string                 `protobuf:"bytes,7,opt,name=win_amount,json=winAmount,proto3" json:"win_amount,omitempty"`
-	Multiplier        string                 `protobuf:"bytes,8,opt,name=multiplier,proto3" json:"multiplier,omitempty"`
-	Streak            int64                  `protobuf:"varint,9,opt,name=streak,proto3" json:"streak,omitempty"`
-	OccurredAt        string                 `protobuf:"bytes,10,opt,name=occurred_at,json=occurredAt,proto3" json:"occurred_at,omitempty"`
-	PlatformOrderId   string                 `protobuf:"bytes,11,opt,name=platform_order_id,json=platformOrderId,proto3" json:"platform_order_id,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Rank            int32                  `protobuf:"varint,1,opt,name=rank,proto3" json:"rank,omitempty"`
+	UserId          string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Nickname        string                 `protobuf:"bytes,3,opt,name=nickname,proto3" json:"nickname,omitempty"`
+	AvatarId        int32                  `protobuf:"varint,4,opt,name=avatar_id,json=avatarId,proto3" json:"avatar_id,omitempty"`
+	BetId           string                 `protobuf:"bytes,5,opt,name=bet_id,json=betId,proto3" json:"bet_id,omitempty"`
+	BetAmount       string                 `protobuf:"bytes,6,opt,name=bet_amount,json=betAmount,proto3" json:"bet_amount,omitempty"`
+	WinAmount       string                 `protobuf:"bytes,7,opt,name=win_amount,json=winAmount,proto3" json:"win_amount,omitempty"`
+	Multiplier      string                 `protobuf:"bytes,8,opt,name=multiplier,proto3" json:"multiplier,omitempty"`
+	Streak          int64                  `protobuf:"varint,9,opt,name=streak,proto3" json:"streak,omitempty"`
+	OccurredAt      string                 `protobuf:"bytes,10,opt,name=occurred_at,json=occurredAt,proto3" json:"occurred_at,omitempty"`
+	PlatformOrderId string                 `protobuf:"bytes,11,opt,name=platform_order_id,json=platformOrderId,proto3" json:"platform_order_id,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *GameLeaderboardItem) Reset() {
@@ -1736,13 +1735,6 @@ func (x *GameLeaderboardItem) ProtoReflect() protoreflect.Message {
 // Deprecated: Use GameLeaderboardItem.ProtoReflect.Descriptor instead.
 func (*GameLeaderboardItem) Descriptor() ([]byte, []int) {
 	return file_apis_lobby_api_v1_game_api_proto_rawDescGZIP(), []int{23}
-}
-
-func (x *GameLeaderboardItem) GetExperienceAccount() bool {
-	if x != nil {
-		return x.ExperienceAccount
-	}
-	return false
 }
 
 func (x *GameLeaderboardItem) GetRank() int32 {
@@ -2828,9 +2820,8 @@ const file_apis_lobby_api_v1_game_api_proto_rawDesc = "" +
 	"\x06rounds\x18\b \x01(\x03R\x06rounds\x12\x19\n" +
 	"\bhas_data\x18\t \x01(\bR\ahasData\x12\x18\n" +
 	"\apercent\x18\n" +
-	" \x01(\tR\apercent\"\x84\x03\n" +
-	"\x13GameLeaderboardItem\x12-\n" +
-	"\x12experience_account\x18\f \x01(\bR\x11experienceAccount\x12\x12\n" +
+	" \x01(\tR\apercent\"\xef\x02\n" +
+	"\x13GameLeaderboardItem\x12\x12\n" +
 	"\x04rank\x18\x01 \x01(\x05R\x04rank\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1a\n" +
 	"\bnickname\x18\x03 \x01(\tR\bnickname\x12\x1b\n" +
@@ -2847,7 +2838,7 @@ const file_apis_lobby_api_v1_game_api_proto_rawDesc = "" +
 	"\voccurred_at\x18\n" +
 	" \x01(\tR\n" +
 	"occurredAt\x12*\n" +
-	"\x11platform_order_id\x18\v \x01(\tR\x0fplatformOrderId\"\xba\x01\n" +
+	"\x11platform_order_id\x18\v \x01(\tR\x0fplatformOrderIdJ\x04\b\f\x10\rR\x12experience_account\"\xba\x01\n" +
 	"\x14GameLeaderboardReply\x12<\n" +
 	"\x05items\x18\x01 \x03(\v2&.apis.lobby.api.v1.GameLeaderboardItemR\x05items\x12\x1d\n" +
 	"\n" +
