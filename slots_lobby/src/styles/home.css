@@ -2,6 +2,7 @@
   margin-top: var(--header-height);
   height: calc(var(--lobby-height) - var(--header-height));
   padding-top: 0;
+  overflow-anchor: none;
 }
 
 .home-content {
@@ -137,10 +138,9 @@
 }
 
 .home-game-list-end {
-  overflow-anchor: none;
   display: grid;
   place-items: center;
-  min-height: 28px;
+  height: 28px;
 }
 
 .game-tile {

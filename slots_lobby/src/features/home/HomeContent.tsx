@@ -27,7 +27,8 @@ export function HomeContent({ onComingSoon }: { onComingSoon: () => void }) {
 
   useEffect(() => {
     const target = listEnd.current;
-    if (!hasMore || !target || typeof IntersectionObserver === 'undefined') return;
+    const scrollRoot = target?.closest('#root');
+    if (!hasMore || !target || !scrollRoot || typeof IntersectionObserver === 'undefined') return;
     let active = true;
     let started = false;
     let minimumDelay: number | undefined;
@@ -47,7 +48,7 @@ export function HomeContent({ onComingSoon }: { onComingSoon: () => void }) {
         setVisibleCount(count => count + GAMES_PER_BATCH);
         setLoadingMore(false);
       });
-    });
+    }, { root: scrollRoot, rootMargin: '0px 0px 160px 0px' });
     observer.observe(target);
     return () => {
       active = false;
@@ -68,7 +69,7 @@ export function HomeContent({ onComingSoon }: { onComingSoon: () => void }) {
           <GameTile key={id} cover={gameCover(id)} label={title} onEnter={onComingSoon} lazy={index >= 11 && index < GAMES_PER_BATCH - 1} />
         ))}
       </div>
-      {hasMore && <div className="home-game-list-end" ref={listEnd}>
+      {selected === 'hot' && <div className="home-game-list-end" ref={listEnd}>
         {loadingMore && <span role="status" aria-label={t('copy.loading')}><Spin size="small" /></span>}
       </div>}
     </section>
