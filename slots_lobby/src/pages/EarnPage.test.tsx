@@ -14,7 +14,7 @@ beforeEach(()=>{vi.mocked(fetchRebate).mockReset();vi.mocked(claimRebate).mockRe
 function setup(){render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false,gcTime:0}}})}><EarnPage/></QueryClientProvider>);}
 it('真實預估及平台比例，不顯示具體遊戲，領取使用活動日期',async()=>{
  vi.mocked(fetchRebate).mockResolvedValue(info);vi.mocked(claimRebate).mockResolvedValue(100);setup();expect(await screen.findByText('AG')).toBeInTheDocument();expect(screen.getByText('1%')).toBeInTheDocument();expect(screen.getByText('2.27')).toBeInTheDocument();
- fireEvent.click(screen.getByRole('button',{name:'領取'}));await waitFor(()=>expect(claimRebate).toHaveBeenCalledWith('2026-11-03',expect.anything()));expect(await screen.findByText('領取成功，獲得 1.00')).toBeInTheDocument();expect(await screen.findByText('領取成功',{exact:true})).toBeInTheDocument();expect(screen.getByRole('button',{name:'領取'})).toBeDisabled();
+ fireEvent.click(screen.getByRole('button',{name:'領取'}));await waitFor(()=>expect(claimRebate).toHaveBeenCalledWith('2026-11-03',expect.anything()));expect(await screen.findByText('領取成功',{exact:true})).toBeInTheDocument();expect(screen.queryByText(/領取成功，獲得/)).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'領取'})).toBeDisabled();
 });
 it('無金額不能領取，規則可以展開',async()=>{vi.mocked(fetchRebate).mockResolvedValue({...info,claimableTotal:0});setup();expect(await screen.findByRole('button',{name:'領取'})).toBeDisabled();fireEvent.click(screen.getByRole('button',{name:/規則查看/}));expect(window.location.pathname).toBe('/earn/rules');});
 it('錯誤顯示重試',async()=>{vi.mocked(fetchRebate).mockRejectedValue(new Error('network'));setup();expect(await screen.findByRole('button',{name:'重試'})).toBeEnabled();});

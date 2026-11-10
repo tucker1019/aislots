@@ -34,3 +34,15 @@
 .deposit-tier-symbol svg { width: 18px; height: 18px; }
 
 .withdrawal-review { display:flex; gap:12px; margin-top:18px; }.withdrawal-review > button {flex:1}.withdrawal-page .deposit-tiers { margin-top:12px; }.withdrawal-page .deposit-card .ant-select {max-width:100%;}.withdrawal-page .deposit-card .ant-select-selection-item {overflow:hidden;text-overflow:ellipsis;}.withdrawal-page .ant-alert {margin:12px 0;}
+
+.withdrawal-turnover-sheet .ant-drawer-body { max-height: calc(var(--lobby-height, 100dvh) * .72); overflow: auto; padding: 12px 14px calc(14px + var(--lobby-safe-bottom, 0px)); }
+.withdrawal-turnover-summary { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0,1fr); gap: 8px; margin: 0 0 10px; }
+.withdrawal-turnover-summary > div,.withdrawal-turnover-item { padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--theme-soft,#f4f6fa); }
+.withdrawal-turnover-summary > div { text-align: center; }
+.withdrawal-turnover-summary dt,.withdrawal-turnover-item dt { color: var(--muted); font-size: 12px; }
+.withdrawal-turnover-summary dd { margin: 3px 0 0; color: var(--blue); font-size: 19px; font-weight: 750; overflow-wrap: anywhere; }
+.withdrawal-turnover-item + .withdrawal-turnover-item { margin-top: 8px; }
+.withdrawal-turnover-item header,.withdrawal-turnover-item dl > div { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.withdrawal-turnover-item dl { margin: 8px 0 0; }
+.withdrawal-turnover-item dl > div { border-top: 1px solid var(--line); padding: 5px 0; }
+.withdrawal-turnover-item dd { margin: 0; text-align: end; font-size: 12px; }

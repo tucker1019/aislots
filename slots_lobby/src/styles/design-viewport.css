@@ -13,9 +13,7 @@ body { min-width: 0; height: 100dvh; }
 /* This portal is a physical viewport: Cocos handles its own scaling. */
 body > .game-detail-shell { width: 420px; height: var(--lobby-height); transform: translateX(-50%); zoom: var(--lobby-scale); }
 body > .game-detail-expanded { zoom: 1; transform: translateX(-50%); width: min(100%, 420px); height: 100dvh; }
-.game-rank-replay { flex-wrap: nowrap; }
 .game-rank-order { flex: 1 1 0; display: flex; align-items: center; gap: 5px; min-width: 0; }
-.game-rank-order-number { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .game-platform-verified { margin-left: 0; flex-shrink: 0; }
 
 :root { --lobby-safe-top: calc(env(safe-area-inset-top, 0px) * var(--lobby-inverse-scale)); --lobby-safe-bottom: calc(env(safe-area-inset-bottom, 0px) * var(--lobby-inverse-scale)); }

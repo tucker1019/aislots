@@ -1,15 +1,54 @@
 import {AsyncButton} from '../../components/buttons/AsyncButton';
-import { overlayContainer } from '../../app/designViewport';
+import {overlayContainer} from '../../app/designViewport';
 import {useState} from 'react';
+import {createPortal} from 'react-dom';
 import {useMutation} from '@tanstack/react-query';
-import {Modal} from 'antd';
-import {fetchRankReplay} from '../../services/game-statistics';
-import type {RankBoard,RankPeriod} from '../../services/game-statistics';
+import {message,Modal} from 'antd';
+import {fetchRankReplay,type RankBoard,type RankPeriod} from '../../services/game-statistics';
 import {t} from '../../i18n';
-export function RankReplay({orderId,betId,board,period}:{orderId:string;betId:string;board:RankBoard;period:RankPeriod}){
- const [open,setOpen]=useState(false);
- const query=useMutation({mutationFn:()=>fetchRankReplay(orderId,board,period),retry:false,onSuccess:()=>setOpen(true)});
- return <div className="game-rank-replay"><span className="game-rank-order"><span className="game-rank-order-number" title={betId}>{t('gamePreview.betId',{id:betId})}</span><span className="game-platform-verified" title={t('gamePreview.platformVerified')} aria-label={t('gamePreview.platformVerified')}><svg width="13" height="15" viewBox="0 0 16 18" fill="none" aria-hidden="true"><path d="M8 1 14.5 3.5V8c0 4.1-2.8 6.9-6.5 9C4.3 14.9 1.5 12.1 1.5 8V3.5L8 1Z" fill="currentColor"/><path d="m4.8 8.8 2.1 2.1 4.3-4.4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg><span>{t('gamePreview.platformVerified')}</span></span></span><AsyncButton loading={query.isPending} type="button" disabled={query.isPending} aria-busy={query.isPending} aria-label={t('gamePreview.replay')} onClick={()=>query.mutate()}><span className="game-replay-label">{t('gamePreview.replay')}</span></AsyncButton>
- {query.isError&&<span role="alert">{t('gamePreview.replayUnavailable')}</span>}
- <Modal getContainer={overlayContainer} open={open} title={t('gamePreview.replayTitle')} footer={null} onCancel={()=>setOpen(false)} destroyOnHidden width={430} className="game-rank-replay-modal">{open&&query.data&&<iframe title={t('gamePreview.replayTitle')} src={query.data} allow="autoplay; fullscreen; clipboard-write" referrerPolicy="no-referrer"/>}</Modal></div>;
+import {RankOrderNumber} from './RankOrderNumber';
+
+export function RankReplay({orderId,betId,board,period,shareTarget}:{orderId:string;betId:string;board:RankBoard;period:RankPeriod;shareTarget?:HTMLElement|null}) {
+ const [panel,setPanel]=useState<'replay'|'share'>();
+ const [toast,holder]=message.useMessage({getContainer:overlayContainer,maxCount:1,classNames:{list:'lobby-toast-list'}});
+ const query=useMutation({
+  mutationFn:(_action:'replay'|'share')=>fetchRankReplay(orderId,board,period),
+  retry:false,
+  onSuccess:(_url,action)=>{setPanel(action);},
+ });
+ async function copyLink(url:string) {
+  try {
+   await navigator.clipboard.writeText(url);
+   void toast.success(t('copy.copied'));
+  } catch {
+   void toast.error(t('gamePreview.shareCopyFailed'));
+  }
+ }
+ const shareButton=<AsyncButton className="game-rank-share-trigger" aria-label={t('gamePreview.share')}
+   loading={query.isPending&&query.variables==='share'} type="button"
+   disabled={query.isPending} onClick={()=>query.mutate('share')}>
+   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M14 3v5C8 8 4 12 2 19c4-4 7-5 12-5v5l8-8-8-8Z"/>
+   </svg>
+  </AsyncButton>;
+ return <div className="game-rank-replay">
+  {holder}
+  <RankOrderNumber betId={betId}/>
+  <div className="game-rank-actions">
+   <AsyncButton loading={query.isPending&&query.variables==='replay'} type="button" disabled={query.isPending} onClick={()=>query.mutate('replay')}>
+    {t('gamePreview.replay')}
+   </AsyncButton>
+  </div>
+  {shareTarget ? createPortal(shareButton,shareTarget) : shareTarget===undefined && shareButton}
+  {query.isError&&<span role="alert">{t('gamePreview.replayUnavailable')}</span>}
+  <Modal getContainer={overlayContainer} open={!!panel}
+   title={t(panel==='share'?'gamePreview.share':'gamePreview.replayTitle')}
+   footer={null} onCancel={()=>setPanel(undefined)} destroyOnHidden width={430} className="game-rank-replay-modal">
+   {panel==='replay'&&query.data&&<iframe title={t('gamePreview.replayTitle')} src={query.data} allow="autoplay; fullscreen; clipboard-write" referrerPolicy="no-referrer"/>}
+   {panel==='share'&&query.data&&<div className="game-rank-share">
+    <input aria-label={t('gamePreview.shareLink')} value={query.data} readOnly onFocus={event=>event.currentTarget.select()}/>
+    <button type="button" onClick={()=>{if(query.data)void copyLink(query.data);}}>{t('copy.copy')}</button>
+   </div>}
+  </Modal>
+ </div>;
 }

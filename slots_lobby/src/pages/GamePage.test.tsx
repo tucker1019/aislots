@@ -40,6 +40,22 @@ it('詳情打開時申請入口，失敗後可重試', async () => {
 it('放大和縮回保留同一個iframe節點和src，不再申請入口',async()=>{
  rememberGameEntry(first);const {user}=setup();const frame=screen.getByTitle('AG1 麻將胡了');
  await user.click(screen.getByRole('button',{name:/放大遊玩/}));expect(screen.getByRole('dialog')).toHaveClass('game-detail-expanded');expect(screen.getByTitle('AG1 麻將胡了')).toBe(frame);
+ expect(screen.queryByRole('button',{name:'重新進入'})).not.toBeInTheDocument();
+ const menu=screen.getByRole('button',{name:'開啟遊戲選單'});
+ const shell=screen.getByRole('dialog');
+ vi.spyOn(shell,'getBoundingClientRect').mockReturnValue(new DOMRect(0,0,420,800));
+ vi.spyOn(menu,'getBoundingClientRect').mockReturnValue(new DOMRect(356,10,54,54));
+ const pointer=(type:string,x:number,y:number)=>fireEvent(menu,Object.assign(new MouseEvent(type,{
+  bubbles:true,button:0,clientX:x,clientY:y,
+ }),{pointerId:1,isPrimary:true}));
+ pointer('pointerdown',380,35);
+ pointer('pointermove',120,230);
+ pointer('pointerup',120,230);
+ fireEvent.click(menu,{detail:1});
+ expect(menu.parentElement?.style.top).toContain('205px');
+ expect(menu).toHaveAttribute('aria-expanded','false');
+ await user.click(menu);
+ expect(screen.getByRole('button',{name:'退出遊戲'})).toBeInTheDocument();
  await user.click(screen.getByRole('button',{name:'縮回小窗'}));expect(screen.getByRole('dialog')).not.toHaveClass('game-detail-expanded');expect(screen.getByTitle('AG1 麻將胡了')).toBe(frame);expect(frame).toHaveAttribute('src',first);expect(launchGame).not.toHaveBeenCalled();
  expect(screen.getByRole('tab',{name:'最大連勝'})).toBeInTheDocument();await user.click(screen.getByRole('tab',{name:'最大連勝'}));expect(await screen.findByText('暫無上榜記錄')).toBeInTheDocument();
 });

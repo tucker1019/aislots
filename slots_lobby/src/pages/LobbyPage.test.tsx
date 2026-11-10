@@ -14,7 +14,7 @@ function setup() {
   render(<ConfigProvider theme={{ token: { motion: false } }}><QueryClientProvider client={client}><LobbyPage /></QueryClientProvider></ConfigProvider>);
   return userEvent.setup();
 }
-it('保留資料頂欄，按通知、Banner、廠商、遊戲順序排布，只有一張麻將卡片', async () => {
+it('保留資料頂欄，按通知、Banner、廠商、遊戲順序排布，首批顯示六行遊戲卡片', async () => {
   setup();
   expect(await screen.findByLabelText('金幣餘額 123.45')).toBeInTheDocument();
   const main = screen.getByRole('main');
@@ -23,7 +23,7 @@ it('保留資料頂欄，按通知、Banner、廠商、遊戲順序排布，只�
   const providers = within(screen.getByRole('navigation', { name: '遊戲廠商' }));
   expect(providers.getAllByRole('button').map(button => button.textContent)).toHaveLength(2);
   expect(providers.getByRole('button', { name: '熱門' })).toHaveAttribute('aria-pressed', 'true');
-  expect(within(screen.getByRole('region', { name: '遊戲列表' })).getAllByRole('button')).toHaveLength(1);
+  expect(within(screen.getByRole('region', { name: '遊戲列表' })).getAllByRole('button')).toHaveLength(18);
   expect(screen.getByRole('button', { name: '進入麻將胡了' })).toBeEnabled();
 });
 it('AG與熱門切換顯示現有遊戲，隱藏未接入廠商', async () => {

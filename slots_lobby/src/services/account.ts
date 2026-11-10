@@ -31,7 +31,7 @@ export async function request(path: string, init: RequestInit = {}, failureMessa
     if (response.status === 401) { useSessionStore.getState().clearSession(); useAuthStore.getState().show(); throw new Error(t('copy.sessionExpiredPleaseSignInAgain')); }
     if (isRecord(body) && body.code === 10010002) { useSessionStore.getState().clearSession(); useAuthStore.getState().show(); throw new Error(t('copy.sessionExpiredPleaseSignInAgain')); }
     if (!response.ok || !isRecord(body) || body.code !== 'OK')
-      throw new Error(failureMessage);
+      throw new Error(failureMessage, { cause: body });
     return body.data;
   } catch (error) {
     if (signal?.aborted) throw error;

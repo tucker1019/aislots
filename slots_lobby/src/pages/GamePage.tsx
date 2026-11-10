@@ -4,9 +4,11 @@ import { t } from '../i18n';
 import { useCallback,useEffect,useRef,useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { forgetGameEntry,launchGame,readGameEntry,rememberGameEntry } from '../services/game-entry';
+import { FloatingGameMenu } from '../features/game/FloatingGameMenu';
 import { GameInsights } from '../features/game/GameInsights';
 export function GamePage({onBack}:{onBack:()=>void}){
  const [url,setUrl]=useState(readGameEntry);const [preparing,setPreparing]=useState(false);const [expanded,setExpanded]=useState(false);const [error,setError]=useState('');
+ const [menuOpen,setMenuOpen]=useState(false);
  const busy=useRef(false);const alive=useRef(true);const started=useRef(false);const client=useQueryClient();
  const reopen=useCallback(async()=>{
   if(busy.current)return;busy.current=true;setPreparing(true);setError('');
@@ -15,10 +17,12 @@ export function GamePage({onBack}:{onBack:()=>void}){
   finally{busy.current=false;if(alive.current)setPreparing(false);}
  },[]);
  useEffect(()=>{alive.current=true;void client.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'none'});if(!url&&!started.current){started.current=true;void reopen();}return()=>{alive.current=false;};},[client,reopen,url]);
- useEffect(()=>{const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')setExpanded(false);};window.addEventListener('keydown',escape);return()=>window.removeEventListener('keydown',escape);},[]);
+ useEffect(()=>{const escape=(event:KeyboardEvent)=>{if(event.key==='Escape'){if(menuOpen)setMenuOpen(false);else setExpanded(false);}};window.addEventListener('keydown',escape);return()=>window.removeEventListener('keydown',escape);},[menuOpen]);
  function close(){forgetGameEntry();void client.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'all'});onBack();}
  const content=<section className={`game-detail-shell${expanded?' game-detail-expanded':''}`} role="dialog" aria-modal="true" aria-label={t('gamePreview.dialog')}>
-  <header className="game-detail-toolbar"><button type="button" onClick={close}>{t('copy.backToLobby')}</button><span>{expanded?t('copy.mahjongWays'):t('gamePreview.details')}</span><div>{expanded&&<button type="button" onClick={()=>setExpanded(false)}>{t('gamePreview.shrink')}</button>}<AsyncButton loading={preparing} type="button" disabled={preparing} onClick={()=>void reopen()}>{t('copy.reEnter')}</AsyncButton></div></header>
+  {!expanded&&<header className="game-detail-toolbar"><button type="button" onClick={close}>{t('copy.backToLobby')}</button><span>{t('gamePreview.details')}</span><div><AsyncButton loading={preparing} type="button" disabled={preparing} onClick={()=>void reopen()}>{t('copy.reEnter')}</AsyncButton></div></header>}
+  {expanded&&<FloatingGameMenu open={menuOpen} onToggle={()=>setMenuOpen(open=>!open)} onExit={close}
+   onShrink={()=>{setMenuOpen(false);setExpanded(false);}}/>}
   <div className="game-detail-content">
    <div className="game-detail-identity"><img src="/assets/lobby/mahjong-icon.png" alt={t('gamePreview.cover')}/><div><h1>{t('copy.mahjongWays')}</h1><span className="game-provider-label">AG</span><p>{t('gamePreview.tagline')}</p></div></div>
    <GameInsights part="rtp"/>
