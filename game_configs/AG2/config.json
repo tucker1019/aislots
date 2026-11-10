@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "ruleType": "ways_cascade_v1",
+  "parameters": {
+    "lineCount": 20,
+    "baseSpinWinProbability": 0.26,
+    "freeSpinWinProbability": 0.3,
+    "freeSpinTriggerProbability": 0.0055,
+    "freeSpinGuaranteedWin": true,
+    "lossStreakRtpCompensation": true,
+    "freeTriggerRtpCompensation": true,
+    "freeSpinAwardWeights": [
+      [
+        12,
+        500
+      ],
+      [
+        14,
+        30
+      ],
+      [
+        16,
+        5
+      ]
+    ],
+    "freeRetriggerLimit": 2,
+    "lossStreakRule": {
+      "enabled": false,
+      "start": 3,
+      "probability": 0.41,
+      "interval": 2,
+      "step": 0.01,
+      "cap": 9
+    },
+    "winStreakRule": {
+      "enabled": false,
+      "start": 2,
+      "probability": 0.27,
+      "interval": 1,
+      "step": 0.02,
+      "cap": 5
+    },
+    "freeTriggerRule": {
+      "enabled": false,
+      "start": 100,
+      "interval": 20,
+      "step": 0.002,
+      "cap": 200
+    }
+  },
+  "simulationOptions": {
+    "paidSpins": 100000000,
+    "seed": null
+  }
+}
