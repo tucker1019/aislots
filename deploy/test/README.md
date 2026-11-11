@@ -5,7 +5,7 @@
 ## 组成
 
 - Nginx：大厅 `/`，AG1 `/games/ag1/`、AG2 `/games/ag2/`；大厅 `/api/`、机台 `/api/v1/` 同源反向代理。
-- 两个 Go 进程，两个独立 PostgreSQL 18 容器和持久化卷。
+- 大厅、后台和游戏三个 Go 进程，两个独立 PostgreSQL 18 容器和持久化卷。
 - 除 80/443 外无容器宿主机端口映射，`/internal/` 在公网入口返回404。
 - Docker `unless-stopped` 自动重启，日志轮转，数据备份脚本；备份仍需另存到服务器之外。
 - 敏感参数只保存在服务器 `/opt/aislots-test/.env`，权限600；禁止提交或输出。
@@ -23,6 +23,7 @@ python3 deploy/test/prepare.py --origin https://YOUR_ORIGIN --output /tmp/aislot
 ```
 
 `prepare.py` 只复制构建产物、业务配置与机台盘面库，自动替换游戏/邀请公网地址和容器内部服务地址；不复制数据库或密钥。
+已有环境迁移游戏目录时，还需将 `app/apis/lobby/api/tools/import-game-catalog` 交叉编译到 `payload/bin/import-game-catalog`。通过 SSH 脚本执行一次性容器命令时使用 `docker compose run --interactive=false`，避免读取后续脚本输入。切换后核对容器创建时间、健康状态与公网文件哈希，不能只依据脚本退出码判断完成。
 依赖历史盘面配置和库仍一起保留，确保已创建局的版本可以解析。
 
 上传新包到 `/opt/aislots-test`，首次在服务器创建随机数据库密码和服务令牌后执行：
