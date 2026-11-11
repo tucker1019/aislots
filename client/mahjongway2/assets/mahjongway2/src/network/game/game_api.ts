@@ -60,7 +60,7 @@ export class GameApi {
             appname: 'test-platform',
             appkey: 'test-app',
             uid: 'test-user',
-            gameId: 'AG1',
+            gameId: 'AG2',
             test: true,
         },
         request?: Request,

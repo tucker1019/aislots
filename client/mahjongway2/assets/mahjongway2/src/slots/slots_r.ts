@@ -1,3 +1,4 @@
+import { COLUMN_HEIGHTS } from './server_board';
 import { sortAwardLayer } from '../effects/award_layer';
 import { _decorator, Component, Node } from 'cc';
 import { slots_base } from './slots_base';
@@ -5,12 +6,7 @@ import { slots_cell } from './slots_cell';
 import { createSpinCellPicker, SpinCellPicker } from './slot_widget';
 const { ccclass, property } = _decorator;
 
-const CELL_H = 165;
-const CELL_START_Y = 165;
-const CELL_COUNT = 7;
-const INIT_Y = Array.from({ length: CELL_COUNT }, (_, i) => CELL_START_Y - CELL_H * i);
-const CELL_WRAP_Y = INIT_Y[CELL_COUNT - 1] - CELL_H;
-const CELL_WRAP_OFFSET = CELL_H * CELL_COUNT;
+export const CELL_HEIGHT = 138;
 const BOUNCE_OVERSHOOT = 5;
 const BOUNCE_DOWN_DURATION = 0.08;
 const BOUNCE_UP_DURATION = 0.05;
@@ -22,7 +18,7 @@ const DROP_ACCELERATION = 9000;
 @ccclass('slots_r')
 export class slots_r extends Component {
     index: number = 0;
-    speed: number = 3800;
+    speed: number = 3500;
     up_speed: number = 500;
     up_time: number = UP_LIFT_DURATION;
     slots: slots_base = null;
@@ -34,6 +30,10 @@ export class slots_r extends Component {
     private bounceElapsed: number = 0;
     private bounceGoingUp: boolean = true;
     private cellNodes: Node[] = [];
+    private initialY: number[] = [];
+    private get cellCount() { return this.cellNodes.length; }
+    private get wrapY() { return this.initialY[this.cellCount - 1] - CELL_HEIGHT; }
+    private get wrapOffset() { return CELL_HEIGHT * this.cellCount; }
     private cellComponents: slots_cell[] = [];
     private result: number[] = [];
     private landed: boolean[] = [];
@@ -73,6 +73,7 @@ export class slots_r extends Component {
             this.cellNodes[i] = cell;
             this.cellComponents[i] = cell.getComponent(slots_cell);
         }
+        this.initialY = this.cellNodes.map(cell => cell.position.y);
         this.refreshCellZOrder();
     }
 
@@ -151,7 +152,7 @@ export class slots_r extends Component {
         const cellNodes = this.cellNodes;
         const cellComponents = this.cellComponents;
         for (let i = 0; i < cellNodes.length; i++) {
-            cellNodes[i].setPosition(0, INIT_Y[i]);
+            cellNodes[i].setPosition(0, this.initialY[i]);
             if (board && board[i] !== undefined) {
                 cellComponents[i].setBlur(false);
                 cellComponents[i].setCellValue(board[i]);
@@ -179,15 +180,15 @@ export class slots_r extends Component {
     dropTo(result: number[], sources: number[], newActiveCells?: boolean[], delay = 0) {
         // 按稳定ID判定新牌，原有胡移动时不重复触发落地闪光。
         this.dropLandingPending = result.map(
-            (_, i) => i >= 2 && i <= 5 && (newActiveCells?.[i - 1] ?? sources[i - 1] <= 0),
+            (_, i) => i >= 2 && i < COLUMN_HEIGHTS[this.index] + 2 && (newActiveCells?.[i - 1] ?? sources[i - 1] <= 0),
         );
         this.result = result;
         this.stop();
         this.dropDelay = Math.max(0, delay);
         this.dropVelocity = DROP_INITIAL_SPEED;
-        this.targets = INIT_Y.slice();
+        this.targets = this.initialY.slice();
         this.drops = result.map((value, i) =>
-            i > 0 && i < 6 && value ? Math.max(0, i - 1 - sources[i - 1]) * CELL_H : 0,
+            i > 0 && i < COLUMN_HEIGHTS[this.index] + 2 && value ? Math.max(0, i - 1 - sources[i - 1]) * CELL_HEIGHT : 0,
         );
         this.dropBounces = this.drops.map(() => -1);
         this.cellNodes.forEach((n, i) => n.setPosition(0, this.targets[i] + this.drops[i]));
@@ -219,7 +220,7 @@ export class slots_r extends Component {
         const index = this.cellNodes.indexOf(node);
         if (index < 0) return -1;
         const rank = this.settleAnchor < 0 ? index : this.getResultRank(index);
-        return rank >= 2 && rank <= 5 ? rank - 2 : -1;
+        return rank >= 2 && rank < COLUMN_HEIGHTS[this.index] + 2 ? rank - 2 : -1;
     }
     restoreWinLayers() {
         this.cellComponents.forEach((cell) => cell.restoreWinLayer());
@@ -234,7 +235,7 @@ export class slots_r extends Component {
     playLandingEffects() {
         this.cellComponents.forEach((cell, i) => {
             const rank = this.settleAnchor < 0 ? i : this.getResultRank(i);
-            if (rank >= 2 && rank <= 5) cell.playScatterStop();
+            if (rank >= 2 && rank < COLUMN_HEIGHTS[this.index] + 2) cell.playScatterStop();
         });
     }
     tick(dt: number, realDt = dt): void {
@@ -296,14 +297,23 @@ export class slots_r extends Component {
                 } else if (wrapInfo.any) {
                     this.beginSettle(wrapInfo.anchor);
                 }
-            } else if (settling && this.isAllLanded()) {
-                this.startBounce();
+            } else if (settling) {
+                // 减速距离耗尽时补齐最后一格，避免积分误差让末格停在回卷边界前。
+                if (this.decelActive && this.decelRemainingDist <= 0) {
+                    this.cellComponents.forEach((cell, index) => {
+                        if (this.landed[index]) return;
+                        cell.setBlur(false);
+                        cell.setCellValue(this.result[this.getResultRank(index)]);
+                        this.landed[index] = true;
+                    });
+                }
+                if (this.isAllLanded()) this.startBounce();
             }
             return;
         }
     }
 
-    /** 第1个到底→result[6]，第2个→result[5]…第7个→result[0]（到底顺序与最终Y高低相反） */
+    /** 从条带末尾依次停牌，支持每列不同的条带长度。 */
     private beginSettle(triggerIndex: number) {
         this.settleAnchor = triggerIndex;
         this.computeStopInitY(triggerIndex);
@@ -321,25 +331,25 @@ export class slots_r extends Component {
 
     /**
      * trigger 第一个到底 → 转满一圈后停最下；
-     * 依次 trigger-1…trigger-6 到底，最终 Y 从高到低为 trigger-6 … trigger。
+     * 后续节点依次到底，按本列节点总数计算最终位置。
      * 例 trigger=2：node3(顶)…node2(底)
      */
     private computeStopInitY(triggerIndex: number) {
-        this.stopInitY = new Array(CELL_COUNT);
-        for (let k = 0; k < CELL_COUNT; k++) {
-            const nodeIndex = (triggerIndex - k + CELL_COUNT) % CELL_COUNT;
-            this.stopInitY[nodeIndex] = CELL_START_Y - CELL_H * (CELL_COUNT - 1 - k);
+        this.stopInitY = new Array(this.cellCount);
+        for (let k = 0; k < this.cellCount; k++) {
+            const nodeIndex = (triggerIndex - k + this.cellCount) % this.cellCount;
+            this.stopInitY[nodeIndex] = this.initialY[0] - CELL_HEIGHT * (this.cellCount - 1 - k);
         }
     }
 
-    /** 第几次到底：trigger→6, trigger-1→5, … trigger-6→0 */
+    /** 根据停轴锚点计算当前节点在本列结果中的索引。 */
     private getResultRank(nodeIndex: number): number {
-        const landOrder = (this.settleAnchor - nodeIndex + CELL_COUNT) % CELL_COUNT;
-        return CELL_COUNT - 1 - landOrder;
+        const landOrder = (this.settleAnchor - nodeIndex + this.cellCount) % this.cellCount;
+        return this.cellCount - 1 - landOrder;
     }
 
     private getTargetY(index: number): number {
-        return this.stopInitY.length > 0 ? this.stopInitY[index] : INIT_Y[index];
+        return this.stopInitY.length > 0 ? this.stopInitY[index] : this.initialY[index];
     }
 
     private tickLift(dt: number): void {
@@ -370,8 +380,8 @@ export class slots_r extends Component {
         for (let i = 0; i < cellNodes.length; i++) {
             const cell = cellNodes[i];
             let y = cell.position.y - move;
-            if (y <= CELL_WRAP_Y) {
-                y += CELL_WRAP_OFFSET;
+            if (y <= this.wrapY) {
+                y += this.wrapOffset;
                 if (!anyWrapped) {
                     anyWrapped = true;
                     anchorIndex = i;
@@ -407,13 +417,13 @@ export class slots_r extends Component {
     }
 
     private refreshDecel() {
-        const remaining = CELL_COUNT - this.getLandedCount();
+        const remaining = this.cellCount - this.getLandedCount();
         if (remaining <= 0) {
             this.scrollSpeed = 0;
             this.decelActive = false;
             return;
         }
-        this.decelRemainingDist = remaining * CELL_H;
+        this.decelRemainingDist = remaining * CELL_HEIGHT;
         if (!this.decelActive) {
             this.scrollSpeed = this.speed;
             this.decelActive = true;
@@ -432,7 +442,7 @@ export class slots_r extends Component {
     }
 
     private isAllLanded(): boolean {
-        return this.getLandedCount() >= CELL_COUNT;
+        return this.getLandedCount() >= this.cellCount;
     }
 
     private startBounce() {

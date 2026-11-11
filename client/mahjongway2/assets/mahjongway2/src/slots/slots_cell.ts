@@ -1,6 +1,6 @@
 import { WinAnimationEvents } from '../effects/win_animation_events';
 import { EffectLibrary, NativeEffect } from '../effects/effect_library';
-import { _decorator, Component, Node, EventTouch, Animation, UIOpacity, UITransform, Label, Color } from 'cc';
+import { _decorator, Component, Node, EventTouch, Animation, UIOpacity, UITransform } from 'cc';
 import { slots_base } from './slots_base';
 import { printDebug } from '../com/utils';
 const { ccclass, property } = _decorator;
@@ -173,7 +173,6 @@ export class slots_cell extends Component {
             this.refreshEffect();
         }
     }
-    private extra: Node = null;
     /** 复用被消除隐藏的节点时，先恢复显示和透明度，再更新图标。 */
     setCellValue(value: number) {
         this.node.active = value > 0;
@@ -195,15 +194,6 @@ export class slots_cell extends Component {
         }
         const isgold = value > 1000;
         const symbol = isgold ? value - 1000 : value;
-        if (symbol === 11 && !this.extra) {
-            this.extra = new Node('symbol_three_dots');
-            this.symbol.addChild(this.extra);
-            const label = this.extra.addComponent(Label);
-            label.string = '三饼';
-            label.fontSize = 42;
-            label.color = new Color(56, 123, 84);
-        }
-        if (this.extra) this.extra.active = symbol === 11;
         const symbols = this.b_blur ? this.blur_cells : this.symbol_cells;
         if (this._displaySymbol !== symbol) {
             if (this._displaySymbol > 0) {

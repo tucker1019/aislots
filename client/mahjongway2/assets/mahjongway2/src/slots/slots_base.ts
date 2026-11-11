@@ -16,11 +16,11 @@ import { RuntimePerformance } from './runtime_performance';
 import { GameEffects, bigWinType } from '../effects/game_effects';
 import { Anticipation, anticipationColumns } from '../effects/anticipation';
 import { _decorator, Component, instantiate, Node, Label, Graphics, Color, UITransform, profiler } from 'cc';
-import { slots_r } from './slots_r';
+import { slots_r, CELL_HEIGHT } from './slots_r';
 import { slots_cell } from './slots_cell';
 import { createSpinCellPicker, SpinCellPicker } from './slot_widget';
 import { GameApi, Frame } from '../network/game/game_api';
-import { serverStrips, gravitySources, cascadeDropDelays } from './server_board';
+import { serverStrips, gravitySources, cascadeDropDelays, previewRowCount } from './server_board';
 const { ccclass, property } = _decorator;
 
 // 相邻列的消除启动间隔（秒），第五列比第一列晚 0.08 秒。
@@ -106,10 +106,8 @@ export class slots_base extends Component {
             window.addEventListener('aislots-retry', this.showRetryBanner);
             window.addEventListener('aislots-retry-end', this.hideRetryBanner);
         }
-        // 转轴父节点也需要完整命中区域，覆盖牌间空隙和滚动时露出的背景。
-        const boardTouch = this.node.getComponent(UITransform) || this.node.addComponent(UITransform);
-        boardTouch.setContentSize(720, 990);
-        boardTouch.setAnchorPoint(0.5, 506.5 / 990);
+        // roll 的 UITransform 同时决定 Mask 范围和触摸区域，沿用编辑器配置。
+        if (!this.node.getComponent(UITransform)) this.node.addComponent(UITransform);
         // 捕获阶段接收棋盘输入，避免滚动中的子节点吞掉事件。
         this.node.on(Node.EventType.TOUCH_END, this.onBoardStop, this, true);
         this.node.on(Node.EventType.MOUSE_UP, this.onBoardStop, this, true);
@@ -129,7 +127,7 @@ export class slots_base extends Component {
             appname: params.get('appname') || 'test-platform',
             appkey: params.get('appkey') || 'test-app',
             uid: params.get('uid') || 'test-user',
-            gameId: 'AG1',
+            gameId: 'AG2',
             test: true,
         });
         this.state = 1;
@@ -149,15 +147,15 @@ export class slots_base extends Component {
             .catch((error) => this.fail(error));
     }
 
-    /** 服务端状态返回后只创建一次35个cell，直接赋最终首屏值。 */
+    /** 服务端状态返回后按各列条带长度创建cell，直接赋最终首屏值。 */
     private initializeCells(strips: number[][]) {
         if (this.boards.length) return;
         this.boards = strips;
         this.reels.forEach((reel, c) => {
-            for (let i = 0; i < 7; i++) {
+            for (let i = 0; i < strips[c].length; i++) {
                 const cell = instantiate(this.cell);
                 reel.node.addChild(cell);
-                cell.setPosition(0, 165 - i * 165);
+                cell.setPosition(0, CELL_HEIGHT - i * CELL_HEIGHT);
                 const component = cell.getComponent(slots_cell);
                 component.setBlur(false);
                 component.setCellValue(strips[c][i]);
@@ -549,7 +547,7 @@ export class slots_base extends Component {
         await Promise.all(
             this.reels.map(async (reel, column) => {
                 const rows = frame.board[column].flatMap((cell, row) =>
-                    winning.has(cell.id) ? [row] : [],
+                    winning.has(cell.id) ? [row + 1 - previewRowCount(frame.board)] : [],
                 );
                 if (!rows.length) return;
                 if (column > 0) await this.pause(column * AWARD_COLUMN_DELAY);
@@ -557,7 +555,7 @@ export class slots_base extends Component {
                 reel.award(
                     rows,
                     frame.board[column].flatMap((cell, row) =>
-                        frame.transformedIds.includes(cell.id) ? [row] : [],
+                        frame.transformedIds.includes(cell.id) ? [row + 1 - previewRowCount(frame.board)] : [],
                     ),
                     this.awardEffects,
                 );
@@ -612,7 +610,7 @@ export class slots_base extends Component {
             reel.playLandingEffects?.();
             if (
                 this.current?.board[reel.index]
-                    ?.slice(this.current.previewRows ?? 1)
+                    ?.slice(this.current.previewRows ?? previewRowCount(this.current.board))
                     .some((cell) => cell.symbolId === 11)
             ) {
                 this.effects?.sound('symbolScatter');
@@ -759,7 +757,7 @@ export class slots_base extends Component {
                 const delays = cascadeDropDelays(sources, DROP_COLUMN_DELAY);
                 this.reels.forEach((reel, c) => {
                     const seen = new Set(
-                        previous.board[c].slice(previous.previewRows ?? 1).map((cell) => cell.id),
+                        previous.board[c].slice(previous.previewRows ?? previewRowCount(previous.board)).map((cell) => cell.id),
                     );
                     reel.dropTo(
                         strips[c],
@@ -790,7 +788,7 @@ export class slots_base extends Component {
                         frame.board,
                         frame.mode === 'free',
                         this.fast || this.click_stop,
-                        frame.previewRows ?? 1,
+                        frame.previewRows ?? previewRowCount(frame.board),
                     ),
                 );
                 this.state = 2;
@@ -882,7 +880,11 @@ export class slots_base extends Component {
                 return;
             }
             if (frame.nextAction === 'start_free') {
-                if (frame.mode === 'base') await this.effects?.intro(frame.freeRemaining);
+                if (frame.mode === 'base') {
+                    await this.effects?.intro(frame.freeRemaining);
+                    if (!running()) return;
+                    await this.effects?.enterFreeMultipliers();
+                }
                 else if (frame.triggeredFree) {
                     await this.effects?.retrigger(frame.awardedFreeSpins ?? frame.freeRemaining);
                     await this.countAddedFreeSpins(frame.freeRemaining, running);
@@ -1152,7 +1154,7 @@ export class slots_base extends Component {
                     r.playLandingEffects?.();
                     if (
                         this.current?.board[r.index]
-                            ?.slice(this.current.previewRows ?? 1)
+                            ?.slice(this.current.previewRows ?? previewRowCount(this.current.board))
                             .some((cell) => cell.symbolId === 11)
                     )
                         this.effects?.sound('symbolScatter');

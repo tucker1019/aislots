@@ -466,6 +466,60 @@ export class GameEffects extends Component {
         this.previousMultiplier = index;
         this.previousFactors = factors.join(',');
     }
+    async enterFreeMultipliers() {
+        if (!this.multipliers) return;
+        const root = this.multipliers.node;
+        this.audio.sound('fsMultiplyRefresh');
+        for (let i = 1; i <= 4; i++) {
+            const gray = root.getChildByName('gray_' + i);
+            const light = root.getChildByName('light_' + i);
+            const glow = root.getChildByName('guang_' + i);
+            const anim = root.getChildByName('anim_' + i);
+            if (!gray || !light) continue;
+            Tween.stopAllByTarget(light);
+            if (!this.multiplierScales.has(light))
+                this.multiplierScales.set(light, light.scale.clone());
+            const resting = this.multiplierScales.get(light);
+            const opacity = light.getComponent(UIOpacity) || light.addComponent(UIOpacity);
+            gray.active = true;
+            light.active = false;
+            if (glow) glow.active = false;
+            if (anim) anim.active = false;
+            gray.getComponent(MWSpriteCtrl)?.setSpriteIndex(0);
+            light.getComponent(MWSpriteCtrl)?.setSpriteIndex(1);
+            this.scheduleOnce(() => {
+                if (!light.isValid || !gray.isValid) return;
+                light.active = true;
+                opacity.opacity = 255;
+                light.setScale(resting.x * 1.5, resting.y * 1.5, resting.z);
+                tween(opacity).to(0.3, { opacity: 0 }).start();
+                if (anim) {
+                    anim.active = true;
+                    anim.getComponent(Animation)?.play();
+                }
+                tween(light)
+                    .to(0.3, { scale: resting.clone() })
+                    .call(() => {
+                        gray.getComponent(MWSpriteCtrl)?.setSpriteIndex(1);
+                        light.active = false;
+                        opacity.opacity = 255;
+                    })
+                    .start();
+            }, 0.3 * (i - 1));
+        }
+        await new Promise<void>(resolve => this.scheduleOnce(resolve, 1.2));
+        if (!this.isValid || !root.isValid) return;
+        for (let i = 1; i <= 4; i++) {
+            const light = root.getChildByName('light_' + i);
+            const opacity = light?.getComponent(UIOpacity);
+            if (opacity) {
+                Tween.stopAllByTarget(opacity);
+                opacity.opacity = 255;
+            }
+        }
+        this.multiplier(['2', '4', '6', '10'], 0, true);
+    }
+
     setAnticipation(column: number, visible: boolean, parent: Node) {
         let effect = this.anticipation.get(column);
         if (visible) {

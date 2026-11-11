@@ -125,8 +125,8 @@ export class GameEffects extends Component {
         if (board) this.symbolTooltip = new SymbolTooltip(board, () => this.sound('slider_effect'));
         board?.emit('flow-changed');
         // 倍率条由场景配置，直接绑定现有节点，保持编辑器设置的位置和层级。
-        const multipliers = this.find(this.node, 'multipliers');
-        if (!multipliers) throw new Error('场景缺少 multipliers 倍率条节点');
+        const multipliers = this.find(this.node, 'ui_top_bar') || this.find(this.node, 'multipliers');
+        if (!multipliers) throw new Error('场景缺少 ui_top_bar 倍率条节点');
         this.multipliers = new NativeEffect(multipliers);
     }
     /** 只替换按钮内部美术，保留场景已有点击绑定和可视化布局。 */
@@ -195,6 +195,9 @@ export class GameEffects extends Component {
     showBottomWin(amount: string, tier: number, total: boolean, count?: { minor: string; seconds: number }) {
         if (!this.winBar || !this.infoBar) return 0;
         this.stopBottomNotice();
+        this.winBar.getComponentsInChildren(MWSpriteCtrl).forEach(ctrl => {
+            if (ctrl.node.name !== 'info_win') ctrl.setSpriteIndex(this.bonusParticleVisible ? 1 : 0);
+        });
         this.infoBar.active = false;
         this.winBar.active = true;
         const animation = this.winBar.getComponent(Animation);
@@ -250,6 +253,7 @@ export class GameEffects extends Component {
         this.stopBottomNotice();
         this.infoMode = free;
         this.infoIndex = Math.floor(Math.random() * 5);
+        this.infoBar.getComponent(MWSpriteCtrl)?.setSpriteIndex(free ? 1 : 0);
         const mask = this.infoBar.getChildByName('mask');
         const text = mask.getChildByName('info_main');
         const sprite = text.getComponent(MWSpriteCtrl);
@@ -340,6 +344,8 @@ export class GameEffects extends Component {
         root.getComponentsInChildren(MWSpriteCtrl).forEach((ctrl) =>
             ctrl.setSpriteIndex(free ? 1 : 0),
         );
+        const topBg = root.getChildByName('topBg');
+        if (topBg) topBg.setPosition(0, free ? 4 : -3, 0);
         const refreshScale = this.previousMultiplier !== index ||
             this.previousFactors !== factors.join(',');
         const standard = free ? ['2', '4', '6', '10'] : ['1', '2', '3', '5'];
@@ -347,7 +353,7 @@ export class GameEffects extends Component {
             const gray = root.getChildByPath('gray_' + i),
                 light = root.getChildByPath('light_' + i),
                 glow = root.getChildByPath('guang_' + i),
-                anim = root.getChildByPath('anim_' + i);
+                anim = root.getChildByPath('multiplier_' + i);
             if (light) {
                 if (!this.multiplierScales.has(light))
                     this.multiplierScales.set(light, light.scale.clone());
@@ -400,6 +406,60 @@ export class GameEffects extends Component {
         this.previousMultiplier = index;
         this.previousFactors = factors.join(',');
     }
+    async enterFreeMultipliers() {
+        if (!this.multipliers) return;
+        const root = this.multipliers.node;
+        this.audio.sound('fsMultiplyRefresh');
+        for (let i = 1; i <= 4; i++) {
+            const gray = root.getChildByName('gray_' + i);
+            const light = root.getChildByName('light_' + i);
+            const glow = root.getChildByName('guang_' + i);
+            const anim = root.getChildByName('multiplier_' + i);
+            if (!gray || !light) continue;
+            Tween.stopAllByTarget(light);
+            if (!this.multiplierScales.has(light))
+                this.multiplierScales.set(light, light.scale.clone());
+            const resting = this.multiplierScales.get(light);
+            const opacity = light.getComponent(UIOpacity) || light.addComponent(UIOpacity);
+            gray.active = true;
+            light.active = false;
+            if (glow) glow.active = false;
+            if (anim) anim.active = false;
+            gray.getComponent(MWSpriteCtrl)?.setSpriteIndex(0);
+            light.getComponent(MWSpriteCtrl)?.setSpriteIndex(1);
+            this.scheduleOnce(() => {
+                if (!light.isValid || !gray.isValid) return;
+                light.active = true;
+                opacity.opacity = 255;
+                light.setScale(resting.x * 1.5, resting.y * 1.5, resting.z);
+                tween(opacity).to(0.3, { opacity: 0 }).start();
+                if (anim) {
+                    anim.active = true;
+                    anim.getComponent(Animation)?.play();
+                }
+                tween(light)
+                    .to(0.3, { scale: resting.clone() })
+                    .call(() => {
+                        gray.getComponent(MWSpriteCtrl)?.setSpriteIndex(1);
+                        light.active = false;
+                        opacity.opacity = 255;
+                    })
+                    .start();
+            }, 0.3 * (i - 1));
+        }
+        await new Promise<void>(resolve => this.scheduleOnce(resolve, 1.2));
+        if (!this.isValid || !root.isValid) return;
+        for (let i = 1; i <= 4; i++) {
+            const light = root.getChildByName('light_' + i);
+            const opacity = light?.getComponent(UIOpacity);
+            if (opacity) {
+                Tween.stopAllByTarget(opacity);
+                opacity.opacity = 255;
+            }
+        }
+        this.multiplier(['2', '4', '6', '10'], 0, true);
+    }
+
     setAnticipation(column: number, visible: boolean, parent: Node) {
         let effect = this.anticipation.get(column);
         if (visible) {

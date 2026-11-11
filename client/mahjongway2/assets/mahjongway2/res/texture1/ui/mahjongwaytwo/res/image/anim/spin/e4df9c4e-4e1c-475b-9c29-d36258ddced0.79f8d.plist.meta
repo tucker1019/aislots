@@ -1,0 +1,293 @@
+{
+  "ver": "1.0.8",
+  "importer": "sprite-atlas",
+  "imported": true,
+  "uuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "f7cf4": {
+      "importer": "sprite-frame",
+      "uuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374@f7cf4",
+      "displayName": "",
+      "id": "f7cf4",
+      "name": "spin_flare_a",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 1,
+        "trimY": 1,
+        "width": 278,
+        "height": 184,
+        "rawWidth": 278,
+        "rawHeight": 184,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "c8e3e290-a5dd-424f-84ac-3b3599912c32@6c48a",
+        "atlasUuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "46a3e": {
+      "importer": "sprite-frame",
+      "uuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374@46a3e",
+      "displayName": "",
+      "id": "46a3e",
+      "name": "spin_glow_a",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 281,
+        "trimY": 116,
+        "width": 104,
+        "height": 102,
+        "rawWidth": 104,
+        "rawHeight": 102,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "c8e3e290-a5dd-424f-84ac-3b3599912c32@6c48a",
+        "atlasUuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "7cea0": {
+      "importer": "sprite-frame",
+      "uuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374@7cea0",
+      "displayName": "",
+      "id": "7cea0",
+      "name": "spin_glow_b",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 468,
+        "trimY": 118,
+        "width": 74,
+        "height": 74,
+        "rawWidth": 74,
+        "rawHeight": 74,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "c8e3e290-a5dd-424f-84ac-3b3599912c32@6c48a",
+        "atlasUuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "f737f": {
+      "importer": "sprite-frame",
+      "uuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374@f737f",
+      "displayName": "",
+      "id": "f737f",
+      "name": "spin_glow_c",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": true,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 387,
+        "trimY": 118,
+        "width": 78,
+        "height": 79,
+        "rawWidth": 78,
+        "rawHeight": 79,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "c8e3e290-a5dd-424f-84ac-3b3599912c32@6c48a",
+        "atlasUuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "56f97": {
+      "importer": "sprite-frame",
+      "uuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374@56f97",
+      "displayName": "",
+      "id": "56f97",
+      "name": "spin_glow_d",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": true,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 281,
+        "trimY": 1,
+        "width": 113,
+        "height": 116,
+        "rawWidth": 113,
+        "rawHeight": 116,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "c8e3e290-a5dd-424f-84ac-3b3599912c32@6c48a",
+        "atlasUuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "5c32f": {
+      "importer": "sprite-frame",
+      "uuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374@5c32f",
+      "displayName": "",
+      "id": "5c32f",
+      "name": "spin_glow_e",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 399,
+        "trimY": 1,
+        "width": 115,
+        "height": 115,
+        "rawWidth": 115,
+        "rawHeight": 115,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "c8e3e290-a5dd-424f-84ac-3b3599912c32@6c48a",
+        "atlasUuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "atlasTextureName": "e4df9c4e-4e1c-475b-9c29-d36258ddced0.79f8d.jpg",
+    "format": 2,
+    "uuid": "16e39d9e-bcbb-46ff-b59e-8175427fa374",
+    "textureUuid": "c8e3e290-a5dd-424f-84ac-3b3599912c32@6c48a"
+  }
+}

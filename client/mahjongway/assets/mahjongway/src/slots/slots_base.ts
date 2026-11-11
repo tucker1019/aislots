@@ -891,7 +891,11 @@ export class slots_base extends Component {
                 return;
             }
             if (frame.nextAction === 'start_free') {
-                if (frame.mode === 'base') await this.effects?.intro(frame.freeRemaining, !!replay);
+                if (frame.mode === 'base') {
+                    await this.effects?.intro(frame.freeRemaining, !!replay);
+                    if (!running()) return;
+                    await this.effects?.enterFreeMultipliers();
+                }
                 else if (frame.triggeredFree) {
                     await this.effects?.retrigger(frame.awardedFreeSpins ?? frame.freeRemaining);
                     await this.countAddedFreeSpins(frame.freeRemaining, running);

@@ -26,16 +26,17 @@ function reportLoadingProgress(value: number) {
 }
 /** 旧场景美术ID→原特效节点。两份工程的图标顺序不同，不能直接拼接编号。 */
 export const symbolPaths: Record<number, string> = {
-    1: 'symbol_bg/c4',
-    2: 'symbol_bg/c1',
-    3: 'symbol_bg/c2',
-    4: 'symbol_bg/c3',
-    5: 'symbol_bg/c7',
+    1: 'symbol_bg/c6',
+    2: 'symbol_bg/c9',
+    3: 'symbol_bg/c8',
+    4: 'symbol_bg/c7',
+    5: 'symbol_bg/c2',
     6: 'symbol_bg/c5',
-    7: 'symbol_bg/c8',
-    8: 'symbol_bg/c6',
-    9: 'c10',
-    10: 'c9',
+    7: 'symbol_bg/c1',
+    8: 'symbol_bg/c4',
+    9: 'c11',
+    10: 'c10',
+    11: 'symbol_bg/c3',
 };
 export class EffectLibrary {
     static prefabs = new Map<string, Prefab>();
@@ -69,6 +70,8 @@ export class EffectLibrary {
         const node = instantiate(prefab);
         node.active = false;
         parent.addChild(node);
+        // 格子特效使用宿主格子的局部原点，预制体编辑位置不参与运行时布局。
+        if (name === 'cell_win') node.setPosition(0, 0, 0);
         return new NativeEffect(node);
     }
 }
@@ -119,20 +122,16 @@ export class NativeEffect {
             const bg = this.node.getChildByPath('symbol_bg');
             bg.active = true;
             bg.getComponent(MWSpriteCtrl).setSpriteIndex(gold ? 1 : 0);
-            for (let i = 1; i <= 8; i++)
-                bg.getChildByName('c' + i).active = symbolPaths[symbol] === 'symbol_bg/c' + i;
+            for (const child of bg.children)
+                child.active = symbolPaths[symbol] === 'symbol_bg/' + child.name;
             const ingot = bg.getChildByName('gold_ingot');
             if (ingot) ingot.active = gold;
-            let extra = bg.getChildByName('three_dots');
-            if (symbol === 11 && !extra) {
-                extra = new Node('three_dots');
-                bg.addChild(extra);
-                const label = extra.addComponent(Label);
-                label.string = '三饼';
-                label.fontSize = 42;
-            }
-            if (extra) extra.active = symbol === 11;
-        } else this.node.getChildByPath(symbolPaths[symbol]).active = true;
+        } else {
+            const path = symbolPaths[symbol];
+            const node = path ? this.node.getChildByPath(path) : null;
+            if (!node) throw new Error('AG2 cell_win 缺少图标节点：' + symbol + '/' + path);
+            node.active = true;
+        }
     }
     play(name: string, path = '') {
         const node = path ? this.node.getChildByPath(path) : this.node;

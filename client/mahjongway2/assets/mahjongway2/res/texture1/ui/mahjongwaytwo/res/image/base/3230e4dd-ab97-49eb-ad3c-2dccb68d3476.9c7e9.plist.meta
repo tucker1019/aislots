@@ -1,0 +1,63 @@
+{
+  "ver": "1.0.8",
+  "importer": "sprite-atlas",
+  "imported": true,
+  "uuid": "6beacda8-97ab-4768-b1d6-db58d4379485",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "07d7d": {
+      "importer": "sprite-frame",
+      "uuid": "6beacda8-97ab-4768-b1d6-db58d4379485@07d7d",
+      "displayName": "",
+      "id": "07d7d",
+      "name": "way_coin",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 0,
+        "trimY": 0,
+        "width": 33,
+        "height": 36,
+        "rawWidth": 33,
+        "rawHeight": 36,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "04b91ab0-3e26-4d97-8dc8-15afcfed1e00@6c48a",
+        "atlasUuid": "6beacda8-97ab-4768-b1d6-db58d4379485"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "atlasTextureName": "3230e4dd-ab97-49eb-ad3c-2dccb68d3476.9c7e9.png",
+    "format": 2,
+    "uuid": "6beacda8-97ab-4768-b1d6-db58d4379485",
+    "textureUuid": "04b91ab0-3e26-4d97-8dc8-15afcfed1e00@6c48a"
+  }
+}
