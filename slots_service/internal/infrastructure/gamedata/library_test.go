@@ -53,3 +53,42 @@ func TestDiskLibraryOffsetsAndChecksums(t *testing.T) {
 		t.Fatal("checksum mismatch accepted")
 	}
 }
+
+func TestCompatibilityRejectsMissingWinningSymbolInActiveBuckets(t *testing.T) {
+	game := engine.Game{
+		ID: "AG2",
+		Board: engine.BoardConfig{
+			Version: 1, ColumnHeights: []int{2, 2, 2},
+			Symbols: []engine.Symbol{
+				{ID: "1", Role: "normal", Weight: 1, Payouts: map[int]json.Number{3: "2"}},
+				{ID: "2", Role: "normal", Weight: 1, Payouts: map[int]json.Number{3: "2"}},
+			},
+			CascadeFactors: []json.Number{"1"}, FreeCascadeFactors: []json.Number{"2"},
+			Gold: engine.Gold{Columns: []int{}},
+		},
+		BaseRows: []engine.WeightRow{{"2", "1"}, {"4", "0"}},
+	}
+	for _, tc := range []struct {
+		name, data string
+		valid      bool
+	}{
+		{"missing three dots", `{"2":[[3,0,2,2,2,4,2,0]],"4":[[3,0,1,2,1,4,1,0]]}`, false},
+		{"both symbols", `{"2":[[3,0,2,2,2,4,2,0],[3,0,1,2,1,4,1,0]]}`, true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := writeBatch(t, game, engine.Base, tc.data)
+			store, err := OpenDiskLibrary(dir, "")
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer store.Close()
+			err = store.CheckWinningCoverage(game)
+			if tc.valid && err != nil {
+				t.Fatal(err)
+			}
+			if !tc.valid && err == nil {
+				t.Fatal("missing winning symbol was accepted")
+			}
+		})
+	}
+}

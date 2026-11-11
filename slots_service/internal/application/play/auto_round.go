@@ -40,7 +40,7 @@ func (s *Service) AutoRound(ctx context.Context, r AutoRoundRequest) (AutoRoundR
 	if !ok {
 		return AutoRoundReply{}, ErrUnauthorized
 	}
-	if r.UID <= 0 || r.GameID != "AG1" || r.RequestID == "" || len(r.RequestID) > 128 || strings.TrimSpace(r.RequestID) != r.RequestID || r.Bet <= 0 || r.BetLevel < 1 {
+	if r.UID <= 0 || (r.GameID == "" || strings.TrimSpace(r.GameID) != r.GameID) || r.RequestID == "" || len(r.RequestID) > 128 || strings.TrimSpace(r.RequestID) != r.RequestID || r.Bet <= 0 || r.BetLevel < 1 {
 		return AutoRoundReply{}, ErrInvalid
 	}
 	p, e := provider.AutoPlayer(r.UID, r.Country, r.Currency)
@@ -110,7 +110,7 @@ func (s *Service) AutoBets(ctx context.Context, r AutoRoundRequest) (betlist.Pol
 	provider, ok := s.launcher.(interface {
 		AutoPlayer(int64, string, string) (identity.Context, error)
 	})
-	if !ok || r.UID <= 0 || r.GameID != "AG1" {
+	if !ok || r.UID <= 0 || (r.GameID == "" || strings.TrimSpace(r.GameID) != r.GameID) {
 		return betlist.Policy{}, ErrInvalid
 	}
 	p, err := provider.AutoPlayer(r.UID, r.Country, r.Currency)

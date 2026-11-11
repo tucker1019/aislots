@@ -19,7 +19,7 @@ func (s *Service) Status(ctx context.Context, session Session, gameID string) (S
 			return err
 		}
 		out = Status{RequestID: token, Balance: money(tx.Balance())}
-		t, ok, err := tx.FindOpen(ctx)
+		t, ok, err := tx.FindOpen(ctx, gameID)
 		if err != nil {
 			return err
 		}
@@ -84,7 +84,7 @@ func (s *Service) Spin(ctx context.Context, session Session, gameID, requestID s
 		if token != requestID {
 			return ErrConflict
 		}
-		t, ok, err := tx.FindOpen(ctx)
+		t, ok, err := tx.FindOpen(ctx, gameID)
 		if err != nil {
 			return err
 		}

@@ -97,7 +97,7 @@ func (s *Service) Prepare(ctx context.Context, session Session, gameID string, a
 func (s *Service) prepareTx(ctx context.Context, tx Tx, session Session, gameID string, amount int64) (Prepared, error) {
 	var prepared Prepared
 	err := func() error {
-		open, ok, err := tx.FindOpen(ctx)
+		open, ok, err := tx.FindOpen(ctx, gameID)
 		if err != nil {
 			return err
 		}
@@ -294,7 +294,7 @@ func (s *Service) advanceTx(ctx context.Context, tx Tx, session Session, gameID,
 		}
 		displayPreview := len(result.Round.Previews) == n+1
 		for _, col := range frame.Board {
-			if len(col) > 4 {
+			if len(col) > 4 && gameID != "AG2" {
 				displayPreview = false
 			}
 		} // Preserve the legacy five-active-row wire layout.
@@ -376,7 +376,7 @@ func (s *Service) Recover(ctx context.Context, session Session, gameID string) (
 	var response Recovery
 	err := s.store.WithPlayer(ctx, session.Player, func(tx Tx) error {
 		response = Recovery{Status: "idle", Balance: money(tx.Balance())}
-		t, ok, err := tx.FindOpen(ctx)
+		t, ok, err := tx.FindOpen(ctx, gameID)
 		if err != nil || !ok {
 			return err
 		}

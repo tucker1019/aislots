@@ -6,6 +6,7 @@ import (
 	"aislots/slots_service/internal/infrastructure/gamedata"
 	"fmt"
 	"io"
+	"log/slog"
 )
 
 // LoadedGame owns one immutable rules implementation and its resources.
@@ -38,9 +39,15 @@ func loadWaysCascade(spec GameConfig) (LoadedGame, error) {
 	if err = library.CheckCompatibility(game); err != nil {
 		return fail(err)
 	}
+	if spec.Current {
+		if err = library.CheckWinningCoverage(game); err != nil {
+			return fail(err)
+		}
+	}
 	e, err := engine.NewEngine(game, library, engine.Options{TriggerSymbolCount: spec.TriggerSymbolCount, FreeAwardSymbolCounts: spec.FreeAwardSymbolCounts, MaxFillAttempts: spec.MaxFillAttempts})
 	if err != nil {
 		return fail(err)
 	}
+	slog.Info("game library validated", "gameId", game.ID, "version", e.Version(), "configDir", spec.ConfigDir, "baseLibraryDir", spec.BaseLibraryDir, "freeLibraryDir", spec.FreeLibraryDir, "current", spec.Current)
 	return LoadedGame{GameID: game.ID, Engine: e, Closer: library}, nil
 }

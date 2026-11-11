@@ -12,6 +12,8 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strconv"
+	"strings"
 	"sync"
 )
 
@@ -20,10 +22,11 @@ type record struct {
 	length int
 }
 type libraryFile struct {
-	file   *os.File
-	index  map[string][]record
-	config json.RawMessage
-	gameID string
+	file    *os.File
+	index   map[string][]record
+	config  json.RawMessage
+	gameID  string
+	symbols map[string]map[int]int
 }
 type DiskLibrary struct {
 	files map[engine.Mode]*libraryFile
@@ -101,6 +104,7 @@ func openLibraryFile(dir string, mode engine.Mode) (*libraryFile, error) {
 		return fail(fmt.Errorf("library must be multiplier object"))
 	}
 	index := map[string][]record{}
+	symbolCoverage := map[string]map[int]int{}
 	for decoder.More() {
 		token, err = decoder.Token()
 		if err != nil {
@@ -121,6 +125,7 @@ func openLibraryFile(dir string, mode engine.Mode) (*libraryFile, error) {
 			return fail(fmt.Errorf("bucket must be skeleton array"))
 		}
 		rows := []record{}
+		coverage := map[int]int{}
 		for decoder.More() {
 			start := decoder.InputOffset()
 			var skeleton []int
@@ -131,6 +136,25 @@ func openLibraryFile(dir string, mode engine.Mode) (*libraryFile, error) {
 			if len(skeleton) < 1 || len(skeleton) > 30000 || end-start > 512*1024 {
 				return fail(fmt.Errorf("invalid/oversized skeleton"))
 			}
+			participating := map[int]bool{}
+			for offset := 0; offset < len(skeleton); {
+				count := skeleton[offset]
+				offset++
+				if count < 0 || count > (len(skeleton)-offset)/2 {
+					return fail(fmt.Errorf("invalid skeleton stage in %s/%s", dir, key))
+				}
+				for i := 0; i < count; i++ {
+					symbol := skeleton[offset+1]
+					if symbol > 1000 {
+						symbol -= 1000
+					}
+					participating[symbol] = true
+					offset += 2
+				}
+			}
+			for symbol := range participating {
+				coverage[symbol]++
+			}
 			rows = append(rows, record{start, int(end - start)})
 		}
 		if _, err = decoder.Token(); err != nil {
@@ -140,6 +164,7 @@ func openLibraryFile(dir string, mode engine.Mode) (*libraryFile, error) {
 			return fail(fmt.Errorf("empty multiplier bucket"))
 		}
 		index[key] = rows
+		symbolCoverage[key] = coverage
 	}
 	if _, err = decoder.Token(); err != nil {
 		return fail(err)
@@ -147,7 +172,7 @@ func openLibraryFile(dir string, mode engine.Mode) (*libraryFile, error) {
 	if _, err = decoder.Token(); err != io.EOF {
 		return fail(fmt.Errorf("trailing library data"))
 	}
-	return &libraryFile{file: file, index: index, config: manifest.Config, gameID: manifest.GameID}, nil
+	return &libraryFile{file: file, index: index, config: manifest.Config, gameID: manifest.GameID, symbols: symbolCoverage}, nil
 }
 func (d *DiskLibrary) Count(mode engine.Mode, key string) int {
 	if f := d.files[mode]; f != nil {
@@ -232,6 +257,51 @@ func (d *DiskLibrary) CheckCompatibility(game engine.Game) error {
 		}
 		if f.gameID != game.ID || !reflect.DeepEqual(expected, actual) {
 			return fmt.Errorf("library structural config mismatch for %s; regenerate matching libraries", game.ID)
+		}
+	}
+	return nil
+}
+
+// CheckWinningCoverage applies to newly enabled batches. Historical pinned batches
+// remain readable under their original rules and are not republished implicitly.
+func (d *DiskLibrary) CheckWinningCoverage(game engine.Game) error {
+	for _, entry := range []struct {
+		mode engine.Mode
+		rows []engine.WeightRow
+	}{
+		{engine.Base, game.BaseRows}, {engine.Free, game.FreeRows},
+	} {
+		file := d.files[entry.mode]
+		if file == nil || len(entry.rows) == 0 {
+			continue
+		}
+		counts := map[int]int{}
+		for _, row := range entry.rows {
+			weight, err := row[1].Float64()
+			if err != nil || weight <= 0 || row[0].String() == "0" {
+				continue
+			}
+			for id, count := range file.symbols[row[0].String()] {
+				counts[id] += count
+			}
+		}
+		missing := []string{}
+		for _, symbol := range game.Board.Symbols {
+			if symbol.Role != "normal" || symbol.Weight <= 0 {
+				continue
+			}
+			paying := false
+			for _, raw := range symbol.Payouts {
+				value, _ := raw.Float64()
+				paying = paying || value > 0
+			}
+			id, err := strconv.Atoi(symbol.ID)
+			if err == nil && paying && counts[id] == 0 {
+				missing = append(missing, symbol.ID)
+			}
+		}
+		if len(missing) > 0 {
+			return fmt.Errorf("library winning-symbol coverage mismatch for %s/%s: missing symbol IDs %s", game.ID, entry.mode, strings.Join(missing, ","))
 		}
 	}
 	return nil

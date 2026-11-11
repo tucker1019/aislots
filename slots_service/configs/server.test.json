@@ -29,7 +29,13 @@
     "http://127.0.0.1:7456",
     "http://localhost:7456",
     "http://127.0.0.1:7457",
-    "http://localhost:7457"
+    "http://localhost:7457",
+    "http://127.0.0.1:5181",
+    "http://127.0.0.1:7458",
+    "http://127.0.0.1:7459",
+    "http://localhost:5181",
+    "http://localhost:7458",
+    "http://localhost:7459"
   ],
   "games": [
     {
@@ -85,6 +91,32 @@
         "12": 3,
         "14": 4,
         "16": 5
+      }
+    },
+    {
+      "configDir": "../testdata/deployments/2026-11-11-ag2/AG2",
+      "baseLibraryDir": "../../game_libraries/AG2/base/2026-11-11T06-46-46-775Z-ag2",
+      "freeLibraryDir": "../../game_libraries/AG2/free/2026-11-11T06-46-46-775Z-ag2",
+      "triggerSymbolCount": 3,
+      "maxFillAttempts": 64,
+      "current": false,
+      "freeAwardSymbolCounts": {
+        "10": 3,
+        "12": 4,
+        "14": 5
+      }
+    },
+    {
+      "configDir": "../testdata/deployments/2026-11-11-ag2-validated/AG2",
+      "baseLibraryDir": "../../game_libraries/AG2/base/2026-11-11T08-52-51-236Z-3884f7b0",
+      "freeLibraryDir": "../../game_libraries/AG2/free/2026-11-11T08-41-34-486Z-db867f0f",
+      "triggerSymbolCount": 3,
+      "maxFillAttempts": 64,
+      "current": true,
+      "freeAwardSymbolCounts": {
+        "10": 3,
+        "12": 4,
+        "14": 5
       }
     }
   ]

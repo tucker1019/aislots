@@ -166,7 +166,7 @@ type Tx interface {
 	LastSpinReceipt(context.Context, string, string) (SpinReceipt, bool, error)
 	SaveSpinReceipt(context.Context, string, string, SpinReceipt, string) error
 	Balance() int64
-	FindOpen(context.Context) (Ticket, bool, error)
+	FindOpen(context.Context, string) (Ticket, bool, error)
 	Ticket(context.Context, string) (Ticket, error)
 	SaveTicket(context.Context, Ticket) error
 	State(context.Context, string) (engine.State, error)

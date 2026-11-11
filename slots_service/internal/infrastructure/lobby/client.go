@@ -20,12 +20,13 @@ import (
 )
 
 type Config struct {
-	Enabled  bool   `json:"enabled"`
-	URL      string `json:"url"`
-	TokenEnv string `json:"tokenEnv"`
-	AppName  string `json:"appname"`
-	AppKey   string `json:"appkey"`
-	GameID   string `json:"gameId"`
+	Enabled  bool     `json:"enabled"`
+	URL      string   `json:"url"`
+	TokenEnv string   `json:"tokenEnv"`
+	AppName  string   `json:"appname"`
+	AppKey   string   `json:"appkey"`
+	GameID   string   `json:"gameId"`
+	GameIDs  []string `json:"gameIds,omitempty"`
 }
 type Client struct {
 	config Config
@@ -40,6 +41,17 @@ func New(c Config, secret string) (*Client, error) {
 	}
 	c.URL = strings.TrimRight(c.URL, "/")
 	return &Client{c, secret, &http.Client{Timeout: 8 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}}, nil
+}
+func (c *Client) supportsGame(game string) bool {
+	if game == c.config.GameID {
+		return true
+	}
+	for _, id := range c.config.GameIDs {
+		if id == game && id != "" {
+			return true
+		}
+	}
+	return false
 }
 func (c *Client) Matches(p identity.Context) bool {
 	return p.Subject.AppName == c.config.AppName && p.Subject.AppKey == c.config.AppKey
@@ -78,7 +90,7 @@ func (c *Client) call(ctx context.Context, path string, in, out any) error {
 	return json.Unmarshal(body.Data, out)
 }
 func (c *Client) VerifyLaunch(ctx context.Context, ticket, exchange, game string) (identity.Context, int64, string, error) {
-	if game != c.config.GameID || len(ticket) != 52 || len(exchange) < 16 || len(exchange) > 128 {
+	if !c.supportsGame(game) || len(ticket) != 52 || len(exchange) < 16 || len(exchange) > 128 {
 		return identity.Context{}, 0, "", fmt.Errorf("invalid launch credential")
 	}
 	var out struct {

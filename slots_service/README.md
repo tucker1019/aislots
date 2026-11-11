@@ -155,3 +155,20 @@ go run ./cmd/slots-server -config configs/server.lobby.json
 付费投注及其全部消除、免费游戏结束后，机台在整局提交事务中写入统计Outbox及玩家游戏序号；后台按玩家流顺序向大厅投递，失败退避重试。统计投递不依赖客户端在线，不重复扣加币。
 
 `POST /internal/rank-replay`仅供共享Bearer鉴权的大厅服务调用，校验已完成局及平台身份后签发只读分享凭据。浏览器通过原回放入口播放，不携带所有者登录会话。统计协议与榜单资格见[游戏统计文档](../lobby_service/docs/game-statistics.md)。
+
+### 盘面库验收与启用
+
+数值工具保存的是候选批次。生成结果显示所选游戏、列高、正权重倍率覆盖和各普通图标的中奖骨架数，保存时将验收报告写入 manifest。未覆盖的倍率和图标需要继续生成，不能通过更改游戏标识、调整权重或借用其他游戏批次来通过验收。
+
+启用前，在 slots_service 目录指定两个实际保存的批次运行：
+
+```sh
+go run ./cmd/library-check \
+  -game-config ../game_configs/AG2 \
+  -base ../game_libraries/AG2/base/实际批次目录 \
+  -free ../game_libraries/AG2/free/实际批次目录
+```
+
+验收检查文件校验和、游戏标识、盘面结构、正权重倍率及普通图标中奖覆盖。通过后，才把对应配置快照和两个明确的批次目录加入 server 配置并设为 current；不自动选择最新目录。服务启动会再次验收当前批次，并记录实际配置、盘面库路径和规则版本。历史非 current 批次保留原规则校验以支持回放。
+
+当前本地 AG2 已启用通过验收的普通和免费批次，具体路径见 server.lobby.json。旧扩展批次仅以非 current 版本保留，供已有订单恢复和回放解析。

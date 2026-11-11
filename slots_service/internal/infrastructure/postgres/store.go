@@ -173,10 +173,10 @@ type transaction struct {
 }
 
 func (t *transaction) Balance() int64 { return t.balance }
-func (t *transaction) FindOpen(ctx context.Context) (play.Ticket, bool, error) {
+func (t *transaction) FindOpen(ctx context.Context, gameID string) (play.Ticket, bool, error) {
 	p := t.player.Subject
 	var raw []byte
-	err := t.tx.QueryRow(ctx, `SELECT data FROM bet_tickets WHERE appname=$1 AND appkey=$2 AND uid=$3 AND status IN ('prepared','active')`, p.AppName, p.AppKey, p.UID).Scan(&raw)
+	err := t.tx.QueryRow(ctx, `SELECT data FROM bet_tickets WHERE appname=$1 AND appkey=$2 AND uid=$3 AND data->>'GameID'=$4 AND status IN ('prepared','active')`, p.AppName, p.AppKey, p.UID, gameID).Scan(&raw)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return play.Ticket{}, false, nil
 	}
