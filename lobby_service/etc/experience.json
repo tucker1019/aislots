@@ -1,1 +1,13 @@
-{"enabled":true,"createMinSeconds":30,"createMaxSeconds":120,"playMinSeconds":10,"playMaxSeconds":30}
+{
+  "enabled": true,
+  "createMinSeconds": 30,
+  "createMaxSeconds": 120,
+  "playMinSeconds": 10,
+  "playMaxSeconds": 30,
+  "gameWeights": {
+    "AG1": 1,
+    "AG2": 1
+  },
+  "stopEveryRounds": 50,
+  "stopChancePercent": 20
+}

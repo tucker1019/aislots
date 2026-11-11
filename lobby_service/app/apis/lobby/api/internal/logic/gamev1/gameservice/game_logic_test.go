@@ -90,3 +90,22 @@ func TestLaunchAndInternalLogic(t *testing.T) {
 		t.Fatal("swallowed settlement failure")
 	}
 }
+
+func TestHiddenAndOfflineGamesCannotLaunchOrExchange(t *testing.T) {
+	hidden := false
+	uid := int64(1)
+	sid := strings.Repeat("x", 52)
+	for _, g := range []config.GameEntry{{Enabled: false}, {Enabled: true, Visible: &hidden}} {
+		f := &fake{}
+		l := &Logic{store: f, config: config.GameConfig{ServiceToken: strings.Repeat("s", 32), Games: map[string]config.GameEntry{"AG1": g}}}
+		if _, err := l.GameLaunch(context.Background(), &pb.GameLaunchRequest{Uid: &uid, Sid: &sid, GameId: "AG1"}); err == nil || f.hash != "" {
+			t.Fatal("disabled game issued ticket")
+		}
+		if _, err := l.GameExchange(context.Background(), &pb.GameExchangeRequest{GameId: "AG1", LaunchTicket: strings.Repeat("a", 52), ExchangeId: strings.Repeat("b", 16)}); err == nil {
+			t.Fatal("disabled game exchanged ticket")
+		}
+		if _, err := l.GameSettle(context.Background(), &pb.GameSettleRequest{GameId: "AG1", Uid: 1, BetId: "old", RequestId: "retry", Credit: 10}); err != nil {
+			t.Fatal("historical settlement must remain available", err)
+		}
+	}
+}

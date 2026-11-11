@@ -13,7 +13,7 @@ func TestExperiencePoolLifecycle(t *testing.T) {
 	now := time.Now().Add(time.Second)
 	create := func(at time.Time) {
 		t.Helper()
-		if e := m.CreateScheduled(ctx, at, 100000, 10, 1, "CN", "CNY", 30*time.Second); e != nil {
+		if e := m.CreateScheduled(ctx, at, 100000, 10, 1, "AG1", "CN", "CNY", 30*time.Second); e != nil {
 			t.Fatal(e)
 		}
 	}
@@ -60,5 +60,36 @@ func TestExperiencePoolLifecycle(t *testing.T) {
 	left, e := m.DueJobs(ctx, true, now.Add(time.Hour))
 	if e != nil || len(left) != 0 {
 		t.Fatal(left, e)
+	}
+}
+
+func TestExperienceAccountKeepsSelectedGame(t *testing.T) {
+	db := vipTestDB(t)
+	m := ExperienceModel{DB: db}
+	ctx := context.Background()
+	now := time.Now().Add(time.Second)
+	if err := m.CreateScheduled(ctx, now, 100000, 10, 1, "AG2", "ID", "IDR", time.Minute); err != nil {
+		t.Fatal(err)
+	}
+	jobs, err := m.DueJobs(ctx, true, now)
+	if err != nil || len(jobs) != 1 || jobs[0].GameID != "AG2" {
+		t.Fatal(jobs, err)
+	}
+	if err = m.BeginJob(ctx, &jobs[0], 20); err != nil {
+		t.Fatal(err)
+	}
+	pending, err := m.DueJobs(ctx, false, now)
+	if err != nil || len(pending) != 1 || pending[0].GameID != "AG2" || pending[0].RequestID != jobs[0].RequestID {
+		t.Fatal("pending request lost binding", pending, err)
+	}
+	if err = db.Exec("UPDATE lobby_experience_accounts SET game_id='AG1' WHERE id=?", jobs[0].ID).Error; err == nil {
+		t.Fatal("game reassignment must be rejected")
+	}
+	if err = m.FinishJob(ctx, jobs[0], "settled", time.Minute, false); err != nil {
+		t.Fatal(err)
+	}
+	again, err := m.DueJobs(ctx, true, now.Add(time.Hour))
+	if err != nil || len(again) != 1 || again[0].GameID != "AG2" {
+		t.Fatal(again, err)
 	}
 }

@@ -12,6 +12,7 @@ import (
 
 // ExperienceJob is the durable execution projection; pending commands keep their original inputs.
 type ExperienceJob struct {
+	GameID    string
 	ID        int32
 	UID       int64
 	RequestID string
@@ -22,7 +23,7 @@ type ExperienceJob struct {
 	Currency  string
 }
 
-func (m *ExperienceModel) CreateScheduled(ctx context.Context, now time.Time, initial, bet int64, level int, country, currency string, delay time.Duration) error {
+func (m *ExperienceModel) CreateScheduled(ctx context.Context, now time.Time, initial, bet int64, level int, gameID, country, currency string, delay time.Duration) error {
 	return m.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		var due time.Time
 		if err := tx.Raw("SELECT next_create_at FROM lobby_experience_schedule WHERE id=1 FOR UPDATE").Scan(&due).Error; err != nil {
@@ -45,7 +46,7 @@ func (m *ExperienceModel) CreateScheduled(ctx context.Context, now time.Time, in
 		if err := tx.Create(&LobbyCoinLedger{UID: u.UID, OrderID: fmt.Sprintf("experience_initial_%d", u.UID), Source: string(coinsource.SourceExperienceFunding), Delta: initial, BalanceBefore: 0, BalanceAfter: initial, CreatedAt: now}).Error; err != nil {
 			return err
 		}
-		if err := tx.Exec("INSERT INTO lobby_experience_accounts(uid,bet,bet_level,country,currency,next_at) VALUES(?,?,?,?,?,?)", u.UID, bet, level, country, currency, now).Error; err != nil {
+		if err := tx.Exec("INSERT INTO lobby_experience_accounts(uid,bet,bet_level,game_id,country,currency,next_at) VALUES(?,?,?,?,?,?,?)", u.UID, bet, level, gameID, country, currency, now).Error; err != nil {
 			return err
 		}
 		return tx.Exec("UPDATE lobby_experience_schedule SET next_create_at=? WHERE id=1", now.Add(delay)).Error
@@ -89,4 +90,10 @@ func (m *ExperienceModel) FinishJob(ctx context.Context, j ExperienceJob, betID 
 }
 func (m *ExperienceModel) StopJob(ctx context.Context, j ExperienceJob) error {
 	return m.DB.WithContext(ctx).Exec("UPDATE lobby_experience_accounts SET stopped=true,stop_reason='insufficient_funds',request_id='',updated_at=now() WHERE id=? AND request_id=?", j.ID, j.RequestID).Error
+}
+
+func (m *ExperienceModel) CreationDue(ctx context.Context, now time.Time) (bool, error) {
+	var due bool
+	err := m.DB.WithContext(ctx).Raw("SELECT next_create_at<=? FROM lobby_experience_schedule WHERE id=1", now).Scan(&due).Error
+	return due, err
 }

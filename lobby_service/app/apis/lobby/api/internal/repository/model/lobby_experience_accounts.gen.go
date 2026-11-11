@@ -25,6 +25,7 @@ type LobbyExperienceAccount struct {
 	StopReason string    `gorm:"column:stop_reason;not null" json:"stop_reason"`
 	Country    string    `gorm:"column:country;not null" json:"country"`
 	Currency   string    `gorm:"column:currency;not null" json:"currency"`
+	GameID     string    `gorm:"column:game_id;not null;default:AG1" json:"game_id"`
 }
 
 // TableName LobbyExperienceAccount's table name

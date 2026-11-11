@@ -3,9 +3,14 @@ package apis.lobby.api.v1;
 option go_package="apps/pb/apis/lobby/api/v1;v1";
 import "google/api/annotations.proto";
 service LobbyContentService {
+ rpc Games(LobbyGamesRequest) returns (LobbyGamesReply) {option (google.api.http)={get:"/api/lobby/games"};}
  rpc Content(LobbyContentRequest) returns (LobbyContentReply) {option (google.api.http)={get:"/api/lobby/content"};}
 }
 message LobbyContentRequest {}
 message LocalizedAnnouncement {string locale=1;repeated string items=2;}
 message LobbyBanner {string id=1;bool enabled=2;string image_zh_tw=3 [json_name="imageZhTw"];string image_en_us=4 [json_name="imageEnUs"];string alt_zh_tw=5 [json_name="altZhTw"];string alt_en_us=6 [json_name="altEnUs"];string route=7;}
 message LobbyContentReply {repeated LocalizedAnnouncement announcements=1;repeated LobbyBanner banners=2;}
+
+message LobbyGamesRequest {}
+message LobbyGame {string id=1;string name=2;string name_en=3 [json_name="nameEn"];string provider=4;string cover=5;bool enabled=6;int32 sort=7;}
+message LobbyGamesReply {repeated LobbyGame games=1;}

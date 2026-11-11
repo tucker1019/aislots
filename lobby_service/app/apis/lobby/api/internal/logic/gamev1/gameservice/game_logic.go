@@ -35,7 +35,7 @@ func New(s *svc.ServiceContext) *Logic {
 
 func (l *Logic) GameLaunch(ctx context.Context, r *pb.GameLaunchRequest) (*pb.GameLaunchReply, error) {
 	g, ok := l.config.Games[r.GameId]
-	if !ok || !g.Enabled || len(l.config.ServiceToken) < 32 {
+	if !ok || !g.Enabled || !g.IsVisible() || len(l.config.ServiceToken) < 32 {
 		return nil, xerr.ErrInvalid
 	}
 	if r.GetUid() <= 0 || len(r.GetSid()) != 52 {
@@ -57,7 +57,7 @@ func (l *Logic) GameExchange(ctx context.Context, r *pb.GameExchangeRequest) (*p
 	if len(r.LaunchTicket) != 52 || len(r.ExchangeId) < 16 || len(r.ExchangeId) > 128 {
 		return nil, xerr.ErrGameTicket
 	}
-	if _, ok := l.config.Games[r.GameId]; !ok {
+	if g, ok := l.config.Games[r.GameId]; !ok || !g.Enabled || !g.IsVisible() {
 		return nil, xerr.ErrGameTicket
 	}
 	uid, e := l.store.Exchange(ctx, user.Hash(r.LaunchTicket), r.ExchangeId, r.GameId, time.Now().UTC())

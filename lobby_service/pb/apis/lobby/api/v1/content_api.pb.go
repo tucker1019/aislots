@@ -254,6 +254,178 @@ func (x *LobbyContentReply) GetBanners() []*LobbyBanner {
 	return nil
 }
 
+type LobbyGamesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LobbyGamesRequest) Reset() {
+	*x = LobbyGamesRequest{}
+	mi := &file_apis_lobby_api_v1_content_api_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LobbyGamesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LobbyGamesRequest) ProtoMessage() {}
+
+func (x *LobbyGamesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_content_api_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LobbyGamesRequest.ProtoReflect.Descriptor instead.
+func (*LobbyGamesRequest) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_content_api_proto_rawDescGZIP(), []int{4}
+}
+
+type LobbyGame struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	NameEn        string                 `protobuf:"bytes,3,opt,name=name_en,json=nameEn,proto3" json:"name_en,omitempty"`
+	Provider      string                 `protobuf:"bytes,4,opt,name=provider,proto3" json:"provider,omitempty"`
+	Cover         string                 `protobuf:"bytes,5,opt,name=cover,proto3" json:"cover,omitempty"`
+	Enabled       bool                   `protobuf:"varint,6,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	Sort          int32                  `protobuf:"varint,7,opt,name=sort,proto3" json:"sort,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LobbyGame) Reset() {
+	*x = LobbyGame{}
+	mi := &file_apis_lobby_api_v1_content_api_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LobbyGame) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LobbyGame) ProtoMessage() {}
+
+func (x *LobbyGame) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_content_api_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LobbyGame.ProtoReflect.Descriptor instead.
+func (*LobbyGame) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_content_api_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *LobbyGame) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *LobbyGame) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *LobbyGame) GetNameEn() string {
+	if x != nil {
+		return x.NameEn
+	}
+	return ""
+}
+
+func (x *LobbyGame) GetProvider() string {
+	if x != nil {
+		return x.Provider
+	}
+	return ""
+}
+
+func (x *LobbyGame) GetCover() string {
+	if x != nil {
+		return x.Cover
+	}
+	return ""
+}
+
+func (x *LobbyGame) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
+func (x *LobbyGame) GetSort() int32 {
+	if x != nil {
+		return x.Sort
+	}
+	return 0
+}
+
+type LobbyGamesReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Games         []*LobbyGame           `protobuf:"bytes,1,rep,name=games,proto3" json:"games,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LobbyGamesReply) Reset() {
+	*x = LobbyGamesReply{}
+	mi := &file_apis_lobby_api_v1_content_api_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LobbyGamesReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LobbyGamesReply) ProtoMessage() {}
+
+func (x *LobbyGamesReply) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_content_api_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LobbyGamesReply.ProtoReflect.Descriptor instead.
+func (*LobbyGamesReply) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_content_api_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *LobbyGamesReply) GetGames() []*LobbyGame {
+	if x != nil {
+		return x.Games
+	}
+	return nil
+}
+
 var File_apis_lobby_api_v1_content_api_proto protoreflect.FileDescriptor
 
 const file_apis_lobby_api_v1_content_api_proto_rawDesc = "" +
@@ -273,8 +445,20 @@ const file_apis_lobby_api_v1_content_api_proto_rawDesc = "" +
 	"\x05route\x18\a \x01(\tR\x05route\"\x9d\x01\n" +
 	"\x11LobbyContentReply\x12N\n" +
 	"\rannouncements\x18\x01 \x03(\v2(.apis.lobby.api.v1.LocalizedAnnouncementR\rannouncements\x128\n" +
-	"\abanners\x18\x02 \x03(\v2\x1e.apis.lobby.api.v1.LobbyBannerR\abanners2\x8a\x01\n" +
-	"\x13LobbyContentService\x12s\n" +
+	"\abanners\x18\x02 \x03(\v2\x1e.apis.lobby.api.v1.LobbyBannerR\abanners\"\x13\n" +
+	"\x11LobbyGamesRequest\"\xa8\x01\n" +
+	"\tLobbyGame\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x17\n" +
+	"\aname_en\x18\x03 \x01(\tR\x06nameEn\x12\x1a\n" +
+	"\bprovider\x18\x04 \x01(\tR\bprovider\x12\x14\n" +
+	"\x05cover\x18\x05 \x01(\tR\x05cover\x12\x18\n" +
+	"\aenabled\x18\x06 \x01(\bR\aenabled\x12\x12\n" +
+	"\x04sort\x18\a \x01(\x05R\x04sort\"E\n" +
+	"\x0fLobbyGamesReply\x122\n" +
+	"\x05games\x18\x01 \x03(\v2\x1c.apis.lobby.api.v1.LobbyGameR\x05games2\xf7\x01\n" +
+	"\x13LobbyContentService\x12k\n" +
+	"\x05Games\x12$.apis.lobby.api.v1.LobbyGamesRequest\x1a\".apis.lobby.api.v1.LobbyGamesReply\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/api/lobby/games\x12s\n" +
 	"\aContent\x12&.apis.lobby.api.v1.LobbyContentRequest\x1a$.apis.lobby.api.v1.LobbyContentReply\"\x1a\x82\xd3\xe4\x93\x02\x14\x12\x12/api/lobby/contentB\x1eZ\x1capps/pb/apis/lobby/api/v1;v1b\x06proto3"
 
 var (
@@ -289,23 +473,29 @@ func file_apis_lobby_api_v1_content_api_proto_rawDescGZIP() []byte {
 	return file_apis_lobby_api_v1_content_api_proto_rawDescData
 }
 
-var file_apis_lobby_api_v1_content_api_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_apis_lobby_api_v1_content_api_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_apis_lobby_api_v1_content_api_proto_goTypes = []any{
 	(*LobbyContentRequest)(nil),   // 0: apis.lobby.api.v1.LobbyContentRequest
 	(*LocalizedAnnouncement)(nil), // 1: apis.lobby.api.v1.LocalizedAnnouncement
 	(*LobbyBanner)(nil),           // 2: apis.lobby.api.v1.LobbyBanner
 	(*LobbyContentReply)(nil),     // 3: apis.lobby.api.v1.LobbyContentReply
+	(*LobbyGamesRequest)(nil),     // 4: apis.lobby.api.v1.LobbyGamesRequest
+	(*LobbyGame)(nil),             // 5: apis.lobby.api.v1.LobbyGame
+	(*LobbyGamesReply)(nil),       // 6: apis.lobby.api.v1.LobbyGamesReply
 }
 var file_apis_lobby_api_v1_content_api_proto_depIdxs = []int32{
 	1, // 0: apis.lobby.api.v1.LobbyContentReply.announcements:type_name -> apis.lobby.api.v1.LocalizedAnnouncement
 	2, // 1: apis.lobby.api.v1.LobbyContentReply.banners:type_name -> apis.lobby.api.v1.LobbyBanner
-	0, // 2: apis.lobby.api.v1.LobbyContentService.Content:input_type -> apis.lobby.api.v1.LobbyContentRequest
-	3, // 3: apis.lobby.api.v1.LobbyContentService.Content:output_type -> apis.lobby.api.v1.LobbyContentReply
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	5, // 2: apis.lobby.api.v1.LobbyGamesReply.games:type_name -> apis.lobby.api.v1.LobbyGame
+	4, // 3: apis.lobby.api.v1.LobbyContentService.Games:input_type -> apis.lobby.api.v1.LobbyGamesRequest
+	0, // 4: apis.lobby.api.v1.LobbyContentService.Content:input_type -> apis.lobby.api.v1.LobbyContentRequest
+	6, // 5: apis.lobby.api.v1.LobbyContentService.Games:output_type -> apis.lobby.api.v1.LobbyGamesReply
+	3, // 6: apis.lobby.api.v1.LobbyContentService.Content:output_type -> apis.lobby.api.v1.LobbyContentReply
+	5, // [5:7] is the sub-list for method output_type
+	3, // [3:5] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_apis_lobby_api_v1_content_api_proto_init() }
@@ -319,7 +509,7 @@ func file_apis_lobby_api_v1_content_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_apis_lobby_api_v1_content_api_proto_rawDesc), len(file_apis_lobby_api_v1_content_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

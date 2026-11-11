@@ -24,3 +24,38 @@ func TestExperienceConfig(t *testing.T) {
 		t.Fatal("missing config accepted")
 	}
 }
+
+func TestExperienceWeightsAndStopSettings(t *testing.T) {
+	p := filepath.Join(t.TempDir(), "experience.json")
+	base := `{"enabled":false,"createMinSeconds":30,"createMaxSeconds":120,"playMinSeconds":10,"playMaxSeconds":30`
+	for _, suffix := range []string{`,"gameWeights":{"AG1":-1}}`, `,"gameWeights":{"../AG2":1}}`, `,"stopEveryRounds":0}`, `,"stopChancePercent":101}`, `,"stopChancePercent":-1}`} {
+		if err := os.WriteFile(p, []byte(base+suffix), 0600); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := LoadExperience(p); err == nil {
+			t.Fatal("invalid settings accepted", suffix)
+		}
+	}
+	if err := os.WriteFile(p, []byte(base+`}`), 0600); err != nil {
+		t.Fatal(err)
+	}
+	legacy, err := LoadExperience(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	every, chance := legacy.StopPolicy()
+	if every != 50 || chance != 20 || legacy.Weights()["AG1"] != 1 {
+		t.Fatal("legacy behavior changed", legacy)
+	}
+	if err := os.WriteFile(p, []byte(base+`,"gameWeights":{"AG2":1},"stopEveryRounds":7,"stopChancePercent":0}`), 0600); err != nil {
+		t.Fatal(err)
+	}
+	cfg, err := LoadExperience(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	every, chance = cfg.StopPolicy()
+	if every != 7 || chance != 0 || cfg.Weights()["AG2"] != 1 {
+		t.Fatal(cfg)
+	}
+}

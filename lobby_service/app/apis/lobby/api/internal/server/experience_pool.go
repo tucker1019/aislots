@@ -5,20 +5,15 @@ import (
 	"apps/app/apis/lobby/api/internal/config"
 	"apps/app/apis/lobby/api/internal/repository/model"
 	"apps/pkg/xlog"
-	"bytes"
 	"context"
 	"crypto/rand"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/jackc/pgx/v5"
 	"gorm.io/gorm"
-	"io"
 	"math"
 	"math/big"
-	"net/http"
 	"os"
-	"strings"
 	"time"
 )
 
@@ -75,67 +70,48 @@ func experiencePoolTick(ctx context.Context, c config.Config, db *gorm.DB) error
 	if !locked {
 		return nil
 	}
-	game := c.Game.Games["AG1"]
-	if !game.Enabled || game.APIURL == "" || len(c.Game.ServiceToken) < 32 {
-		return fmt.Errorf("experience service unavailable")
-	}
-	call := func(path string, input, output any) error {
-		body, err := json.Marshal(input)
-		if err != nil {
+	return dispatchExperience(step, c, cfg, db, conn.Ping)
+}
+
+func dispatchExperience(ctx context.Context, c config.Config, cfg config.ExperienceConfig, db *gorm.DB, lease func(context.Context) error) error {
+	if lease != nil {
+		if err := lease(ctx); err != nil {
 			return err
 		}
-		req, err := http.NewRequestWithContext(step, "POST", strings.TrimRight(game.APIURL, "/")+path, bytes.NewReader(body))
-		if err != nil {
-			return err
-		}
-		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Authorization", "Bearer "+c.Game.ServiceToken)
-		client := http.Client{Timeout: 55 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
-		res, err := client.Do(req)
-		if err != nil {
-			return fmt.Errorf("experience connection unavailable")
-		}
-		defer func() { _ = res.Body.Close() }()
-		if res.StatusCode != 200 {
-			var failure struct{ Code string }
-			_ = json.NewDecoder(io.LimitReader(res.Body, 1<<20)).Decode(&failure)
-			if failure.Code == "INSUFFICIENT_FUNDS" {
-				return errExperienceFunds
-			}
-			return fmt.Errorf("experience HTTP %d", res.StatusCode)
-		}
-		return json.NewDecoder(io.LimitReader(res.Body, 1<<20)).Decode(output)
 	}
 	m := model.ExperienceModel{DB: db}
-	var policy struct {
-		Code string
-		Data struct {
-			Amounts             []int64
-			LineCount, BetLevel int
-		}
-	}
+	client := experienceClient{config: c, policies: map[string]experiencePolicy{}}
 	if cfg.Enabled {
-		if e = call("/internal/auto-bets", map[string]any{"uid": 1, "gameId": "AG1", "country": c.Game.Country, "currency": c.Game.Currency}, &policy); e != nil {
-			return e
+		due, err := m.CreationDue(ctx, time.Now().UTC())
+		if err != nil {
+			return err
 		}
-		if policy.Code != "OK" || len(policy.Data.Amounts) == 0 || policy.Data.LineCount < 1 || policy.Data.BetLevel < 1 {
-			return fmt.Errorf("invalid experience policy")
-		}
-		initial := int64(secureRange(1, 100)) * 10000
-		target := initial / int64(secureRange(100, 300))
-		bet, level := nearestExperienceBet(policy.Data.Amounts, policy.Data.LineCount, policy.Data.BetLevel, target)
-		if bet < 1 {
-			return fmt.Errorf("no legal experience stake")
-		}
-		if e = m.CreateScheduled(step, time.Now().UTC(), initial, bet, level, c.Game.Country, c.Game.Currency, time.Duration(secureRange(cfg.CreateMinSeconds, cfg.CreateMaxSeconds))*time.Second); e != nil {
-			return e
+		if due {
+			if err = createExperienceAccount(ctx, c, cfg, m, &client); err != nil {
+				xlog.Error(ctx, "experience creation paused", "error", err)
+			}
 		}
 	}
-	jobs, e := m.DueJobs(step, cfg.Enabled, time.Now().UTC())
-	if e != nil {
-		return e
+	jobs, err := m.DueJobs(ctx, cfg.Enabled, time.Now().UTC())
+	if err != nil {
+		return err
 	}
+	every, chance := cfg.StopPolicy()
 	for _, job := range jobs {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
+		if lease != nil {
+			if err := lease(ctx); err != nil {
+				return err
+			}
+		}
+		game, ok := c.Game.Games[job.GameID]
+		// Weight changes never move existing accounts. Offline games pause new rounds;
+		// persisted requests still recover against the original game and request ID.
+		if !ok || game.APIURL == "" || (job.RequestID == "" && !game.Enabled) {
+			continue
+		}
 		if job.Country == "" {
 			job.Country = c.Game.Country
 		}
@@ -143,8 +119,14 @@ func experiencePoolTick(ctx context.Context, c config.Config, db *gorm.DB) error
 			job.Currency = c.Game.Currency
 		}
 		if job.RequestID == "" {
-			if e = m.BeginJob(step, &job, policy.Data.LineCount); e != nil {
-				return e
+			policy, err := client.policy(ctx, job.GameID, job.Country, job.Currency)
+			if err != nil {
+				xlog.Error(ctx, "experience policy paused", "gameId", job.GameID, "error", err)
+				continue
+			}
+			if err = m.BeginJob(ctx, &job, policy.LineCount); err != nil {
+				xlog.Error(ctx, "experience command paused", "uid", job.UID, "error", err)
+				continue
 			}
 			if job.RequestID == "" {
 				continue
@@ -154,28 +136,48 @@ func experiencePoolTick(ctx context.Context, c config.Config, db *gorm.DB) error
 			Code string
 			Data struct{ Status, RequestID, BetID string }
 		}
-		e = call("/internal/auto-round", map[string]any{"requestId": job.RequestID, "uid": job.UID, "gameId": "AG1", "bet": job.Bet, "betLevel": job.BetLevel, "country": job.Country, "currency": job.Currency}, &reply)
-		if errors.Is(e, errExperienceFunds) {
-			if e = m.StopJob(step, job); e != nil {
-				return e
+		err := client.call(ctx, job.GameID, "/internal/auto-round", map[string]any{"requestId": job.RequestID, "uid": job.UID, "gameId": job.GameID, "bet": job.Bet, "betLevel": job.BetLevel, "country": job.Country, "currency": job.Currency}, &reply)
+		if errors.Is(err, errExperienceFunds) {
+			if err = m.StopJob(ctx, job); err != nil {
+				return err
 			}
 			continue
 		}
-		if e != nil {
-			xlog.Error(ctx, "experience command retained", "uid", job.UID, "error", e)
+		if err != nil {
+			xlog.Error(ctx, "experience command retained", "uid", job.UID, "gameId", job.GameID, "error", err)
 			continue
 		}
 		if reply.Code != "OK" || reply.Data.Status != "complete" || reply.Data.RequestID != job.RequestID || reply.Data.BetID == "" {
-			return fmt.Errorf("invalid experience receipt")
+			xlog.Error(ctx, "invalid experience receipt; command retained", "uid", job.UID)
+			continue
 		}
-		if e = conn.Ping(step); e != nil {
-			return e
+		if lease != nil {
+			if err := lease(ctx); err != nil {
+				return err
+			}
 		}
-		stop := (job.Rounds+1)%50 == 0 && secureRange(1, 100) <= 20
-		if e = m.FinishJob(step, job, reply.Data.BetID, time.Duration(secureRange(cfg.PlayMinSeconds, cfg.PlayMaxSeconds))*time.Second, stop); e != nil {
-			return e
+		stop := experienceShouldStop(job.Rounds+1, every, chance, func() int { return secureRange(1, 100) })
+		if err = m.FinishJob(ctx, job, reply.Data.BetID, time.Duration(secureRange(cfg.PlayMinSeconds, cfg.PlayMaxSeconds))*time.Second, stop); err != nil {
+			return err
 		}
-		xlog.Info(ctx, "experience round complete", "uid", job.UID, "betId", reply.Data.BetID, "stopped", stop)
+		xlog.Info(ctx, "experience round complete", "uid", job.UID, "gameId", job.GameID, "betId", reply.Data.BetID, "stopped", stop)
 	}
 	return nil
+}
+func createExperienceAccount(ctx context.Context, c config.Config, cfg config.ExperienceConfig, m model.ExperienceModel, client *experienceClient) error {
+	gameID, err := selectExperienceGame(cfg, c.Game.Games, experienceDraw)
+	if err != nil || gameID == "" {
+		return err
+	}
+	policy, err := client.policy(ctx, gameID, c.Game.Country, c.Game.Currency)
+	if err != nil {
+		return err
+	}
+	initial := int64(secureRange(1, 100)) * 10000
+	target := initial / int64(secureRange(100, 300))
+	bet, level := nearestExperienceBet(policy.Amounts, policy.LineCount, policy.BetLevel, target)
+	if bet < 1 {
+		return fmt.Errorf("no legal experience stake for %s", gameID)
+	}
+	return m.CreateScheduled(ctx, time.Now().UTC(), initial, bet, level, gameID, c.Game.Country, c.Game.Currency, time.Duration(secureRange(cfg.CreateMinSeconds, cfg.CreateMaxSeconds))*time.Second)
 }

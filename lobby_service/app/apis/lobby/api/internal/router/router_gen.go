@@ -30,6 +30,7 @@ func New(ctx *svc.ServiceContext) http.Handler {
 	content := contentlogic.New(ctx)
 	agent := agentlogic.New(ctx)
 	game := gamelogic.New(ctx)
+	mux.HandleFunc("GET /api/lobby/games", handler.API(func() *pb.LobbyGamesRequest { return new(pb.LobbyGamesRequest) }, content.Games))
 	mux.HandleFunc("GET /api/lobby/content", handler.API(func() *pb.LobbyContentRequest { return new(pb.LobbyContentRequest) }, content.Content))
 	mux.HandleFunc("POST /api/agent/info", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentCenter))
 	mux.HandleFunc("POST /api/agent/team", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentTeam))
