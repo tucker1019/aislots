@@ -184,3 +184,5 @@
 
 .notice-retry:disabled svg { animation:notice-spin .7s linear infinite; }
 @keyframes notice-spin { to { transform:rotate(360deg); } }
+
+.home-game-catalog-state { grid-column: 1 / -1; width: 100%; min-height: 100px; display: grid; place-items: center; }

@@ -1,3 +1,4 @@
+import {testGames} from '../test/game-catalog';
 import {beforeEach as authenticatedFixture} from 'vitest';
 import {useSessionStore} from '../stores/session';
 import { beforeEach, expect, it, vi } from 'vitest';
@@ -11,6 +12,7 @@ beforeEach(() => { window.history.replaceState(null, '', '/'); });
 vi.mock('../services/recharge', () => ({ fetchRechargeTiers: vi.fn().mockResolvedValue([{id:'a',amount:1000,bonus:0,fee:20,creditAmount:980}]), createRecharge: vi.fn(), fetchRechargeOrder: vi.fn(), paymentLink: vi.fn() }));
 function setup() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
+  client.setQueryData(['lobby','games'],testGames);
   render(<ConfigProvider theme={{ token: { motion: false } }}><QueryClientProvider client={client}><LobbyPage /></QueryClientProvider></ConfigProvider>);
   return userEvent.setup();
 }

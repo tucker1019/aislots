@@ -1,3 +1,5 @@
+import { gameDisplay, type GameId } from '../../app/games';
+import {useLobbyGames} from '../home/useLobbyGames';
 import {useState} from 'react';
 import {Drawer} from 'antd';
 import {overlayContainer} from '../../app/designViewport';
@@ -6,9 +8,11 @@ import {statisticsMoney,type LeaderboardRow,type RankBoard,type RankPeriod} from
 import {RankOrderNumber} from './RankOrderNumber';
 import {RankReplay} from './RankReplay';
 
-export function RankBetSheet({row,board,period,onClose}:{
- row:LeaderboardRow; board:RankBoard; period:RankPeriod; onClose:()=>void;
+export function RankBetSheet({row,board,period,onClose,gameId='AG1'}:{
+ row:LeaderboardRow; board:RankBoard; period:RankPeriod; onClose:()=>void; gameId?:GameId;
 }) {
+ const catalog=useLobbyGames();
+ const game=gameDisplay(gameId,catalog.data?.find(game=>game.id===gameId));
  const [open,setOpen]=useState(true);
  const [shareTarget,setShareTarget]=useState<HTMLSpanElement|null>(null);
  return <Drawer open={open} placement="bottom" title={t('gamePreview.betSlip')} onClose={()=>setOpen(false)}
@@ -29,11 +33,11 @@ export function RankBetSheet({row,board,period,onClose}:{
     <div><strong>{row.nickname}</strong><time dateTime={row.occurredAt}>{new Date(row.occurredAt).toLocaleString()}</time></div>
    </div>
    {board!=='streak' && row.platformOrderId
-    ? <RankReplay betId={row.betId} orderId={row.platformOrderId} board={board} period={period} shareTarget={shareTarget}/>
+    ? <RankReplay gameId={gameId} betId={row.betId} orderId={row.platformOrderId} board={board} period={period} shareTarget={shareTarget}/>
     : <RankOrderNumber betId={row.betId}/>}
    <div className="game-rank-sheet-game">
-    <img src="/assets/lobby/mahjong-icon.png" alt=""/>
-    <div><strong>{t('copy.mahjongWays')}</strong><span>AG</span></div>
+    <img src={game.cover} alt=""/>
+    <div><strong>{game.title}</strong><span>{game.provider}</span></div>
     <button type="button" className="game-rank-sheet-play" onClick={()=>setOpen(false)}>
      {t('gamePreview.playNow')}
      <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none">

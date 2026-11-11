@@ -21,13 +21,13 @@ export function parseLeaderboard(data:unknown):GameLeaderboard{
   return {platformOrderId:String(row.platformOrderId),rank:Number(row.rank),userId:row.userId,nickname:row.nickname,avatarId:Number(row.avatarId),betId:row.betId,betAmount:row.betAmount,winAmount:row.winAmount,multiplier:row.multiplier,streak:Number(row.streak),occurredAt:row.occurredAt};
  });return {items,updatedAt:data.updatedAt,statisticsSince:data.statisticsSince,timezone:data.timezone};
 }
-async function load(path:string,fields:Record<string,string>,signal?:AbortSignal){const identity=await ensureSession();return request(path,{method:'POST',signal,body:JSON.stringify({uid:identity.uid,sid:identity.sid,gameId:'AG1',...fields})},t('statistics.failed'));}
-export async function fetchGameRtp(window:RtpWindow,signal?:AbortSignal){return parseGameRtp(await load('/api/game/rtp',{window},signal));}
-export async function fetchLeaderboard(board:RankBoard,period:RankPeriod,signal?:AbortSignal){return parseLeaderboard(await load('/api/game/leaderboard',{board,period},signal));}
+async function load(path:string,fields:Record<string,string>,signal?:AbortSignal,gameId='AG1'){const identity=await ensureSession();return request(path,{method:'POST',signal,body:JSON.stringify({uid:identity.uid,sid:identity.sid,gameId,...fields})},t('statistics.failed'));}
+export async function fetchGameRtp(window:RtpWindow,signal?:AbortSignal,gameId='AG1'){return parseGameRtp(await load('/api/game/rtp',{window},signal,gameId));}
+export async function fetchLeaderboard(board:RankBoard,period:RankPeriod,signal?:AbortSignal,gameId='AG1'){return parseLeaderboard(await load('/api/game/leaderboard',{board,period},signal,gameId));}
 export function statisticsMoney(value:string){const number=BigInt(value);return (number/100n).toLocaleString('zh-TW')+'.'+String(number%100n).padStart(2,'0');}
 
-export async function fetchRankReplay(platformOrderId:string,board:RankBoard,period:RankPeriod){
- const data=await load('/api/game/rank-replay',{platformOrderId,board,period});
+export async function fetchRankReplay(platformOrderId:string,board:RankBoard,period:RankPeriod,gameId='AG1'){
+ const data=await load('/api/game/rank-replay',{platformOrderId,board,period},undefined,gameId);
  if(!isRecord(data)||typeof data.replayUrl!=='string')throw new Error(t('gamePreview.replayUnavailable'));
  const url=new URL(data.replayUrl);if(!['http:','https:'].includes(url.protocol)||url.username||url.password||!url.searchParams.get('replay')||url.searchParams.get('share')?.length!==52||url.searchParams.has('launchTicket'))throw new Error(t('gamePreview.replayUnavailable'));
  return url.href;

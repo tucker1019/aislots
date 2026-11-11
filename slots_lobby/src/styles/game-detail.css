@@ -213,3 +213,6 @@ button.game-rank-row::after {
 .game-rank-header-share { display: flex; }
 .game-rank-replay { grid-template-columns: minmax(0,1fr) auto; align-items: center; }
 .game-rank-replay > [role="alert"] { grid-column: 1 / -1; }
+
+.game-rank-streak-summary { display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap; }
+.game-rank-streak-summary time { color: var(--muted); font-size: 10px; font-weight: 400; }

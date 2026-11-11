@@ -6,10 +6,10 @@ import {fetchGameRtp} from '../../services/game-statistics';
 import {NetworkError} from '../../components/feedback/NetworkError';
 const periods=[{value:'5m',label:'gamePreview.fiveMinutes'},{value:'1h',label:'gamePreview.oneHour'},{value:'24h',label:'gamePreview.oneDay'}] as const;
 const theoreticalRtp=97;
-export function RtpSummary(){
+export function RtpSummary({gameId='AG1'}:{gameId?:string}){
  const uid=useSessionStore(state=>state.session?.uid);
  const [open,setOpen]=useState(false);const root=useRef<HTMLDivElement>(null);
- const queries=useQueries({queries:periods.map(period=>({queryKey:['game-rtp','AG1',period.value,uid],queryFn:({signal}:{signal:AbortSignal})=>fetchGameRtp(period.value,signal),retry:false,refetchInterval:false as const,refetchOnWindowFocus:false,refetchOnReconnect:false}))});
+ const queries=useQueries({queries:periods.map(period=>({queryKey:['game-rtp',gameId,period.value,uid],queryFn:({signal}:{signal:AbortSignal})=>fetchGameRtp(period.value,signal,gameId),retry:false,refetchInterval:false as const,refetchOnWindowFocus:false,refetchOnReconnect:false}))});
  useEffect(()=>{const outside=(event:PointerEvent)=>{if(!root.current?.contains(event.target as Node))setOpen(false);};document.addEventListener('pointerdown',outside);return()=>document.removeEventListener('pointerdown',outside);},[]);
  // Prefer the shortest populated window once every shorter window has resolved.
  const selected=queries.find((query,index)=>query.data?.hasData&&queries.slice(0,index).every(previous=>!previous.isPending));

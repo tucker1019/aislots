@@ -8,11 +8,11 @@ import {fetchRankReplay,type RankBoard,type RankPeriod} from '../../services/gam
 import {t} from '../../i18n';
 import {RankOrderNumber} from './RankOrderNumber';
 
-export function RankReplay({orderId,betId,board,period,shareTarget}:{orderId:string;betId:string;board:RankBoard;period:RankPeriod;shareTarget?:HTMLElement|null}) {
+export function RankReplay({orderId,betId,board,period,shareTarget,gameId='AG1'}:{orderId:string;betId:string;board:RankBoard;period:RankPeriod;shareTarget?:HTMLElement|null;gameId?:string}) {
  const [panel,setPanel]=useState<'replay'|'share'>();
  const [toast,holder]=message.useMessage({getContainer:overlayContainer,maxCount:1,classNames:{list:'lobby-toast-list'}});
- const query=useMutation({
-  mutationFn:(_action:'replay'|'share')=>fetchRankReplay(orderId,board,period),
+ const query=useMutation<string,Error,'replay'|'share'>({
+  mutationFn:()=>fetchRankReplay(orderId,board,period,gameId),
   retry:false,
   onSuccess:(_url,action)=>{setPanel(action);},
  });

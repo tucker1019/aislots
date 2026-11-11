@@ -27,11 +27,11 @@ export async function launchGame(gameId: string): Promise<string> {
 }
 
 
-const embeddedEntryKey = 'aislots-embedded-AG1';
+const embeddedEntryKey = (gameId: string) => 'aislots-embedded-' + gameId;
 /** 仅在当前标签页保存服务端签发的入口，父页面刷新时恢复同一iframe。 */
-export function rememberGameEntry(url: string) { sessionStorage.setItem(embeddedEntryKey, url); }
-export function readGameEntry(): string | undefined {
-  const value = sessionStorage.getItem(embeddedEntryKey);
+export function rememberGameEntry(url: string, gameId = 'AG1') { sessionStorage.setItem(embeddedEntryKey(gameId), url); }
+export function readGameEntry(gameId = 'AG1'): string | undefined {
+  const value = sessionStorage.getItem(embeddedEntryKey(gameId));
   return value ? resolveGameEntry(value, false) : undefined;
 }
-export function forgetGameEntry() { sessionStorage.removeItem(embeddedEntryKey); }
+export function forgetGameEntry(gameId = 'AG1') { sessionStorage.removeItem(embeddedEntryKey(gameId)); }

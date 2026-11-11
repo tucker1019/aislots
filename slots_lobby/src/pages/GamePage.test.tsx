@@ -1,3 +1,4 @@
+import {testGames} from '../test/game-catalog';
 import type * as StatisticsModule from '../services/game-statistics';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -12,6 +13,7 @@ const first = 'http://127.0.0.1:5180/?launchTicket=' + 'A'.repeat(52);
 beforeEach(() => { sessionStorage.clear(); vi.clearAllMocks(); });
 function setup() {
   const onBack = vi.fn(); const client = new QueryClient();
+  client.setQueryData(['lobby','games'],testGames);
   client.setQueryData(['lobby', 'current-profile'], { coins: 100 });
   render(<QueryClientProvider client={client}><GamePage onBack={onBack} /></QueryClientProvider>);
   return { onBack, client, user: userEvent.setup() };
@@ -58,4 +60,31 @@ it('放大和縮回保留同一個iframe節點和src，不再申請入口',async
  expect(screen.getByRole('button',{name:'退出遊戲'})).toBeInTheDocument();
  await user.click(screen.getByRole('button',{name:'縮回小窗'}));expect(screen.getByRole('dialog')).not.toHaveClass('game-detail-expanded');expect(screen.getByTitle('AG1 麻將胡了')).toBe(frame);expect(frame).toHaveAttribute('src',first);expect(launchGame).not.toHaveBeenCalled();
  expect(screen.getByRole('tab',{name:'最大連勝'})).toBeInTheDocument();await user.click(screen.getByRole('tab',{name:'最大連勝'}));expect(await screen.findByText('暫無上榜記錄')).toBeInTheDocument();
+});
+
+it('AG2 申請自己的票據並隔離 AG1 的入口和統計',async()=>{
+ rememberGameEntry(first,'AG1');
+ const second='http://127.0.0.1:5181/?launchTicket='+'B'.repeat(52);
+ vi.mocked(launchGame).mockResolvedValue(second);
+ const client=new QueryClient({defaultOptions:{queries:{retry:false}}});
+ client.setQueryData(['lobby','games'],testGames);
+ render(<QueryClientProvider client={client}><GamePage gameId="AG2" onBack={vi.fn()}/></QueryClientProvider>);
+ await waitFor(()=>expect(launchGame).toHaveBeenCalledWith('AG2'));
+ const frame=await screen.findByTitle('麻將胡了2');
+ await waitFor(()=>expect(frame).toHaveAttribute('src',second));
+ const {readGameEntry}=await import('../services/game-entry');
+ expect(readGameEntry('AG1')).toBe(first);
+ expect(readGameEntry('AG2')).toBe(second);
+ const {fetchGameRtp,fetchLeaderboard}=await import('../services/game-statistics');
+ expect(fetchGameRtp).toHaveBeenCalledWith('5m',expect.any(AbortSignal),'AG2');
+ expect(fetchLeaderboard).toHaveBeenCalledWith('wins','all',expect.any(AbortSignal),'AG2');
+});
+
+it('已下線或隱藏遊戲不能通過緩存入口進入',async()=>{
+ rememberGameEntry(first,'AG1');
+ const client=new QueryClient();client.setQueryData(['lobby','games'],testGames.filter(game=>game.id!=='AG1'));
+ render(<QueryClientProvider client={client}><GamePage onBack={vi.fn()}/></QueryClientProvider>);
+ expect(await screen.findByText('敬請期待')).toBeInTheDocument();
+ expect(screen.queryByTitle('AG1 麻將胡了')).not.toBeInTheDocument();
+ expect(launchGame).not.toHaveBeenCalled();
 });

@@ -5,16 +5,18 @@ import { NoticeBar } from './NoticeBar';
 import { PromotionBanner } from './PromotionBanner';
 import { ProviderTabs } from './ProviderTabs';
 import { GameTile } from './GameTile';
-import { mahjongGame, type AvailableProvider } from './content';
-import { comingSoonGames } from './comingSoonGames';
+import type { AvailableProvider } from './content';
+import { useLobbyGames } from './useLobbyGames';
+import { getLocale } from '../../i18n';
+import { NetworkError } from '../../components/feedback/NetworkError';
 import { navigateLobby } from '../../app/useLobbyRoute';
 
 const GAMES_PER_BATCH = 6 * 3;
-const gameCover = (id: string) => `/assets/lobby/games/${id}.png`;
 
-function preloadCover(id: string) {
+
+function preloadCover(cover: string) {
   const image = new Image();
-  image.src = gameCover(id);
+  image.src = cover;
   return image.decode();
 }
 
@@ -23,9 +25,12 @@ export function HomeContent({ onComingSoon }: { onComingSoon: () => void }) {
   const [visibleCount, setVisibleCount] = useState(GAMES_PER_BATCH);
   const [loadingMore, setLoadingMore] = useState(false);
   const listEnd = useRef<HTMLDivElement>(null);
-  const hasMore = selected === 'hot' && visibleCount < comingSoonGames.length + 1;
+  const catalog = useLobbyGames();
+  const games = (catalog.data ?? []).filter(game => selected === 'hot' || game.provider === selected);
+  const hasMore = visibleCount < games.length;
 
   useEffect(() => {
+    const games = (catalog.data ?? []).filter(game => selected === 'hot' || game.provider === selected);
     const target = listEnd.current;
     const scrollRoot = target?.closest('#root');
     if (!hasMore || !target || !scrollRoot || typeof IntersectionObserver === 'undefined') return;
@@ -38,8 +43,8 @@ export function HomeContent({ onComingSoon }: { onComingSoon: () => void }) {
       started = true;
       setLoadingMore(true);
 
-      const nextBatch = comingSoonGames.slice(visibleCount - 1, visibleCount - 1 + GAMES_PER_BATCH);
-      const ready = Promise.allSettled(nextBatch.map(([id]) => preloadCover(id)));
+      const nextBatch = games.slice(visibleCount, visibleCount + GAMES_PER_BATCH);
+      const ready = Promise.allSettled(nextBatch.map(game => preloadCover(game.cover)));
       const deadline = new Promise<void>(resolve => { loadDeadline = window.setTimeout(resolve, 3000); });
       const delay = new Promise<void>(resolve => { minimumDelay = window.setTimeout(resolve, 300); });
       void Promise.all([Promise.race([ready, deadline]), delay]).then(() => {
@@ -56,20 +61,24 @@ export function HomeContent({ onComingSoon }: { onComingSoon: () => void }) {
       window.clearTimeout(minimumDelay);
       window.clearTimeout(loadDeadline);
     };
-  }, [hasMore, visibleCount]);
+  }, [hasMore, visibleCount, catalog.data, selected]);
+
+  const visibleGames = games.slice(0, visibleCount);
 
   return <>
     <NoticeBar />
     <PromotionBanner />
-    <ProviderTabs selected={selected} onSelect={provider => { if (provider !== selected) { setSelected(provider); setLoadingMore(false); } }} />
+    <ProviderTabs selected={selected} onSelect={provider => { if (provider !== selected) { setSelected(provider); setVisibleCount(GAMES_PER_BATCH); setLoadingMore(false); } }} />
     <section className="home-game-list" aria-label={t('copy.gameList')}>
       <div className="home-game-grid">
-        <GameTile cover={mahjongGame().cover} label={t('copy.enterMahjongWays')} onEnter={() => navigateLobby('game')} />
-        {selected === 'hot' && comingSoonGames.slice(0, visibleCount - 1).map(([id, title], index) => (
-          <GameTile key={id} cover={gameCover(id)} label={title} onEnter={onComingSoon} lazy={index >= 11 && index < GAMES_PER_BATCH - 1} />
+        {visibleGames.map((game, index) => (
+          <GameTile key={game.id} cover={game.cover} label={game.id === 'AG1' ? t('copy.enterMahjongWays') : (getLocale() === 'en-US' && game.nameEn ? game.nameEn : game.name)} onEnter={game.enabled ? () => navigateLobby('game', { gameId: game.id }) : onComingSoon} lazy={index >= 12 && index < GAMES_PER_BATCH} />
         ))}
+        {catalog.isPending && <span className="home-game-catalog-state" role="status" aria-label={t('copy.loading')}><Spin size="small" /></span>}
+        {catalog.isError && <div className="home-game-catalog-state"><NetworkError onRetry={() => void catalog.refetch()} disabled={catalog.isFetching}/></div>}
+        {catalog.isSuccess && !games.length && <p className="home-game-catalog-state">{t('copy.comingSoon')}</p>}
       </div>
-      {selected === 'hot' && <div className="home-game-list-end" ref={listEnd}>
+      {hasMore && <div className="home-game-list-end" ref={listEnd}>
         {loadingMore && <span role="status" aria-label={t('copy.loading')}><Spin size="small" /></span>}
       </div>}
     </section>

@@ -31,7 +31,7 @@ import { HomeContent } from '../features/home/HomeContent';
 
 export function LobbyPage() {
   useLanguageStore(state=>state.locale);
-  const { view:requestedView, navigate, orderId } = useLobbyRoute();
+  const { view:requestedView, navigate, orderId, gameId } = useLobbyRoute();
   const session=useSessionStore(state=>state.session);
   const restricted=!session&&!['home','offers'].includes(requestedView);
   const view=restricted?'home':requestedView;
@@ -41,7 +41,7 @@ export function LobbyPage() {
     top: view !== 'home' ? 'calc(var(--lobby-safe-top, 0px) + 12px)' : 'calc(var(--header-height) + 12px)', duration: 1.6, maxCount: 1,
     classNames: { list: 'lobby-toast-list' },
   });
-  if (view === 'game') return <GamePage onBack={() => navigate('home')} />;
+  if (view === 'game') return <GamePage key={gameId} gameId={gameId} onBack={() => navigate('home')} />;
   return <>
     {view === 'home' && <Header />}
     {contextHolder}
