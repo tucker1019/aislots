@@ -1,0 +1,250 @@
+{
+  "version": 1,
+  "format": "winning-skeleton-v1",
+  "gameId": "AG2",
+  "mode": "base",
+  "createdAt": "2026-11-11T08:52:51.238Z",
+  "boardRevision": "ed44c1e65ffe6aa667d841dd5e85c104416dc25649dfe5b8114d645a4ba60b86",
+  "configHash": "30ac9c6d9cbca060a2e5941d2d5a9c918f2f9a460b8535784350db355ae944ba",
+  "multiplierUnit": "raw-before-line-count",
+  "positionOrder": "column-major-top-to-bottom-zero-based",
+  "options": {
+    "mode": "base",
+    "count": 5000000,
+    "perMultiplier": 100,
+    "seed": 1023033909
+  },
+  "stats": {
+    "completed": 5000000,
+    "wins": 2765294,
+    "losses": 2234706,
+    "limited": 0,
+    "retained": 100000,
+    "duplicates": 116761,
+    "capacitySkipped": 90222,
+    "bucketCount": 4938
+  },
+  "validation": {
+    "symbolWins": [
+      {
+        "id": "1",
+        "name": "三饼",
+        "records": 31195
+      },
+      {
+        "id": "2",
+        "name": "二条",
+        "records": 33410
+      },
+      {
+        "id": "3",
+        "name": "二饼",
+        "records": 32341
+      },
+      {
+        "id": "4",
+        "name": "五条",
+        "records": 30709
+      },
+      {
+        "id": "5",
+        "name": "五饼",
+        "records": 29616
+      },
+      {
+        "id": "6",
+        "name": "八万",
+        "records": 28982
+      },
+      {
+        "id": "7",
+        "name": "白板",
+        "records": 28765
+      },
+      {
+        "id": "8",
+        "name": "中",
+        "records": 28073
+      },
+      {
+        "id": "9",
+        "name": "发",
+        "records": 27217
+      }
+    ],
+    "missingMultipliers": [
+      "2620",
+      "3921",
+      "3963",
+      "3964",
+      "3967",
+      "3999"
+    ],
+    "coveredMultipliers": 634,
+    "requiredMultipliers": 640,
+    "ready": false
+  },
+  "partial": false,
+  "config": {
+    "version": 1,
+    "fillWeightIncrement": 1000,
+    "scatterWeightIncrement": 500,
+    "gold": {
+      "columns": [
+        2,
+        3,
+        4
+      ],
+      "baseProbability": 0.083,
+      "freeProbability": 0.11,
+      "wildSymbolId": "10"
+    },
+    "columnHeights": [
+      4,
+      5,
+      5,
+      5,
+      4
+    ],
+    "symbols": [
+      {
+        "id": "1",
+        "name": "三饼",
+        "weight": 1220,
+        "role": "normal",
+        "color": "#6296ab",
+        "payouts": {
+          "3": 2,
+          "4": 4,
+          "5": 10
+        }
+      },
+      {
+        "id": "2",
+        "name": "二条",
+        "weight": 1300,
+        "role": "normal",
+        "color": "#448f7d",
+        "payouts": {
+          "3": 1,
+          "4": 3,
+          "5": 6
+        }
+      },
+      {
+        "id": "3",
+        "name": "二饼",
+        "weight": 1260,
+        "role": "normal",
+        "color": "#6296ab",
+        "payouts": {
+          "3": 1,
+          "4": 3,
+          "5": 6
+        }
+      },
+      {
+        "id": "4",
+        "name": "五条",
+        "weight": 1180,
+        "role": "normal",
+        "color": "#448f7d",
+        "payouts": {
+          "3": 3,
+          "4": 5,
+          "5": 12
+        }
+      },
+      {
+        "id": "5",
+        "name": "五饼",
+        "weight": 1140,
+        "role": "normal",
+        "color": "#547cbb",
+        "payouts": {
+          "3": 3,
+          "4": 5,
+          "5": 12
+        }
+      },
+      {
+        "id": "6",
+        "name": "八万",
+        "weight": 1100,
+        "role": "normal",
+        "color": "#b47868",
+        "payouts": {
+          "3": 5,
+          "4": 10,
+          "5": 15
+        }
+      },
+      {
+        "id": "7",
+        "name": "白板",
+        "weight": 1060,
+        "role": "normal",
+        "color": "#9680b8",
+        "payouts": {
+          "3": 6,
+          "4": 15,
+          "5": 30
+        }
+      },
+      {
+        "id": "8",
+        "name": "中",
+        "weight": 1020,
+        "role": "normal",
+        "color": "#b47868",
+        "payouts": {
+          "3": 8,
+          "4": 20,
+          "5": 40
+        }
+      },
+      {
+        "id": "9",
+        "name": "发",
+        "weight": 980,
+        "role": "normal",
+        "color": "#448f7d",
+        "payouts": {
+          "3": 10,
+          "4": 25,
+          "5": 50
+        }
+      },
+      {
+        "id": "11",
+        "name": "分散",
+        "weight": 300,
+        "role": "scatter",
+        "color": "#b47868",
+        "payouts": {}
+      },
+      {
+        "id": "10",
+        "name": "百搭",
+        "weight": 0,
+        "role": "wild",
+        "color": "#9680b8",
+        "payouts": {}
+      }
+    ],
+    "cascadeFactors": [
+      1,
+      2,
+      3,
+      5
+    ],
+    "freeCascadeFactors": [
+      2,
+      4,
+      6,
+      10
+    ],
+    "seed": 0
+  },
+  "dataHash": "2e9fb4a3fb795b5dc338c2d29504efa9a4563ae4fd72b8c226e2e8d98d00d27d"
+}
