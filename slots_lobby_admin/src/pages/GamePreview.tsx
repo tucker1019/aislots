@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react';
-import { Alert, Card, Form, Input } from 'antd';
+import { Alert, Card, Form, Input, Select } from 'antd';
 import { AsyncButton } from '../components/AsyncButton';
 import { Page } from '../components/Page';
 import { issuePreviewTicket } from '../services/gamePreview';
 
 interface PreviewFields {
+ gameId: 'AG1' | 'AG2';
  uid: string;
  sid: string;
  previewUrl: string;
@@ -41,7 +42,7 @@ export function GamePreview() {
   setPending(true);
   setError('');
   try {
-   const ticket = await issuePreviewTicket(uid, sid);
+   const ticket = await issuePreviewTicket(uid, sid, fields.gameId);
    if (tab.closed) throw new Error('预览窗口已关闭，请重新打开。');
    const localAdmin = ['localhost', '127.0.0.1'].includes(window.location.hostname);
    preview.searchParams.set('api', localAdmin ? 'http://127.0.0.1:8080' : window.location.origin);
@@ -57,9 +58,12 @@ export function GamePreview() {
   }
  }
 
- return <Page eyebrow="GAME PREVIEW" title="Cocos 调试" description="启动 Cocos 浏览器预览后，使用当前环境的大厅会话打开本机预览。当前游戏票据对应 AG1。">
+ return <Page eyebrow="GAME PREVIEW" title="Cocos 调试" description="启动 Cocos 浏览器预览后，使用当前环境的大厅会话打开本机预览。选择游戏后签发对应游戏的票据。">
   <Card>
-   <Form form={form} layout="vertical" initialValues={{ previewUrl: 'http://localhost:7456/' }} onFinish={openPreview}>
+   <Form form={form} layout="vertical" initialValues={{ gameId: 'AG1', previewUrl: 'http://localhost:7456/' }} onFinish={openPreview}>
+    <Form.Item label="游戏" name="gameId" rules={[{ required: true, message: '请选择游戏' }]}>
+     <Select disabled={pending} options={[{ value: 'AG1', label: 'AG1' }, { value: 'AG2', label: 'AG2' }]} />
+    </Form.Item>
     <Form.Item label="平台 UID" name="uid" rules={[{ required: true, message: '请输入平台 UID' }]}>
      <Input inputMode="numeric" disabled={pending} />
     </Form.Item>

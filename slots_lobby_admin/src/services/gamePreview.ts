@@ -1,12 +1,12 @@
 import { object, string } from './schema';
 
-export async function issuePreviewTicket(uid: number, sid: string): Promise<string> {
+export async function issuePreviewTicket(uid: number, sid: string, gameId: 'AG1' | 'AG2' = 'AG1'): Promise<string> {
  const response = await fetch('/api/game/launch', {
   method: 'POST',
   credentials: 'omit',
   redirect: 'error',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ uid, sid, gameId: 'AG1' }),
+  body: JSON.stringify({ uid, sid, gameId }),
  });
  const payload = object(await response.json().catch(() => null));
  if (!response.ok || payload.code !== 'OK') {

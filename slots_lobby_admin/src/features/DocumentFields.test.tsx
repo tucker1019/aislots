@@ -16,7 +16,7 @@ describe('section-aware structured configuration', () => {
   fireEvent.change(screen.getByLabelText('games.games 新增标识'), { target: { value: 'PG2' } });
   fireEvent.click(screen.getByRole('button', { name: '新增条目' }));
   const result: unknown = JSON.parse(screen.getByTestId('document').textContent ?? '{}');
-  expect(result).toMatchObject({ PG2: { enabled: false, url: '', provider: '', name: '', apiUrl: '' }, AG1: { name: 'Existing' } });
+  expect(result).toMatchObject({ PG2: { enabled: false, visible: true, sort: 10, cover: '', nameEn: '', url: '', provider: '', name: '', apiUrl: '' }, AG1: { name: 'Existing' } });
  });
  it('restores an array after its last item is removed', () => {
   render(<Fixture initial={[{ id: 'first', amount: 100, bonus: 0, fee: 0 }]} path="recharge" />);
@@ -52,4 +52,12 @@ describe('section-aware structured configuration', () => {
   view.rerender(<DocumentFields value={{}} path="games.games" disabled onChange={vi.fn()} />);
   expect(screen.getByRole('button', { name: '新增条目' }).hasAttribute('disabled')).toBe(true);
  });
+});
+
+it('edits catalog visibility, availability and order independently',()=>{
+ render(<Fixture initial={{AG1:{enabled:true,visible:true,sort:10,name:'One',provider:'AG',cover:'/assets/one.png',url:'https://game.example/'}}} path="games.games"/>);
+ fireEvent.click(screen.getByLabelText('games.games.AG1.visible'));
+ fireEvent.click(screen.getByLabelText('games.games.AG1.enabled'));
+ fireEvent.change(screen.getByLabelText('games.games.AG1.sort'),{target:{value:'35'}});
+ expect(JSON.parse(screen.getByTestId('document').textContent??'{}').AG1).toMatchObject({visible:false,enabled:false,sort:35});
 });
