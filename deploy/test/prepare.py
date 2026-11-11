@@ -24,12 +24,11 @@ payload.mkdir()
 shutil.copytree(repo / 'lobby_service/etc', payload / 'lobby-etc')
 games_path = payload / 'lobby-etc/games.json'
 games = json.loads(games_path.read_text())
-for name, game in games['games'].items():
-    if name != 'AG1':
-        game['enabled'] = False
-    else:
-        game['url'] = origin + '/games/ag1/'
-        game['apiUrl'] = 'http://game:8080'
+game_paths = {'AG1': 'ag1', 'AG2': 'ag2'}
+for name, path in game_paths.items():
+    game = games['games'][name]
+    game['url'] = origin + '/games/' + path + '/'
+    game['apiUrl'] = 'http://game:8080'
 games_path.write_text(json.dumps(games, ensure_ascii=False, indent=2) + '\n')
 invite_path = payload / 'lobby-etc/invite.json'
 invite = json.loads(invite_path.read_text())
@@ -37,7 +36,8 @@ invite['baseUrl'] = origin + '/'
 invite_path.write_text(json.dumps(invite, ensure_ascii=False, indent=2) + '\n')
 shutil.copytree(repo / 'slots_lobby/dist', payload / 'www')
 shutil.copytree(repo / 'slots_lobby_admin/dist', payload / 'www/ops')
-shutil.copytree(repo / 'client/mahjongway/build/web-mobile', payload / 'www/games/ag1')
+for project, path in [('mahjongway', 'ag1'), ('mahjongway2', 'ag2')]:
+    shutil.copytree(repo / 'client' / project / 'build/web-mobile', payload / 'www/games' / path)
 shutil.copytree(repo / 'game_libraries/AG1', payload / 'game-libraries/AG1')
 shutil.copytree(repo / 'game_libraries/AG2', payload / 'game-libraries/AG2')
 shutil.copytree(repo / 'slots_service/testdata/deployments', payload / 'game-data/deployments')

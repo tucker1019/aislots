@@ -4,7 +4,7 @@
 
 ## 组成
 
-- Nginx：大厅 `/`，AG1 `/games/ag1/`；大厅 `/api/`、机台 `/api/v1/` 同源反向代理。
+- Nginx：大厅 `/`，AG1 `/games/ag1/`、AG2 `/games/ag2/`；大厅 `/api/`、机台 `/api/v1/` 同源反向代理。
 - 两个 Go 进程，两个独立 PostgreSQL 18 容器和持久化卷。
 - 除 80/443 外无容器宿主机端口映射，`/internal/` 在公网入口返回404。
 - Docker `unless-stopped` 自动重启，日志轮转，数据备份脚本；备份仍需另存到服务器之外。
@@ -12,7 +12,7 @@
 
 ## 构建和打包
 
-先构建大厅 `slots_lobby` 及 Cocos AG1 Web Mobile，均使用相对/同源 API，不携带本机环境变量。
+先构建大厅 `slots_lobby` 及 Cocos AG1/AG2 Web Mobile，均使用相对/同源 API，不携带本机环境变量。
 
 ```sh
 (cd slots_lobby_admin && npm run build -- --base=/ops/)
@@ -59,3 +59,9 @@ HTTP公网IP不属于浏览器安全上下文，`crypto.randomUUID`、剪贴板�
 同一公网IP的 `/ops/` 为大厅运营后台，`/admin/api/` 仅代理独立后台容器。构建后台时使用 `npm run build -- --base=/ops/`；打包同时编译后台Linux二进制至`payload/bin/admin`。后台不映射宿主机端口，开启Secure Cookie，并只允许`PUBLIC_ORIGIN`（默认现有HTTPS IP）。
 
 远程管理员通过独立初始化命令创建随机口令，不复制本地管理员、玩家数据或本地弱口令。私密登录资料单独保存在服务器和操作者私有目录，不写入发布包、Git或网页静态目录。域名解析可用后，再按用户确认的子域名配置独立站点。
+
+## 游戏目录升级
+
+发布包同时包含两款游戏客户端、独立配置和盘面库。升级已有环境时，保留服务器 `.env`、数据库卷及已发布运营参数；使用新编译的 `app/apis/lobby/api/tools/import-game-catalog` 工具补齐游戏目录，按草稿/发布记录生成审计。该工具默认仅检查，传 `-apply` 才发布，存在未发布草稿时拒绝覆盖。`payload/lobby-etc/games.json` 已由打包器写入公网入口和容器 API 地址，不使用本地地址迁移。
+
+体验账号的启用状态、时间间隔及已发布权重沿用测试环境配置；新增停止参数缺省兼容旧策略。两个服务各自执行兼容迁移，历史游戏配置和盘面库一并保留。
