@@ -39,6 +39,7 @@ shutil.copytree(repo / 'slots_lobby/dist', payload / 'www')
 shutil.copytree(repo / 'slots_lobby_admin/dist', payload / 'www/ops')
 shutil.copytree(repo / 'client/mahjongway/build/web-mobile', payload / 'www/games/ag1')
 shutil.copytree(repo / 'game_libraries/AG1', payload / 'game-libraries/AG1')
+shutil.copytree(repo / 'game_libraries/AG2', payload / 'game-libraries/AG2')
 shutil.copytree(repo / 'slots_service/testdata/deployments', payload / 'game-data/deployments')
 shutil.copytree(repo / 'slots_service/testdata/integration/AG1', payload / 'game-data/integration/AG1')
 configs = payload / 'game-configs'
