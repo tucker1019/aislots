@@ -2,7 +2,7 @@ import * as fs from 'node:fs/promises';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { FileError } from './game-files.mjs';
-export function createLibraryStore(root, boardStore, validate) {
+export function createLibraryStore(root, boardStore, validate, audit) {
   async function actualDirectory(dir) {
     await fs.mkdir(dir,{recursive:true});
     const stat=await fs.lstat(dir);
@@ -16,6 +16,7 @@ export function createLibraryStore(root, boardStore, validate) {
       if (value?.options?.mode!==mode) throw new FileError(422,'盘面库模式不一致。');
       try {validate(value,{...current.file,lineCount:1});}
       catch(error){throw new FileError(422,error.message);}
+      const validation = audit ? await audit(gameId, value, current) : undefined;
       const bytes=JSON.stringify(value.buckets)+'\n';
       if (Buffer.byteLength(bytes)>32*1024*1024+1024*1024) throw new FileError(413,'盘面库超过保存容量，请减小保留条数后分批生成。');
       const modeRoot=path.join(root,gameId,mode);
@@ -24,13 +25,13 @@ export function createLibraryStore(root, boardStore, validate) {
       const temporary=path.join(modeRoot,`.${runId}.tmp`), destination=path.join(modeRoot,runId);
       await fs.mkdir(temporary);
       try {
-        const manifest={version:1,format:'winning-skeleton-v1',gameId,mode,createdAt:new Date().toISOString(),boardRevision:revision,configHash:createHash('sha256').update(JSON.stringify(current.file)).digest('hex'),multiplierUnit:'raw-before-line-count',positionOrder:'column-major-top-to-bottom-zero-based',options:value.options,stats:value.stats,partial:value.stats.completed<value.options.count,config:current.file,dataHash:createHash('sha256').update(bytes).digest('hex')};
+        const manifest={version:1,format:'winning-skeleton-v1',gameId,mode,createdAt:new Date().toISOString(),boardRevision:revision,configHash:createHash('sha256').update(JSON.stringify(current.file)).digest('hex'),multiplierUnit:'raw-before-line-count',positionOrder:'column-major-top-to-bottom-zero-based',options:value.options,stats:value.stats,validation,partial:value.stats.completed<value.options.count,config:current.file,dataHash:createHash('sha256').update(bytes).digest('hex')};
         await fs.writeFile(path.join(temporary,'library.json'),bytes,{flag:'wx'});
         await fs.writeFile(path.join(temporary,'manifest.json'),JSON.stringify(manifest,null,2)+'\n',{flag:'wx'});
         if ((await boardStore.read(gameId)).revision!==revision) throw new FileError(409,'保存期间盘面配置发生变化，请重新生成。');
         await fs.rename(temporary,destination);
       } catch(error){await fs.rm(temporary,{recursive:true,force:true});throw error;}
-      return {path:`game_libraries/${gameId}/${mode}/${runId}/library.json`,bytes:Buffer.byteLength(bytes),retained:value.stats.retained};
+      return {path:`game_libraries/${gameId}/${mode}/${runId}/library.json`,bytes:Buffer.byteLength(bytes),retained:value.stats.retained,validation};
     },
   };
 }

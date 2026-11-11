@@ -91,3 +91,18 @@ test('library endpoint saves valid results and rejects cross-site requests',asyn
   const denied=await fetch(url,{method:'PUT',headers:{'Content-Type':'application/json',Origin:'http://evil.invalid'},body:'{}'});assert.equal(denied.status,403);
   assert.equal((await fetch(url)).status,405);
 });
+
+test('library audit counts winning symbols only in positively weighted buckets',()=>{
+ const value={buckets:{
+  2:[[3,0,1,2,1,4,1,0]],
+  1:[[3,0,3,2,3,4,3,0]],
+ }};
+ const audit=library.auditLibrary(value,config(),[[2,1],[1,0],[4,1]]);
+ assert.equal(audit.ready,false);
+ assert.deepEqual(audit.missingMultipliers,['4']);
+ assert.equal(audit.symbolWins.find(row=>row.id==='1').records,1);
+ assert.equal(audit.symbolWins.find(row=>row.id==='3').records,0);
+ const complete=library.auditLibrary(value,config(),[[2,1],[1,1]]);
+ assert.equal(complete.ready,true);
+ assert.equal(complete.requiredMultipliers,2);
+});

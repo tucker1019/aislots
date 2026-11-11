@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CascadeConfig, BoardMode } from '../../domain/cascade';
-import { type LibraryResult, type LibraryStats, LIBRARY_LIMITS } from '../../domain/boardLibrary';
+import { type LibraryResult, type LibraryStats, LIBRARY_LIMITS, auditLibrary } from '../../domain/boardLibrary';
+import { useGameWorkspace } from '../../state/GameWorkspace';
 import { saveLibrary } from '../../services/gameFiles';
 
 export function BoardLibraryPanel({gameId,revision,config,dirty,invalid}: {gameId:string;revision:string;config:CascadeConfig;dirty:boolean;invalid:string}) {
+  const workspace = useGameWorkspace();
   const [mode,setMode]=useState<BoardMode>('base');
   const [count,setCount]=useState('100000');
   const [perMultiplier,setPerMultiplier]=useState('100');
@@ -59,6 +61,8 @@ export function BoardLibraryPanel({gameId,revision,config,dirty,invalid}: {gameI
     }catch(e){if(token===generation.current)setError((e as Error).message);}
     finally{setSaving(false);}
   }
+  const weights = workspace.document?.gameId === gameId ? workspace.document.files[result?.options.mode ?? mode] : undefined;
+  const audit = useMemo(() => result && weights ? auditLibrary(result, config, weights) : null, [result, config, weights]);
   const rows=Object.entries(result?.buckets??{}).sort(([a],[b])=>Number(a)-Number(b));
   return <section className="dev-panel board-library-panel">
     <div className="panel-heading"><div><h2>生成盘面库</h2><p>只保留完整中奖链，按原始累计倍率分桶；实际倍率再除以线数。</p></div><span role="status">{status}</span></div>
@@ -76,6 +80,12 @@ export function BoardLibraryPanel({gameId,revision,config,dirty,invalid}: {gameI
     {error&&<p className="dev-alert" role="alert">{error}</p>}
     {stats&&<div className="library-summary"><progress aria-label="盘面库生成进度" value={stats.completed} max={result?.options.count??Number(count)}/><p>已生成 {stats.completed.toLocaleString()} 局 · 中奖 {stats.wins.toLocaleString()} · 未中奖 {stats.losses.toLocaleString()} · 消除超限丢弃 {stats.limited.toLocaleString()}</p><p>已保留 {stats.retained.toLocaleString()} 条 · 发现倍率 {stats.bucketCount.toLocaleString()} 种 · 重复跳过 {stats.duplicates.toLocaleString()} · 容量跳过 {stats.capacitySkipped.toLocaleString()} · 耗时 {(elapsed/1000).toFixed(1)} 秒</p></div>}
     {result&&<p className="library-note">本次模式：{result.options.mode==='base'?'普通':'免费'} · 种子：{result.options.seed} · 已完成 {result.stats.completed.toLocaleString()} / {result.options.count.toLocaleString()} 局</p>}
+    {audit && <div className="library-summary" role="status">
+      <p>游戏 {gameId} · 列高 {config.columnHeights.join('/')} · {audit.ready ? '验收通过，可作为启用候选' : '验收未通过，仅可保存为候选，不能启用'}</p>
+      <p>倍率覆盖 {audit.coveredMultipliers} / {audit.requiredMultipliers}</p>
+      {!!audit.missingMultipliers.length && <p>缺失倍率 {audit.missingMultipliers.join('、')}</p>}
+      <p>{audit.symbolWins.map(symbol => symbol.name + '中奖骨架 ' + symbol.records.toLocaleString() + ' 条').join(' · ')}</p>
+    </div>}
     {saved&&<p className="library-saved" role="status">已保存：{saved}</p>}
     {rows.length>0&&<div className="library-preview"><table><thead><tr><th>原始累计倍率</th><th>保留条数</th><th>骨架示例</th></tr></thead><tbody>{rows.slice(0,50).map(([key,records])=><tr key={key}><td>{key}</td><td>{records.length}</td><td><code>{JSON.stringify(records[0])}</code></td></tr>)}</tbody></table>{rows.length>50&&<p>仅预览前50个倍率，保存包含全部 {rows.length} 个桶。</p>}</div>}
   </section>;

@@ -159,3 +159,36 @@ export function validateLibrary(value: LibraryResult, config: CascadeConfig): Li
   if (retained!==stats.retained || retained>LIBRARY_LIMITS.records || retained>stats.wins) throw new Error('保留样本统计不一致。');
   return value;
 }
+
+/** 只统计已验证骨架中的固定中奖图标；普通补牌不计入中奖覆盖。 */
+export function auditLibrary(value: LibraryResult, config: CascadeConfig, weights: Array<[number, number]>) {
+  const symbols = config.symbols.filter(symbol => symbol.role === 'normal' && symbol.weight > 0 &&
+    Object.values(symbol.payouts).some(pay => pay > 0));
+  const counts = new Map(symbols.map(symbol => [symbol.id, 0]));
+  const required = [...new Set(weights.filter(([multiplier, weight]) => multiplier > 0 && weight > 0)
+    .map(([multiplier]) => String(multiplier)))];
+  for (const key of required) {
+    for (const row of value.buckets[key] ?? []) {
+      const participating = new Set<string>();
+      let offset = 0;
+      while (offset < row.length) {
+        const count = row[offset++];
+        for (let i = 0; i < count; i++) {
+          offset++;
+          const id = row[offset++];
+          participating.add(String(id > 1000 ? id - 1000 : id));
+        }
+      }
+      participating.forEach(id => { if (counts.has(id)) counts.set(id, counts.get(id)! + 1); });
+    }
+  }
+  const symbolWins = symbols.map(symbol => ({ id: symbol.id, name: symbol.name, records: counts.get(symbol.id)! }));
+  const missingMultipliers = required.filter(key => !value.buckets[key]?.length);
+  return {
+    symbolWins,
+    missingMultipliers,
+    coveredMultipliers: required.length - missingMultipliers.length,
+    requiredMultipliers: required.length,
+    ready: required.length > 0 && !missingMultipliers.length && symbolWins.every(symbol => symbol.records > 0),
+  };
+}
