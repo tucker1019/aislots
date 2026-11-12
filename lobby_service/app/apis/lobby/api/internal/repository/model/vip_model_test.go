@@ -24,7 +24,7 @@ import (
 )
 
 // Use an isolated schema so deterministic future payroll never touches real lobby accounts.
-func vipTestDB(t *testing.T) *gorm.DB {
+func vipTestDB(t testing.TB) *gorm.DB {
 	t.Helper()
 	dsn := os.Getenv("LOBBY_INTEGRATION_DATABASE_URL")
 	if dsn == "" {

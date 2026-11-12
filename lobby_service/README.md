@@ -163,3 +163,30 @@ go run ./app/apis/lobby/api/tools/import-game-catalog -apply
 「大厅配置 → 体验账号」的 `gameWeights` 配置每款游戏创建新账号时的相对权重。只选已上线、配置游戏 API 且权重大于 0 的条目；没有可选游戏时暂停创建，已有账号仍按各自绑定游戏执行。权重不要求合计 100，3:1 表示长期约 75%:25%。每个账号保存固定 `game_id`，修改权重不会重新分配；游戏下线暂停新局，已发出的请求仍用原游戏和请求号恢复。既有账号迁移绑定原游戏，数据库禁止改绑。
 
 `stopEveryRounds` 为每完成多少整局判断一次停止（1～1,000,000）；`stopChancePercent` 为本次停止概率（0～100）。0% 关闭随机停止，100% 在每个判断点必停；余额不足始终停止。旧配置没有这些字段时保留 50 局/20% 及原单游戏分配规则。新界面显示兼容默认值，修改后保存、校验、发布，不自动开启服务。
+
+### 统计结算查询索引
+
+迁移 `027_game_settlement_lookup.sql` 为已确认结算增加 `(uid, game_id, bet_id)` 部分覆盖索引，包含 `debit/credit/created_at`。统计入库按订单汇总借贷时使用该索引；原 `lobby_game_one_debit` 只包含扣款记录，不能覆盖派彩汇总。
+
+已有大表应在服务重启前，在大厅数据库独立执行以下语句（不要放进事务），避免普通建索引阻塞写入；新库由启动迁移创建。已有同名索引必须确认有效，失败留下的无效索引不能靠 `IF NOT EXISTS` 修复。
+
+```sql
+CREATE INDEX CONCURRENTLY IF NOT EXISTS lobby_game_settlements_confirmed_bet
+ON lobby_game_settlements(uid,game_id,bet_id)
+INCLUDE(debit,credit,created_at)
+WHERE status='confirmed';
+
+SELECT indexrelid::regclass, indisvalid
+FROM pg_index
+WHERE indexrelid='lobby_game_settlements_confirmed_bet'::regclass;
+```
+
+用真实订单参数对统计汇总语句执行 `EXPLAIN (ANALYZE, BUFFERS)`，确认使用新索引；同时比较同一时间窗口的队列新增数、处理数和积压变化。隔离 schema 集成测试与完整统计事务基准可通过 `LOBBY_INTEGRATION_DATABASE_URL` 指向本地大厅数据库运行：
+
+```sh
+GOTOOLCHAIN=local go test ./app/apis/lobby/api/internal/repository/model \
+  -run TestStatisticsSettlementLookupUsesCoveringIndex \
+  -bench BenchmarkStatisticsIndexedCompletion -benchtime=200x -count=1 -v
+```
+
+基准数据只写入临时隔离 schema，结束后清理。数据库模型基准不包含 HTTP、消费轮询和远端服务器负载，不能代替部署环境的追赶速度验收。
