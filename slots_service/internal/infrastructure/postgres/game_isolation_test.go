@@ -13,7 +13,7 @@ import (
 type independentGames struct{ g *spinner }
 
 func (g independentGames) Resolve(id, version string) (bet.Spinner, error) {
-	if (id != "AG1" && id != "AG2") || (version != "" && version != g.g.Version()) {
+	if (id != "AG1" && id != "AG2" && id != "AG3") || (version != "" && version != g.g.Version()) {
 		return nil, bet.ErrGameUnavailable
 	}
 	return independentSpinner{g.g, id}, nil

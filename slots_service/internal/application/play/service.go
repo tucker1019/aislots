@@ -294,7 +294,7 @@ func (s *Service) advanceTx(ctx context.Context, tx Tx, session Session, gameID,
 		}
 		displayPreview := len(result.Round.Previews) == n+1
 		for _, col := range frame.Board {
-			if len(col) > 4 && gameID != "AG2" {
+			if len(col) > 4 && gameID != "AG2" && gameID != "AG3" {
 				displayPreview = false
 			}
 		} // Preserve the legacy five-active-row wire layout.

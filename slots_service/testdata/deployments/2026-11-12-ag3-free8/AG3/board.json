@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "fillWeightIncrement": 1000,
+  "scatterWeightIncrement": 500,
+  "gold": {
+    "columns": [
+      3,
+      4
+    ],
+    "baseProbability": 0.083,
+    "freeProbability": 0.11,
+    "wildSymbolId": "9"
+  },
+  "columnHeights": [
+    3,
+    4,
+    5,
+    5,
+    4,
+    3
+  ],
+  "symbols": [
+    {
+      "id": "1",
+      "name": "蒙面牛仔",
+      "weight": 600,
+      "role": "normal",
+      "color": "#6296ab",
+      "payouts": {
+        "3": 10,
+        "4": 20,
+        "5": 30,
+        "6": 50
+      }
+    },
+    {
+      "id": "2",
+      "name": "左轮手枪",
+      "weight": 850,
+      "role": "normal",
+      "color": "#448f7d",
+      "payouts": {
+        "3": 8,
+        "4": 15,
+        "5": 20,
+        "6": 30
+      }
+    },
+    {
+      "id": "3",
+      "name": "牛仔帽",
+      "weight": 850,
+      "role": "normal",
+      "color": "#6296ab",
+      "payouts": {
+        "3": 5,
+        "4": 10,
+        "5": 15,
+        "6": 20
+      }
+    },
+    {
+      "id": "4",
+      "name": "威士忌",
+      "weight": 850,
+      "role": "normal",
+      "color": "#448f7d",
+      "payouts": {
+        "3": 5,
+        "4": 10,
+        "5": 15,
+        "6": 20
+      }
+    },
+    {
+      "id": "5",
+      "name": "A",
+      "weight": 1250,
+      "role": "normal",
+      "color": "#547cbb",
+      "payouts": {
+        "3": 2,
+        "4": 4,
+        "5": 6,
+        "6": 10
+      }
+    },
+    {
+      "id": "6",
+      "name": "K",
+      "weight": 1250,
+      "role": "normal",
+      "color": "#b47868",
+      "payouts": {
+        "3": 2,
+        "4": 4,
+        "5": 6,
+        "6": 10
+      }
+    },
+    {
+      "id": "7",
+      "name": "Q",
+      "weight": 1250,
+      "role": "normal",
+      "color": "#9680b8",
+      "payouts": {
+        "3": 1,
+        "4": 2,
+        "5": 3,
+        "6": 5
+      }
+    },
+    {
+      "id": "8",
+      "name": "J",
+      "weight": 1250,
+      "role": "normal",
+      "color": "#b47868",
+      "payouts": {
+        "3": 1,
+        "4": 2,
+        "5": 3,
+        "6": 5
+      }
+    },
+    {
+      "id": "9",
+      "name": "百搭",
+      "weight": 0,
+      "role": "wild",
+      "color": "#9680b8",
+      "payouts": {}
+    },
+    {
+      "id": "10",
+      "name": "分散金块",
+      "weight": 300,
+      "role": "scatter",
+      "color": "#b47868",
+      "payouts": {}
+    }
+  ],
+  "cascadeFactors": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024
+  ],
+  "freeCascadeFactors": [
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024
+  ],
+  "seed": null
+}

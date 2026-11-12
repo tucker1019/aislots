@@ -160,3 +160,47 @@ func TestAutoRoundSupportsSecondGameAndKeepsRetry(t *testing.T) {
 		t.Fatal("unknown game accepted")
 	}
 }
+
+func TestAutoRoundSupportsAG3AndKeepsRetry(t *testing.T) {
+	store, dsn := database(t)
+	ctx := context.Background()
+	session := play.Session{Player: profile().Player(), GameID: "AG3", ExpiresAt: time.Now().Add(time.Hour)}
+	if _, err := store.CreateSession(ctx, "auto-ag3", session, 500000); err != nil {
+		t.Fatal(err)
+	}
+	policies, err := betlist.New([]betlist.Policy{{GameID: "AG1", Country: "ID", Currency: "IDR", Amounts: []int64{100}, Default: 100, LineCount: 20, BetLevel: 10}, {GameID: "AG3", Country: "ID", Currency: "IDR", Amounts: []int64{100}, Default: 100, LineCount: 20, BetLevel: 10}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	g := &spinner{free: true}
+	s, err := play.NewLive(store, independentGames{g}, policies, autoLauncher{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := play.AutoRoundRequest{RequestID: "ag3-round", UID: 1, GameID: "AG3", Bet: 100, BetLevel: 1, Country: "ID", Currency: "IDR"}
+	policy, err := s.AutoBets(ctx, request)
+	if err != nil || policy.LineCount != 20 {
+		t.Fatal("second game policy", policy, err)
+	}
+	first, err := s.AutoRound(ctx, request)
+	if err != nil || first.Status != "complete" || first.BetID == "" || g.calls.Load() != 3 {
+		t.Fatal(first, err, g.calls.Load())
+	}
+	reopened, err := postgres.Open(ctx, dsn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer reopened.Close()
+	s, err = play.NewLive(reopened, independentGames{g}, policies, autoLauncher{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	repeated, err := s.AutoRound(ctx, request)
+	if err != nil || repeated != first || g.calls.Load() != 3 {
+		t.Fatal("retry changed settlement", repeated, err)
+	}
+	request.GameID = "MISSING"
+	if _, err = s.AutoBets(ctx, request); err == nil {
+		t.Fatal("unknown game accepted")
+	}
+}

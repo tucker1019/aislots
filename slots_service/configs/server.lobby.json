@@ -29,7 +29,9 @@
     "http://127.0.0.1:7459",
     "http://localhost:5181",
     "http://localhost:7458",
-    "http://localhost:7459"
+    "http://localhost:7459",
+    "http://127.0.0.1:5182",
+    "http://localhost:5182"
   ],
   "games": [
     {
@@ -112,6 +114,32 @@
         "12": 4,
         "14": 5
       }
+    },
+    {
+      "configDir": "../testdata/deployments/2026-11-12-ag3-validated/AG3",
+      "baseLibraryDir": "../../game_libraries/AG3/base/2026-11-12T04-01-40-317Z-38756647",
+      "freeLibraryDir": "../../game_libraries/AG3/free/2026-11-12T04-03-50-060Z-2ac6680f",
+      "triggerSymbolCount": 3,
+      "freeAwardSymbolCounts": {
+        "10": 3,
+        "12": 4,
+        "14": 5
+      },
+      "maxFillAttempts": 64,
+      "current": false
+    },
+    {
+      "configDir": "../testdata/deployments/2026-11-12-ag3-free8/AG3",
+      "baseLibraryDir": "../../game_libraries/AG3/base/2026-11-12-ag3-free8-revalidated",
+      "freeLibraryDir": "../../game_libraries/AG3/free/2026-11-12T06-25-17-207Z-2623d165",
+      "triggerSymbolCount": 3,
+      "freeAwardSymbolCounts": {
+        "10": 3,
+        "12": 4,
+        "14": 5
+      },
+      "maxFillAttempts": 64,
+      "current": true
     }
   ],
   "lobby": {
@@ -123,7 +151,8 @@
     "gameId": "AG1",
     "gameIds": [
       "AG1",
-      "AG2"
+      "AG2",
+      "AG3"
     ]
   }
 }

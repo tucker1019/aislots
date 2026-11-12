@@ -16,19 +16,19 @@ func TestLaunchAllowsConfiguredGamesAndScopesTokens(t *testing.T) {
 		if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
 			t.Error(err)
 		}
-		if in.GameID != "AG1" && in.GameID != "AG2" {
+		if in.GameID != "AG1" && in.GameID != "AG2" && in.GameID != "AG3" {
 			t.Errorf("unexpected game %q", in.GameID)
 		}
 		calls++
 		_ = json.NewEncoder(w).Encode(map[string]any{"code": "OK", "data": map[string]any{"uid": 123, "appname": "lobby", "appkey": "web", "country": "ID", "currency": "IDR", "coins": 100}})
 	}))
 	defer server.Close()
-	client, err := New(Config{URL: server.URL, AppName: "lobby", AppKey: "web", GameID: "AG1", GameIDs: []string{"AG1", "AG2"}}, strings.Repeat("s", 32))
+	client, err := New(Config{URL: server.URL, AppName: "lobby", AppKey: "web", GameID: "AG1", GameIDs: []string{"AG1", "AG2", "AG3"}}, strings.Repeat("s", 32))
 	if err != nil {
 		t.Fatal(err)
 	}
 	tokens := map[string]bool{}
-	for _, game := range []string{"AG1", "AG2"} {
+	for _, game := range []string{"AG1", "AG2", "AG3"} {
 		_, _, token, err := client.VerifyLaunch(context.Background(), strings.Repeat("t", 52), strings.Repeat("e", 16), game)
 		if err != nil {
 			t.Fatal(err)
@@ -38,10 +38,10 @@ func TestLaunchAllowsConfiguredGamesAndScopesTokens(t *testing.T) {
 		}
 		tokens[token] = true
 	}
-	if _, _, _, err := client.VerifyLaunch(context.Background(), strings.Repeat("t", 52), strings.Repeat("e", 16), "AG3"); err == nil {
+	if _, _, _, err := client.VerifyLaunch(context.Background(), strings.Repeat("t", 52), strings.Repeat("e", 16), "MISSING"); err == nil {
 		t.Fatal("unknown game accepted")
 	}
-	if calls != 2 {
+	if calls != 3 {
 		t.Fatalf("unexpected exchange count %d", calls)
 	}
 }
