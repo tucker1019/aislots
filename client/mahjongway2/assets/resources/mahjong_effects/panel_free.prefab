@@ -37,7 +37,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -80,
+      "y": -50,
       "z": 0
     },
     "_lrot": {
@@ -345,7 +345,10 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_useGrayscale": false,
-    "_atlas": null,
+    "_atlas": {
+      "__uuid__": "8e9cf9aa-8dd0-4688-bb89-075f41eb2386",
+      "__expectedType__": "cc.SpriteAtlas"
+    },
     "_id": ""
   },
   {

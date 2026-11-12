@@ -790,6 +790,12 @@ export class slots_base extends Component {
                     this.effects?.spinSound();
                     this.reels.forEach((r) => r.startRoll());
                 }
+                // 原项目先开转，再并行演出；飞龙期间保持滚动，不提前送入停轴盘面。
+                if (frame.mode === 'free') {
+                    if (previous?.mode !== 'free') this.effects?.queueFreeDragon();
+                    await this.effects?.playFreeDragon();
+                    if (!running()) return;
+                }
                 this.reels.forEach((r, c) => r.stopRoll(strips[c]));
                 this.anticipation?.begin(
                     anticipationColumns(
@@ -828,6 +834,7 @@ export class slots_base extends Component {
             this.labels();
             this.notifyFlowChanged();
             const winning = new Set(frame.wins.flatMap((w) => w.cellIds));
+            if (frame.mode === 'free' && frame.board[2]?.some(cell => winning.has(cell.id))) this.effects?.queueFreeDragon();
             if (manualSpin && first && frame.mode === 'base' && frame.nextAction === 'complete'
                 && !winning.size && Number(frame.spinWinAmount) === 0) {
                 this.balance = frame.balance;

@@ -1,0 +1,63 @@
+{
+  "ver": "1.0.8",
+  "importer": "sprite-atlas",
+  "imported": true,
+  "uuid": "c2f11e5e-b974-4d93-9fb1-242156fce5d5",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "24580": {
+      "importer": "sprite-frame",
+      "uuid": "c2f11e5e-b974-4d93-9fb1-242156fce5d5@24580",
+      "displayName": "",
+      "id": "24580",
+      "name": "dragon_effect_glow_layer_normal_mode",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 0,
+        "trimY": 0,
+        "width": 363,
+        "height": 626,
+        "rawWidth": 363,
+        "rawHeight": 626,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "07000cee-23d1-40d3-a05c-4fe3f185de5d@6c48a",
+        "atlasUuid": "c2f11e5e-b974-4d93-9fb1-242156fce5d5"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "atlasTextureName": "dragon_effect_glow_layer_normal_mode.png",
+    "format": 2,
+    "uuid": "c2f11e5e-b974-4d93-9fb1-242156fce5d5",
+    "textureUuid": "07000cee-23d1-40d3-a05c-4fe3f185de5d@6c48a"
+  }
+}

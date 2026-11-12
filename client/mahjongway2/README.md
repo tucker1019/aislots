@@ -135,3 +135,5 @@ python3 tools/cleanup_legacy_art.py --source /path/to/mahjongway2_1024
 导出39张图到 `texture1/history`，包括正常/金底牌、WILD、胡、倍率数字、倍率背景和箭头，源文件及输出哈希见 `tools/history_art_manifest.json`。停止按钮的模糊/灰色箭头使用目标图集中的 `spin_arrow_blur / spin_arrow_grey`。场景隐藏图片引用清空，启动图及进度条资源从目标项目迁入 `texture1/loading`，节点位置、缩放、层级保留。
 
 旧手工金币发射逻辑已移除，大奖和免费结算使用1024预制体内的原生粒子。清理144项不再引用的旧资源（及其meta），清单位于 `tools/legacy_art_cleanup.json`。旧 `texture` 目录及目录meta已在确认无依赖后删除。相关检查为 `tests/resource_cleanup.test.cjs`；不要用早期面向第一款游戏的通用 `import_effects.py` 覆盖当前资源。
+
+免费龙演出：从 mahjongway2_1024 原生场景提取 ui_reel_bonus_dragon、dragon、mj_fly、dragon_mask；免费装饰仅免费期间显示。首次免费第一转及第三列参与中奖消除后的下一转播放原生飞龙与 fsDragonFly 音效；免费资源离开时清理并完成中断等待。重导脚本 tools/import_free_dragon.py 接收原项目路径与节点名，不引入旧业务控制器。

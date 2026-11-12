@@ -1,3 +1,4 @@
+import {FreeDragon} from './free_dragon';
 import { setStopArtwork } from './stop_control';
 import { SymbolTooltip } from './symbol_tooltip';
 import { FreePanelView } from './free_panel';
@@ -118,6 +119,10 @@ export class GameEffects extends Component {
         }
     }
     private freePanelNode: Node = null;
+    private freeDragon: FreeDragon = null;
+    private dragonPending = false;
+    queueFreeDragon() { this.dragonPending = true; }
+    async playFreeDragon() { if (!this.dragonPending || !this.freeDragon) return; this.dragonPending = false; await this.freeDragon.play(); }
     private freeLoad: Promise<void> = null;
     private freeGeneration = 0;
     private freeAssets: Awaited<ReturnType<typeof EffectLibrary.loadFree>> = [];
@@ -153,6 +158,10 @@ export class GameEffects extends Component {
     }
 
     private createFreeViews() {
+        const board = this.find(this.node, 'roll');
+        if (board) {
+            this.freeDragon = new FreeDragon(board, () => this.audio.sound('fsDragonFly'), () => this.audio.stopDragon());
+        }
         this.bonusParticle = EffectLibrary.create('bonus_bg_particle', this.node);
         // 对应参考 ui_reel：在盘面和静态装饰之上、弹窗之下显示。
         this.bonusParticle.node.setSiblingIndex(this.overlay.getSiblingIndex());
@@ -186,6 +195,9 @@ export class GameEffects extends Component {
     }
 
     releaseFree() {
+        this.dragonPending = false;
+        this.freeDragon?.destroy();
+        this.freeDragon = null;
         this.freeGeneration++;
         this.freeLoad = null;
         this.updateBonusParticle(false);
@@ -225,6 +237,7 @@ export class GameEffects extends Component {
         this.symbolTooltip?.update(0, flow.state === 0 && !flow.autoSpinRunning);
         this.freePanelView?.update(!!flow.freePanelActive, flow.freeSpinsRemaining || 0);
         this.updateBonusParticle(!!flow.freePanelActive);
+        this.freeDragon?.visible(!!flow.freePanelActive);
         if (this.infoBar?.active) this.showBottomNotice(!!flow.freePanelActive);
         const rolling = flow.state === 1 || flow.state === 2;
         if (rolling && !this.wasRolling) {
@@ -649,6 +662,7 @@ export class GameEffects extends Component {
         return true;
     }
     intro(count: number, autoDismiss = false) {
+        this.queueFreeDragon();
         return this.popup(
             'pop_free_tri',
             (effect) => {
@@ -770,6 +784,7 @@ export class GameEffects extends Component {
     update(dt: number) {
         this.updateControls();
         dt = Math.min(dt, 0.1);
+        this.freeDragon?.update(dt);
         this.audio.updateIdle(dt, this.audioIdle);
         this.symbolTooltip?.update(dt, true);
         if (this.popupFinish) {

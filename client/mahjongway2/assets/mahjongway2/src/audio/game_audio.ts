@@ -11,7 +11,7 @@ const EFFECTS = ['symbolShrink', 'symbolWild', 'symbolCollapse', 'symbolScatter'
     'infoboardTotalwin', 'infoboardTotalwinMedwinEnd', 'infoboardTotalwinBigwin', 'freespinWon',
     ...Array.from({length:11},(_,i)=>`voxRandom${String(i+1).padStart(2,'0')}`),
     ...Object.values(VOICES), ...[2, 3, 4, 5, 6, 10].map(n => `voxMultiply${n}x`)];
-const FREE_AUDIO = ['bgm_fs', ...[
+const FREE_AUDIO = ['games/fsDragonFly', 'bgm_fs', ...[
     'bgmBonusIntro', 'uiStart', 'uiCollect', 'bgmTotalwinMain', 'bgmTotalwinEnd',
     'fsMultiplyRefresh', 'freespinWon', 'voxMultiply6x', 'voxMultiply10x',
 ].map(name => 'games/' + name)];
@@ -81,6 +81,7 @@ export class GameAudio {
         }
     }
     sound(name: string, delay = 0) { this.mixer.play('games/' + name, 'effects', { delay, slot: 'effect:' + name }); }
+    stopDragon() { this.mixer.stop('effect:fsDragonFly'); }
     stopTransient() {
         for (const name of ['fastspinStart', 'fastspinEnd', 'fastspinSuccess', 'bgmBonusIntro', 'maJiangHuLe', 'uiStart', 'uiCollect', 'bgmBigwinEnd', 'bgmTotalwinEnd'])
             this.mixer.stop('effect:' + name);
