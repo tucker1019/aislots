@@ -5,8 +5,11 @@ import {useSessionStore} from '../../stores/session';
 import {fetchGameRtp} from '../../services/game-statistics';
 import {NetworkError} from '../../components/feedback/NetworkError';
 const periods=[{value:'5m',label:'gamePreview.fiveMinutes'},{value:'1h',label:'gamePreview.oneHour'},{value:'24h',label:'gamePreview.oneDay'}] as const;
-const theoreticalRtp=97;
+import {useLobbyGames} from '../home/useLobbyGames';
 export function RtpSummary({gameId='AG1'}:{gameId?:string}){
+ const catalog=useLobbyGames();
+ const game=catalog.data?.find(game=>game.id===gameId);
+ const theoreticalRtp=game?.theoreticalRtp;
  const uid=useSessionStore(state=>state.session?.uid);
  const [open,setOpen]=useState(false);const root=useRef<HTMLDivElement>(null);
  const queries=useQueries({queries:periods.map(period=>({queryKey:['game-rtp',gameId,period.value,uid],queryFn:({signal}:{signal:AbortSignal})=>fetchGameRtp(period.value,signal,gameId),retry:false,refetchInterval:false as const,refetchOnWindowFocus:false,refetchOnReconnect:false}))});
@@ -21,10 +24,10 @@ export function RtpSummary({gameId='AG1'}:{gameId?:string}){
  if(headline!==undefined&&headline!==previous)setLastHeadline({uid,percent:headline});
  const amount=(value:string|null|undefined)=>{
   if(value==null)return <span>{value===undefined?'…':'—'}</span>;
-  const direction=Number(value)>theoreticalRtp?'up':Number(value)<theoreticalRtp?'down':'equal';
+  const direction=theoreticalRtp===undefined?'equal':Number(value)>theoreticalRtp?'up':Number(value)<theoreticalRtp?'down':'equal';
   return <strong className={`rtp-${direction}`}>{value}%<span className="rtp-direction" aria-hidden="true">{direction==='up'?' ↗':direction==='down'?' ↘':''}</span></strong>;
  };
  return <section className="game-rtp-card" aria-label={t('gamePreview.rtp')}><div className="game-metrics">
  <div className="game-metric game-metric-live"><div className="rtp-summary" ref={root} onKeyDown={event=>{if(event.key==='Escape')setOpen(false);}}><div className="rtp-summary-value"><span className="rtp-headline">{amount(headline)}</span><button type="button" aria-label={t('gamePreview.rtpTime')} aria-expanded={open} onClick={()=>setOpen(!open)}>ⓘ</button></div>{open&&<div className="rtp-popover" role="region" aria-label={t('gamePreview.rtpTime')}>{periods.map((period,index)=><div className="rtp-period" key={period.value}><span>{t(period.label)}</span>{amount(queries[index].data?.hasData?queries[index].data?.percent:queries[index].isPending?undefined:null)}</div>)}{queries.some(query=>query.isError)&&<NetworkError disabled={queries.some(query=>query.isFetching)} onRetry={()=>{queries.filter(query=>query.isError).forEach(query=>void query.refetch());}}/>}</div>}</div><span>{t('gamePreview.liveRtp')}</span></div>
- <div className="game-metric"><strong>{theoreticalRtp}%</strong><span>{t('gamePreview.realRtp')}</span></div><div className="game-metric"><strong>{t('gamePreview.medium')}</strong><span>{t('gamePreview.volatility')}</span></div><div className="game-metric"><strong>{t('gamePreview.unlimited')}</strong><span>{t('gamePreview.maxWin')}</span></div></div></section>;
+ <div className="game-metric"><strong>{theoreticalRtp===undefined?(catalog.isPending?'…':'—'):`${theoreticalRtp.toFixed(2)}%`}</strong><span>{t('gamePreview.realRtp')}</span></div><div className="game-metric"><strong>{game?t(`gamePreview.volatility.${game.volatility}`):catalog.isPending?'…':'—'}</strong><span>{t('gamePreview.volatility')}</span></div><div className="game-metric"><strong>{game?(game.maxWin===-1?t('gamePreview.unlimited'):`x${game.maxWin}`):catalog.isPending?'…':'—'}</strong><span>{t('gamePreview.maxWin')}</span></div></div>{catalog.isError&&<NetworkError disabled={catalog.isFetching} onRetry={()=>void catalog.refetch()}/>}</section>;
 }

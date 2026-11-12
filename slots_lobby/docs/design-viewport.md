@@ -13,3 +13,5 @@
 验证：280/320/375/420与桌面、中英文、根滚动及固定底栏、弹窗/下拉/Toast、输入框与软键盘高度、游戏放大缩回。桌面模拟不能替代iOS/Android真机软键盘和安全区验证。
 
 Android Chrome 兼容：缩放使用 CSS `zoom`，不在可滚动容器祖先使用 `transform: scale()`，避免合成滚动层重复缩放裁切。页面、独立弹层和游戏详情沿用相同缩放值；游戏全屏 zoom 为 1。
+
+Ant Design Drawer 的 content-wrapper 默认 `max-width:100vw` 使用物理视口数值，在420px缩放弹层中会再次缩小。公共弹层统一覆盖为 `max-width:100%;max-height:100%`，上限相对设计画布，不能在业务抽屉中重新使用100vw限制。抽屉section同时限制为设计视口高度，确保短屏时body收缩并在内部滚动，避免只裁切外层。

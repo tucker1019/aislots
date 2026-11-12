@@ -15,10 +15,10 @@
 
 /* Keep metric geometry stable while requests change; reserve scrollbars for long boards. */
 .game-detail-content { scrollbar-gutter: stable; overflow-anchor: none; }
-.game-metrics { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, .8fr) minmax(0, 1fr); align-items: center; min-height: 47px; }
-.game-metric { min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; border-left: 1px solid var(--line); }
+.game-metrics { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, .8fr) minmax(0, 1fr); align-items: stretch; min-height: 47px; }
+.game-metric { min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 7px; border-left: 1px solid var(--line); }
 .game-metric:first-child { border-left: 0; }
-.game-metric > strong { font-size: 14px; font-weight: 650; line-height: 22px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.game-metric > strong { font-size: 14px; font-weight: 650; line-height: 22px; white-space: normal; max-width: 100%; overflow-wrap: anywhere; text-align: center; font-variant-numeric: tabular-nums; }
 .game-metric > span { font-size: 10px; color: var(--muted); white-space: nowrap; }
 .game-metric-live .game-filter > button { padding: 0; gap: 3px; min-height: 22px; border: 0; background: transparent; font-size: 14px; font-weight: 650; color: var(--blue); font-variant-numeric: tabular-nums; }
 .game-metric-live .game-filter-menu { left: 0; right: auto; }

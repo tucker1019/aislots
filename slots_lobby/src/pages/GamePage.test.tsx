@@ -88,3 +88,12 @@ it('已下線或隱藏遊戲不能通過緩存入口進入',async()=>{
  expect(screen.queryByTitle('AG1 麻將胡了')).not.toBeInTheDocument();
  expect(launchGame).not.toHaveBeenCalled();
 });
+
+it('只接受当前游戏 iframe 同源的退出消息',()=>{
+ rememberGameEntry(first);const {onBack}=setup();const frame=screen.getByTitle('AG1 麻將胡了') as HTMLIFrameElement;
+ fireEvent(window,new MessageEvent('message',{data:{type:'aislots:exit',gameId:'AG1'},source:frame.contentWindow,origin:'https://invalid.example'}));
+ fireEvent(window,new MessageEvent('message',{data:{type:'aislots:exit',gameId:'AG1'},source:window,origin:'http://127.0.0.1:5180'}));
+ expect(onBack).not.toHaveBeenCalled();
+ fireEvent(window,new MessageEvent('message',{data:{type:'aislots:exit',gameId:'AG1'},source:frame.contentWindow,origin:'http://127.0.0.1:5180'}));
+ expect(onBack).toHaveBeenCalledOnce();
+});

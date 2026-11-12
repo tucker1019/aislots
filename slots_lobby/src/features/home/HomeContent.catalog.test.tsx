@@ -7,7 +7,7 @@ import { fetchLobbyGames, type LobbyGame } from '../../services/lobby-games';
 import { useSessionStore } from '../../stores/session';
 vi.mock('../../services/lobby-games',()=>({fetchLobbyGames:vi.fn()}));
 vi.mock('../../services/lobby-content',()=>({fetchLobbyContent:vi.fn().mockResolvedValue({announcements:{'zh-TW':[],'en-US':[]},banners:[]})}));
-const games:LobbyGame[]=[{id:'NEW_GAME',name:'New Game',nameEn:'New Game',provider:'AG',cover:'/assets/new.png',enabled:true,sort:1},{id:'SOON',name:'Soon',nameEn:'Soon',provider:'AG',cover:'/assets/soon.png',enabled:false,sort:2}];
+const games:LobbyGame[]=[{theoreticalRtp:97,volatility:'medium',maxWin:-1,id:'NEW_GAME',name:'New Game',nameEn:'New Game',provider:'AG',cover:'/assets/new.png',enabled:true,sort:1},{theoreticalRtp:97,volatility:'medium',maxWin:-1,id:'SOON',name:'Soon',nameEn:'Soon',provider:'AG',cover:'/assets/soon.png',enabled:false,sort:2}];
 beforeEach(()=>{HTMLElement.prototype.scrollTo=vi.fn();vi.clearAllMocks();window.history.replaceState(null,'','/');useSessionStore.setState({session:{uid:7,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'}});});
 function setup(){const comingSoon=vi.fn();render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false,gcTime:0}}})}><div id="root"><HomeContent onComingSoon={comingSoon}/></div></QueryClientProvider>);return comingSoon;}
 it('uses the server catalog and supports newly configured games without client registration',async()=>{
