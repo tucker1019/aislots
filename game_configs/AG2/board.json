@@ -157,5 +157,8 @@
     6,
     10
   ],
-  "seed": 0
+  "seed": 0,
+  "freeGoldColumns": [
+    3
+  ]
 }
