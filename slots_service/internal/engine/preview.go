@@ -30,13 +30,7 @@ func (e *Engine) addPreviews(round *Round, mode Mode, rng *random) {
 	}
 	for c := range previews[last] {
 		symbol := choices[rng.weighted(weights)]
-		probability := e.game.Board.Gold.BaseProbability
-		if mode == Free {
-			probability = e.game.Board.Gold.FreeProbability
-		}
-		if e.defs[symbol].role == "normal" && contains(e.game.Board.Gold.Columns, c+1) && probability > 0 && rng.next() < probability {
-			symbol += 1000
-		}
+		symbol = e.drawGold(e.defs[symbol], mode, c, rng)
 		maxID++
 		previews[last][c] = Cell{ID: maxID, Symbol: symbol}
 	}

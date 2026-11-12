@@ -152,6 +152,9 @@ func (e *Engine) fill(ctx context.Context, reference Round, mode Mode, target in
 						entries := places[cell.ID]
 						for _, p := range entries {
 							p.cell.Symbol = s.id
+							if e.fixedFreeGold(mode, c) {
+								p.cell.Symbol += 1000
+							}
 						}
 						safe := true
 						for _, p := range entries {
@@ -180,14 +183,7 @@ func (e *Engine) fill(ctx context.Context, reference Round, mode Mode, target in
 					if rng.err != nil {
 						return rng.err
 					}
-					cell.Symbol = s.id
-					probability := e.game.Board.Gold.BaseProbability
-					if mode == Free {
-						probability = e.game.Board.Gold.FreeProbability
-					}
-					if s.role == "normal" && contains(e.game.Board.Gold.Columns, c+1) && probability > 0 && rng.next() < probability {
-						cell.Symbol += 1000
-					}
+					cell.Symbol = e.drawGold(s, mode, c, rng)
 					for _, p := range places[cell.ID] {
 						p.cell.Symbol = cell.Symbol
 					}

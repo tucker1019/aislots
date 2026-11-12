@@ -42,6 +42,7 @@ type BoardConfig struct {
 	FillWeightIncrement    *float64      `json:"fillWeightIncrement"`
 	ScatterWeightIncrement *float64      `json:"scatterWeightIncrement"`
 	Gold                   Gold          `json:"gold"`
+	FreeGoldColumns        []int         `json:"freeGoldColumns"`
 	Seed                   *uint32       `json:"seed"`
 }
 type Rule struct {

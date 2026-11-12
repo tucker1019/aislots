@@ -179,6 +179,13 @@ func (e *Engine) validate() error {
 			return fmt.Errorf("invalid reel height")
 		}
 	}
+	seenFreeGold := map[int]bool{}
+	for _, column := range b.FreeGoldColumns {
+		if column < 1 || column > len(b.ColumnHeights) || seenFreeGold[column] {
+			return fmt.Errorf("invalid free fixed gold reel")
+		}
+		seenFreeGold[column] = true
+	}
 	for _, ladder := range [][]json.Number{b.CascadeFactors, b.FreeCascadeFactors} {
 		if len(ladder) < 1 || len(ladder) > 30 {
 			return fmt.Errorf("invalid factor ladder")
@@ -231,6 +238,9 @@ func (e *Engine) validate() error {
 			return fmt.Errorf("invalid gold conversion wild")
 		}
 		e.wild = n
+	}
+	if len(b.FreeGoldColumns) > 0 && e.wild == 0 {
+		return fmt.Errorf("free gold requires conversion wild")
 	}
 	seen := map[int]bool{}
 	for _, column := range b.Gold.Columns {

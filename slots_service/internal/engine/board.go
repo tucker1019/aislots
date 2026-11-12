@@ -39,6 +39,29 @@ func contains(values []int, n int) bool {
 	}
 	return false
 }
+func (e *Engine) fixedFreeGold(mode Mode, column int) bool {
+	return mode == Free && contains(e.game.Board.FreeGoldColumns, column+1)
+}
+func (e *Engine) drawGold(d *definition, mode Mode, column int, rng *random) int {
+	if d.role != "normal" {
+		return d.id
+	}
+	if e.fixedFreeGold(mode, column) {
+		return d.id + 1000
+	}
+	if mode == Free && len(e.game.Board.FreeGoldColumns) > 0 {
+		return d.id
+	}
+	probability := e.game.Board.Gold.BaseProbability
+	if mode == Free {
+		probability = e.game.Board.Gold.FreeProbability
+	}
+	if contains(e.game.Board.Gold.Columns, column+1) && probability > 0 && rng.next() < probability {
+		return d.id + 1000
+	}
+	return d.id
+}
+
 func (e *Engine) factor(mode Mode, index int) *big.Rat {
 	v := e.game.Board.CascadeFactors
 	if mode == Free {
@@ -64,7 +87,11 @@ func (e *Engine) evaluate(board Board, mode Mode, index int) ([]Win, error) {
 				return nil, fmt.Errorf("invalid board cell")
 			}
 			ids[cell.ID] = true
-			if ok && d.id != d.base && !contains(e.game.Board.Gold.Columns, c+1) {
+			fixed := e.fixedFreeGold(mode, c)
+			if ok && d.role == "normal" && d.id == d.base && fixed {
+				return nil, fmt.Errorf("ordinary symbol on fixed free gold reel")
+			}
+			if ok && d.id != d.base && !fixed && ((mode == Free && len(e.game.Board.FreeGoldColumns) > 0) || !contains(e.game.Board.Gold.Columns, c+1)) {
 				return nil, fmt.Errorf("gold on forbidden reel")
 			}
 		}

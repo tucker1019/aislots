@@ -213,7 +213,7 @@ func (d *DiskLibrary) Close() error {
 func (d *DiskLibrary) CheckCompatibility(game engine.Game) error {
 	// Fill weights and appearance settings can change without regenerating winning skeletons.
 	// Match all structural/payout rules; each sampled record is also replayed under the live config.
-	normalize := func(data []byte) (map[string]any, error) {
+	normalize := func(data []byte, mode engine.Mode) (map[string]any, error) {
 		var m map[string]any
 		if err := json.Unmarshal(data, &m); err != nil {
 			return nil, err
@@ -238,6 +238,9 @@ func (d *DiskLibrary) CheckCompatibility(game engine.Game) error {
 			list = append(list, map[string]any{"id": s["id"], "role": s["role"], "payouts": s["payouts"]})
 		}
 		out["symbols"] = list
+		if columns, ok := m["freeGoldColumns"].([]any); mode == engine.Free && ok && len(columns) > 0 {
+			out["freeGoldColumns"] = columns
+		}
 		gold, ok := m["gold"].(map[string]any)
 		if !ok {
 			return nil, fmt.Errorf("missing gold config")
@@ -246,12 +249,12 @@ func (d *DiskLibrary) CheckCompatibility(game engine.Game) error {
 		return out, nil
 	}
 	raw, _ := json.Marshal(game.Board)
-	expected, err := normalize(raw)
-	if err != nil {
-		return err
-	}
-	for _, f := range d.files {
-		actual, err := normalize(f.config)
+	for mode, f := range d.files {
+		expected, err := normalize(raw, mode)
+		if err != nil {
+			return err
+		}
+		actual, err := normalize(f.config, mode)
 		if err != nil {
 			return err
 		}
