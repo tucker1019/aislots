@@ -1,6 +1,8 @@
 import { object, string } from './schema';
 
-export async function issuePreviewTicket(uid: number, sid: string, gameId: 'AG1' | 'AG2' = 'AG1'): Promise<string> {
+export type PreviewGameId = 'AG1' | 'AG2' | 'AG3';
+
+export async function issuePreviewTicket(uid: number, sid: string, gameId: PreviewGameId = 'AG1'): Promise<string> {
  const response = await fetch('/api/game/launch', {
   method: 'POST',
   credentials: 'omit',

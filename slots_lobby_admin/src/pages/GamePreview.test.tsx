@@ -1,0 +1,25 @@
+import {afterEach,beforeAll,expect,it,vi} from 'vitest';
+import {fireEvent,render,screen,waitFor} from '@testing-library/react';
+import {GamePreview} from './GamePreview';
+import {issuePreviewTicket} from '../services/gamePreview';
+vi.mock('../services/gamePreview',()=>({issuePreviewTicket:vi.fn()}));
+beforeAll(()=>{globalThis.ResizeObserver=class {observe(){} unobserve(){} disconnect(){}};Object.defineProperty(window,'matchMedia',{writable:true,value:vi.fn().mockImplementation(()=>({matches:false,addListener:vi.fn(),removeListener:vi.fn(),addEventListener:vi.fn(),removeEventListener:vi.fn()}))});});
+afterEach(()=>vi.restoreAllMocks());
+it('选择AG3后签发AG3票据并打开预览，清空SID输入',async()=>{
+ const replace=vi.fn();const close=vi.fn();
+ vi.spyOn(window,'open').mockReturnValue({closed:false,opener:null,location:{replace},close} as unknown as Window);
+ vi.mocked(issuePreviewTicket).mockResolvedValue('T'.repeat(52));
+ render(<GamePreview/>);
+ fireEvent.mouseDown(screen.getByRole('combobox'));
+ fireEvent.click(await screen.findByText('AG3',{selector:'.ant-select-item-option-content'}));
+ fireEvent.change(screen.getByLabelText('平台 UID'),{target:{value:'10000001'}});
+ fireEvent.change(screen.getByLabelText('平台 SID'),{target:{value:'S'.repeat(52)}});
+ fireEvent.change(screen.getByLabelText('Cocos 预览地址'),{target:{value:'http://127.0.0.1:5182/'}});
+ fireEvent.click(screen.getByRole('button',{name:'签发票据并打开预览'}));
+ await waitFor(()=>expect(issuePreviewTicket).toHaveBeenCalledWith(10000001,'S'.repeat(52),'AG3'));
+ await waitFor(()=>expect(replace).toHaveBeenCalledOnce());
+ const url=new URL(replace.mock.calls[0][0] as string);
+ expect(url.origin).toBe('http://127.0.0.1:5182');expect(url.searchParams.get('launchTicket')).toBe('T'.repeat(52));
+ expect(url.searchParams.has('sid')).toBe(false);expect(url.searchParams.has('uid')).toBe(false);
+ expect(close).not.toHaveBeenCalled();await waitFor(()=>expect((screen.getByLabelText('平台 SID') as HTMLInputElement).value).toBe(''));
+});

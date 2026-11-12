@@ -1,6 +1,6 @@
 import type { Json } from '../services/schema';
 export const internalRoutes = ['/', '/earn', '/deposit', '/offers'];
-export const gameTemplate: Json = { enabled: false, visible: true, sort: 0, cover: '', name: '', nameEn: '', provider: '', url: '', apiUrl: '' };
+export const gameTemplate: Json = { theoreticalRtp: 97, volatility: 'medium', maxWin: -1, enabled: false, visible: true, sort: 0, cover: '', name: '', nameEn: '', provider: '', url: '', apiUrl: '' };
 const vipTemplate: Json = Object.fromEntries(['level', 'upgradeBet', 'upgradeRecharge', 'keepBet', 'keepRecharge', 'upgradeReward', 'weeklyReward', 'monthlyReward', 'birthdayReward', 'weeklyBet', 'weeklyRecharge', 'monthlyBet', 'monthlyRecharge'].map(key => [key, 0]));
 const templates: Record<string, Json> = {
  recharge: { id: '', amount: 0, bonus: 0, fee: 0 },

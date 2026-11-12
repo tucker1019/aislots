@@ -61,3 +61,17 @@ it('edits catalog visibility, availability and order independently',()=>{
  fireEvent.change(screen.getByLabelText('games.games.AG1.sort'),{target:{value:'35'}});
  expect(JSON.parse(screen.getByTestId('document').textContent??'{}').AG1).toMatchObject({visible:false,enabled:false,sort:35});
 });
+
+it('edits per-game display metrics with a fixed volatility selector',()=>{
+ render(<Fixture initial={{}} path="games.games"/>);
+ fireEvent.change(screen.getByLabelText('games.games 新增标识'),{target:{value:'AG2'}});
+ fireEvent.click(screen.getByRole('button',{name:'新增条目'}));
+ expect((screen.getByLabelText('games.games.AG2.theoreticalRtp') as HTMLInputElement).value).toBe('97.00');
+ fireEvent.change(screen.getByLabelText('games.games.AG2.theoreticalRtp'),{target:{value:'96.5'}});
+ fireEvent.change(screen.getByLabelText('games.games.AG2.maxWin'),{target:{value:'5000'}});
+ fireEvent.mouseDown(screen.getByLabelText('games.games.AG2.volatility'));
+ fireEvent.click(screen.getByText('极高'));
+ expect(JSON.parse(screen.getByTestId('document').textContent??'{}')).toMatchObject({AG2:{theoreticalRtp:96.5,volatility:'extreme',maxWin:5000}});
+ fireEvent.change(screen.getByLabelText('games.games.AG2.maxWin'),{target:{value:'-1'}});
+ expect(JSON.parse(screen.getByTestId('document').textContent??'{}')).toMatchObject({AG2:{maxWin:-1}});
+});
