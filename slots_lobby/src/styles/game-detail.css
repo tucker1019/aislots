@@ -25,7 +25,6 @@
 .game-metrics-error { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--muted); margin-top: 8px; }
 .game-metrics-error button { border: 0; background: transparent; color: var(--blue); }
 
-.game-rank-replay > span[role=alert] { width: 100%; color: var(--theme-red-text,#b45435); }
 .game-rank-replay-modal iframe { display: block; width: 100%; height: min(70dvh,720px); border: 0; background: #17140e; }
 
 .game-replay-spinner { position: absolute; inset: 0; margin: auto; width: 12px; height: 12px; box-sizing: border-box; border: 2px solid var(--theme-border-blue,#bfd2ec); border-top-color: var(--blue); border-radius: 50%; animation: game-replay-spin .7s linear infinite; }
@@ -212,7 +211,6 @@ button.game-rank-row::after {
 .game-rank-sheet .ant-drawer-extra { position: absolute; inset-inline-end: 16px; }
 .game-rank-header-share { display: flex; }
 .game-rank-replay { grid-template-columns: minmax(0,1fr) auto; align-items: center; }
-.game-rank-replay > [role="alert"] { grid-column: 1 / -1; }
 
 .game-rank-streak-summary { display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap; }
 .game-rank-streak-summary time { color: var(--muted); font-size: 10px; font-weight: 400; }

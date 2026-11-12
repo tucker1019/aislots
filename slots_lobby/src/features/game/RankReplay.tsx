@@ -15,6 +15,7 @@ export function RankReplay({orderId,betId,board,period,shareTarget,gameId='AG1'}
   mutationFn:()=>fetchRankReplay(orderId,board,period,gameId),
   retry:false,
   onSuccess:(_url,action)=>{setPanel(action);},
+  onError:()=>{void toast.error(t('gamePreview.replayUnavailable'));},
  });
  async function copyLink(url:string) {
   try {
@@ -40,7 +41,6 @@ export function RankReplay({orderId,betId,board,period,shareTarget,gameId='AG1'}
    </AsyncButton>
   </div>
   {shareTarget ? createPortal(shareButton,shareTarget) : shareTarget===undefined && shareButton}
-  {query.isError&&<span role="alert">{t('gamePreview.replayUnavailable')}</span>}
   <Modal getContainer={overlayContainer} open={!!panel}
    title={t(panel==='share'?'gamePreview.share':'gamePreview.replayTitle')}
    footer={null} onCancel={()=>setPanel(undefined)} destroyOnHidden width={430} className="game-rank-replay-modal">
