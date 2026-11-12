@@ -1,5 +1,4 @@
 import { Component, Node, NodePool, _decorator, instantiate } from "cc"
-import { WBSConstant } from "../constant/WBSConstant";
 import { wbsgame } from "../wbsgame";
 import { consoleLogError } from "../../xtools/WBSUtils";
 
@@ -11,7 +10,7 @@ export class WBSPoolManager extends Component {
     private poolMap: Map<string, NodePool> = new Map();
 
     async initPool(path: string, poolSize: number = 30) {
-        let key = `${WBSConstant.BUNDLENAME}/${path}`;
+        let key = path;
         let pool = new NodePool();
         this.poolMap.set(key, pool);
         for (let i = 0; i < poolSize; i++) {
@@ -49,7 +48,7 @@ export class WBSPoolManager extends Component {
     }
 
     private getPool(path: string): NodePool {
-        let key = `${WBSConstant.BUNDLENAME}/${path}`;
+        let key = path;
         let pool = this.poolMap.get(key);
         if (!pool) {
             consoleLogError("还为初始化对象池   " + path)

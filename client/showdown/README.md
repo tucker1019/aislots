@@ -1,6 +1,6 @@
 # AG3 · Wild Bounty Showdown
 
-独立 Cocos Creator **3.8.8** 项目，来源 `/Users/yaozhao/cccProject/showdown_1068`。原项目保持不变，保留原资源 UUID、场景、音效、连消/金框/免费/倍率动画；内部资源包名 `szcw_1068wildbountyshowdown` 是资源定位名，业务 gameId 为 AG3。
+独立 Cocos Creator **3.8.8** 项目，来源 `/Users/yaozhao/cccProject/showdown_1068`。原项目保持不变，保留原资源 UUID、场景、音效、连消/金框/免费/倍率动画；业务 gameId 为 AG3。取消原项目自定义 Bundle，仅保留 `assets/wildbountyshowdown/WBSGameScene.scene` 游戏场景，编辑器直接打开该场景运行。动态资源使用内置 `resources/res`，UUID 保留。
 
 已删除旧平台 Socket、Protobuf、GameBridge、认证、充值/VIP跳转、上传及部署脚本。源美术保留原样。项目不包含旧 library/temp/release 缓存。
 
@@ -21,6 +21,13 @@ python3 client/showdown/scripts/serve.py --port 5182
 
 静态服务器只绑定127.0.0.1。`--mock --port 5183` 使用隔离的固定接口数据，不转发游戏服；仅用于开发验证，不能部署到远程。模拟进入URL必须显式添加 `api=http%3A%2F%2F127.0.0.1%3A5183` 并使用52字符虚拟launchTicket，绝非真实账号凭据。
 
+## 单场景启动
+
+- `WBSGameScene` 是编辑器预览及构建的唯一入口；已移除 `h5main`、`game` 中转场景及加载脚本。
+- 场景先创建管理器并初始化平台参数，同时准备登录状态和 `resources/res/load` 资源，完成后再激活原有游戏节点。等待和失败重试期间不能操作盘面。
+- 管理器随场景销毁，不再作为跨场景持久节点；不使用自定义 Bundle 或场景跳转。
+- `resources` 是 Cocos 内置动态资源入口，不是原项目的自定义游戏 Bundle。
+
 ## 协议和状态
 
 - 登录、bets、state、逐轮spin使用现有 `/api/v1/games/AG3` 协议。spin发送 `requestId`、`bet`（基础金额整数字符串）、`betLevel`；金额展示精度2。
@@ -35,7 +42,7 @@ python3 client/showdown/scripts/serve.py --port 5182
 
 ## 接入范围
 
-本地游戏服务8080允许5182来源，后台游戏目录已发布本地AG3入口（原G1068隐藏）。AG1/AG2配置及已有历史批次保留。未部署远程，未提交或推送。
+本地游戏服务8080允许5182来源，AG3 公网版本已于 2026-11-12 发布（见部署记录）。本次单场景改造仅修改本地，尚未重新部署。
 
 ## 本次验证
 
@@ -46,3 +53,5 @@ python3 client/showdown/scripts/serve.py --port 5182
 - 使用隔离模拟HTTP验证原生场景、连消及免费链；不操作真实账号资金。历史回放为独立逐帧盘面，不包含原生连消演出。
 
 2026-11-12：修复未携带api参数时误向静态端口5182登录；增加本地8080/显式覆盖/线上同源回归用例，当前14项测试。
+
+2026-11-12 单场景改造：取消自定义 Bundle，删除两个中转场景，17 项测试和 TypeScript 检查通过，Creator 3.8.8 构建及隔离 mock 首屏/盘面验证通过。单场景改造仅更新本地构建，未重新部署。

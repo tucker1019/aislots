@@ -5,7 +5,6 @@ export const WBSConstant = {
 
     GAMEID: "AG3",
 
-    BUNDLENAME: "szcw_1068wildbountyshowdown",
 
     LOADDIR: "res/load",
     SOUND_PARH: "res/load/sound",

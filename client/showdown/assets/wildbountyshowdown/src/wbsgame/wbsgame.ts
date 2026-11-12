@@ -1,4 +1,4 @@
-import { Component, View, _decorator, director } from "cc";
+import { Component, View, _decorator } from "cc";
 import { WBSGameManager } from "./mgr/WBSGameManager";
 import { WBSLoadManager } from "./mgr/WBSLoadManager";
 import { WBSPoolManager } from "./mgr/WBSPoolManager";
@@ -36,12 +36,11 @@ export class wbsgame extends Component {
         wbsgame.message = this.addComponent(WBSEventManager);
         wbsgame.audioMgr = this.addComponent(WBSAudioManager);
         wbsgame.viewMgr = this.addComponent(WBSViewManager);
-        director.addPersistRootNode(this.node);
+
 
     }
 
     rest() {
-        director.removePersistRootNode(this.node);
         this.node.destroy();
     }
 }

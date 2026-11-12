@@ -14,23 +14,13 @@
   "mainBundleIsRemote": false,
   "mainBundleCompressionType": "merge_all_json",
   "replaceSplashScreen": true,
-  "startScene": "f50937eb-263c-4bee-b7cf-51a39b5256c5",
+  "startScene": "ca2a070e-655e-42a6-be0a-6dbc996fd659",
   "outputName": "web-mobile",
   "scenes": [
     {
-      "url": "db://assets/h5main.scene",
-      "uuid": "f50937eb-263c-4bee-b7cf-51a39b5256c5",
-      "inBundle": false
-    },
-    {
-      "url": "db://assets/wildbountyshowdown/res/scene/WBSGameScene.scene",
+      "url": "db://assets/wildbountyshowdown/WBSGameScene.scene",
       "uuid": "ca2a070e-655e-42a6-be0a-6dbc996fd659",
-      "inBundle": true
-    },
-    {
-      "url": "db://assets/wildbountyshowdown/res/scene/game.scene",
-      "uuid": "873ea8ad-4eeb-49db-8dbd-694cdf2efc6d",
-      "inBundle": true
+      "inBundle": false
     }
   ],
   "web-desktop": [],

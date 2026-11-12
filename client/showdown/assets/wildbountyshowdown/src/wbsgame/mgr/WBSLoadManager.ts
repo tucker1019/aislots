@@ -1,5 +1,6 @@
-import { Asset, AssetManager, AudioClip, Component, Constructor, Label, Node, Prefab, SceneAsset, SpriteFrame, UITransform, __private, _decorator, assetManager, director, instantiate, isValid, js, path, url } from "cc";
-import { WBSResLoader, ProgressCallback, CompleteCallback } from "../loader/WBSResLoader";
+import { Asset, AudioClip, Component, Constructor, Label, Node, Prefab, SpriteFrame, UITransform, __private, _decorator, resources, instantiate, isValid, js, path, url } from "cc";
+type ProgressCallback = (completed: number, total: number, item?: unknown) => void;
+type CompleteCallback<T = Asset> = (error: Error | null, data: T) => void;
 import { WBSConstant } from "../constant/WBSConstant";
 import { consoleLog, consoleLogError } from "../../xtools/WBSUtils";
 import { wbsgame } from "../wbsgame";
@@ -12,8 +13,6 @@ const { ccclass } = _decorator;
 @ccclass('WBSLoadManager')
 
 export class WBSLoadManager extends Component {
-    private res: WBSResLoader = null;
-    private bundle: AssetManager.Bundle = null;
     private spriteFrameCache: Object = {}
     private prefabCache: Object = {}
     private audioCache: Object = {}
@@ -22,18 +21,8 @@ export class WBSLoadManager extends Component {
     }
 
 
-    protected onLoad(): void {
-        this.bundle = assetManager.getBundle(WBSConstant.BUNDLENAME);
-        this.res = new WBSResLoader()
-    }
-
-
-    preLoad() {
-
-    }
-
     public preLoadDir<T extends Asset>(onProgress: ProgressCallback | null, onComplete: CompleteCallback<T[]> | null) {
-        this.res.loadDir(WBSConstant.BUNDLENAME, WBSConstant.LOADDIR, onProgress, onComplete);
+        resources.loadDir(WBSConstant.LOADDIR, onProgress, onComplete);
     }
 
     public getCheSpriteFrameByName(cacheName: string) {
@@ -42,34 +31,19 @@ export class WBSLoadManager extends Component {
     }
 
     public getChePrefabByName(cacheName: string) {
-        if (this.spriteFrameCache[cacheName]) return this.prefabCache[cacheName]
+        if (this.prefabCache[cacheName]) return this.prefabCache[cacheName]
         else return this.getPrefab(cacheName)
     }
 
-    public loadScene(sceneName: string) {
-        this.bundle.loadScene(sceneName, (err: Error, scene: SceneAsset) => {
-            if (err) {
-                consoleLogError(sceneName, "loadScene error")
-            }
-            director.runScene(scene);
-        })
-    }
     async loadPrefab(uri: string): Promise<Prefab> {
-        return new Promise((reject) => {
-            if (this.prefabCache[uri]) {
-                reject(this.prefabCache[uri])
-                return
-            }
-            this.res.load(WBSConstant.BUNDLENAME, uri, Prefab, (err: Error, asset: Prefab) => {
-                if (err) {
-                    consoleLogError("loadPrefab" + " uri :" + uri + " error")
-                }
-                consoleLog("loadPrefab", uri)
+        if (this.prefabCache[uri]) return this.prefabCache[uri];
+        return new Promise((resolve, reject) => {
+            resources.load(uri, Prefab, (error, asset) => {
+                if (error) { reject(error); return; }
                 this.prefabCache[uri] = asset;
-                consoleLog(this.prefabCache)
-                reject(asset)
-            })
-        })
+                resolve(asset);
+            });
+        });
     }
 
     loadAudio(uri: string, onComplete?: CompleteCallback<AudioClip> | null) {
@@ -82,19 +56,19 @@ export class WBSLoadManager extends Component {
             this.audioCache[uri] = data
             onComplete(err, data)
         }
-        this.res.load(WBSConstant.BUNDLENAME, uri, newOnComplete)
+        resources.load(uri, AudioClip, newOnComplete)
     }
 
 
     public getPrefabNotInLoadDir(uri: string) {
-        let prefab: Prefab = this.res.get(uri, Prefab, WBSConstant.BUNDLENAME);
+        let prefab: Prefab = resources.get(uri, Prefab);
         if (prefab) return prefab;
         else consoleLogError("getPrefabNotInLOADDIR uri :" + uri + " error")
     }
 
     public getPrefab(uri: string): Prefab {
         uri = path.join(WBSConstant.LOADDIR, uri)
-        let prefab: Prefab = this.res.get(uri, Prefab, WBSConstant.BUNDLENAME);
+        let prefab: Prefab = resources.get(uri, Prefab);
         if (prefab) return prefab;
         else consoleLogError("getPrefab uri :" + uri + " error")
     }
@@ -102,7 +76,7 @@ export class WBSLoadManager extends Component {
 
     get<T extends Asset>(uri: string, type: Constructor<T>): T | null {
         uri = path.join(WBSConstant.LOADDIR, uri)
-        let asset: T = this.res.get(uri, type, WBSConstant.BUNDLENAME);
+        let asset: T = resources.get(uri, type);
         if (asset) return asset;
         else consoleLogError("get" + type + " uri :" + uri + " error")
     }
@@ -111,7 +85,7 @@ export class WBSLoadManager extends Component {
     getSpriteFrame(uri: string): SpriteFrame {
         uri = path.join(WBSConstant.LOADDIR, uri, "spriteFrame")
         // consoleLog("uri", uri)
-        let asset: SpriteFrame = this.res.get(uri, SpriteFrame, WBSConstant.BUNDLENAME);
+        let asset: SpriteFrame = resources.get(uri, SpriteFrame);
         if (asset) return asset;
         else consoleLog("getSpriteFrame" + " path :" + path + " error")
     }
