@@ -1,0 +1,88 @@
+{
+  "ver": "1.0.6",
+  "importer": "bitmap-font",
+  "imported": true,
+  "uuid": "8f09301e-4e6e-4daf-8625-350e5ee2c5f1",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {},
+  "userData": {
+    "_fntConfig": {
+      "commonHeight": 154,
+      "fontSize": 154,
+      "atlasName": "fnt_mult_red.png",
+      "fontDefDictionary": {
+        "32": {
+          "rect": {
+            "x": 596,
+            "y": 0,
+            "width": 142,
+            "height": 154
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 142
+        },
+        "48": {
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 142,
+            "height": 154
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 142
+        },
+        "49": {
+          "rect": {
+            "x": 142,
+            "y": 0,
+            "width": 93,
+            "height": 152
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 93
+        },
+        "50": {
+          "rect": {
+            "x": 235,
+            "y": 0,
+            "width": 122,
+            "height": 154
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 122
+        },
+        "52": {
+          "rect": {
+            "x": 357,
+            "y": 0,
+            "width": 122,
+            "height": 152
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 122
+        },
+        "120": {
+          "rect": {
+            "x": 479,
+            "y": 0,
+            "width": 117,
+            "height": 124
+          },
+          "xOffset": 0,
+          "yOffset": 30,
+          "xAdvance": 117
+        }
+      },
+      "kerningDict": {}
+    },
+    "fontSize": 154,
+    "textureUuid": "65f2fc69-98dc-4b38-a26c-c275ed897591"
+  }
+}

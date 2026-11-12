@@ -1,0 +1,13 @@
+{
+  "name": "aislots-ag3-showdown",
+  "uuid": "7e0e96b7-0d2e-417a-aa74-8b1b0d7dc589",
+  "version": "1.0.0",
+  "creator": {
+    "version": "3.8.8"
+  },
+  "scripts": {
+    "test": "node scripts/test.mjs",
+    "build": "node scripts/build.mjs",
+    "typecheck": "node ../../slot_math/node_modules/typescript/bin/tsc -p . --noEmit --skipLibCheck --target ES2020 --lib ES2020,DOM"
+  }
+}

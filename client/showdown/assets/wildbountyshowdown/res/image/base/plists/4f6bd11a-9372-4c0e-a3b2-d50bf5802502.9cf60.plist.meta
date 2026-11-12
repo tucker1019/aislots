@@ -1,0 +1,293 @@
+{
+  "ver": "1.0.8",
+  "importer": "sprite-atlas",
+  "imported": true,
+  "uuid": "4852558f-d417-4433-869b-528a4914292f",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "0c1e8": {
+      "importer": "sprite-frame",
+      "uuid": "4852558f-d417-4433-869b-528a4914292f@0c1e8",
+      "displayName": "",
+      "id": "0c1e8",
+      "name": "tw_coin_00",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 1,
+        "trimY": 297,
+        "width": 96,
+        "height": 96,
+        "rawWidth": 116,
+        "rawHeight": 116,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "1de011bc-fa31-4f55-94ae-e7f32ce94d67@6c48a",
+        "atlasUuid": "4852558f-d417-4433-869b-528a4914292f"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "922bf": {
+      "importer": "sprite-frame",
+      "uuid": "4852558f-d417-4433-869b-528a4914292f@922bf",
+      "displayName": "",
+      "id": "922bf",
+      "name": "tw_coin_01",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": true,
+        "offsetX": -4,
+        "offsetY": 0,
+        "trimX": 1,
+        "trimY": 111,
+        "width": 88,
+        "height": 96,
+        "rawWidth": 116,
+        "rawHeight": 116,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "1de011bc-fa31-4f55-94ae-e7f32ce94d67@6c48a",
+        "atlasUuid": "4852558f-d417-4433-869b-528a4914292f"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "4bd1d": {
+      "importer": "sprite-frame",
+      "uuid": "4852558f-d417-4433-869b-528a4914292f@4bd1d",
+      "displayName": "",
+      "id": "4bd1d",
+      "name": "tw_coin_02",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": true,
+        "offsetX": -2,
+        "offsetY": 0,
+        "trimX": 1,
+        "trimY": 1,
+        "width": 24,
+        "height": 96,
+        "rawWidth": 116,
+        "rawHeight": 116,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "1de011bc-fa31-4f55-94ae-e7f32ce94d67@6c48a",
+        "atlasUuid": "4852558f-d417-4433-869b-528a4914292f"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "d16a3": {
+      "importer": "sprite-frame",
+      "uuid": "4852558f-d417-4433-869b-528a4914292f@d16a3",
+      "displayName": "",
+      "id": "d16a3",
+      "name": "tw_coin_03",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": true,
+        "offsetX": 4,
+        "offsetY": 0,
+        "trimX": 1,
+        "trimY": 27,
+        "width": 82,
+        "height": 96,
+        "rawWidth": 116,
+        "rawHeight": 116,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "1de011bc-fa31-4f55-94ae-e7f32ce94d67@6c48a",
+        "atlasUuid": "4852558f-d417-4433-869b-528a4914292f"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "67ba5": {
+      "importer": "sprite-frame",
+      "uuid": "4852558f-d417-4433-869b-528a4914292f@67ba5",
+      "displayName": "",
+      "id": "67ba5",
+      "name": "tw_coin_04",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": true,
+        "offsetX": 1,
+        "offsetY": 0,
+        "trimX": 1,
+        "trimY": 201,
+        "width": 94,
+        "height": 96,
+        "rawWidth": 116,
+        "rawHeight": 116,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "1de011bc-fa31-4f55-94ae-e7f32ce94d67@6c48a",
+        "atlasUuid": "4852558f-d417-4433-869b-528a4914292f"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "1c041": {
+      "importer": "sprite-frame",
+      "uuid": "4852558f-d417-4433-869b-528a4914292f@1c041",
+      "displayName": "",
+      "id": "1c041",
+      "name": "tw_coin_05",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 1,
+        "trimY": 395,
+        "width": 96,
+        "height": 96,
+        "rawWidth": 116,
+        "rawHeight": 116,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "1de011bc-fa31-4f55-94ae-e7f32ce94d67@6c48a",
+        "atlasUuid": "4852558f-d417-4433-869b-528a4914292f"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "atlasTextureName": "4f6bd11a-9372-4c0e-a3b2-d50bf5802502.9cf60.png",
+    "format": 2,
+    "uuid": "4852558f-d417-4433-869b-528a4914292f",
+    "textureUuid": "1de011bc-fa31-4f55-94ae-e7f32ce94d67@6c48a"
+  }
+}
