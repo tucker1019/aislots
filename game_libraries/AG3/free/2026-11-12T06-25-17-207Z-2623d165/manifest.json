@@ -1,0 +1,247 @@
+{
+  "version": 1,
+  "format": "winning-skeleton-v1",
+  "gameId": "AG3",
+  "mode": "free",
+  "createdAt": "2026-11-12T06:25:17.209Z",
+  "boardRevision": "baea5cc12f82d7b9de679050435e3384d505b9014753423baebd2621f0fa978d",
+  "configHash": "6f7809a7bbe01709908b2679a97fb31afe66b3030410a9a5b5ce8d2d884587e5",
+  "multiplierUnit": "raw-before-line-count",
+  "positionOrder": "column-major-top-to-bottom-zero-based",
+  "options": {
+    "mode": "free",
+    "count": 1000000,
+    "perMultiplier": 100,
+    "seed": 710127341
+  },
+  "stats": {
+    "completed": 1000000,
+    "wins": 498366,
+    "losses": 501634,
+    "limited": 0,
+    "retained": 52005,
+    "duplicates": 29309,
+    "capacitySkipped": 0,
+    "bucketCount": 4146
+  },
+  "validation": {
+    "symbolWins": [
+      {
+        "id": "1",
+        "name": "蒙面牛仔",
+        "records": 1930
+      },
+      {
+        "id": "2",
+        "name": "左轮手枪",
+        "records": 4082
+      },
+      {
+        "id": "3",
+        "name": "牛仔帽",
+        "records": 3934
+      },
+      {
+        "id": "4",
+        "name": "威士忌",
+        "records": 3892
+      },
+      {
+        "id": "5",
+        "name": "A",
+        "records": 6735
+      },
+      {
+        "id": "6",
+        "name": "K",
+        "records": 6701
+      },
+      {
+        "id": "7",
+        "name": "Q",
+        "records": 6615
+      },
+      {
+        "id": "8",
+        "name": "J",
+        "records": 6657
+      }
+    ],
+    "missingMultipliers": [
+      "7800"
+    ],
+    "coveredMultipliers": 203,
+    "requiredMultipliers": 204,
+    "ready": false
+  },
+  "partial": false,
+  "config": {
+    "version": 1,
+    "fillWeightIncrement": 1000,
+    "scatterWeightIncrement": 500,
+    "gold": {
+      "columns": [
+        3,
+        4
+      ],
+      "baseProbability": 0.083,
+      "freeProbability": 0.11,
+      "wildSymbolId": "9"
+    },
+    "columnHeights": [
+      3,
+      4,
+      5,
+      5,
+      4,
+      3
+    ],
+    "symbols": [
+      {
+        "id": "1",
+        "name": "蒙面牛仔",
+        "weight": 600,
+        "role": "normal",
+        "color": "#6296ab",
+        "payouts": {
+          "3": 10,
+          "4": 20,
+          "5": 30,
+          "6": 50
+        }
+      },
+      {
+        "id": "2",
+        "name": "左轮手枪",
+        "weight": 850,
+        "role": "normal",
+        "color": "#448f7d",
+        "payouts": {
+          "3": 8,
+          "4": 15,
+          "5": 20,
+          "6": 30
+        }
+      },
+      {
+        "id": "3",
+        "name": "牛仔帽",
+        "weight": 850,
+        "role": "normal",
+        "color": "#6296ab",
+        "payouts": {
+          "3": 5,
+          "4": 10,
+          "5": 15,
+          "6": 20
+        }
+      },
+      {
+        "id": "4",
+        "name": "威士忌",
+        "weight": 850,
+        "role": "normal",
+        "color": "#448f7d",
+        "payouts": {
+          "3": 5,
+          "4": 10,
+          "5": 15,
+          "6": 20
+        }
+      },
+      {
+        "id": "5",
+        "name": "A",
+        "weight": 1250,
+        "role": "normal",
+        "color": "#547cbb",
+        "payouts": {
+          "3": 2,
+          "4": 4,
+          "5": 6,
+          "6": 10
+        }
+      },
+      {
+        "id": "6",
+        "name": "K",
+        "weight": 1250,
+        "role": "normal",
+        "color": "#b47868",
+        "payouts": {
+          "3": 2,
+          "4": 4,
+          "5": 6,
+          "6": 10
+        }
+      },
+      {
+        "id": "7",
+        "name": "Q",
+        "weight": 1250,
+        "role": "normal",
+        "color": "#9680b8",
+        "payouts": {
+          "3": 1,
+          "4": 2,
+          "5": 3,
+          "6": 5
+        }
+      },
+      {
+        "id": "8",
+        "name": "J",
+        "weight": 1250,
+        "role": "normal",
+        "color": "#b47868",
+        "payouts": {
+          "3": 1,
+          "4": 2,
+          "5": 3,
+          "6": 5
+        }
+      },
+      {
+        "id": "9",
+        "name": "百搭",
+        "weight": 0,
+        "role": "wild",
+        "color": "#9680b8",
+        "payouts": {}
+      },
+      {
+        "id": "10",
+        "name": "分散金块",
+        "weight": 300,
+        "role": "scatter",
+        "color": "#b47868",
+        "payouts": {}
+      }
+    ],
+    "cascadeFactors": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      64,
+      128,
+      256,
+      512,
+      1024
+    ],
+    "freeCascadeFactors": [
+      8,
+      16,
+      32,
+      64,
+      128,
+      256,
+      512,
+      1024
+    ],
+    "seed": null
+  },
+  "dataHash": "02bb04c8951b62d9b149ed7843f8333afba7364675c63576c3b7d6c725ad22a0"
+}
