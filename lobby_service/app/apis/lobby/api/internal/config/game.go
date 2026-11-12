@@ -1,8 +1,10 @@
 package config
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/url"
 	"os"
 	"regexp"
@@ -12,15 +14,70 @@ import (
 var gameIDPattern = regexp.MustCompile(`^[A-Za-z][A-Za-z0-9_-]{0,63}$`)
 
 type GameEntry struct {
-	Cover    string `json:"cover"`
-	NameEn   string `json:"nameEn"`
-	Sort     int32  `json:"sort"`
-	Visible  *bool  `json:"visible,omitempty"`
-	APIURL   string `json:"apiUrl"`
-	Provider string `json:"provider"`
-	Name     string `json:"name"`
-	Enabled  bool   `json:"enabled"`
-	URL      string `json:"url"`
+	TheoreticalRtp *float64 `json:"theoreticalRtp,omitempty"`
+	Volatility     string   `json:"volatility,omitempty"`
+	MaxWin         *int64   `json:"maxWin,omitempty"`
+	Cover          string   `json:"cover"`
+	NameEn         string   `json:"nameEn"`
+	Sort           int32    `json:"sort"`
+	Visible        *bool    `json:"visible,omitempty"`
+	APIURL         string   `json:"apiUrl"`
+	Provider       string   `json:"provider"`
+	Name           string   `json:"name"`
+	Enabled        bool     `json:"enabled"`
+	URL            string   `json:"url"`
+}
+
+// Defaults apply only when fields are absent, including legacy published documents.
+func (g *GameEntry) UnmarshalJSON(data []byte) error {
+	type entry GameEntry
+	rtp, maxWin := 97.0, int64(-1)
+	value := entry{TheoreticalRtp: &rtp, Volatility: "medium", MaxWin: &maxWin}
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(&value); err != nil {
+		return err
+	}
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for _, key := range []string{"theoreticalRtp", "volatility", "maxWin"} {
+		if bytes.Equal(bytes.TrimSpace(raw[key]), []byte("null")) {
+			return fmt.Errorf("%s cannot be null", key)
+		}
+	}
+	*g = GameEntry(value)
+	return nil
+}
+
+func (g GameEntry) DisplayRTP() float64 {
+	if g.TheoreticalRtp == nil {
+		return 97
+	}
+	return *g.TheoreticalRtp
+}
+func (g GameEntry) DisplayMaxWin() int64 {
+	if g.MaxWin == nil {
+		return -1
+	}
+	return *g.MaxWin
+}
+func (g GameEntry) DisplayVolatility() string {
+	if g.Volatility == "" {
+		return "medium"
+	}
+	return g.Volatility
+}
+
+func (g GameEntry) validDisplayMetrics() bool {
+	validVolatility := false
+	for _, value := range []string{"low", "medium_low", "medium", "medium_high", "high", "extreme"} {
+		if g.Volatility == value {
+			validVolatility = true
+		}
+	}
+	return !math.IsNaN(g.DisplayRTP()) && !math.IsInf(g.DisplayRTP(), 0) && g.DisplayRTP() >= 0 && g.DisplayRTP() <= 100 && validVolatility && (g.DisplayMaxWin() == -1 || g.DisplayMaxWin() > 0 && g.DisplayMaxWin() <= 9007199254740991)
 }
 
 func (g GameEntry) IsVisible() bool { return g.Visible == nil || *g.Visible }
@@ -51,6 +108,9 @@ func LoadGames(path string) (GameConfig, error) {
 		return c, fmt.Errorf("invalid game identity configuration")
 	}
 	for id, g := range c.Games {
+		if !g.validDisplayMetrics() {
+			return c, fmt.Errorf("invalid game display metrics %s", id)
+		}
 		if !gameIDPattern.MatchString(id) || g.Sort < 0 || (g.Cover != "" && !contentImage(g.Cover)) {
 			return c, fmt.Errorf("invalid game display configuration %s", id)
 		}

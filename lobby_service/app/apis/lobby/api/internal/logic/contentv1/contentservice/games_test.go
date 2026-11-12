@@ -4,6 +4,7 @@ import (
 	"apps/app/apis/lobby/api/internal/config"
 	"apps/app/apis/lobby/api/internal/svc"
 	"context"
+	"encoding/json"
 	"google.golang.org/protobuf/encoding/protojson"
 	"strings"
 	"testing"
@@ -29,5 +30,19 @@ func TestGamesFiltersHiddenKeepsComingSoonAndSorts(t *testing.T) {
 		if strings.Contains(string(b), s) {
 			t.Fatal("private field exposed", s)
 		}
+	}
+}
+
+func TestGamesReturnsIndependentDisplayMetrics(t *testing.T) {
+	var games map[string]config.GameEntry
+	if err := json.Unmarshal([]byte(`{"AG1":{},"AG2":{"theoreticalRtp":96.5,"volatility":"extreme","maxWin":5000}}`), &games); err != nil {
+		t.Fatal(err)
+	}
+	out, err := New(&svc.ServiceContext{Config: config.Config{Game: config.GameConfig{Games: games}}}).Games(context.Background(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out.Games[0].TheoreticalRtp != 97 || out.Games[0].Volatility != "medium" || out.Games[0].MaxWin != -1 || out.Games[1].TheoreticalRtp != 96.5 || out.Games[1].Volatility != "extreme" || out.Games[1].MaxWin != 5000 {
+		t.Fatal(out)
 	}
 }

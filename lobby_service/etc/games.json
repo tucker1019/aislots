@@ -28,7 +28,7 @@
     },
     "G1068": {
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "sort": 30,
       "name": "Wild Bounty Showdown",
       "nameEn": "Wild Bounty Showdown",
@@ -894,6 +894,17 @@
       "cover": "/assets/lobby/games/ultimate-texas-holdem.png",
       "url": "",
       "apiUrl": ""
+    },
+    "AG3": {
+      "enabled": true,
+      "visible": true,
+      "sort": 30,
+      "name": "Wild Bounty Showdown",
+      "nameEn": "Wild Bounty Showdown",
+      "provider": "AG",
+      "cover": "/assets/lobby/games/1068.png",
+      "url": "http://127.0.0.1:5182/",
+      "apiUrl": "http://127.0.0.1:8080"
     }
   }
 }

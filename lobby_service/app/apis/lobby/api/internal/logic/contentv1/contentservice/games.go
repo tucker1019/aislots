@@ -12,7 +12,7 @@ func (l *Logic) Games(_ context.Context, _ *pb.LobbyGamesRequest) (*pb.LobbyGame
 		if !g.IsVisible() {
 			continue
 		}
-		out.Games = append(out.Games, &pb.LobbyGame{Id: id, Name: g.Name, NameEn: g.NameEn, Provider: g.Provider, Cover: g.Cover, Enabled: g.Enabled, Sort: g.Sort})
+		out.Games = append(out.Games, &pb.LobbyGame{Id: id, Name: g.Name, NameEn: g.NameEn, Provider: g.Provider, Cover: g.Cover, Enabled: g.Enabled, Sort: g.Sort, TheoreticalRtp: g.DisplayRTP(), Volatility: g.DisplayVolatility(), MaxWin: g.DisplayMaxWin()})
 	}
 	sort.Slice(out.Games, func(i, j int) bool {
 		a, b := out.Games[i], out.Games[j]

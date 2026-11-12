@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"strings"
 
@@ -58,7 +59,7 @@ func withDocument(key string, doc []byte, run func(string) error) error {
 	if e := d.Decode(new(any)); e != io.EOF {
 		return fmt.Errorf("trailing configuration JSON")
 	}
-	if e := safeValues(value); e != nil {
+	if e := safeValues(value, key); e != nil {
 		return e
 	}
 	f, e := os.CreateTemp("", "aislots-config-*.json")
@@ -76,9 +77,17 @@ func withDocument(key string, doc []byte, run func(string) error) error {
 	}
 	return run(path)
 }
-func safeValues(v any) error {
+func safeValues(v any, section string, path ...string) error {
 	switch t := v.(type) {
 	case json.Number:
+		// Only games.<gameId>.theoreticalRtp is a percentage with decimals.
+		if section == "games" && len(path) == 3 && path[0] == "games" && path[2] == "theoreticalRtp" {
+			n, err := t.Float64()
+			if err != nil || math.IsNaN(n) || math.IsInf(n, 0) || n < 0 || n > 100 {
+				return fmt.Errorf("theoretical RTP must be between 0 and 100")
+			}
+			return nil
+		}
 		n, e := t.Int64()
 		if e != nil || n > 9007199254740991 || n < -9007199254740991 {
 			return fmt.Errorf("configuration numbers must be safe integers")
@@ -89,13 +98,13 @@ func safeValues(v any) error {
 			if strings.Contains(l, "password") || strings.Contains(l, "secret") || strings.Contains(l, "token") {
 				return fmt.Errorf("secrets must remain deployment environment variables")
 			}
-			if e := safeValues(n); e != nil {
+			if e := safeValues(n, section, append(path, k)...); e != nil {
 				return e
 			}
 		}
 	case []any:
 		for _, n := range t {
-			if e := safeValues(n); e != nil {
+			if e := safeValues(n, section, append(path, "[]")...); e != nil {
 				return e
 			}
 		}

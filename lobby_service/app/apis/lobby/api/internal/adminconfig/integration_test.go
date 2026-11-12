@@ -127,6 +127,24 @@ func TestConfigHTTPPublishedSnapshotAndPermissions(t *testing.T) {
 	if list.Code != 200 || !bytes.Contains(list.Body.Bytes(), []byte(`"hasDraft":false`)) {
 		t.Fatal(list.Body.String())
 	}
+	// Exercise the actual save route, not only the game configuration loader.
+	catalog := c.Game
+	catalog.Games = make(map[string]config.GameEntry, len(c.Game.Games))
+	for id, entry := range c.Game.Games {
+		catalog.Games[id] = entry
+	}
+	entry := catalog.Games["AG1"]
+	rtp := 97.03
+	entry.TheoreticalRtp = &rtp
+	catalog.Games["AG1"] = entry
+	metricDoc, err := json.Marshal(catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	metricDraft := call("POST", "/admin/api/configs/games/draft", fmt.Sprintf(`{"document":%s,"expectedVersion":1,"reason":"小数RTP保存测试"}`, metricDoc), cookie)
+	if metricDraft.Code != 200 || !bytes.Contains(metricDraft.Body.Bytes(), []byte(`97.03`)) {
+		t.Fatalf("decimal RTP save: %d %s", metricDraft.Code, metricDraft.Body.String())
+	}
 	tiers := append([]config.RechargeTier(nil), c.RechargeTiers...)
 	tiers[0].Amount += 100
 	b, _ := json.Marshal(tiers)

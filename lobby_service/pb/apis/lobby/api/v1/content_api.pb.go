@@ -291,16 +291,19 @@ func (*LobbyGamesRequest) Descriptor() ([]byte, []int) {
 }
 
 type LobbyGame struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	NameEn        string                 `protobuf:"bytes,3,opt,name=name_en,json=nameEn,proto3" json:"name_en,omitempty"`
-	Provider      string                 `protobuf:"bytes,4,opt,name=provider,proto3" json:"provider,omitempty"`
-	Cover         string                 `protobuf:"bytes,5,opt,name=cover,proto3" json:"cover,omitempty"`
-	Enabled       bool                   `protobuf:"varint,6,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	Sort          int32                  `protobuf:"varint,7,opt,name=sort,proto3" json:"sort,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name           string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	NameEn         string                 `protobuf:"bytes,3,opt,name=name_en,json=nameEn,proto3" json:"name_en,omitempty"`
+	Provider       string                 `protobuf:"bytes,4,opt,name=provider,proto3" json:"provider,omitempty"`
+	Cover          string                 `protobuf:"bytes,5,opt,name=cover,proto3" json:"cover,omitempty"`
+	Enabled        bool                   `protobuf:"varint,6,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	Sort           int32                  `protobuf:"varint,7,opt,name=sort,proto3" json:"sort,omitempty"`
+	TheoreticalRtp float64                `protobuf:"fixed64,8,opt,name=theoretical_rtp,json=theoreticalRtp,proto3" json:"theoretical_rtp,omitempty"`
+	Volatility     string                 `protobuf:"bytes,9,opt,name=volatility,proto3" json:"volatility,omitempty"`
+	MaxWin         int64                  `protobuf:"varint,10,opt,name=max_win,json=maxWin,proto3" json:"max_win,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *LobbyGame) Reset() {
@@ -382,6 +385,27 @@ func (x *LobbyGame) GetSort() int32 {
 	return 0
 }
 
+func (x *LobbyGame) GetTheoreticalRtp() float64 {
+	if x != nil {
+		return x.TheoreticalRtp
+	}
+	return 0
+}
+
+func (x *LobbyGame) GetVolatility() string {
+	if x != nil {
+		return x.Volatility
+	}
+	return ""
+}
+
+func (x *LobbyGame) GetMaxWin() int64 {
+	if x != nil {
+		return x.MaxWin
+	}
+	return 0
+}
+
 type LobbyGamesReply struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Games         []*LobbyGame           `protobuf:"bytes,1,rep,name=games,proto3" json:"games,omitempty"`
@@ -446,7 +470,7 @@ const file_apis_lobby_api_v1_content_api_proto_rawDesc = "" +
 	"\x11LobbyContentReply\x12N\n" +
 	"\rannouncements\x18\x01 \x03(\v2(.apis.lobby.api.v1.LocalizedAnnouncementR\rannouncements\x128\n" +
 	"\abanners\x18\x02 \x03(\v2\x1e.apis.lobby.api.v1.LobbyBannerR\abanners\"\x13\n" +
-	"\x11LobbyGamesRequest\"\xa8\x01\n" +
+	"\x11LobbyGamesRequest\"\x8a\x02\n" +
 	"\tLobbyGame\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x17\n" +
@@ -454,7 +478,13 @@ const file_apis_lobby_api_v1_content_api_proto_rawDesc = "" +
 	"\bprovider\x18\x04 \x01(\tR\bprovider\x12\x14\n" +
 	"\x05cover\x18\x05 \x01(\tR\x05cover\x12\x18\n" +
 	"\aenabled\x18\x06 \x01(\bR\aenabled\x12\x12\n" +
-	"\x04sort\x18\a \x01(\x05R\x04sort\"E\n" +
+	"\x04sort\x18\a \x01(\x05R\x04sort\x12'\n" +
+	"\x0ftheoretical_rtp\x18\b \x01(\x01R\x0etheoreticalRtp\x12\x1e\n" +
+	"\n" +
+	"volatility\x18\t \x01(\tR\n" +
+	"volatility\x12\x17\n" +
+	"\amax_win\x18\n" +
+	" \x01(\x03R\x06maxWin\"E\n" +
 	"\x0fLobbyGamesReply\x122\n" +
 	"\x05games\x18\x01 \x03(\v2\x1c.apis.lobby.api.v1.LobbyGameR\x05games2\xf7\x01\n" +
 	"\x13LobbyContentService\x12k\n" +

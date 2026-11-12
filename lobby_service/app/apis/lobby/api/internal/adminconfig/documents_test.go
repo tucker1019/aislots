@@ -46,3 +46,28 @@ func TestPublishedDocumentPreservesImmutableSettings(t *testing.T) {
 	check("checkin", config.CheckinConfig{Timezone: "UTC"})
 	check("games", config.GameConfig{AppName: "another", AppKey: "lobby", Country: "ID", Currency: "IDR"})
 }
+
+func TestGameRTPAllowsDecimalsWithoutRelaxingIntegerSettings(t *testing.T) {
+	for _, tc := range []struct {
+		field string
+		valid bool
+	}{
+		{`"theoreticalRtp":97.03`, true}, {`"theoreticalRtp":97.1`, true}, {`"theoreticalRtp":0`, true}, {`"theoreticalRtp":100`, true},
+		{`"theoreticalRtp":100.01`, false}, {`"theoreticalRtp":-0.01`, false}, {`"maxWin":5000.5`, false}, {`"sort":1.5`, false},
+	} {
+		document := `{"appname":"lobby","appkey":"web","country":"ID","currency":"IDR","games":{"AG1":{` + tc.field + `}}}`
+		err := ValidateDocument("games", []byte(document))
+		if (err == nil) != tc.valid {
+			t.Fatalf("%s: %v", tc.field, err)
+		}
+	}
+	if err := ValidateDocument("recharge", []byte(`[{"id":"one","amount":100.5,"bonus":0,"fee":0}]`)); err == nil {
+		t.Fatal("fractional money accepted")
+	}
+	if err := ValidateDocument("experience", []byte(`{"enabled":true,"createMinSeconds":30.5,"createMaxSeconds":120,"playMinSeconds":10,"playMaxSeconds":30}`)); err == nil {
+		t.Fatal("fractional interval accepted")
+	}
+	if err := withDocument("games", []byte(`{"other":{"AG1":{"theoreticalRtp":97.03}}}`), func(string) error { return nil }); err == nil {
+		t.Fatal("decimal exception escaped game RTP path")
+	}
+}

@@ -12,5 +12,5 @@ message LobbyBanner {string id=1;bool enabled=2;string image_zh_tw=3 [json_name=
 message LobbyContentReply {repeated LocalizedAnnouncement announcements=1;repeated LobbyBanner banners=2;}
 
 message LobbyGamesRequest {}
-message LobbyGame {string id=1;string name=2;string name_en=3 [json_name="nameEn"];string provider=4;string cover=5;bool enabled=6;int32 sort=7;}
+message LobbyGame {string id=1;string name=2;string name_en=3 [json_name="nameEn"];string provider=4;string cover=5;bool enabled=6;int32 sort=7;double theoretical_rtp=8 [json_name="theoreticalRtp"];string volatility=9;int64 max_win=10 [json_name="maxWin"];}
 message LobbyGamesReply {repeated LobbyGame games=1;}
