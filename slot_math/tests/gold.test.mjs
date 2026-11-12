@@ -62,3 +62,15 @@ test('invalid gold config, reserved IDs, wild sampling and invalid manual gold a
   assert.throws(()=>createCascadeRound(goldSetup(),sequence([0,0,NaN])));
   const definitions = symbolDefinitions(goldSetup()); assert.equal(definitions.get('1001').baseSymbolId,'1'); assert.equal(definitions.has('1010'),false);
 });
+
+test('free fixed reels replace random gold and preserve Wild and Scatter', () => {
+  const config = {...goldSetup([1,1,4,1,1]), freeGoldColumns:[3]};
+  config.gold.freeProbability = 1;
+  const preset = [['1'],['1'],['1','2','10','11'],['2'],['2']];
+  const round = createCascadeRound(config, () => 0, preset, 'free');
+  assert.deepEqual(round.board[2].map(c=>c.symbolId), ['1001','1002','10','11']);
+  assert.deepEqual(round.board.map(c=>c[0].symbolId), ['1','1','1001','2','2']);
+  const next = advanceCascadeRound(round,config,()=>0);
+  assert.ok(next.steps[0].transformedIds.includes(round.board[2][0].id));
+  assert.ok(next.board[2].every(c=>['1001','1002','10','11'].includes(c.symbolId)));
+});

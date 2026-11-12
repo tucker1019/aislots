@@ -69,7 +69,7 @@ function DeveloperEditor({ active, source, sharedLineCount, onDirty, onSaving }:
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [fileError, setFileError] = useState('');
-  const fingerprint = JSON.stringify({ scatterWeightIncrement: game.config.scatterWeightIncrement, fillWeightIncrement: game.config.fillWeightIncrement, gold: game.config.gold, columnHeights: game.config.columnHeights, cascadeFactors: game.config.cascadeFactors, freeCascadeFactors: game.config.freeCascadeFactors, symbols: game.config.symbols, seed: game.seed, shapeText: game.shapeText });
+  const fingerprint = JSON.stringify({ scatterWeightIncrement: game.config.scatterWeightIncrement, fillWeightIncrement: game.config.fillWeightIncrement, gold: game.config.gold, freeGoldColumns: game.config.freeGoldColumns, columnHeights: game.config.columnHeights, cascadeFactors: game.config.cascadeFactors, freeCascadeFactors: game.config.freeCascadeFactors, symbols: game.config.symbols, seed: game.seed, shapeText: game.shapeText });
   const [savedFingerprint, setSavedFingerprint] = useState(fingerprint);
   const dirty = fingerprint !== savedFingerprint;
   useEffect(() => { onDirty(dirty); }, [dirty, onDirty]);

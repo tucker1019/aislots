@@ -1,4 +1,4 @@
-import {advanceCascadeRound,createCascadeRound,evaluateWays,symbolDefinitions,type Board,type BoardMode,type CascadeConfig,type CascadeRound,type CascadeStep,type WaysWin} from './cascade';
+import { fixedFreeGold, randomGold,advanceCascadeRound,createCascadeRound,evaluateWays,symbolDefinitions,type Board,type BoardMode,type CascadeConfig,type CascadeRound,type CascadeStep,type WaysWin} from './cascade';
 export type FreeTarget=0|3|4|5;
 export interface FillMetrics {scatterCount:number;attempts:number;rejectedCandidates:number;filledCells:number;elapsedMs:number}
 export interface FilledRound {round:CascadeRound;metrics:FillMetrics}
@@ -56,7 +56,7 @@ export function fillBoard(reference:CascadeRound,config:CascadeConfig,increment:
           if(forceFree)return false;
           if(forbidden.has(symbol.id)){rejectedCandidates++;return false;}
           const entries=placements.get(cell.id)!;
-          for(const entry of entries)entry.cell.symbolId=symbol.id;
+          for(const entry of entries)entry.cell.symbolId=fixedFreeGold(config,reference.mode,c)?String(Number(symbol.id)+1000):symbol.id;
           const safe=entries.every(entry=>signature(evaluateWays(entry.context.board,rules,0,reference.mode))===entry.context.expected);
           for(const entry of entries)entry.cell.symbolId=hole;
           if(!safe)rejectedCandidates++;
@@ -69,8 +69,8 @@ export function fillBoard(reference:CascadeRound,config:CascadeConfig,increment:
         let value=draw(random)*total,selected=candidates.at(-1)!;
         for(const symbol of candidates){value-=candidateWeight(symbol);if(value<0){selected=symbol;break;}}
         cell.symbolId=selected.id;
-        const probability=reference.mode==='free'?config.gold.freeProbability:config.gold.baseProbability;
-        if(selected.role==='normal'&&config.gold.columns.includes(c+1)&&probability>0&&draw(random)<probability)cell.symbolId=String(Number(selected.id)+1000);
+        const probability=randomGold(config,reference.mode,c);
+        if(selected.role==='normal'&&(fixedFreeGold(config,reference.mode,c)||(probability>0&&draw(random)<probability)))cell.symbolId=String(Number(selected.id)+1000);
         for(const entry of placements.get(cell.id)!)entry.cell.symbolId=cell.symbolId;
         if(selected.role==='scatter'){freeAdded=true;scatterCount++;}
         else weights.set(selected.id,weights.get(selected.id)!+increment);

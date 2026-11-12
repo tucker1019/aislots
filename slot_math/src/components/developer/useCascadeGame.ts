@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
 import {
   advanceCascadeRound, createCascadeRound,
-  evaluateWays, validateCascadeConfig, symbolDefinitions,
+  evaluateWays, fixedFreeGold, validateCascadeConfig, symbolDefinitions,
   type BoardMode, type BoardConfig, type CascadeConfig, type CascadeRound, type GameSymbol,
 } from '../../domain/cascade';
 import {fillBoard,simulateBoard,type FillMetrics,type FreeTarget} from '../../domain/boardFill';
@@ -132,7 +132,7 @@ export function useCascadeGame(active: boolean, initial: BoardFile, lineCount: n
   }
   function removeSymbol(id: string) {
     if (locked) return;
-    changeConfig({ symbols: config.symbols.filter(symbol => symbol.id !== id), ...(config.gold.wildSymbolId === id ? { gold: { ...config.gold, columns: [], wildSymbolId: null } } : {}) });
+    changeConfig({ symbols: config.symbols.filter(symbol => symbol.id !== id), ...(config.gold.wildSymbolId === id ? { freeGoldColumns: [], gold: { ...config.gold, columns: [], wildSymbolId: null } } : {}) });
     setGrid(previous => previous.map(column => column.map(cell => cell === id || cell === String(Number(id) + 1000) ? null : cell)));
     if (selectedSymbol === id) setSelectedSymbol(null);
   }
@@ -204,7 +204,7 @@ export function useCascadeGame(active: boolean, initial: BoardFile, lineCount: n
     if (locked) return;
     const symbol = activeSymbol;
     if (!symbol) return;
-    if (placeGold && (symbol.role !== 'normal' || !/^[1-9]\d{0,2}$/.test(symbol.id) || config.gold.wildSymbolId === null || !config.gold.columns.includes(column + 1))) {
+    if (placeGold && (symbol.role !== 'normal' || !/^[1-9]\d{0,2}$/.test(symbol.id) || config.gold.wildSymbolId === null || !(fixedFreeGold(config, mode, column) || (config.gold.columns.includes(column + 1) && (mode !== 'free' || !config.freeGoldColumns?.length))))) {
       setError('金底只能放置在已配置的金底轴，且需选择 ID 为 1–999 的普通图标并配置转换百搭。'); return;
     }
     const symbolId = placeGold ? String(Number(symbol.id) + 1000) : symbol.id;

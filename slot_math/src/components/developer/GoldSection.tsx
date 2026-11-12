@@ -4,9 +4,10 @@ import type { CascadeGame } from './useCascadeGame';
 export function GoldSection({ game }: { game: CascadeGame }) {
   const {config, locked, changeConfig} = game;
   const gold = config.gold;
+  const freeGoldColumns = config.freeGoldColumns ?? [];
   return <section className="dev-section">
     <h2>金底规则</h2>
-    <p>初始生成、顶部补充均独立判断。金底中奖转百搭，再参与掉落。</p>
+    <p>勾选后，免费模式只在所选轴生成金底；全部取消则恢复随机金底。普通模式不受影响。金底中奖转百搭。</p>
     <fieldset className="dev-gold-settings" disabled={locked}>
       <label>普通金底概率（%）
         <NumericConfigInput aria-label="普通金底概率" min="0" max="100" step="any" value={gold.baseProbability * 100} onValueChange={value => changeConfig({gold: {...gold, baseProbability: value / 100}})} />
@@ -14,9 +15,14 @@ export function GoldSection({ game }: { game: CascadeGame }) {
       <label>免费金底概率（%）
         <NumericConfigInput aria-label="免费金底概率" min="0" max="100" step="any" value={gold.freeProbability * 100} onValueChange={value => changeConfig({gold: {...gold, freeProbability: value / 100}})} />
       </label>
-      <div className="dev-gold-columns">金底轴
+      <div className="dev-gold-columns">随机金底轴
         {Array.from({length: Math.max(config.columnHeights.length, ...gold.columns)}, (_, i) => i + 1).map(column => <label key={column}>
           <input type="checkbox" aria-label={`第${column}轴启用金底`} checked={gold.columns.includes(column)} onChange={e => changeConfig({gold: {...gold, columns: e.target.checked ? [...gold.columns, column].sort((a,b) => a-b) : gold.columns.filter(c => c !== column)}})} />第 {column} 轴
+        </label>)}
+      </div>
+      <div className="dev-gold-columns">免费固定金底轴
+        {Array.from({length: config.columnHeights.length}, (_, i) => i + 1).map(column => <label key={column}>
+          <input type="checkbox" aria-label={`免费第${column}轴固定金底`} checked={freeGoldColumns.includes(column)} onChange={e => changeConfig({freeGoldColumns: e.target.checked ? [...freeGoldColumns, column].sort((a,b) => a-b) : freeGoldColumns.filter(c => c !== column)})} />第 {column} 轴
         </label>)}
       </div>
       <label>金底转换百搭

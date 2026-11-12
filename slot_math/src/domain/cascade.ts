@@ -2,7 +2,7 @@ export type BoardMode = 'base' | 'free';
 export type SymbolRole = 'normal' | 'wild' | 'scatter';
 export interface GameSymbol { id: string; name: string; weight: number; role: SymbolRole; color: string; payouts: Record<number, number> }
 export interface GoldConfig { columns: number[]; baseProbability: number; freeProbability: number; wildSymbolId: string | null }
-export interface BoardConfig { fillWeightIncrement: number; scatterWeightIncrement: number; gold: GoldConfig; columnHeights: number[]; symbols: GameSymbol[]; cascadeFactors: number[]; freeCascadeFactors: number[] }
+export interface BoardConfig { fillWeightIncrement: number; scatterWeightIncrement: number; gold: GoldConfig; freeGoldColumns?: number[]; columnHeights: number[]; symbols: GameSymbol[]; cascadeFactors: number[]; freeCascadeFactors: number[] }
 export interface CascadeConfig extends BoardConfig { lineCount: number }
 export interface Cell { id: number; symbolId: string }
 export type Board = Cell[][]; // Each column is ordered top to bottom.
@@ -22,6 +22,8 @@ export function validateCascadeConfig(config: CascadeConfig, allowEmpty = false)
     if (!Array.isArray(factors) || !factors.length || factors.length > 30 || !factors.every(x => Number.isFinite(x) && x > 0)) throw new Error(`${name}连续消除加成需要 1–30 档，每档为大于 0 的有限数。`);
   }
   if (!Array.isArray(config.symbols) || (!allowEmpty && !config.symbols.length)) throw new Error('请先添加至少一个图标。');
+  const freeGoldColumns = config.freeGoldColumns ?? [];
+  if (!Array.isArray(freeGoldColumns) || new Set(freeGoldColumns).size !== freeGoldColumns.length || freeGoldColumns.some(c => !Number.isSafeInteger(c) || c < 1 || c > config.columnHeights.length)) throw new Error('免费固定金底轴必须是有效且不重复的轴号。');
   const ids = new Set<string>(); let sum=0;
   for(const symbol of config.symbols) {
     if(!symbol || typeof symbol.id!=='string' || !symbol.id || ids.has(symbol.id)) throw new Error('图标标识必须唯一。');
@@ -37,7 +39,7 @@ export function validateCascadeConfig(config: CascadeConfig, allowEmpty = false)
     || ![gold.baseProbability, gold.freeProbability].every(p => Number.isFinite(p) && p >= 0 && p <= 1)
     || (gold.wildSymbolId !== null && typeof gold.wildSymbolId !== 'string')) throw new Error('金底配置需要不重复的轴号（1–12）及 0–1 的普通、免费概率。');
   if (gold.wildSymbolId !== null && !config.symbols.some(s => s.id === gold.wildSymbolId && s.role === 'wild')) throw new Error('金底转换目标必须是图标库中的百搭。');
-  if (gold.columns.length) {
+  if (gold.columns.length || freeGoldColumns.length) {
     if (gold.wildSymbolId === null) throw new Error('启用金底轴前，请先配置转换目标百搭。');
   }
   if (gold.wildSymbolId !== null) {
@@ -61,20 +63,38 @@ export function symbolDefinitions(config: BoardConfig) {
   }
   return symbols;
 }
-export function validateBoard(board: Board, config: CascadeConfig): void {
+function applyFreeGold(board: Board, config: CascadeConfig, mode: BoardMode): Board {
+  if (mode !== 'free' || !config.freeGoldColumns?.length || config.gold.wildSymbolId === null) return board;
+  const definitions = symbolDefinitions(config);
+  return board.map((column, c) => config.freeGoldColumns!.includes(c + 1) ? column.map(cell => {
+    const symbol = definitions.get(cell.symbolId);
+    return symbol?.role === 'normal' && !symbol.gold ? { ...cell, symbolId: String(Number(cell.symbolId) + 1000) } : cell;
+  }) : column);
+}
+export function fixedFreeGold(config: BoardConfig, mode: BoardMode, column: number): boolean {
+  return mode === 'free' && config.freeGoldColumns?.includes(column + 1) === true;
+}
+export function randomGold(config: BoardConfig, mode: BoardMode, column: number): number {
+  if (!config.gold.columns.includes(column + 1)) return 0;
+  return mode === 'base' ? config.gold.baseProbability : config.freeGoldColumns?.length ? 0 : config.gold.freeProbability;
+}
+export function validateBoard(board: Board, config: CascadeConfig, mode: BoardMode = 'base'): void {
   if (!Array.isArray(board) || board.length !== config.columnHeights.length) throw new Error('盘面列数与配置不一致。');
   const symbols = symbolDefinitions(config), ids = new Set<number>();
   board.forEach((column, c) => {
     if (!Array.isArray(column) || column.length !== config.columnHeights[c]) throw new Error('盘面格数与列高配置不一致。');
     for (const cell of column) {
       if (!cell || !Number.isSafeInteger(cell.id) || cell.id < 1 || ids.has(cell.id) || !symbols.has(cell.symbolId)) throw new Error('盘面图标无效，或格子标识重复。');
-      if (symbols.get(cell.symbolId)!.gold && !config.gold.columns.includes(c + 1)) throw new Error('金底图标只能放在已配置的金底轴。');
+      const symbol = symbols.get(cell.symbolId)!;
+      const fixed = fixedFreeGold(config, mode, c);
+      if (fixed && symbol.role === 'normal' && !symbol.gold) throw new Error('免费固定金底轴不能出现非金底普通图标。');
+      if (symbol.gold && !fixed && ((mode === 'free' && config.freeGoldColumns?.length) || !config.gold.columns.includes(c + 1))) throw new Error('金底图标只能放在已配置的金底轴。');
       ids.add(cell.id);
     }
   });
 }
 export function evaluateWays(board: Board, config: CascadeConfig, index: number, mode: BoardMode = 'base'): WaysWin[] {
-  validateBoard(board, config);
+  validateBoard(board, config, mode);
   const symbols = symbolDefinitions(config);
   const wins: WaysWin[]=[];
   const factor=cascadeFactor(config,index,mode);
@@ -103,12 +123,12 @@ function drawRandom(random: () => number): number {
 function picker(config: CascadeConfig, random:()=>number, mode: BoardMode):(column: number)=>string {
   const symbols = config.symbols.filter(symbol => symbol.role === 'normal' && symbol.weight > 0);
   const total = symbols.reduce((sum, symbol) => sum + symbol.weight, 0);
-  const probability = mode === 'free' ? config.gold.freeProbability : config.gold.baseProbability;
   return column => {
     let target = drawRandom(random) * total;
     let selected = symbols.at(-1)!;
     for (const symbol of symbols) { target -= symbol.weight; if (target < 0) { selected = symbol; break; } }
-    return config.gold.columns.includes(column + 1) && probability > 0 && drawRandom(random) < probability
+    const probability = randomGold(config, mode, column);
+    return fixedFreeGold(config, mode, column) || (probability > 0 && drawRandom(random) < probability)
       ? String(Number(selected.id) + 1000) : selected.id;
   };
 }
@@ -117,8 +137,8 @@ export function createCascadeRound(config: CascadeConfig, random:()=>number, pre
   cascadeFactor(config, 0, mode);
   const pick = picker(config, random, mode), validIds = symbolDefinitions(config); let id = 1;
   if (preset && (preset.length !== config.columnHeights.length || preset.some((column, c) => !Array.isArray(column) || column.length !== config.columnHeights[c] || column.some(symbol => symbol !== null && !validIds.has(symbol))))) throw new Error('手动盘面的结构或图标与配置不一致。');
-  const board = config.columnHeights.map((height,c) => Array.from({length:height},(_,r) => ({ id:id++, symbolId:preset?.[c][r] ?? pick(c) })));
-  validateBoard(board, config);
+  const board = applyFreeGold(config.columnHeights.map((height,c) => Array.from({length:height},(_,r) => ({ id:id++, symbolId:preset?.[c][r] ?? pick(c) }))), config, mode);
+  validateBoard(board, config, mode);
   return {mode,board,steps:[],totalPayout:0,nextCellId:id,finished:false,limited:false};
 }
 export function advanceCascadeRound(round:CascadeRound,config:CascadeConfig,random:()=>number):CascadeRound {
@@ -143,5 +163,6 @@ export function advanceCascadeRound(round:CascadeRound,config:CascadeConfig,rand
   const payout=wins.reduce((sum,w)=>sum+w.payout,0), totalPayout=round.totalPayout+payout;
   if(!Number.isFinite(totalPayout))throw new Error('累计奖金超出数值范围。');
   const step:CascadeStep={index:round.steps.length+1,before:round.board,after,wins,removedIds,transformedIds,refillIds,payout,factor:cascadeFactor(config,round.steps.length,round.mode)};
-  return {...round,board:after,steps:[...round.steps,step],nextCellId:id,totalPayout};
+  const normalizedAfter = applyFreeGold(after, config, round.mode);
+  return {...round,board:normalizedAfter,steps:[...round.steps, {...step, after: normalizedAfter}],nextCellId:id,totalPayout};
 }
