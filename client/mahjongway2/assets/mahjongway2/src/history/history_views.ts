@@ -154,7 +154,14 @@ export function detailBody(
             const symbol = cell.symbolId > 1000 ? cell.symbolId - 1000 : cell.symbolId;
             image.alt =
                 (cell.symbolId > 1000 ? '金底' : '') + (symbolNames[symbol] || String(symbol));
-            if (symbol === 11 && art.scatter_background) {
+            if (symbol === 10 && art.wild_base) {
+                const tile = el('div', 'history-wild');
+                const base = el('img', 'history-wild-base');
+                base.src = art.wild_base;
+                base.alt = '';
+                tile.append(base, image);
+                col.append(tile);
+            } else if (symbol === 11 && art.scatter_background) {
                 const tile = el('div', 'history-scatter');
                 const glow = el('img', 'history-scatter-glow');
                 glow.src = art.scatter_background;

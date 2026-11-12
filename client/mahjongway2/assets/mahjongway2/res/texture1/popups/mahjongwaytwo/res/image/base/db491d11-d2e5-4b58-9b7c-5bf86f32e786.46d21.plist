@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>bl_icon.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,1},{536,399}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false/>
+				<key>sourceColorRect</key>
+				<string>{{1,1},{536,399}}</string>
+				<key>sourceSize</key>
+				<string>{536,399}</string>
+			</dict>
+			<key>bonus_loading.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{539,1},{232,232}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false/>
+				<key>sourceColorRect</key>
+				<string>{{539,1},{232,232}}</string>
+				<key>sourceSize</key>
+				<string>{232,232}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>realTextureFileName</key>
+			<string>db491d11-d2e5-4b58-9b7c-5bf86f32e786.46d21.png</string>
+			<key>size</key>
+			<string>{772,401}</string>
+			<key>smartupdate</key>
+			<string>$TexturePacker:SmartUpdate : 8d6a3b5c6f98d0eff99dd6242c8d6db7$</string>
+			<key>textureFileName</key>
+			<string>db491d11-d2e5-4b58-9b7c-5bf86f32e786.46d21.png</string>
+		</dict>
+	</dict>
+</plist>

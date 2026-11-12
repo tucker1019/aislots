@@ -100,3 +100,38 @@ History 每条记录右侧的「回放」通过该记录的 betId 读取现有�
 大厅申请入口后跳转至 `?launchTicket=...`。客户端用稳定exchangeId兑换游戏会话，成功后从地址栏移除票据；当前标签页的sessionStorage保存游戏会话以支持刷新恢复。真实会话失效要求返回大厅，不回退到测试用户。机台需使用server.lobby.json，并与大厅设置相同的LOBBY_GAME_SERVICE_TOKEN。独立测试预览仍使用server.test.json。
 
 Cocos场景启动时关闭profiler统计面板，预览和构建均不显示FPS/Draw Call。大厅iframe刷新复用同一已兑换票据对应的游戏会话；新的票据仍重新兑换身份。
+
+## 免费资源生命周期
+
+初始资源只包含免费触发页 `pop_free_tri`。触发后先显示该页，`bonus_lading` 旋转、`bonus_lab` 显示加载百分比，隐藏开始按钮；免费弹窗、免费面板、粒子及音频全部就绪后才显示按钮。失败保留触发页，可点击重试；回放也使用相同流程，加载完成后才启动自动关闭计时。
+
+恢复到进行中的免费局先等待资源准备，免费结束、回放重播/退出及组件销毁时释放免费实例与所持有的资源引用。场景中的免费粒子宿主保留编辑器坐标和缩放，只保留空组件；实际粒子按需挂入，避免场景提前持有免费图片和动画。`ui_top_bar` 与当前符号映射保持本项目配置。
+
+相关回归：`node --test tests/free_loading.test.cjs tests/ag2_board.test.cjs tests/effect_assets.test.cjs`。业务类型检查沿用 ES2020（已有 BigInt），引擎声明单独跳过：`tsc --noEmit --skipLibCheck --target ES2020 --lib ES2020,DOM -p .`。
+
+## 1024 免费与大奖弹窗资源
+
+`pop_free_tri / pop_free_again / pop_free_end / big_win` 使用参考 `mahjongway2_1024` 的预制体、美术及动画。通过 `python3 tools/import_popup_assets.py /path/to/mahjongway2_1024` 重导；工具只处理这四个预制体及递归依赖，清除旧业务脚本和按钮回调，保留显示组件并适配为当前 `MWSpriteCtrl`。资源使用独立确定性 UUID，四个公开预制体 UUID 保持原值。
+
+新增图片、图集、位图字体及页图片在 `assets/mahjongway2/res/texture1/popups/`；动画与材质在 `resources/mahjong_effects/ag2_popups/`。`tools/popup_assets_manifest.json` 记录来源、依赖映射及原始二进制哈希。大奖使用参考项目 `bgq / bw_text` 等节点，保留10/25/60分级和金额连续滚动；免费触发页适配 `bl_icon/cnt / bonus_loading`，继续显示加载进度与重试。相关测试增加 `tests/popup_reference.test.cjs`。
+
+## 参考音频
+
+预览和构建模板的66个MP3与 `mahjongway2_1024` 的 `assets/mahjongwaytwo/res/sound` 一致；普通音乐为 `bgm_mg`，免费音乐为 `bgm_fs`，不再使用第一款游戏的 `bgm_bonus_loop`。重导命令：`python3 tools/sync_audio.py --source /path/to/mahjongway2_1024/assets/mahjongwaytwo/res/sound`，二进制哈希记录在 `tools/audio_reference_manifest.json`。
+
+普通/免费背景音乐分别按现有生命周期播放；免费BGM仍按需加载与释放。中奖中等奖音效按本项目服务端符号6–9（八万、白板、红中、发）判断，单符号语音及第二段0.6秒延迟保留。待机时按原项目顺序循环 `voxRandom01–11`，间隔5–12秒；旋转、自动旋转、弹窗、静音和切到后台时不播放待机语音。
+
+音频URL带由全部音频内容计算的版本号，避免同名背景音乐继续命中旧缓存；同步工具自动更新版本。
+
+## 通用记录页中的游戏美术
+
+历史详情和赔率说明继续使用通用页面结构，只更新 `resources/history/art.json` 内的游戏图案。用安装了 Pillow 的 Python 执行：
+
+```sh
+python3 tools/export_history_art.py --source /path/to/mahjongway2_1024
+python3 tools/cleanup_legacy_art.py --source /path/to/mahjongway2_1024
+```
+
+导出39张图到 `texture1/history`，包括正常/金底牌、WILD、胡、倍率数字、倍率背景和箭头，源文件及输出哈希见 `tools/history_art_manifest.json`。停止按钮的模糊/灰色箭头使用目标图集中的 `spin_arrow_blur / spin_arrow_grey`。场景隐藏图片引用清空，启动图及进度条资源从目标项目迁入 `texture1/loading`，节点位置、缩放、层级保留。
+
+旧手工金币发射逻辑已移除，大奖和免费结算使用1024预制体内的原生粒子。清理144项不再引用的旧资源（及其meta），清单位于 `tools/legacy_art_cleanup.json`。旧 `texture` 目录及目录meta已在确认无依赖后删除。相关检查为 `tests/resource_cleanup.test.cjs`；不要用早期面向第一款游戏的通用 `import_effects.py` 覆盖当前资源。

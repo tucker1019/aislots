@@ -9,6 +9,7 @@ const EFFECTS = ['symbolShrink', 'symbolWild', 'symbolCollapse', 'symbolScatter'
     'reelStopSingle', 'reelQuickstop', 'prizeMedwin', 'prizeSmallwin', 'maJiangHuLe', 'fsMultiplyRefresh',
     'menu_icon_press', 'slider_effect', 'voxPayoutMultiSym01', 'voxPayoutMultiSym02',
     'infoboardTotalwin', 'infoboardTotalwinMedwinEnd', 'infoboardTotalwinBigwin', 'freespinWon',
+    ...Array.from({length:11},(_,i)=>`voxRandom${String(i+1).padStart(2,'0')}`),
     ...Object.values(VOICES), ...[2, 3, 4, 5, 6, 10].map(n => `voxMultiply${n}x`)];
 const FREE_AUDIO = ['bgm_bonus_loop', ...[
     'bgmBonusIntro', 'uiStart', 'uiCollect', 'bgmTotalwinMain', 'bgmTotalwinEnd',
@@ -23,6 +24,29 @@ export class GameAudio {
     private muted = false;
     private started = false;
     private stopSoundPlayed = false;
+    private idleAge = 0;
+    private idleDelay = 5 + Math.random() * 7;
+    private idleVoice = 0;
+    private idleActive = false;
+
+    private resetIdle() {
+        this.idleAge = 0;
+        if (this.idleActive) this.mixer.stop('voice:idle');
+        this.idleActive = false;
+    }
+    updateIdle(dt: number, idle: boolean) {
+        if (!this.started || !idle || this.popup || this.muted || document.hidden) {
+            this.resetIdle();
+            return;
+        }
+        this.idleActive = true;
+        this.idleAge += Math.max(0, dt);
+        if (this.idleAge < this.idleDelay) return;
+        this.idleAge = 0;
+        this.idleDelay = 5 + Math.random() * 7;
+        this.idleVoice = this.idleVoice % 11 + 1;
+        this.mixer.play('games/voxRandom' + String(this.idleVoice).padStart(2,'0'), 'voice', {slot:'voice:idle'});
+    }
     initialize() {
         try { this.muted = localStorage.getItem('aislots-audio-muted') === 'true'; } catch {}
         this.mixer.setMuted(this.muted); this.mixer.attach();
@@ -62,6 +86,7 @@ export class GameAudio {
             this.mixer.stop('effect:' + name);
     }
     startSpin() {
+        this.resetIdle();
         this.stopSoundPlayed = false;
         this.sound('spinBtn'); this.sound('reelLoop');
     }
@@ -71,6 +96,7 @@ export class GameAudio {
         this.sound(quick ? 'reelQuickstop' : 'reelStopSingle');
     }
     award(symbols: number[], hasGold: boolean) {
+        this.resetIdle();
         document.documentElement?.setAttribute('data-audio-award', JSON.stringify(symbols));
         // 对齐参考项目的短音效：独立播放至结束，不能被倍率升级或弹窗截断。
         // 第二个图标仍延迟 0.6 秒；跨轮时也不能取消尚未开始的第二段。
@@ -94,6 +120,7 @@ export class GameAudio {
             this.mixer.play('games/voxMultiply' + factor + 'x', 'voice', { slot: 'voice:multiplier' });
     }
     beginPopup() {
+        this.resetIdle();
         this.popup = true; this.mixer.setVolume('music', 0.2);
     }
     popupLoop(name: string) {

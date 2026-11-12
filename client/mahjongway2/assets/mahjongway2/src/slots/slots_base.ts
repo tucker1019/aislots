@@ -401,6 +401,8 @@ export class slots_base extends Component {
                 this.freePanelShown = false;
                 this.freeSpinsLeft = 0;
                 this.effects?.refreshControls();
+                this.effects?.setAudioMode(false);
+                this.effects?.releaseFree();
                 this.current = null;
                 this.boards = initialStrips();
                 this.reels.forEach((reel, column) => reel.showBoard(this.boards[column]));
@@ -448,6 +450,7 @@ export class slots_base extends Component {
                 this.labels();
                 // 先释放免费面板缓存的可见状态，再恢复回放前的菜单。
                 this.effects?.refreshControls();
+                if (!snapshot.freePanelShown) this.effects?.releaseFree();
                 restorePanels?.();
                 this.historyPage.resume();
             }
@@ -729,7 +732,12 @@ export class slots_base extends Component {
                 (c) => this.picks[c](),
                 cascade || (restore && first) ? this.boards : undefined,
             );
-            this.effects?.setAudioMode(frame.mode === 'free');
+            // 触发页先显示再加载；恢复到进行中的免费局时也必须先准备资源。
+            if (frame.mode === 'free' && !(restore && first && frame.nextAction === 'complete')) {
+                await this.effects?.prepareFree();
+                if (!running()) return;
+            }
+            this.effects?.setAudioMode(frame.mode === 'free' && !(restore && first && frame.nextAction === 'complete'));
             if (frame.mode === 'free' && !(restore && first && frame.nextAction === 'complete')) {
                 this.freePanelShown = true;
                 if (frame.triggeredFree) {
@@ -881,7 +889,7 @@ export class slots_base extends Component {
             }
             if (frame.nextAction === 'start_free') {
                 if (frame.mode === 'base') {
-                    await this.effects?.intro(frame.freeRemaining);
+                    await this.effects?.intro(frame.freeRemaining, !!replay);
                     if (!running()) return;
                     await this.effects?.enterFreeMultipliers();
                 }
@@ -988,6 +996,8 @@ export class slots_base extends Component {
         this.state = 0;
         this.click_stop = false;
         this.notifyFlowChanged();
+        this.effects?.setAudioMode(false);
+        this.effects?.releaseFree();
     }
 
     /** 出错后恢复操作和静止盘面，避免无结果时无限滚动。 */

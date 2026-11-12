@@ -100,3 +100,5 @@ History 每条记录右侧的「回放」通过该记录的 betId 读取现有�
 大厅申请入口后跳转至 `?launchTicket=...`。客户端用稳定exchangeId兑换游戏会话，成功后从地址栏移除票据；当前标签页的sessionStorage保存游戏会话以支持刷新恢复。真实会话失效要求返回大厅，不回退到测试用户。机台需使用server.lobby.json，并与大厅设置相同的LOBBY_GAME_SERVICE_TOKEN。独立测试预览仍使用server.test.json。
 
 Cocos场景启动时关闭profiler统计面板，预览和构建均不显示FPS/Draw Call。大厅iframe刷新复用同一已兑换票据对应的游戏会话；新的票据仍重新兑换身份。
+
+待机语音由引擎 update 驱动：点击 START 后，空闲时每5–12秒按顺序循环 `voxRandom01–11`。旋转、自动旋转、弹窗、静音、后台时暂停，开始旋转或演出立即停止待机语音。本次新增2项待机测试通过；全量测试原有7个失败、44个取消与修改前一致，未引入新增失败。ES2020业务类型检查仍有原有免费资源 Asset/Prefab 类型错误；Cocos Web Mobile 构建完成，并核对5180脚本及11个语音资源。

@@ -9,7 +9,12 @@ const EFFECTS = ['symbolShrink', 'symbolWild', 'symbolCollapse', 'symbolScatter'
     'reelStopSingle', 'reelQuickstop', 'prizeMedwin', 'prizeSmallwin', 'maJiangHuLe', 'fsMultiplyRefresh',
     'menu_icon_press', 'slider_effect', 'voxPayoutMultiSym01', 'voxPayoutMultiSym02',
     'infoboardTotalwin', 'infoboardTotalwinMedwinEnd', 'infoboardTotalwinBigwin', 'freespinWon',
+    ...Array.from({length:11},(_,i)=>`voxRandom${String(i+1).padStart(2,'0')}`),
     ...Object.values(VOICES), ...[2, 3, 4, 5, 6, 10].map(n => `voxMultiply${n}x`)];
+const FREE_AUDIO = ['bgm_fs', ...[
+    'bgmBonusIntro', 'uiStart', 'uiCollect', 'bgmTotalwinMain', 'bgmTotalwinEnd',
+    'fsMultiplyRefresh', 'freespinWon', 'voxMultiply6x', 'voxMultiply10x',
+].map(name => 'games/' + name)];
 /** 游戏事件到音频的唯一映射。符号使用本项目 ID，不套用参考项目的 ID。 */
 export class GameAudio {
     constructor(private mixer = new WebAudioMixer()) {}
@@ -19,17 +24,46 @@ export class GameAudio {
     private muted = false;
     private started = false;
     private stopSoundPlayed = false;
+    private idleAge = 0;
+    private idleDelay = 5 + Math.random() * 7;
+    private idleVoice = 0;
+    private idleActive = false;
+
+    private resetIdle() {
+        this.idleAge = 0;
+        if (this.idleActive) this.mixer.stop('voice:idle');
+        this.idleActive = false;
+    }
+    updateIdle(dt: number, idle: boolean) {
+        if (!this.started || !idle || this.popup || this.muted || document.hidden) {
+            this.resetIdle();
+            return;
+        }
+        this.idleActive = true;
+        this.idleAge += Math.max(0, dt);
+        if (this.idleAge < this.idleDelay) return;
+        this.idleAge = 0;
+        this.idleDelay = 5 + Math.random() * 7;
+        this.idleVoice = this.idleVoice % 11 + 1;
+        this.mixer.play('games/voxRandom' + String(this.idleVoice).padStart(2,'0'), 'voice', {slot:'voice:idle'});
+    }
     initialize() {
         try { this.muted = localStorage.getItem('aislots-audio-muted') === 'true'; } catch {}
         this.mixer.setMuted(this.muted); this.mixer.attach();
-        this.mixer.preload(['bgm_mg', 'bgm_bonus_loop', ...EFFECTS.map(name => 'games/' + name)]);
+        this.mixer.preload(['bgm_mg', ...EFFECTS.map(name => 'games/' + name).filter(name => !FREE_AUDIO.includes(name))]);
         if (typeof window !== 'undefined') window.addEventListener('aislots-started', this.start, { once: true });
     }
+    get freeAssetCount() { return FREE_AUDIO.length; }
+    loadFree(progress: () => void) {
+        return this.mixer.load(FREE_AUDIO, progress);
+    }
+    releaseFree() { this.mixer.release(FREE_AUDIO); }
     private start = () => {
         this.started = true;
+        const free = this.mode === 'bgm_fs';
         this.mode = '';
         (this.mixer as any).unlock?.();
-        this.setMode(false);
+        this.setMode(free);
     };
     get isMuted() { return this.muted; }
     toggleMuted() {
@@ -38,7 +72,7 @@ export class GameAudio {
         return this.muted;
     }
     setMode(free: boolean) {
-        const mode = free ? 'bgm_bonus_loop' : 'bgm_mg';
+        const mode = free ? 'bgm_fs' : 'bgm_mg';
         if (!this.started) { this.mode = mode; return; }
         if (mode === this.mode) return;
         this.mode = mode; this.mixer.play(mode, 'music', { slot: 'bgm', loop: true });
@@ -52,6 +86,7 @@ export class GameAudio {
             this.mixer.stop('effect:' + name);
     }
     startSpin() {
+        this.resetIdle();
         this.stopSoundPlayed = false;
         this.sound('spinBtn'); this.sound('reelLoop');
     }
@@ -61,6 +96,7 @@ export class GameAudio {
         this.sound(quick ? 'reelQuickstop' : 'reelStopSingle');
     }
     award(symbols: number[], hasGold: boolean) {
+        this.resetIdle();
         document.documentElement?.setAttribute('data-audio-award', JSON.stringify(symbols));
         // 对齐参考项目的短音效：独立播放至结束，不能被倍率升级或弹窗截断。
         // 第二个图标仍延迟 0.6 秒；跨轮时也不能取消尚未开始的第二段。
@@ -74,7 +110,7 @@ export class GameAudio {
             this.multiVoice = this.multiVoice % 2 + 1;
             this.mixer.play('games/voxPayoutMultiSym0' + this.multiVoice, 'voice');
         }
-        this.sound(ids.slice(0, 2).some(id => [2, 3, 4].includes(id)) ? 'prizeMedwin' : 'prizeSmallwin');
+        this.sound(ids.slice(0, 2).some(id => id >= 6 && id <= 9) ? 'prizeMedwin' : 'prizeSmallwin');
         this.sound('symbolShrink');
         if (hasGold) this.sound('symbolWild', 0.3);
     }
@@ -84,6 +120,7 @@ export class GameAudio {
             this.mixer.play('games/voxMultiply' + factor + 'x', 'voice', { slot: 'voice:multiplier' });
     }
     beginPopup() {
+        this.resetIdle();
         this.popup = true; this.mixer.setVolume('music', 0.2);
     }
     popupLoop(name: string) {

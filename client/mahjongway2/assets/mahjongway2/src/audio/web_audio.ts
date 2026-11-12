@@ -1,3 +1,4 @@
+const AUDIO_REVISION = 'f6d7b1c21b90';
 export type AudioBus = 'music' | 'effects' | 'voice' | 'popup';
 interface PlayOptions { slot?: string; loop?: boolean; delay?: number }
 /** 独立于 Cocos：缓存解码结果，按通道控制播放，取消过期的异步播放请求。 */
@@ -45,17 +46,27 @@ export class WebAudioMixer {
     }
     private buffer(name: string) {
         if (!this.buffers.has(name)) {
-            const pending = this.fetchAudio((this.base || new URL('audio/', document.baseURI).href) + name + '.mp3')
+            const pending = this.fetchAudio((this.base || new URL('audio/', document.baseURI).href) + name + '.mp3?v=' + AUDIO_REVISION)
                 .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}: ${name}`); return response.arrayBuffer(); })
                 .then(data => this.ensure()?.decodeAudioData(data));
             this.buffers.set(name, pending);
-            pending.catch(() => this.buffers.delete(name));
+            pending.catch(() => { if (this.buffers.get(name) === pending) this.buffers.delete(name); });
         }
         return this.buffers.get(name);
     }
     preload(names: string[]) {
         this.ensure();
         for (const name of names) void this.buffer(name).catch(error => this.report(name, error));
+    }
+    async load(names: string[], progress: () => void) {
+        const results = await Promise.allSettled(names.map(async name => {
+            await this.buffer(name);
+            progress();
+        }));
+        if (results.some(result => result.status === 'rejected')) throw new Error('免费音效加载失败');
+    }
+    release(names: string[]) {
+        for (const name of names) this.buffers.delete(name);
     }
     unlock = () => {
         const context = this.ensure();

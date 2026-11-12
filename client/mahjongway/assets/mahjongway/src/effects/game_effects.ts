@@ -29,6 +29,7 @@ const { ccclass } = _decorator;
 @ccclass('GameEffects')
 export class GameEffects extends Component {
     private audio = new GameAudio();
+    private audioIdle = false;
     private popupName = '';
     private endingSoundPlayed = false;
     private overlay: Node;
@@ -225,7 +226,8 @@ export class GameEffects extends Component {
             freePanelActive: boolean;
             freeSpinsRemaining: number;
         };
-        if (!flow) return;
+        if (!flow) { this.audioIdle = false; return; }
+        this.audioIdle = flow.state === 0 && !flow.autoSpinRunning;
         this.symbolTooltip?.update(0, flow.state === 0 && !flow.autoSpinRunning);
         this.freePanelView?.update(!!flow.freePanelActive, flow.freeSpinsRemaining || 0);
         this.updateBonusParticle(!!flow.freePanelActive);
@@ -785,6 +787,7 @@ export class GameEffects extends Component {
     update(dt: number) {
         this.updateControls();
         dt = Math.min(dt, 0.1);
+        this.audio.updateIdle(dt, this.audioIdle);
         this.symbolTooltip?.update(dt, true);
         if (this.popupFinish) {
             this.popupAge += dt;

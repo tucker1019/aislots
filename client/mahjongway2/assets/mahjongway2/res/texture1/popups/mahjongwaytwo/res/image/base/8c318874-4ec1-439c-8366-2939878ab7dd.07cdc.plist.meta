@@ -1,0 +1,63 @@
+{
+  "ver": "1.0.8",
+  "importer": "sprite-atlas",
+  "imported": true,
+  "uuid": "c0c80dbb-d927-5ea5-b6c0-771e2f7e2e53",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "c9228": {
+      "importer": "sprite-frame",
+      "uuid": "c0c80dbb-d927-5ea5-b6c0-771e2f7e2e53@c9228",
+      "displayName": "",
+      "id": "c9228",
+      "name": "button",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 0,
+        "trimY": 0,
+        "width": 742,
+        "height": 201,
+        "rawWidth": 742,
+        "rawHeight": 201,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "06977fe1-c938-5dc6-ad1e-3e1035a54dfa@6c48a",
+        "atlasUuid": "c0c80dbb-d927-5ea5-b6c0-771e2f7e2e53"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "atlasTextureName": "8c318874-4ec1-439c-8366-2939878ab7dd.07cdc.png",
+    "format": 2,
+    "uuid": "c0c80dbb-d927-5ea5-b6c0-771e2f7e2e53",
+    "textureUuid": "06977fe1-c938-5dc6-ad1e-3e1035a54dfa@6c48a"
+  }
+}
