@@ -37,16 +37,16 @@
       "url": "",
       "apiUrl": ""
     },
-    "G1017": {
-      "enabled": false,
+    "AG4": {
+      "enabled": true,
       "visible": true,
       "sort": 40,
       "name": "Fortune Tiger",
       "nameEn": "Fortune Tiger",
       "provider": "AG",
       "cover": "/assets/lobby/games/1017.png",
-      "url": "",
-      "apiUrl": ""
+      "url": "http://127.0.0.1:5184/",
+      "apiUrl": "http://127.0.0.1:8080"
     },
     "G1018": {
       "enabled": false,
