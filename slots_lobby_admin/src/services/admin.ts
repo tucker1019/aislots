@@ -36,7 +36,7 @@ export const getOrders = (kind: OrderKind, status: string, q: string, cursor?: s
 export interface Review { kind: OrderKind; orderId: string; decision: 'approve' | 'return'; reason: string; requestId: string }
 export const reviewOrder = (review: Review) => request('/orders/review', v => { const d = object(v); return { orderId: string(d.orderId), status: string(d.status) }; }, review);
 export const getOverview = () => request('/overview', v => {
- const d = object(v); return { members: integer(d.members), pendingDeposits: integer(d.pendingDeposits), pendingWithdrawals: integer(d.pendingWithdrawals), todayDeposits: amount(d.todayDeposits), todayWithdrawals: amount(d.todayWithdrawals) };
+ const d = object(v); return { members: integer(d.members), realMembers: integer(d.realMembers), experienceMembers: integer(d.experienceMembers), realBet: amount(d.realBet), realWin: amount(d.realWin), experienceBet: amount(d.experienceBet), experienceWin: amount(d.experienceWin), pendingDeposits: integer(d.pendingDeposits), pendingWithdrawals: integer(d.pendingWithdrawals), todayDeposits: amount(d.todayDeposits), todayWithdrawals: amount(d.todayWithdrawals) };
 });
 export const getAudit = (q: string, cursor?: string) => request(`/audit${params({ q, cursor, limit: 20 })}`, v => page(v, entry => {
  const d = object(entry); return { id: string(d.id), username: string(d.username), action: string(d.action), target: string(d.target), reason: optionalString(d.reason), createdAt: string(d.createdAt) };

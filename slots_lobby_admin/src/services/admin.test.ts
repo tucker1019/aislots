@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import { parseOrder, parseSession, reviewOrder } from './admin';
+import { parseOrder, parseSession, reviewOrder, getOverview } from './admin';
 import { amount, json } from './schema';
 import { money } from './format';
 import { ApiError, request } from './client';
@@ -42,4 +42,12 @@ describe('financial review transport', () => {
   await expect(request('/me', json)).rejects.toBeInstanceOf(ApiError);
   expect(event).not.toHaveBeenCalled(); window.removeEventListener('admin-session-expired', event);
  });
+});
+
+it('overview validates separate account groups and preserves large money strings',async()=>{
+ const data={members:7,realMembers:2,experienceMembers:5,realBet:'900719925474099312345',realWin:'100',experienceBet:'200',experienceWin:'300',pendingDeposits:0,pendingWithdrawals:0,todayDeposits:'0',todayWithdrawals:'0'};
+ const fetcher=vi.spyOn(globalThis,'fetch').mockResolvedValue(new Response(JSON.stringify({code:'OK',data}),{status:200}));
+ expect(await getOverview()).toMatchObject(data);
+ fetcher.mockResolvedValue(new Response(JSON.stringify({code:'OK',data:{...data,realBet:9007199254740992}}),{status:200}));
+ await expect(getOverview()).rejects.toThrow();
 });
