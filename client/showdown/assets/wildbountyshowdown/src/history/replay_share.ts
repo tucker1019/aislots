@@ -15,15 +15,19 @@ export function defaultApiBase(href: string): string {
     return ['localhost','127.0.0.1'].includes(url.hostname) ? 'http://127.0.0.1:8080' : url.origin;
 }
 
+function clipboardAllowed() {
+    const policy = (document as Document & { permissionsPolicy?: {allowsFeature(name:string):boolean}; featurePolicy?: {allowsFeature(name:string):boolean} });
+    return (policy.permissionsPolicy || policy.featurePolicy)?.allowsFeature('clipboard-write') !== false && !!navigator.clipboard?.writeText;
+}
 /** 优先复制；浏览器不允许剪贴板时提供可选择的链接和第二次点击复制。 */
 export async function copyReplayLink(url: string, host: HTMLElement): Promise<boolean> {
     try {
-        if (!navigator.clipboard?.writeText) throw new Error('clipboard unavailable');
+        if (!clipboardAllowed()) throw new Error('clipboard unavailable');
         await navigator.clipboard.writeText(url);
         return true;
     } catch { /* 用户仍可手动选择链接，不能只提示失败。 */ }
     const overlay = el('div', 'replay-copy-overlay');
-    overlay.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;';
+    overlay.style.cssText = 'position:absolute;inset:0;pointer-events:auto;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;';
     const panel = el('div');
     panel.style.cssText = 'width:88%;box-sizing:border-box;background:#30303e;padding:1.2em;border:1px solid #bb7c4b;border-radius:.5em;';
     const input = el('input'); input.readOnly = true; input.value = url;
@@ -31,10 +35,10 @@ export async function copyReplayLink(url: string, host: HTMLElement): Promise<bo
     input.style.cssText = 'box-sizing:border-box;width:100%;margin:1em 0;padding:.7em;background:#24242e;color:#fff;border:1px solid #7c6b5c;font:inherit;font-size:.8em;';
     const copy = button('复制链接', () => {
         input.select();
-        void navigator.clipboard?.writeText(url).then(() => {copy.textContent='已复制';}).catch(() => {
+        if (clipboardAllowed()) void navigator.clipboard.writeText(url).then(() => {copy.textContent='已复制';}).catch(() => {
             copy.textContent = document.execCommand('copy') ? '已复制' : '请长按链接复制';
         });
-        if (!navigator.clipboard) copy.textContent = document.execCommand('copy') ? '已复制' : '请长按链接复制';
+        if (!clipboardAllowed()) copy.textContent = document.execCommand('copy') ? '已复制' : '请长按链接复制';
     });
     const close = button('关闭',()=>overlay.remove());
     for (const control of [copy,close]) control.style.cssText='border:1px solid #bb7c4b;border-radius:1.5em;background:none;color:#e4c29d;padding:.6em 1em;margin-right:.5em;font:inherit;font-size:.8em;cursor:pointer;';
@@ -44,17 +48,24 @@ export async function copyReplayLink(url: string, host: HTMLElement): Promise<bo
 
 /** 分享与“已复制”使用同一节点；尺寸由调用方固定，状态变化不参与布局。 */
 export function replayShareButton(getURL: () => Promise<string>, host: () => HTMLElement, className = '') {
+    const label = el('span', 'ag3-share-label', '分享');
+    const spinner = el('span', 'ag3-share-spinner'); spinner.setAttribute('aria-hidden','true');
     const control = button('分享', () => {
-        control.disabled = true;
+        control.disabled = true; control.dataset.loading = 'true'; control.setAttribute('aria-busy','true');
         void getURL().then(url => {
             control.title = url;
             return copyReplayLink(url, host());
         }).then(copied => {
-            control.textContent = copied ? '已复制' : '分享';
+            label.textContent = copied ? '已复制' : '分享';
         }).catch(reason => {
-            control.textContent = '重试';
+            label.textContent = '重试';
             control.title = reason instanceof Error ? reason.message : '分享失败';
-        }).finally(() => { control.disabled = false; });
+        }).finally(() => { control.disabled = false; delete control.dataset.loading; control.removeAttribute('aria-busy'); });
     }, className);
+    control.classList.add('ag3-replay-share'); control.replaceChildren(label,spinner);
+    if (!document.getElementById('ag3-share-loading-style')) {
+        const style = el('style');style.id='ag3-share-loading-style';
+        style.textContent='.ag3-replay-share{position:relative}.ag3-share-spinner{display:none;position:absolute;left:50%;top:50%;box-sizing:border-box;width:1em;height:1em;margin:-.5em;border:.13em solid currentColor;border-right-color:transparent;border-radius:50%;animation:ag3-share-spin .7s linear infinite}.ag3-replay-share[data-loading="true"] .ag3-share-label{visibility:hidden}.ag3-replay-share[data-loading="true"] .ag3-share-spinner{display:block}@keyframes ag3-share-spin{to{transform:rotate(360deg)}}';document.head.append(style);
+    }
     return control;
 }

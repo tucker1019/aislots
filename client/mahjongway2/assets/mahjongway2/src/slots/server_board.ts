@@ -18,7 +18,7 @@ export const STRIP_CELL_COUNT = 8;
 /** 每列条带：上装饰牌 + 服务端预览牌 + 本列有效牌 + 下装饰牌，顺序从上到下。
  * 同一次消除传入 previous，保留装饰牌，防止露边图标突然改变。
  */
-export function serverStrips(board: Cell[][], pick: (c: number) => number, previous?: number[][]) {
+export function serverStrips(board: Cell[][], pick: (c: number) => number, previous?: number[][], bottomSymbols?: number[]) {
     if (!Array.isArray(board) || board.length !== 5) throw new Error('需要5列服务端盘面');
     const ids = new Set<number>();
     return board.map((col, c) => {
@@ -35,11 +35,22 @@ export function serverStrips(board: Cell[][], pick: (c: number) => number, previ
             if (!value || (gold && symbol > 9)) throw new Error('未知图标');
             return value + (gold ? 1000 : 0);
         });
+        const bottom = (fallback: () => number) => {
+            if (!bottomSymbols) return fallback();
+            const id = bottomSymbols[c], symbol = id % 1000;
+            const value = artwork[symbol];
+            if (bottomSymbols.length !== 5 || !Number.isSafeInteger(id) || !value || symbol > 9 || id < 1 || id >= 2000)
+                throw new Error('服务端底部格子无效');
+            return value + (id >= 1000 ? 1000 : 0);
+        };
         const old = previous?.[c];
         const preview = hasPreview ? [] : [old?.[1] ?? pick(c)];
         const strip = [old?.[0] ?? pick(c), ...preview, ...values];
+        const bottomIndex = strip.length;
         while (strip.length < STRIP_CELL_COUNT)
-            strip.push(old?.[strip.length] ?? pick(c));
+            strip.push(strip.length === bottomIndex
+                ? bottom(() => old?.[strip.length] ?? pick(c))
+                : old?.[strip.length] ?? pick(c));
         return strip;
     });
 }

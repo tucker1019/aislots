@@ -18,7 +18,7 @@ import { Anticipation, anticipationColumns } from '../effects/anticipation';
 import { _decorator, Component, instantiate, Node, Label, Graphics, Color, UITransform, profiler } from 'cc';
 import { slots_r, CELL_HEIGHT } from './slots_r';
 import { slots_cell } from './slots_cell';
-import { createSpinCellPicker, SpinCellPicker } from './slot_widget';
+import { createSpinCellPicker, freeSpinCell, SpinCellPicker } from './slot_widget';
 import { GameApi, Frame } from '../network/game/game_api';
 import { serverStrips, gravitySources, cascadeDropDelays, previewRowCount } from './server_board';
 const { ccclass, property } = _decorator;
@@ -60,6 +60,7 @@ export class slots_base extends Component {
     private rulesPage: RulesPage = null;
     private paytablePage: PaytablePage = null;
     private current: Frame = null;
+    get isFreeSpin() { return this.current?.mode === 'free'; }
     private replaySession: ReplaySession = null;
     private replayLoading = false;
     private sharedReplay = false;
@@ -117,7 +118,7 @@ export class slots_base extends Component {
         }
         this.reels.forEach((reel, c) => {
             reel.index = c;
-            this.picks[c] = createSpinCellPicker(c);
+            this.picks[c] = createSpinCellPicker(c, () => this.isFreeSpin);
         });
         const params = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
         this.sharedReplay = params.has('replay') || params.has('share');
@@ -215,7 +216,7 @@ export class slots_base extends Component {
                 return;
             }
             this.initializeCells(state.lastFrame
-                ? serverStrips(state.lastFrame.board, c => this.picks[c]())
+                ? serverStrips(state.lastFrame.board, c => this.picks[c](), undefined, state.lastFrame.bottomSymbols)
                 : initialStrips());
             this.balance = state.balance;
             this.ready = true;
@@ -729,8 +730,9 @@ export class slots_base extends Component {
                     previous.spinIndex === frame.spinIndex;
             const strips = serverStrips(
                 frame.board,
-                (c) => this.picks[c](),
+                (c) => freeSpinCell(this.picks[c](), c, frame.mode === 'free'),
                 cascade || (restore && first) ? this.boards : undefined,
+                frame.bottomSymbols,
             );
             // 触发页先显示再加载；恢复到进行中的免费局时也必须先准备资源。
             if (frame.mode === 'free' && !(restore && first && frame.nextAction === 'complete')) {

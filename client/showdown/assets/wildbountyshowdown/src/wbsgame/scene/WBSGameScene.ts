@@ -14,7 +14,7 @@ export class WBSGameScene extends WBSBaseScene {
         setDisplayStats(false);
         // Keep the existing hierarchy, but defer child scripts until data is ready.
         for (const node of this.node.children) {
-            if (node === this.loadingLayer || node.name === 'Camera') continue;
+            if (node.name === 'Camera') continue;
             this.presentation.push({ node, active: node.active });
             node.active = false;
         }
@@ -27,19 +27,21 @@ export class WBSGameScene extends WBSBaseScene {
             soundSwitch: wbsgame.storageMgr.get('soundSwitch', 'true') === 'true',
         });
         super.onLoad();
-        this.loadingLayer.active = true;
+        window.dispatchEvent(new CustomEvent('aislots-loading-progress', { detail: { progress: 10 } }));
     }
 
     async start(): Promise<void> {
         await wbsgame.sendMgr.retry(() => bootstrapScene({
             session: () => wbsgame.sendMgr.bootstrap(),
             resources: () => new Promise<void>((resolve, reject) => {
-                wbsgame.loadMgr.preLoadDir(null, error => error ? reject(error) : resolve());
+                wbsgame.loadMgr.preLoadDir((completed, total) => {
+                    window.dispatchEvent(new CustomEvent('aislots-loading-progress', { detail: { progress: 10 + 75 * completed / Math.max(1, total) } }));
+                }, error => error ? reject(error) : resolve());
             }),
             isAlive: () => this.isValid,
             ready: () => {
                 for (const entry of this.presentation) entry.node.active = entry.active;
-                this.loadingLayer.active = false;
+                window.dispatchEvent(new CustomEvent('aislots-loading-progress', { detail: { progress: 95 } }));
             },
         }));
     }

@@ -1,5 +1,9 @@
+import { Ag3PaytablePage } from '../../rules/paytable_page';
+import { ReplayControls } from '../../history/replay_controls';
+import { shareFromParent } from '../../history/native_replay_bridge';
+import { replayShareURL } from '../../history/replay_share';
 import { Ag3History } from '../../history/ag3_history';
-import { _decorator, sys, Vec3, tween, find, instantiate, Prefab, Node, UIOpacity, Label, SpriteFrame, Texture2D, sp, Animation, easing } from "cc";
+import { _decorator, director, Director, sys, Vec3, tween, find, instantiate, Prefab, Node, UIOpacity, Label, SpriteFrame, Texture2D, sp, Animation, easing } from "cc";
 import { xNodeWBS } from "../../xtools/xNodeWBS";
 import { WBSPlatformMgr } from "../mgr/WBSPlatformMgr";
 import { consoleLog } from "../../xtools/WBSUtils";
@@ -15,7 +19,7 @@ import { WBSEventName } from "../constant/WBSEventName";
 import { RollNumLabel } from "../component/RollNumLabel";
 import { WBSWinMorePanel } from "./WBSWinMorePanel";
 import { WBSLoadManager } from "../mgr/WBSLoadManager";
-import { WBSLoadingPage } from "./WBSLoadingPage";
+
 import { WBSPopupMenuCtrl } from "./WBSPopupMenuCtrl";
 import { WBSPopupFreeCtrl } from "./WBSPopupFreeCtrl";
 
@@ -42,8 +46,6 @@ export class WBSGameLayer extends WBSBaseLayer {
     @property(Prefab)
     addFreeCntAnimPrefab: Prefab = null;
     @property(Prefab)
-    loadingPagePrefab: Prefab = null;
-    @property(Prefab)
     popupBigWinPrefab: Prefab = null;
     @property(Prefab)
     popupTriFreePrefab: Prefab = null;
@@ -51,14 +53,6 @@ export class WBSGameLayer extends WBSBaseLayer {
     popupExtraFreePrefab: Prefab = null;
     @property(Prefab)
     popupEndFreePrefab: Prefab = null;
-    @property(Prefab)
-    panelAutoPrefab: Prefab = null;
-    @property(Prefab)
-    panelRulePrefab: Prefab = null;
-    @property(Prefab)
-    panelBalancePrefab: Prefab = null;
-    @property(Prefab)
-    panelBetPrefab: Prefab = null;
     // @property(Prefab)
     // panelMenuPrefab: Prefab = null;
     @property(Prefab)
@@ -84,6 +78,8 @@ export class WBSGameLayer extends WBSBaseLayer {
     sysAutoNum: number = 0;
     isGameEnd: boolean = true;
     startTime: number = 0;
+    private replayControls: ReplayControls | null = null;
+    private rulesPage: Ag3PaytablePage | null = null;
     firstEnter: boolean = true
 
     protected onLoad(): void {
@@ -94,10 +90,10 @@ export class WBSGameLayer extends WBSBaseLayer {
     async start() {
         this.initAttribute();
         this.initBtnClick();
-        this.showLoadingPage();
+        this.showEntryCover();
         this._loaded = true;
         const images=new Map<number,string>();
-        this.historyPanel=new Ag3History(wbsgame.sendMgr.api,(symbol)=>{
+        const symbolImage = (symbol: number) => {
             const id=symbol%1000;if(images.has(id))return images.get(id);
             const sf=this.CellSprNor[id];if(!sf)return '';
             const source=sf.texture instanceof Texture2D ? sf.texture.image?.data : null;
@@ -106,16 +102,33 @@ export class WBSGameLayer extends WBSBaseLayer {
             const ctx=canvas.getContext('2d');if(!ctx)return '';
             if(sf.rotated){ctx.translate(0,rect.height);ctx.rotate(-Math.PI/2);ctx.drawImage(source,rect.x,rect.y,rect.height,rect.width,0,0,rect.height,rect.width);}
             else ctx.drawImage(source,rect.x,rect.y,rect.width,rect.height,0,0,rect.width,rect.height);
-            const url=canvas.toDataURL();images.set(id,url);return url;
+            // Every 350px atlas cell uses the same crop, preserving the game's
+            // relative symbol sizes and alignment with the gold frame.
+            const output=document.createElement('canvas');
+            const inset=50*canvas.width/350;
+            const size=250*canvas.width/350;
+            output.width=size;output.height=size;
+            output.getContext('2d').drawImage(canvas,inset,inset,size,size,0,0,size,size);
+            const url=output.toDataURL();images.set(id,url);return url;
+        };
+        this.rulesPage = new Ag3PaytablePage(document.getElementById('GameCanvas') as HTMLCanvasElement, symbolImage);
+        this.historyPanel=new Ag3History(wbsgame.sendMgr.api, symbolImage, () => {
+            const music = wbsgame.audioMgr.getMusicPlayingName();
+            wbsgame.audioMgr.stopAllSound(); director.pause();
+            return () => { if (this.isValid) { director.resume(); if (music) wbsgame.audioMgr.playMusic(music); } };
         });
         this.scheduleOnce(() => {
             this.myGoldBottom.setString(wbsgame.gameMgr.getUserData().coin);
             this.optCtrl.setStartBit();
             const state=wbsgame.sendMgr.progress;
+            director.once(Director.EVENT_AFTER_DRAW, () => {
+                if (this.isValid) {
+                    window.dispatchEvent(new Event('aislots-scene-rendered'));
+                    window.dispatchEvent(new Event('aislots-board-ready'));
+                }
+            });
             if(wbsgame.sendMgr.readOnly){
-                this.optCtrl.updateBtnState(false);
-                const params=new URLSearchParams(location.search);
-                void wbsgame.sendMgr.retry(()=>this.historyPanel.shared(params.get('replay'),params.get('share')));
+                this.initNativeReplay();
                 return;
             }
             if(state.lastFrame){
@@ -125,10 +138,16 @@ export class WBSGameLayer extends WBSBaseLayer {
             if(state.hasNext){
                 this.isGameEnd=false;
                 this.optCtrl.updateBtnState(false);
-                wbsgame.loadMgr.showAlert('Continue your unfinished round',()=>this.centerRollCtrl.resumeFrame());
+                const prompt = () => {
+                    if (this.isValid) void wbsgame.loadMgr.showAlert('继续未完成的游戏', () => { void this.centerRollCtrl.resumeFrame(); }, '你有一局尚未结束的游戏，点击继续播放。', '继续');
+                };
+                if (document.getElementById('AG3LoadingCover')) {
+                    const revealed = () => this.scheduleOnce(prompt, 2);
+                    window.addEventListener('aislots-game-revealed', revealed, {once:true});
+                    this.node.once(Node.EventType.NODE_DESTROYED, () => window.removeEventListener('aislots-game-revealed', revealed));
+                } else prompt();
             }
             wbsgame.platformMgr.loadingHide();
-            wbsgame.message.dispatchEvent(WBSEventName.SHOW_LOADING,false);
         },0.1);
     }
 
@@ -153,17 +172,7 @@ export class WBSGameLayer extends WBSBaseLayer {
         xNodeWBS.addClick("", find("Canvas/gamelayer/top/top/btn_menu"), this.onClickMenuBtn.bind(this));
     }
 
-    // showEnterSceneAni() {
-    //     let posOptCtrl: Vec3 = this.optCtrl.node.getPosition();
-    //     posOptCtrl.y -= 100;
-    //     this.optCtrl.node.setPosition(posOptCtrl);
-    //     tween(this.optCtrl.node).by(0.5, { position: new Vec3(0, 100, 0) }).start()
-    //     let topNode = xNodeWBS.find("top", this.node);
-    //     let posTopNode: Vec3 = topNode.getPosition();
-    //     posTopNode.y += 100;
-    //     topNode.setPosition(posTopNode);
-    //     tween(topNode).by(0.5, { position: new Vec3(0, -100, 0) }).start()
-    // }
+
 
 
     onClickExitBtn() {
@@ -171,8 +180,9 @@ export class WBSGameLayer extends WBSBaseLayer {
         console.log("onClickExitBtn===>>>>", wbsgame.gameMgr.getState())
         if (WBSSTATE.READY == wbsgame.gameMgr.getState() && this.isGameEnd) {
             wbsgame.sendMgr.sendRequestExitRoom();
-            wbsgame.message.dispatchEvent(WBSEventName.SHOW_LOADING, true);
-        } else wbsgame.loadMgr.showAlert("The game is not over")
+        } else {
+            void wbsgame.loadMgr.showAlert('游戏尚未结束', undefined, '请等待本局结束后再退出。');
+        }
 
     }
 
@@ -186,24 +196,22 @@ export class WBSGameLayer extends WBSBaseLayer {
     }
 
 
-    showLoadingPage() {
+    showEntryCover() {
         this.node.getComponent(UIOpacity).opacity = 0;
         let multPanel = xNodeWBS.find("roll/multPanel", this.node)
         multPanel.active = false;
 
         let mask = xNodeWBS.find("mask", this.node);
         mask.active = true;
-        let loadingPage = find("Canvas/TopLayer/loadingPage");
-        if (!loadingPage) {
-            loadingPage = instantiate(this.loadingPagePrefab);
-            loadingPage.parent = find("Canvas/TopLayer");
-        }
-        loadingPage.active = true;
         let endFunc = () => {
-            loadingPage.destroy();
+            if (wbsgame.sendMgr.readOnly) this.scheduleOnce(() => { void this.beginNativeReplay(); }, 2);
+
 
             wbsgame.audioMgr.playSound("bgm_intro");
             this.node.getComponent(UIOpacity).opacity = 255;
+            director.once(Director.EVENT_AFTER_DRAW, () => {
+                if (this.isValid) window.dispatchEvent(new Event('aislots-game-revealed'));
+            });
             this.node.scale = new Vec3(0.9, 0.9, 1);
             tween(this.node)
                 .delay(0.2)
@@ -232,7 +240,11 @@ export class WBSGameLayer extends WBSBaseLayer {
 
 
         }
-        loadingPage.getComponent(WBSLoadingPage).showContinueBtn(true, endFunc);
+        if (typeof window !== 'undefined' && document.getElementById('AG3LoadingCover')) {
+            const begin = () => { if (this.isValid) endFunc(); };
+            window.addEventListener('aislots-started', begin, { once: true });
+            this.node.once(Node.EventType.NODE_DESTROYED, () => window.removeEventListener('aislots-started', begin));
+        } else endFunc();
     }
 
     // playSrartPanel() {
@@ -264,9 +276,52 @@ export class WBSGameLayer extends WBSBaseLayer {
     //     node.getComponent(WBSWinMorePanel).showPanel(1.2);
     // }
 
+    private initNativeReplay() {
+        const session = wbsgame.sendMgr.replaySession;
+        const params = new URLSearchParams(location.search), channel = params.get('nativeReplay');
+        const canvas = document.getElementById('GameCanvas') as HTMLCanvasElement;
+        this.myGoldBottom.string = '******'; this.optCtrl.updateBtnState(false);
+        const share = () => channel ? shareFromParent(channel) : Promise.resolve(replayShareURL(location.href, session.data.bet.betId, params.get('share')));
+        const exit = () => {
+            if (channel) window.parent.postMessage({type:'ag3-replay-exit',channel},location.origin);
+            else wbsgame.platformMgr.exitToPlatform();
+        };
+        this.replayControls = new ReplayControls(canvas, session.data.bet.betId, exit, {share}, () => {
+            if (!this.isGameEnd) return;
+            session.restart(); void this.beginNativeReplay();
+        });
+        // Keep native Collect / skip-animation buttons usable; wager handlers are guarded read-only.
+        if (channel) window.parent.postMessage({type:'ag3-replay-playing',channel},location.origin);
+        wbsgame.sendMgr.onReplayFrame = () => {
+            const frame = wbsgame.gameMgr.frame;
+            this.replayControls?.progress(session.index,session.length,frame.mode === 'free');
+        };
+    }
+    private async beginNativeReplay() {
+        if (!this.isValid || !wbsgame.sendMgr.replaySession || wbsgame.sendMgr.replaySession.index !== -1) return;
+        this.isGameEnd = false;
+        const mgr = wbsgame.gameMgr;
+        mgr.reset();
+        const frame = await wbsgame.sendMgr.nextFrame();
+        if (!this.isValid) return;
+        mgr.setState(frame.mode === 'free' ? WBSSTATE.FREEING : WBSSTATE.RUNING);
+        this.centerRollCtrl.showFreeBg(frame.mode === 'free');
+        this.optCtrl.setAwardNum(0); this.optCtrl.updateBtnState(false);
+        this.centerRollCtrl.startRoll();
+    }
+    completeNativeReplay() {
+        this.isGameEnd = true;
+        this.optCtrl.updateBtnState(false);
+        this.myGoldBottom.string = '******';
+        this.replayControls?.done(wbsgame.sendMgr.replaySession.data.bet.status === 'complete' ? '回放结束' : '已播放全部已结算盘面');
+    }
+
+    openRules() {
+        if (this.isGameEnd && !wbsgame.sendMgr.readOnly && wbsgame.gameMgr.getState() === WBSSTATE.READY) this.rulesPage?.open();
+    }
     onClickMenuBtn() {
         if(!this.isGameEnd || wbsgame.sendMgr.readOnly)return;
         this.historyPanel.open();
     }
-    protected onDestroy(){this.historyPanel?.destroy();super.onDestroy();}
+    protected onDestroy(){wbsgame.sendMgr.onReplayFrame=null;this.replayControls?.destroy();this.rulesPage?.destroy();this.historyPanel?.destroy();super.onDestroy();}
 }

@@ -17,7 +17,7 @@ const NAMES = [
     'big_win',
     'node_anti',
 ];
-const FREE_PREFABS = ['pop_free_again', 'pop_free_end', 'panel_free', 'bonus_bg_particle', 'ui_reel_bonus_dragon', 'dragon', 'mj_fly', 'dragon_mask'];
+const FREE_PREFABS = ['pop_free_again', 'pop_free_end', 'panel_free', 'bonus_bg_particle', 'ui_reel_bonus_dragon', 'dragon', 'mj_fly', 'dragon_mask', 'free_background_skin'];
 
 function loadPrefab(name: string) {
     const path = name.startsWith('pop_') || NAMES.includes(name)

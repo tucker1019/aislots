@@ -71,7 +71,6 @@ export class WBSMenu extends Component {
         // if (layer) {
         //     layer.destroy();
         // } else{
-        //     layer = instantiate(wbsgame.gamelayer.panelRulePrefab);
         //     layer.name = "WBSRuleLayer";
         //     layer.parent =  find("Canvas/TopLayer")
         //     layer.active = true;

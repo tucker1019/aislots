@@ -16,9 +16,9 @@ const deferred=()=>{let resolve,reject;const promise=new Promise((a,b)=>{resolve
 const flush=()=>new Promise(r=>setImmediate(r));
 test('startup excludes free-only prefabs; explicit free load reports completion',async()=>{
  requests.length=0;EffectLibrary.prefabs.clear();await EffectLibrary.load();
- for(const name of ['panel_free','bonus_bg_particle','pop_free_again','pop_free_end'])assert.equal(requests.some(p=>p.endsWith('/'+name)),false,name);
+ for(const name of ['panel_free','bonus_bg_particle','pop_free_again','pop_free_end','ui_reel_bonus_dragon','dragon','mj_fly','dragon_mask','free_background_skin'])assert.equal(requests.some(p=>p.endsWith('/'+name)),false,name);
  let progress=0;const assets=await EffectLibrary.loadFree(()=>progress++);
- assert.equal(progress,4);assert.equal(assets.length,4);
+ assert.equal(progress,9);assert.equal(assets.length,9);
 });
 test('free preparation shares one request and cleans up an obsolete pending load',async()=>{
  const old=EffectLibrary.loadFree;const wait=deferred();let refs=1,created=0;

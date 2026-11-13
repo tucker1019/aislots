@@ -3,6 +3,7 @@ export interface Cell {
     symbolId: number;
 }
 export interface Frame {
+    bottomSymbols?: number[];
     requestId: string;
     nextRequestId: string;
     betId: string;

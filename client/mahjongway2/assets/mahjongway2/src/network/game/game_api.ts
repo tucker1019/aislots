@@ -9,6 +9,7 @@ export interface Cell {
 }
 /** 一次 spin 已结算的当前轮；后续盘面通过下一次 spin 获取。金额使用整数字符串。 */
 export interface Frame {
+    bottomSymbols?: number[];
     spinWinAmount?: string;
     cascadeFactors?: string[];
     cascadeIndex?: number;

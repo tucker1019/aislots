@@ -1,3 +1,8 @@
+import { NativeReplaySession } from '../../history/native_replay_session';
+import { receiveNativeReplay } from '../../history/native_replay_bridge';
+import { loadAg3Replay } from '../../history/replay_data';
+import { adaptFrame } from '../../network/frame_adapter';
+import { WBSConstant } from '../constant/WBSConstant';
 import { Component, _decorator, isValid } from 'cc';
 import { GameApi } from '../../network/game_api';
 import { resolveApiBase } from '../../network/launch_session';
@@ -10,6 +15,8 @@ export class WBSSendManager extends Component {
     api: GameApi;
     progress: Progress;
     readOnly = false;
+    replaySession: NativeReplaySession | null = null;
+    onReplayFrame: (() => void) | null = null;
     private disposed = false;
     private hideError: () => void;
     private lockedBet = 0;
@@ -18,13 +25,21 @@ export class WBSSendManager extends Component {
     protected onDestroy() { this.disposed = true; this.hideError?.(); }
     async bootstrap() {
         const params = new URLSearchParams(location.search);
-        if (params.has("share") || params.has("replay")) {
-            if (!params.get("share") || !params.get("replay"))
+        if (params.has("share") || params.has("replay") || params.has("nativeReplay")) {
+            if (!params.has("nativeReplay") && (!params.get("share") || !params.get("replay")))
                 throw Error("Invalid replay link");
             this.readOnly = true;
             this.progress = { requestId: "", balance: 0, hasNext: false };
-            wbsgame.gameMgr.setMultiples([10]);
-            wbsgame.gameMgr.setAllMultiples([200]);
+            const data = params.has('nativeReplay') ? await receiveNativeReplay(params.get('nativeReplay')) : await loadAg3Replay({historyReplay:(id,cursor)=>this.api.sharedReplay(id,params.get('share'),cursor)},params.get('replay'));
+            data.frames.forEach(frame=>adaptFrame({...frame,requestId:'',nextRequestId:''}));
+            this.replaySession = new NativeReplaySession(data);
+            const amount = Number(data.bet.betAmount);
+            if (!Number.isSafeInteger(amount) || amount <= 0) throw Error('回放投注无效');
+            wbsgame.gameMgr.getUserData().coin = 0;
+            wbsgame.gameMgr.setMoney(0);
+            wbsgame.gameMgr.betLevelLimit = 1;
+            wbsgame.gameMgr.setMultiples([amount / WBSConstant.ALL_LINE]);
+            wbsgame.gameMgr.setAllMultiples([amount]);
             wbsgame.gameMgr.setTotalBitList();
             return;
         }
@@ -62,10 +77,16 @@ export class WBSSendManager extends Component {
             }
         }
     }
-    async sendGo() { this.lockedBet = wbsgame.gameMgr.getBitNum(); this.lockedLevel = wbsgame.gameMgr.getBitMultIndex() + 1; return this.nextFrame(); }
+    async sendGo() { if (this.readOnly) throw Error("Replay is read-only"); this.lockedBet = wbsgame.gameMgr.getBitNum(); this.lockedLevel = wbsgame.gameMgr.getBitMultIndex() + 1; return this.nextFrame(); }
     async nextFrame(): Promise<Frame> {
-        if (this.readOnly)
-            throw Error("Replay is read-only");
+        if (this.readOnly) {
+            const frame = this.replaySession?.next();
+            if (!frame) throw Error('没有更多已结算回放帧');
+            wbsgame.gameMgr.applyFrame(frame);
+            if (isValid(wbsgame.gamelayer)) wbsgame.gamelayer.myGoldBottom.string = '******';
+            this.onReplayFrame?.();
+            return frame;
+        }
         const frame = await this.retry(() => this.api.spin(this.lockedBet, this.lockedLevel));
         if (this.disposed)
             throw Error('Scene closed');

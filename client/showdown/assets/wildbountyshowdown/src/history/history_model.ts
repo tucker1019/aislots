@@ -83,15 +83,6 @@ export function gameBounds(
     };
 }
 export const symbolNames: Record<number, string> = {
-    1: '三饼',
-    2: '二条',
-    3: '二饼',
-    4: '五条',
-    5: '五饼',
-    6: '八万',
-    7: '白板',
-    8: '中',
-    9: '发',
-    10: '百搭',
-    11: '胡',
+    1: '蒙面牛仔', 2: '左轮手枪', 3: '牛仔帽', 4: '威士忌',
+    5: 'A', 6: 'K', 7: 'Q', 8: 'J', 9: 'Wild', 10: 'Scatter',
 };

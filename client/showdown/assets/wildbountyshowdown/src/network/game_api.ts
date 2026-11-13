@@ -3,7 +3,7 @@ import { HistoryQuery } from '../history/history_types';
 import { LaunchSession } from './launch_session';
 import { BetConfig, Frame, Progress, Request } from './game_types';
 export class ApiError extends Error {
-    constructor(message: string, public status: number) { super(message); }
+    constructor(message: string, public status: number, public code = '') { super(message); }
 }
 export class GameApi {
     private token = '';
@@ -32,7 +32,7 @@ export class GameApi {
                     data?: T;
                 };
                 if (!response.ok || envelope.code !== 'OK')
-                    throw new ApiError(envelope.message || 'Request failed', response.status);
+                    throw new ApiError(envelope.message || 'Request failed', response.status, envelope.code);
                 return envelope.data;
             }
             finally {

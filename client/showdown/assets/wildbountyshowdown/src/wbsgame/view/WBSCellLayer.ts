@@ -75,8 +75,9 @@ export class WBSCellLayer extends Component {
                 }
             } else {
                 node.active = false;
-                node.getComponent(WBSCellItem).initTypeView(wbsgame.gameMgr.getRandomType());
-                node["type"] = -1;
+                const extraType=i===0 ? wbsgame.gameMgr.getBottomSymbol(this.indexLayer) : wbsgame.gameMgr.getRandomType();
+                node.getComponent(WBSCellItem).initTypeView(extraType);
+                node["type"] = extraType;
                 node["sortIndex"] = -1;
                 node["pos"] = -1;
                 node["fallNum"] = 0;
@@ -232,7 +233,8 @@ export class WBSCellLayer extends Component {
             let vt = 0;
             let endIndex = sortedArr.indexOf(node);
             let endy = this.bottomY + endIndex * this.r_height;
-            let type = endIndex > 0 && self.resultData[endIndex - 1] ? self.resultData[endIndex - 1] : wbsgame.gameMgr.getRandomType();
+            let type = endIndex === 0 ? wbsgame.gameMgr.getBottomSymbol(this.indexLayer) :
+                endIndex > 0 && self.resultData[endIndex - 1] ? self.resultData[endIndex - 1] : wbsgame.gameMgr.getRandomType();
             let siblingIndex = self.rowCnt + 1 - endIndex;
             let isExtra = (endIndex == 0 || endIndex == this.rowCnt + 1);
             node["pos"] = isExtra ? -1 : endIndex;

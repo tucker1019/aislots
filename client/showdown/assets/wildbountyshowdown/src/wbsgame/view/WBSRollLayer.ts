@@ -376,6 +376,7 @@ export class WBSRollLayer extends WBSBaseLayer {
         if(mgr.getIsAuto())await this.delayTime(0.6);
         else this._canClickMultPanel=true;
         mgr.setState(WBSSTATE.READY);
+        if (wbsgame.sendMgr.readOnly) { wbsgame.gamelayer.completeNativeReplay(); this.currWinAll=0; return; }
         wbsgame.gamelayer.optCtrl.roundEnd();this.currWinAll=0;
     }
 

@@ -1,7 +1,8 @@
-"""只导入参考 ui_reel 的免费背景粒子及原生依赖，不覆盖已有资源。"""
+"""导入参考场景中的免费飞龙、麻将飞散等原生演出，不覆盖已有依赖资源。"""
 import copy
 import sys
 from prefab_metadata import ensure_prefab_metadata
+from native_prefab_instances import expand_instances
 import json
 import pathlib
 import plistlib
@@ -14,8 +15,15 @@ source = pathlib.Path(sys.argv[1]) / 'assets'
 name = sys.argv[2]
 reference = json.loads((source / 'mahjongwaytwo/res/MWTGameScene.scene').read_text())
 
-# 只提取 ui_reel 上方粒子节点及原生组件，移除外部场景引用。
+# 只提取指定演出节点及原生组件，移除外部场景引用。
 root = next(i for i, n in enumerate(reference) if n.get('__type__') == 'cc.Node' and n.get('_name') == name)
+# Expand nested cells before removing prefab ownership. Otherwise the scene
+# only contributes empty placeholder nodes and the animation has no targets.
+source_prefabs = {}
+for meta in source.rglob('*.prefab.meta'):
+    info = json.loads(meta.read_text())
+    source_prefabs[info['uuid']] = meta.with_suffix('')
+expand_instances(reference, root, source_prefabs)
 for obj in reference:
     if obj.get('__type__') == 'cc.Node':
         obj['_components'] = [r for r in obj.get('_components', []) if reference[r['__id__']].get('__type__', '').startswith('cc.')]
@@ -76,7 +84,8 @@ while queue:
     original = source_index.get(key)
     if original is None or not original.is_file() or original.suffix == '.ts':
         continue
-    destination = assets / 'resources/mahjong_effects' / original.relative_to(source)
+    base = assets / 'mahjongway2/res/texture1/free_dragon' if original.suffix.lower() in ('.png', '.jpg', '.jpeg', '.webp') else assets / 'resources/mahjong_effects'
+    destination = base / original.relative_to(source)
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(original, destination)
     shutil.copy2(str(original) + '.meta', str(destination) + '.meta')
@@ -98,7 +107,7 @@ while queue:
             queue.append(json.loads(meta.read_text())['uuid'])
 
 
-# 生成独立可编辑粒子预制体，避免覆盖当前场景修改。
+# 生成独立可编辑演出预制体，保留当前场景修改。
 indices = sorted(seen)
 mapping = {old: 1 + offset for offset, old in enumerate(indices)}
 def remap(value):
@@ -115,7 +124,16 @@ prefab = {'__type__':'cc.Prefab', '_name':name, '_objFlags':0,
           '_native':'', 'data':{'__id__':mapping[root]}, 'optimizationPolicy':0,
           'persistent':False, 'asyncLoadAssets':False}
 destination = assets / ('resources/mahjong_effects/' + name + '.prefab')
-destination.write_text(json.dumps(ensure_prefab_metadata([prefab] + nodes), ensure_ascii=False, indent=2) + '\n')
+result = ensure_prefab_metadata([prefab] + nodes)
+if name == 'mj_fly':
+    # 免费飞牌始终使用金底；不能保留参考场景的白底默认帧。
+    for node in result:
+        if node.get('__type__') == 'cc.Node' and node.get('_name') == 'symbol_bg':
+            for ref in node.get('_components', []):
+                component = result[ref['__id__']]
+                if component.get('__type__') == 'cc.Sprite':
+                    component['_spriteFrame']['__uuid__'] = '425d6d31-ad14-463f-9f01-e1fa6658ffea@b2afe'
+destination.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
 print('Imported', name, len(nodes), 'objects')
 
 import uuid

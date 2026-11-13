@@ -1,10 +1,10 @@
+import { showGameDialog, showGameToast, closeGameDialogs } from '../../ui/game_dialogs';
 import { Asset, AudioClip, Component, Constructor, Label, Node, Prefab, SpriteFrame, UITransform, __private, _decorator, resources, instantiate, isValid, js, path, url } from "cc";
 type ProgressCallback = (completed: number, total: number, item?: unknown) => void;
 type CompleteCallback<T = Asset> = (error: Error | null, data: T) => void;
 import { WBSConstant } from "../constant/WBSConstant";
 import { consoleLog, consoleLogError } from "../../xtools/WBSUtils";
 import { wbsgame } from "../wbsgame";
-import { WBSEventName } from "../constant/WBSEventName";
 import { xNodeWBS } from "../../xtools/xNodeWBS";
 
 
@@ -106,9 +106,7 @@ export class WBSLoadManager extends Component {
 
 
     async showPrefabWithLoading(path: string, parent: Node): Promise<Node> {
-        wbsgame.message.dispatchEvent(WBSEventName.SHOW_LOADING, true)
         let prefab: Prefab = await this.loadPrefab(path);
-        wbsgame.message.dispatchEvent(WBSEventName.SHOW_LOADING, false)
         if (!prefab) {
             consoleLogError("showPrefabWithLoading" + " path :" + path + " error")
             return;
@@ -118,43 +116,14 @@ export class WBSLoadManager extends Component {
         return node
     }
 
-    async showAlert(tip: string, yseFun?: Function, noFun?: Function): Promise<void> {
-        let parent = xNodeWBS.find("Canvas/TopLayer");
-        if (xNodeWBS.find("AlertLayer", parent)) return;
-        let prefab: Prefab = await this.loadPrefab("res/load/prefab/com/AlertLayer");
-        if (!prefab) {
-            return;
-        }
-        let node: Node = instantiate(prefab);
-        node.parent = parent;
-        xNodeWBS.setLabel("alert/lab_message", node, tip);
-        xNodeWBS.setPopOpenAni(xNodeWBS.find("alert", node));
-        let closeFun = () => {
-            xNodeWBS.setPopCloseAni(xNodeWBS.find("alert", node), () => { yseFun && yseFun(); node.destroy() });
-        }
-        xNodeWBS.addClick("alert/btn_close", node, closeFun)
-        xNodeWBS.addClick("alert/btn_yes", node, closeFun)
-        xNodeWBS.addClick("alert/icon_guanbi", node, closeFun)
 
+    showAlert(title: string, confirm?: () => void, message = '', confirmLabel = '确定'): Promise<void> {
+        return new Promise(resolve => {
+            showGameDialog({title,message,actions:[{label:confirmLabel,run:()=>{confirm?.();resolve();}}]});
+        });
     }
-    async showToast(tip: string) {
-        let parent = xNodeWBS.find("Canvas/TopLayer");
-        if (xNodeWBS.find("TopLayer", parent)) return;
-        let prefab: Prefab = await this.loadPrefab("res/load/prefab/com/Toast");
-        if (!prefab) {
-            return;
-        }
-        let node: Node = instantiate(prefab);
-        node.parent = parent;
-        xNodeWBS.setLabel("lab_message", node, tip);
-        xNodeWBS.findComponent("lab_message", node, Label).updateRenderer();
-        xNodeWBS.setProperty("img_bg", node, UITransform, "height", xNodeWBS.find("lab_message", node).getComponent(UITransform).height + 50)
-        xNodeWBS.setPopOpenAni(node);
-        let closeFun = () => {
-            xNodeWBS.setPopCloseAni(node, () => isValid(node) && node.destroy());
-        }
-        setTimeout(closeFun, 2000)
-    }
+    async showToast(tip: string) { showGameToast(tip); }
+    protected onDestroy() { closeGameDialogs(); }
     showPanel(panelName: string, parent: Node, ...args): Node {
         let node: Node = xNodeWBS.find(panelName, parent)
         if (node && isValid(node)) {

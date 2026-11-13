@@ -1,7 +1,8 @@
 """Local static server; --mock uses isolated fixtures and never forwards to a game server."""
 import argparse,json,pathlib,functools
 from http.server import ThreadingHTTPServer,SimpleHTTPRequestHandler
-p=argparse.ArgumentParser();p.add_argument('--port',type=int,default=5182);p.add_argument('--mock',action='store_true');args=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--port',type=int,default=5182);p.add_argument('--mock',action='store_true');p.add_argument('--pending',action='store_true');args=p.parse_args()
+if args.pending and not args.mock:p.error('--pending requires --mock')
 root=pathlib.Path(__file__).resolve().parents[1]/'build/web-mobile'
 heights=[3,4,5,5,4,3]
 def board(seed=0):return [[{'id':c*100+r+1,'symbolId':(r+c+seed)%8+1} for r in range(h+1)] for c,h in enumerate(heights)]
@@ -24,7 +25,7 @@ class Handler(SimpleHTTPRequestHandler):
     frames=[dict(frame(i),chargeAmount='200' if i==0 else '0',profitAmount='-180' if i==0 else '0',payouts=[],settledAt='2026-11-12T06:00:00Z') for i in range(4)]
     return self.send_json({'bet':item,'frames':frames,'amountScale':2})
    if path.endswith('/bets'):return self.send_json({'betOptions':['10','50','100','500','1000'],'defaultBet':'10','lineCount':20,'betLevel':10})
-   if path.endswith('/state'):return self.send_json({'requestId':'mock-0','balance':100000,'hasNext':False})
+   if path.endswith('/state'):return self.send_json({'requestId':'mock-1','balance':100000,'hasNext':True,'betAmount':200,'lastFrame':frame(0)} if args.pending else {'requestId':'mock-0','balance':100000,'hasNext':False})
    return self.send_json({},404)
   return super().do_GET()
  def do_POST(self):

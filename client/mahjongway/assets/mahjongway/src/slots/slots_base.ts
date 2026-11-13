@@ -217,7 +217,7 @@ export class slots_base extends Component {
                 return;
             }
             this.initializeCells(state.lastFrame
-                ? serverStrips(state.lastFrame.board, c => this.picks[c]())
+                ? serverStrips(state.lastFrame.board, c => this.picks[c](), undefined, state.lastFrame.bottomSymbols)
                 : initialStrips());
             this.balance = state.balance;
             this.ready = true;
@@ -733,6 +733,7 @@ export class slots_base extends Component {
                 frame.board,
                 (c) => this.picks[c](),
                 cascade || (restore && first) ? this.boards : undefined,
+                frame.bottomSymbols,
             );
             // 免费首帧由 pop_free_tri 负责触发懒加载并展示进度；
             // 后续免费帧直接复用已加载资源。恢复到进行中的免费局时，仍需确保资源已就绪。

@@ -123,12 +123,9 @@ export class WBSOptLayer extends Component {
         xNodeWBS.addTouchStartClick("", this.subBtnNode, this.onSubBtnClick.bind(this));
 
 
-        xNodeWBS.addClick("qp", this.node, this.hideQipaoPanel.bind(this));
-        xNodeWBS.hide("qp",this.node);
+
     }
-    hideQipaoPanel() {
-        xNodeWBS.hide("qp", this.node);
-    }
+
     onCloseBtnClick() {
         wbsgame.audioMgr.playSound("menu_icon_press");
         this.changePanel(1);
@@ -139,10 +136,11 @@ export class WBSOptLayer extends Component {
     }
     onBtnExit() {
         wbsgame.audioMgr.playSound("menu_icon_press")
-        if (wbsgame.gameMgr.getState() == WBSSTATE.READY) {
+        if (wbsgame.gameMgr.getState() == WBSSTATE.READY && this.gameCtrl.isGameEnd) {
             wbsgame.sendMgr.sendRequestExitRoom();
-            wbsgame.message.dispatchEvent(WBSEventName.SHOW_LOADING, true);
-        } else wbsgame.loadMgr.showAlert("The game is not over")
+        } else {
+            void wbsgame.loadMgr.showAlert('游戏尚未结束', undefined, '请等待本局结束后再退出。');
+        }
     }
     onSoundBtnClick() {
         wbsgame.audioMgr.playSound("menu_icon_press")
@@ -249,6 +247,7 @@ export class WBSOptLayer extends Component {
     setStartBit() { this.updateBitView(wbsgame.gameMgr.getTotalBitIndex()); }
 
     onAddBtnClick() {
+        if (wbsgame.sendMgr.readOnly) return;
         if (!this.addBtnNode.getComponent(Button).interactable) {
             return
         }
@@ -257,6 +256,7 @@ export class WBSOptLayer extends Component {
     }
 
     onSubBtnClick() {
+        if (wbsgame.sendMgr.readOnly) return;
         if (!this.subBtnNode.getComponent(Button).interactable) {
             return
         }
@@ -266,10 +266,9 @@ export class WBSOptLayer extends Component {
 
 
     onClickGoBtn(click: boolean = false, isBuyFree?) {
+        if (wbsgame.sendMgr.readOnly) return;
         console.log("onClickGoBtn===>>>>>>>")
 
-        this.unschedule(this.hideQipaoPanel);
-        this.hideQipaoPanel();
         if (click)
             wbsgame.audioMgr.playSound("spinBtn")
         if (!this.gameCtrl.isGameEnd) return
@@ -295,13 +294,14 @@ export class WBSOptLayer extends Component {
                 this.playStopShow();
             }
         } else {
-            wbsgame.loadMgr.showAlert("Insufficient balance", () => {});
+            void wbsgame.loadMgr.showAlert('余额不足', undefined, '请充值后再试。');
             wbsgame.gameMgr.setAudoNum(0);
             this.updateBtnState(true)
         }
     }
 
     onAutoSelectClick(custom) {
+        if (wbsgame.sendMgr.readOnly) return;
         if (custom && this.goBtnNode.active) {
             wbsgame.gameMgr.setAudoNum(Number(custom))
             this.startAudo();
@@ -590,13 +590,14 @@ export class WBSOptLayer extends Component {
         shown.position = new Vec3(0, this.panelRestY - 220, 0);
         tween(hidden).to(0.08, { position: new Vec3(0, this.panelRestY - 220, 0) })
             .call(() => { hidden.active = false; }).start();
-        tween(shown).delay(0.08).to(0.08, { position: new Vec3(0, this.panelRestY, 0) }).start();
+        tween(shown).to(0.08, { position: new Vec3(0, this.panelRestY, 0) }).start();
     }
 
     getNodeBigWinPos() {
         return this.node_win_big.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(0, 0, 0));
     }
     onClickMenuBtn() {
+        if (wbsgame.sendMgr.readOnly) return;
         wbsgame.audioMgr.playSound("menu_icon_press");
         this.changePanel(2);
     }
@@ -607,12 +608,7 @@ export class WBSOptLayer extends Component {
 
     onBetClick() {
         wbsgame.audioMgr.playSound("menu_icon_press");
-        if (WBSConfig.playerType == 0) {
-            xNodeWBS.show("qp", this.node);
-            this.unschedule(this.hideQipaoPanel);
-            this.scheduleOnce(this.hideQipaoPanel, 6);
-            return;
-        }
+
         wbsgame.gamelayer.popupMenuCtrl.showBetPanel();
     }
 

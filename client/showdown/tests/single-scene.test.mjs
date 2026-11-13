@@ -17,7 +17,7 @@ test('only the directly runnable game scene remains, with no custom bundle',()=>
  assert.notEqual(custom.isBundle,true);
  for(const file of files(assets.pathname).filter(p=>p.endsWith('.ts')))
   assert.doesNotMatch(fs.readFileSync(file,'utf8'),/loadBundle|getBundle|BUNDLENAME|loadScene\(/,file);
- assert.ok(fs.existsSync(new URL('assets/resources/res/load/prefab/com/AlertLayer.prefab',root)));
+ assert.equal(fs.existsSync(new URL('assets/resources/res/load/prefab/com/AlertLayer.prefab',root)),false);
 });
 async function bootstrap(){
  const file=new URL('assets/wildbountyshowdown/src/network/scene_bootstrap.ts',root);

@@ -1,3 +1,4 @@
+import { FreeBackgroundSkin } from './free_background_skin';
 import {FreeDragon} from './free_dragon';
 import { setStopArtwork } from './stop_control';
 import { SymbolTooltip } from './symbol_tooltip';
@@ -120,6 +121,7 @@ export class GameEffects extends Component {
     }
     private freePanelNode: Node = null;
     private freeDragon: FreeDragon = null;
+    private freeBackground: FreeBackgroundSkin = null;
     private dragonPending = false;
     queueFreeDragon() { this.dragonPending = true; }
     async playFreeDragon() { if (!this.dragonPending || !this.freeDragon) return; this.dragonPending = false; await this.freeDragon.play(); }
@@ -158,6 +160,7 @@ export class GameEffects extends Component {
     }
 
     private createFreeViews() {
+        this.freeBackground = new FreeBackgroundSkin(this.node, EffectLibrary.create('free_background_skin', this.node));
         const board = this.find(this.node, 'roll');
         if (board) {
             this.freeDragon = new FreeDragon(board, () => this.audio.sound('fsDragonFly'), () => this.audio.stopDragon());
@@ -195,6 +198,8 @@ export class GameEffects extends Component {
     }
 
     releaseFree() {
+        this.freeBackground?.destroy();
+        this.freeBackground = null;
         this.dragonPending = false;
         this.freeDragon?.destroy();
         this.freeDragon = null;
@@ -238,6 +243,7 @@ export class GameEffects extends Component {
         this.freePanelView?.update(!!flow.freePanelActive, flow.freeSpinsRemaining || 0);
         this.updateBonusParticle(!!flow.freePanelActive);
         this.freeDragon?.visible(!!flow.freePanelActive);
+        this.freeBackground?.update(!!flow.freePanelActive);
         if (this.infoBar?.active) this.showBottomNotice(!!flow.freePanelActive);
         const rolling = flow.state === 1 || flow.state === 2;
         if (rolling && !this.wasRolling) {

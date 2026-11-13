@@ -243,6 +243,14 @@ export class WBSGameManager extends Component {
         this._user.coin = frame.balance;
         this._money = frame.balance;
     }
+    getBottomSymbol(column: number): number {
+        const symbols=this.frame?.bottomSymbols;
+        if (!symbols) return this.getRandomType();
+        const value=symbols[column], id=value%1000;
+        if(symbols.length!==6 || !Number.isSafeInteger(value) || id<1 || id>8 || value>=2000)
+            throw Error('服务端底部格子无效');
+        return value;
+    }
     getFactor() { return this.frame ? adaptFrame(this.frame).factor : (this._state === WBSSTATE.FREEING ? 8 : 1); }
 
     getAllData() {

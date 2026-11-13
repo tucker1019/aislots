@@ -14,12 +14,7 @@ export class WBSAlertLayer extends WBSBaseLayer {
 
     }
 
-    showAlert(tip: string, yseFun: Function) {
 
-        xNodeWBS.setLabel("bg/lab_tip", this.node, tip);
-        // WBSUtils.translateAll(this.node)
-        this.yesFun = yseFun;
-    }
 
     onClickCloseBtn() {
         this.yesFun && this.yesFun();

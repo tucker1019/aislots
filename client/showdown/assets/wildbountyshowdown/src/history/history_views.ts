@@ -127,7 +127,7 @@ export function detailBody(
         facts.append(fact);
     }
     const factors = el('div', 'history-factors');
-    factors.style.backgroundImage = 'url("' + art.multiplier_background + '")';
+    if (art.multiplier_background) factors.style.backgroundImage = 'url("' + art.multiplier_background + '")';
     for (const [i, factor] of (round.cascadeFactors || []).entries()) {
         const active = i === round.cascadeIndex;
         const slot = el('span', active ? 'is-current' : '');
@@ -145,6 +145,7 @@ export function detailBody(
     }
     const boardWrap = el('div', 'history-board-wrap');
     const board = el('div', 'history-board');
+    board.style.gridTemplateColumns = `repeat(${round.board.length}, minmax(0, 1fr))`;
     board.setAttribute('aria-label', '第' + (index + 1) + '轮盘面');
     for (const column of round.board) {
         const col = el('div', 'history-board-column');
@@ -154,7 +155,12 @@ export function detailBody(
             const symbol = cell.symbolId > 1000 ? cell.symbolId - 1000 : cell.symbolId;
             image.alt =
                 (cell.symbolId > 1000 ? '金底' : '') + (symbolNames[symbol] || String(symbol));
-            if (symbol === 11 && art.scatter_background) {
+            if (cell.symbolId >= 1000 && art.gold_frame) {
+                const tile = el('div', 'history-gold-tile');
+                const frame = el('img', 'history-gold-frame');
+                frame.src = art.gold_frame; frame.alt = '';
+                tile.append(image, frame); col.append(tile);
+            } else if (symbol === 11 && art.scatter_background) {
                 const tile = el('div', 'history-scatter');
                 const glow = el('img', 'history-scatter-glow');
                 glow.src = art.scatter_background;

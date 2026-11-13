@@ -63,7 +63,7 @@ export class slots_r extends Component {
 
     // 保存固定逻辑索引；后续 setSiblingIndex 只改绘制层级，不改变逻辑编号。
     bindPicker() {
-        this.pickSpinCell = createSpinCellPicker(this.index);
+        this.pickSpinCell = createSpinCellPicker(this.index, () => this.slots.isFreeSpin);
         const children = this.node.children;
         const len = children.length;
         this.cellNodes = new Array(len);

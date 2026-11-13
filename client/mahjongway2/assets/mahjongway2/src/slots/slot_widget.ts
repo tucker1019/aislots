@@ -153,9 +153,17 @@ function createStripSampler(sample: () => number, startOffset: number): SpinCell
     return pick;
 }
 
-export function createSpinCellPicker(index: number): SpinCellPicker {
+export function freeSpinCell(value: number, index: number, free: boolean): number {
+    const symbol=value%1000;
+    return free && index===2 && symbol>=1 && symbol<=8 ? symbol+1000 : value;
+}
+
+export function createSpinCellPicker(index: number, isFree: () => boolean = () => false): SpinCellPicker {
     const sample = index >= 1 && index <= 3 ? pickGoldSpinCell : pickCommonSpinCell;
-    return createStripSampler(sample, index * 17);
+    const strip=createStripSampler(sample, index * 17);
+    const pick=(() => freeSpinCell(strip(), index, isFree())) as SpinCellPicker;
+    pick.refill=strip.refill;
+    return pick;
 }
 
 export function getRandomSpinCell(index: number): number {
