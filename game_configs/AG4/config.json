@@ -3,9 +3,9 @@
   "ruleType": "paylines_v1",
   "parameters": {
     "lineCount": 5,
-    "baseSpinWinProbability": 0,
-    "freeSpinWinProbability": 0,
-    "freeSpinTriggerProbability": 0,
+    "baseSpinWinProbability": 0.27,
+    "freeSpinWinProbability": 0.95,
+    "freeSpinTriggerProbability": 0.019,
     "freeSpinGuaranteedWin": false,
     "lossStreakRtpCompensation": false,
     "freeTriggerRtpCompensation": false,
@@ -17,7 +17,7 @@
     ]
   },
   "simulationOptions": {
-    "paidSpins": 100000000,
+    "paidSpins": 100000,
     "seed": null
   }
 }

@@ -83,5 +83,40 @@
       "payout": 250,
       "weight": 200
     }
-  ]
+  ],
+  "feature": {
+    "type": "fortune_tiger_v1",
+    "fillProbability": 0.2,
+    "targetWeights": [
+      {
+        "symbolId": 1,
+        "weight": 1000
+      },
+      {
+        "symbolId": 2,
+        "weight": 900
+      },
+      {
+        "symbolId": 3,
+        "weight": 800
+      },
+      {
+        "symbolId": 4,
+        "weight": 700
+      },
+      {
+        "symbolId": 5,
+        "weight": 600
+      },
+      {
+        "symbolId": 6,
+        "weight": 500
+      }
+    ],
+    "baseSpreadWeights": [
+      50,
+      35,
+      15
+    ]
+  }
 }
