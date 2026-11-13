@@ -365,6 +365,14 @@ export class slots_base extends Component {
             freePanelShown: this.freePanelShown, freeSpinsLeft: this.freeSpinsLeft,
             fast: this.fast, click_stop: this.click_stop, state: this.state,
         };
+        const opening = data.startBoard
+            ? serverStrips(data.startBoard, c => this.picks[c](), undefined, data.startBottomSymbols)
+            : initialStrips();
+        const showOpening = () => {
+            this.current = null;
+            this.boards = opening;
+            this.reels.forEach((reel, c) => reel.showBoard(opening[c]));
+        };
         let session = new ReplaySession(data.frames);
         this.replaySession = session;
         if (!this.sharedReplay) this.historyPage.suspend();
@@ -405,9 +413,7 @@ export class slots_base extends Component {
                 this.effects?.refreshControls();
                 this.effects?.setAudioMode(false);
                 this.effects?.releaseFree();
-                this.current = null;
-                this.boards = initialStrips();
-                this.reels.forEach((reel, column) => reel.showBoard(this.boards[column]));
+                showOpening();
                 this.click_stop = false;
                 this.winAmount = '0';
                 this.balance = subtractAmount(data.frames[0].balance, data.frames[0].winAmount);
@@ -421,19 +427,25 @@ export class slots_base extends Component {
             this.replayControls = new ReplayControls(canvas, betId,
                 this.sharedReplay ? () => void restart() : this.replayExit,
                 { share: () => this.replayShareLink(betId), exitLabel: this.sharedReplay ? '重新播放' : '退出回放' });
-            const run = () => this.play(session.current, false, session)
-                .then(() => {
-                    if (session.active) this.replayControls?.done(data.bet.status === 'complete'
-                        ? '回放结束' : '已播放当前已结算部分');
-                })
-                .catch(reason => {
-                    this.effects?.cancelPresentation();
-                    this.reels.forEach(reel => reel.cancelPresentation());
-                    if (session.active) {
-                        this.replayControls?.done('回放失败：' + (reason instanceof Error ? reason.message : String(reason)));
-                        session.cancel();
-                    }
-                });
+            const run = async () => {
+                const playing = session;
+                if (data.startBoard) await Promise.race([new Promise<void>(resolve => setTimeout(resolve, 350)), exited]);
+                if (!playing.active || !this.alive) return;
+                await this.play(playing.current, false, playing)
+                    .then(() => {
+                        if (playing.active) this.replayControls?.done(data.bet.status === 'complete'
+                            ? '回放结束' : '已播放当前已结算部分');
+                    })
+                    .catch(reason => {
+                        this.effects?.cancelPresentation();
+                        this.reels.forEach(reel => reel.cancelPresentation());
+                        if (playing.active) {
+                            this.replayControls?.done('回放失败：' + (reason instanceof Error ? reason.message : String(reason)));
+                            playing.cancel();
+                        }
+                    });
+            };
+            showOpening();
             playback = run();
             await exited;
             await playback;

@@ -45,6 +45,9 @@ export type HistoryRound = Omit<Frame, 'requestId' | 'nextRequestId'> & {
 export interface HistoryReplay {
     bet: HistoryRecord;
     frames: HistoryRound[];
+    startBoard?: Frame['board'];
+    startBottomSymbols?: number[];
+    startPreviewRows?: number;
     amountScale: number;
     nextCursor?: string;
 }
