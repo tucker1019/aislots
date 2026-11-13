@@ -18,6 +18,8 @@ import './styles/records.css';
 import './styles/personal-report.css';
 import './styles/earn.css';
 import { App } from './app/App';
+import { guardLobbyEntry } from './app/useLobbyRoute';
+guardLobbyEntry();
 const disposeViewport=installDesignViewport();
 installLayoutDiagnostics();
 if(import.meta.hot)import.meta.hot.dispose(disposeViewport);

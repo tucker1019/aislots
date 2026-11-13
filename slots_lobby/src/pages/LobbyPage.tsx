@@ -35,7 +35,7 @@ export function LobbyPage() {
   const session=useSessionStore(state=>state.session);
   const restricted=!session&&!['home','offers'].includes(requestedView);
   const view=restricted?'home':requestedView;
-  useEffect(()=>{if(restricted)useAuthStore.getState().show('login',()=>navigate(requestedView,{orderId}));},[restricted,requestedView,navigate,orderId]);
+  useEffect(()=>{if(restricted)useAuthStore.getState().show('login',()=>navigate(requestedView,{orderId,gameId}));},[restricted,requestedView,navigate,orderId,gameId]);
   const comingSoon = () => { void toast.info({ key: 'lobby-notice', content: t('copy.comingSoon') }); };
   const [toast, contextHolder] = message.useMessage({getContainer:overlayContainer,
     top: view !== 'home' ? 'calc(var(--lobby-safe-top, 0px) + 12px)' : 'calc(var(--header-height) + 12px)', duration: 1.6, maxCount: 1,

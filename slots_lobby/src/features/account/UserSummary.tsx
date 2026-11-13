@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { getLocale, t } from '../../i18n';
-import { useQuery } from '@tanstack/react-query';
-import { fetchRechargeTiers } from '../../services/recharge';
+import { t } from '../../i18n';
+import { useDepositBonusLabel } from '../deposit/useDepositBonusLabel';
 import { navigateLobby } from '../../app/useLobbyRoute';
 import { coinsLabel } from './formatCoins';
 import { Icon } from '../../components/Icon';
@@ -24,12 +23,7 @@ export function UserSummary({showDeposit=true,showAvatar=true}:{showDeposit?:boo
     }, 500);
     void refetch();
   };
-  const tiers = useQuery({
-    queryKey: ['recharge-tiers', data?.uid], enabled: !!data && showDeposit,
-    queryFn: ({ signal }) => fetchRechargeTiers(signal), retry: false, staleTime: 60000,
-  });
-  const maxBonus = Math.max(0, ...(tiers.data ?? []).map(tier => tier.bonus / tier.amount * 100));
-  const bonusLabel = maxBonus.toLocaleString(getLocale(), { maximumFractionDigits: 4 });
+  const bonusLabel = useDepositBonusLabel(data?.uid, showDeposit);
   return <div className="header-account">
     <div className="header-wallet">
       <button type="button" className="header-balance-refresh" aria-label={t('copy.refreshWalletBalance')}
@@ -45,7 +39,7 @@ export function UserSummary({showDeposit=true,showAvatar=true}:{showDeposit?:boo
       </div>
       {showDeposit && <button type="button" className="header-deposit" aria-label={t('copy.goToDeposit')} onClick={() => navigateLobby('deposit')}>
         {t('copy.deposit')}
-        {maxBonus > 0 && <span className="header-deposit-bonus">{t('copy.bonus')}{bonusLabel}%</span>}
+        {bonusLabel && <span className="header-deposit-bonus">{bonusLabel}</span>}
       </button>}
     </div>
     {showAvatar && <button type="button" className="header-avatar-link" aria-label={t('copy.goToMyAccount')} onClick={() => navigateLobby('my')}><img className="header-avatar" src={data ? `/assets/profile/avatar/${data.avatarId}.png` : '/assets/profile/avatar/empty.png'}

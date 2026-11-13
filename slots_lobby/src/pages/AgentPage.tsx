@@ -1,3 +1,4 @@
+import { pushLobbyLocation } from '../app/useLobbyRoute';
 import {AsyncButton} from '../components/buttons/AsyncButton';
 import {LoadingState} from '../components/feedback/LoadingState';
 import {NetworkError} from '../components/feedback/NetworkError';
@@ -25,7 +26,7 @@ export function AgentPage({onBack}:{onBack:()=>void}){
  const claim=useMutation({meta:{claimUid:uid,claimIndicator:'agent'},mutationFn:()=>{requestId.current??=crypto.randomUUID();return claimAgent(requestId.current);},retry:false,onError:()=>{void toast.error(t('agent.claimFailed'));},onSuccess:()=>{requestId.current=null;void toast.success(t('agent.claimSuccess'));void client.invalidateQueries({queryKey:['agent']});void client.invalidateQueries({queryKey:['lobby','current-profile']});void client.invalidateQueries({queryKey:['wallet-ledger']});void client.invalidateQueries({queryKey:['personal-report']});}});
  function navigate(next:AgentView,patch:Partial<AgentParams>={}){
  const value={...params,...patch};const nextQuery=new URLSearchParams({view:next,period:value.period,target:String(value.targetUid),provider:value.provider,scope:value.scope,search:value.search,page:String(patch.page??1),kind:value.kind});
- window.history.pushState({agent:true},'',`/agent?${nextQuery}`);window.dispatchEvent(new Event('lobby:navigate'));document.getElementById('root')?.scrollTo({top:0});
+ pushLobbyLocation(`/agent?${nextQuery}`, {agent:true});document.getElementById('root')?.scrollTo({top:0});
  }
  const filtered=!['center','rules','rates','records','team'].includes(view);
  return <RecordsLayout title={view==='team'&&params.targetUid&&query.data?query.data.account:view==='report-details'?t(`agent.group.${(['team','bets','first-deposit','deposit','withdrawal'].includes(params.kind)?params.kind:'team') as 'team'|'bets'|'first-deposit'|'deposit'|'withdrawal'}`):t(`agent.${view}`)} backLabel={t('copy.backToMyAccount')} onBack={()=>{if(window.history.state?.agent)window.history.back();else if(view!=='center')navigate('center',{targetUid:0,search:''});else onBack();}} className="agent-page" filters={filtered?<RecordFilterBar filters={[

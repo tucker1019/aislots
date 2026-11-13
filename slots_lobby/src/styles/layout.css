@@ -39,7 +39,7 @@
   font-size: 11px;
 }
 
-.bottom-navigation button[aria-current="page"] { color: var(--blue); }
+.bottom-navigation button[aria-current="page"] { color: var(--blue); font-weight: 700; }
 .bottom-navigation-icon { font-size: 25px; height: 28px; line-height: 28px; }
 
 .header-inner {
@@ -135,8 +135,11 @@
 }
 
 .bottom-navigation-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 29px; border-radius: 10px; transition: background-color .15s; }
-.bottom-navigation button[aria-current="page"] .bottom-navigation-icon { background: var(--theme-blue-tint,#edf4ff); }
-.bottom-navigation button[aria-current="page"] svg { stroke-width: 2; }
+.bottom-navigation button[aria-current="page"] .bottom-navigation-icon {
+  background: var(--blue);
+  color: var(--theme-surface, #fff);
+}
+.bottom-navigation button[aria-current="page"] svg { stroke-width: 2.25; }
 
 
 .embedded-game {
@@ -201,3 +204,7 @@ button.header-wallet:focus-visible,.header-avatar-link:focus-visible { outline: 
 .header-auth { display:flex; gap:8px; flex-shrink:0; margin-left:auto; }
 .header-auth button { border:1px solid var(--blue); color:var(--blue); background:var(--theme-surface,#fff); padding:7px 12px; border-radius:8px; font-size:12px; }
 .header-auth button:last-child { background:var(--theme-action,var(--blue)); color:#fff; }
+
+.bottom-navigation-icon { position: relative; }
+.bottom-navigation-icon .bottom-deposit-bonus { top: -5px; right: -11px; }
+.bottom-navigation-icon .claim-badge { top: -5px; right: -10px; }
