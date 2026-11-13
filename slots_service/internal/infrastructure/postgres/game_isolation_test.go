@@ -5,6 +5,7 @@ import (
 	"aislots/slots_service/internal/application/betlist"
 	"aislots/slots_service/internal/application/play"
 	"aislots/slots_service/internal/engine"
+	modules "aislots/slots_service/internal/games"
 	"aislots/slots_service/internal/infrastructure/postgres"
 	"context"
 	"testing"
@@ -16,7 +17,7 @@ func (g independentGames) Resolve(id, version string) (bet.Spinner, error) {
 	if (id != "AG1" && id != "AG2" && id != "AG3") || (version != "" && version != g.g.Version()) {
 		return nil, bet.ErrGameUnavailable
 	}
-	return independentSpinner{g.g, id}, nil
+	return modules.WrapWays(id, independentSpinner{g.g, id})
 }
 
 type independentSpinner struct {

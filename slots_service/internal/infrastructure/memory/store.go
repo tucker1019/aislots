@@ -4,8 +4,8 @@ package memory
 
 import (
 	"aislots/slots_service/internal/application/bet"
+	runtime "aislots/slots_service/internal/domain/game"
 	"aislots/slots_service/internal/domain/identity"
-	"aislots/slots_service/internal/engine"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -14,7 +14,7 @@ import (
 
 type subjectData struct {
 	gate   chan struct{}
-	states map[bet.StateKey]engine.State
+	states map[bet.StateKey]runtime.State
 	orders map[string]bet.Order
 }
 type Store struct {
@@ -33,7 +33,7 @@ func (s *Store) WithSubject(ctx context.Context, subject identity.Subject, fn fu
 	s.mu.Lock()
 	d := s.subjects[subject]
 	if d == nil {
-		d = &subjectData{gate: make(chan struct{}, 1), states: map[bet.StateKey]engine.State{}, orders: map[string]bet.Order{}}
+		d = &subjectData{gate: make(chan struct{}, 1), states: map[bet.StateKey]runtime.State{}, orders: map[string]bet.Order{}}
 		d.gate <- struct{}{}
 		s.subjects[subject] = d
 	}
@@ -76,9 +76,9 @@ func (l *locked) FindPending(ctx context.Context) (bet.Order, bool, error) {
 	}
 	return bet.Order{}, false, nil
 }
-func (l *locked) LoadState(ctx context.Context, key bet.StateKey) (engine.State, error) {
+func (l *locked) LoadState(ctx context.Context, key bet.StateKey) (runtime.State, error) {
 	if err := ctx.Err(); err != nil {
-		return engine.State{}, err
+		return runtime.State{}, err
 	}
 	return clone(l.data.states[key])
 }

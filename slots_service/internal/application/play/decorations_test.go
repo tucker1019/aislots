@@ -1,6 +1,10 @@
 package play
 
 import (
+	"aislots/slots_service/internal/games/ag1"
+	"aislots/slots_service/internal/games/ag2"
+	"aislots/slots_service/internal/games/ag3"
+	"aislots/slots_service/internal/games/legacyways"
 	"encoding/json"
 	"reflect"
 	"testing"
@@ -57,4 +61,10 @@ func TestBottomSymbolsFrameStateAndReplay(t *testing.T) {
 	if bottomSymbols("AG4", "bet", 0, false) != nil {
 		t.Fatal("unrelated game changed")
 	}
+}
+
+// These are the old wire expectations, now supplied by each game's module.
+func bottomSymbols(id, bet string, spin int, free bool) []int {
+	profiles := map[string]legacyways.Profile{"AG1": ag1.Profile(), "AG2": ag2.Profile(), "AG3": ag3.Profile()}
+	return profiles[id].BottomSymbols(id, bet, spin, free)
 }

@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"aislots/slots_service/internal/engine"
+	game "aislots/slots_service/internal/domain/game"
 	"context"
 	"testing"
 )
@@ -23,13 +23,13 @@ func TestVerifiedAG2BatchIsEnabled(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	state := engine.State{}
+	state := game.State{}
 	for i := 0; i < 1000; i++ {
 		amount := int64(100)
-		if state.Free != nil {
+		if state.Pending {
 			amount = 0
 		}
-		result, err := rules.Spin(context.Background(), engine.SpinRequest{BetMinorUnits: amount, State: state})
+		result, err := rules.Draw(context.Background(), game.Request{BetMinorUnits: amount, State: state})
 		if err != nil {
 			t.Fatalf("AG2 spin %d: %v", i, err)
 		}

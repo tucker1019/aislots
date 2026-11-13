@@ -48,4 +48,16 @@ func TestBottomSymbolsPersistAcrossStateReplayAndCascade(t *testing.T) {
 			t.Fatal("replay changed bottom")
 		}
 	}
+	if frame.NextAction != "complete" {
+		t.Fatal("first bet did not finish")
+	}
+	next, err := s.Spin(ctx, session, "AG1", frame.NextRequestID, 100)
+	if err != nil {
+		t.Fatal(err)
+	}
+	opening, err := s.BetReplay(ctx, session, "AG1", next.BetID, 1, "")
+	if err != nil || !reflect.DeepEqual(opening.StartBoard, frame.Board) ||
+		!reflect.DeepEqual(opening.StartBottomSymbols, original) || opening.StartPreviewRows != frame.PreviewRows {
+		t.Fatal("replay opening differs from previous settled result", err)
+	}
 }

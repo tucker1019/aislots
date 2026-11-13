@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "format": "payline-skeleton-v1",
+  "gameId": "AG4",
+  "mode": "free",
+  "moduleVersion": "fortune-tiger-v1",
+  "schemaVersion": 1,
+  "configHashes": {
+    "base.json": "23ed5ad4e14acb3d55150dd5ee5c1eaa73a0843b4bf651285fcf23ecf7e5b9a3",
+    "config.json": "d670bff4715dec8f1325d5fcac9d3ef944414a8ab573a8e70ec8701f80710541",
+    "free.json": "208973f212f43ae24c99a234d2c0038cc4b84b669b737654daa41f60e819e486",
+    "paylines.json": "d43740cf07bd2ec5df2146e303772e017b56ac136bcd510f8043b60868f4f5f4"
+  },
+  "dataHash": "14367e4880816dcaf5022d52dc2255396d98c1a962c2c3c7c91d82372d5b79ad",
+  "validated": true,
+  "required": 26,
+  "covered": 26,
+  "ignoredZeroSkeletons": 100,
+  "source": "2026-11-13T10-00-15-938Z-1a05b394"
+}

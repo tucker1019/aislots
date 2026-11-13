@@ -2,10 +2,12 @@ package bootstrap
 
 import (
 	"aislots/slots_service/internal/application/betlist"
+	game "aislots/slots_service/internal/domain/game"
 	"aislots/slots_service/internal/domain/identity"
 	"aislots/slots_service/internal/engine"
 	"aislots/slots_service/internal/infrastructure/gamedata"
 	"context"
+	"encoding/json"
 	"reflect"
 	"testing"
 )
@@ -44,22 +46,26 @@ func TestVerifiedAG3BatchAndBetPolicyAreEnabled(t *testing.T) {
 				t.Fatalf("wrong AG3 policy: %+v", policy)
 			}
 			rules, _ := catalog.Resolve("AG3", "")
-			state := engine.State{}
+			state := game.State{}
 			for i := 0; i < 1000; i++ {
 				amount := int64(200)
-				if state.Free != nil {
+				if state.Pending {
 					amount = 0
 				}
-				result, err := rules.Spin(context.Background(), engine.SpinRequest{BetMinorUnits: amount, State: state})
+				result, err := rules.Draw(context.Background(), game.Request{BetMinorUnits: amount, State: state})
 				if err != nil {
 					t.Fatalf("AG3 spin %d: %v", i, err)
 				}
-				if result.GameID != "AG3" || len(result.Round.Initial) != 6 {
+				var legacy engine.SpinResult
+				if err := json.Unmarshal(result.Payload, &legacy); err != nil {
+					t.Fatal(err)
+				}
+				if result.GameID != "AG3" || len(legacy.Round.Initial) != 6 {
 					t.Fatalf("wrong AG3 board: %+v", result)
 				}
 				for c, h := range []int{3, 4, 5, 5, 4, 3} {
-					if len(result.Round.Initial[c]) != h {
-						t.Fatalf("column %d has %d cells, want %d", c, len(result.Round.Initial[c]), h)
+					if len(legacy.Round.Initial[c]) != h {
+						t.Fatalf("column %d has %d cells, want %d", c, len(legacy.Round.Initial[c]), h)
 					}
 				}
 				state = result.NextState

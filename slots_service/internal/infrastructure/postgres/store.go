@@ -3,8 +3,9 @@ package postgres
 
 import (
 	"aislots/slots_service/internal/application/play"
+	runtime "aislots/slots_service/internal/domain/game"
 	"aislots/slots_service/internal/domain/identity"
-	"aislots/slots_service/internal/engine"
+	"aislots/slots_service/internal/games"
 	"aislots/slots_service/internal/infrastructure/lobby"
 	"context"
 	"crypto/rand"
@@ -227,21 +228,19 @@ func (t *transaction) SaveTicket(ctx context.Context, value play.Ticket) error {
 	}
 	return err
 }
-func (t *transaction) State(ctx context.Context, id string) (engine.State, error) {
+func (t *transaction) State(ctx context.Context, id string) (runtime.State, error) {
 	var raw []byte
 	p := t.player
 	err := t.tx.QueryRow(ctx, `SELECT data FROM player_game_states WHERE appname=$1 AND appkey=$2 AND uid=$3 AND game_id=$4 AND country=$5 AND currency=$6`, p.Subject.AppName, p.Subject.AppKey, p.Subject.UID, id, p.Country, p.Currency).Scan(&raw)
 	if errors.Is(err, pgx.ErrNoRows) {
-		return engine.State{}, nil
+		return runtime.State{}, nil
 	}
 	if err != nil {
-		return engine.State{}, err
+		return runtime.State{}, err
 	}
-	var value engine.State
-	err = json.Unmarshal(raw, &value)
-	return value, err
+	return games.DecodeState(raw)
 }
-func (t *transaction) SaveState(ctx context.Context, id string, value engine.State) error {
+func (t *transaction) SaveState(ctx context.Context, id string, value runtime.State) error {
 	raw, err := json.Marshal(value)
 	if err != nil {
 		return err

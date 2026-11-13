@@ -2,6 +2,7 @@
 package play
 
 import (
+	runtime "aislots/slots_service/internal/domain/game"
 	"aislots/slots_service/internal/domain/identity"
 	"aislots/slots_service/internal/engine"
 	"context"
@@ -69,31 +70,32 @@ type Cursor struct {
 	StepIndex int `json:"stepIndex"`
 }
 type Frame struct {
-	BottomSymbols    []int        `json:"bottomSymbols,omitempty"`
-	SpinWinAmount    int64        `json:"spinWinAmount,omitempty"`
-	AwardedFreeSpins int          `json:"awardedFreeSpins,omitempty"`
-	CascadeFactors   []string     `json:"cascadeFactors,omitempty"`
-	CascadeIndex     int          `json:"cascadeIndex"`
-	RequestID        string       `json:"requestId,omitempty"`
-	NextRequestID    string       `json:"nextRequestId,omitempty"`
-	PreviewRows      int          `json:"previewRows,omitempty"`
-	BetID            string       `json:"betId"`
-	SpinIndex        int          `json:"spinIndex"`
-	StepIndex        int          `json:"stepIndex"`
-	Mode             engine.Mode  `json:"mode"`
-	Status           string       `json:"status"`
-	NextAction       string       `json:"nextAction"`
-	Next             *Cursor      `json:"next,omitempty"`
-	Board            engine.Board `json:"board"`
-	Wins             []engine.Win `json:"wins"`
-	RemovedIDs       []int        `json:"removedIds"`
-	TransformedIDs   []int        `json:"transformedIds"`
-	WinAmount        int64        `json:"winAmount"`
-	TotalWinAmount   int64        `json:"totalWinAmount"`
-	BetAmount        int64        `json:"betAmount"`
-	Balance          int64        `json:"balance"`
-	FreeRemaining    int          `json:"freeRemaining"`
-	TriggeredFree    bool         `json:"triggeredFree"`
+	GameData         json.RawMessage `json:"gameData,omitempty"`
+	BottomSymbols    []int           `json:"bottomSymbols,omitempty"`
+	SpinWinAmount    int64           `json:"spinWinAmount,omitempty"`
+	AwardedFreeSpins int             `json:"awardedFreeSpins,omitempty"`
+	CascadeFactors   []string        `json:"cascadeFactors,omitempty"`
+	CascadeIndex     int             `json:"cascadeIndex"`
+	RequestID        string          `json:"requestId,omitempty"`
+	NextRequestID    string          `json:"nextRequestId,omitempty"`
+	PreviewRows      int             `json:"previewRows,omitempty"`
+	BetID            string          `json:"betId"`
+	SpinIndex        int             `json:"spinIndex"`
+	StepIndex        int             `json:"stepIndex"`
+	Mode             engine.Mode     `json:"mode"`
+	Status           string          `json:"status"`
+	NextAction       string          `json:"nextAction"`
+	Next             *Cursor         `json:"next,omitempty"`
+	Board            engine.Board    `json:"board"`
+	Wins             []engine.Win    `json:"wins"`
+	RemovedIDs       []int           `json:"removedIds"`
+	TransformedIDs   []int           `json:"transformedIds"`
+	WinAmount        int64           `json:"winAmount"`
+	TotalWinAmount   int64           `json:"totalWinAmount"`
+	BetAmount        int64           `json:"betAmount"`
+	Balance          int64           `json:"balance"`
+	FreeRemaining    int             `json:"freeRemaining"`
+	TriggeredFree    bool            `json:"triggeredFree"`
 }
 
 // UnmarshalJSON accepts legacy database frames whose monetary fields were
@@ -148,8 +150,7 @@ type Recovery struct {
 	Balance  int64     `json:"balance"`
 }
 type StoredSpin struct {
-	Result      engine.SpinResult
-	StepAmounts []int64
+	Result runtime.Result
 }
 
 // WithPlayer is a short local transaction. This store supports a TEST wallet only;
@@ -170,8 +171,8 @@ type Tx interface {
 	FindOpen(context.Context, string) (Ticket, bool, error)
 	Ticket(context.Context, string) (Ticket, error)
 	SaveTicket(context.Context, Ticket) error
-	State(context.Context, string) (engine.State, error)
-	SaveState(context.Context, string, engine.State) error
+	State(context.Context, string) (runtime.State, error)
+	SaveState(context.Context, string, runtime.State) error
 	Spin(context.Context, string, int) (StoredSpin, bool, error)
 	SaveSpin(context.Context, string, int, StoredSpin) error
 	Frame(context.Context, string, int, int) (Frame, bool, error)

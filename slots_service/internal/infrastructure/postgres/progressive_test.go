@@ -4,7 +4,10 @@ import (
 	"aislots/slots_service/internal/application/bet"
 	"aislots/slots_service/internal/application/betlist"
 	"aislots/slots_service/internal/application/play"
+	game "aislots/slots_service/internal/domain/game"
 	"aislots/slots_service/internal/engine"
+	"aislots/slots_service/internal/games/ag1"
+	"aislots/slots_service/internal/games/legacyways"
 	"aislots/slots_service/internal/infrastructure/gamedata"
 	"aislots/slots_service/internal/infrastructure/postgres"
 	"context"
@@ -71,8 +74,8 @@ type spinner struct {
 	loss     bool
 }
 
-func (s *spinner) Type() string    { return "test_v1" }
-func (s *spinner) Version() string { return "test_v1:fixture" }
+func (s *spinner) Type() string    { return engine.RuleType }
+func (s *spinner) Version() string { return engine.RuleType + ":fixture" }
 func board(n int) engine.Board {
 	return engine.Board{{{ID: n, Symbol: 1}}, {{ID: n + 1, Symbol: 1}}, {{ID: n + 2, Symbol: 1}}}
 }
@@ -362,7 +365,7 @@ func TestRealEngineProgressiveFreeChain(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	s := service(t, store, actual)
+	s := service(t, store, ag1.New(actual))
 	session, _ := login(t, s)
 	progress, err := s.Status(context.Background(), session, "AG1")
 	if err != nil {
@@ -436,7 +439,7 @@ func TestNewPaidTicketUsesCurrentVersionWithoutResettingState(t *testing.T) {
 	g := &spinner{loss: true}
 	s := service(t, store, g)
 	session, _ := login(t, s)
-	prior := engine.State{Version: "retired_v1:old", Sequence: 12, Streak: -3, FreeMisses: 17, HasTriggeredFree: true}
+	prior := legacyways.WrapState(engine.State{Version: engine.RuleType + ":old", Sequence: 12, Streak: -3, FreeMisses: 17, HasTriggeredFree: true}, engine.RuleType)
 	ctx := context.Background()
 	if err := store.WithPlayer(ctx, session.Player, func(tx play.Tx) error { return tx.SaveState(ctx, "AG1", prior) }); err != nil {
 		t.Fatal(err)
@@ -467,4 +470,14 @@ func TestNewPaidTicketUsesCurrentVersionWithoutResettingState(t *testing.T) {
 	if _, err := s.Bet(ctx, session, "AG1", ticket.BetID); err != nil {
 		t.Fatal(err)
 	}
+}
+
+func (s *spinner) Draw(ctx context.Context, r game.Request) (game.Result, error) {
+	return ag1.New(s).Draw(ctx, r)
+}
+func (s *spinner) ValidateStoredResult(r game.Result) error {
+	return ag1.New(s).ValidateStoredResult(r)
+}
+func (s *spinner) Present(r game.Result, c game.FrameContext) (json.RawMessage, error) {
+	return ag1.New(s).Present(r, c)
 }

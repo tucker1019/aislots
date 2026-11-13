@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"aislots/slots_service/internal/engine"
+	game "aislots/slots_service/internal/domain/game"
 	"context"
 	"encoding/json"
 	"os"
@@ -14,8 +14,8 @@ type testRules struct{ kind, version string }
 
 func (r testRules) Type() string    { return r.kind }
 func (r testRules) Version() string { return r.version }
-func (r testRules) Spin(context.Context, engine.SpinRequest) (engine.SpinResult, error) {
-	return engine.SpinResult{}, nil
+func (r testRules) Draw(context.Context, game.Request) (game.Result, error) {
+	return game.Result{}, nil
 }
 
 type closeCount struct{ calls int }
@@ -54,9 +54,9 @@ func TestRulesFactoryDispatchAndPinnedVersion(t *testing.T) {
 	}
 }
 func TestUnknownRulesNeverFallBack(t *testing.T) {
-	for _, kind := range []string{"", "paylines_v1", "typo"} {
+	for _, kind := range []string{"", "unregistered_v1", "typo"} {
 		_, err := LoadCatalog(Config{Games: []GameConfig{ruleSpec(t, kind, true)}})
-		if err == nil || (kind == "paylines_v1" && !strings.Contains(err.Error(), "unsupported ruleType")) {
+		if err == nil || (kind == "unregistered_v1" && !strings.Contains(err.Error(), "unsupported ruleType")) {
 			t.Fatal("unknown rules reached Ways loader", kind, err)
 		}
 	}
@@ -95,3 +95,6 @@ func ruleSpec(t *testing.T, kind string, current bool) GameConfig {
 	}
 	return GameConfig{ConfigDir: dir, Current: current}
 }
+
+func (r testRules) ValidateStoredResult(game.Result) error                          { return nil }
+func (r testRules) Present(game.Result, game.FrameContext) (json.RawMessage, error) { return nil, nil }

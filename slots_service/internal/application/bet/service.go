@@ -2,8 +2,8 @@
 package bet
 
 import (
+	runtime "aislots/slots_service/internal/domain/game"
 	"aislots/slots_service/internal/domain/identity"
-	"aislots/slots_service/internal/engine"
 	"aislots/slots_service/internal/platform"
 	"context"
 	"crypto/rand"
@@ -55,7 +55,7 @@ func (s *Service) Bet(ctx context.Context, req Request) (Response, error) {
 			if err != nil {
 				return err
 			}
-			if state.Free == nil {
+			if !state.Pending {
 				if req.BetMinorUnits <= 0 {
 					return ErrInvalidRequest
 				}
@@ -93,6 +93,25 @@ func (s *Service) Bet(ctx context.Context, req Request) (Response, error) {
 			}
 			switch order.Status {
 			case DebitPending, CreditPending, RefundPending:
+
+				if order.Status == CreditPending {
+					if order.Result == nil {
+						return fmt.Errorf("missing stored settlement")
+					}
+					module, err := s.games.Resolve(req.GameID, order.Before.Version)
+					if err != nil {
+						return err
+					}
+					if err = order.Result.Validate(); err != nil {
+						return err
+					}
+					if order.Result.GameID != req.GameID || order.Result.Version != module.Version() || order.Result.RuleType != order.RuleType || order.Result.ChargeMinorUnits != req.BetMinorUnits {
+						return fmt.Errorf("stored settlement identity mismatch")
+					}
+					if err = module.ValidateStoredResult(*order.Result); err != nil {
+						return err
+					}
+				}
 				transfer := order.transfer()
 				receipt, err := client.QueryTransfer(ctx, transfer)
 				if err == nil && receipt.Status == platform.NotFound {
@@ -143,11 +162,17 @@ func (s *Service) Bet(ctx context.Context, req Request) (Response, error) {
 				if resolveErr == nil && game.Type() != order.RuleType {
 					resolveErr = fmt.Errorf("order rule type mismatch")
 				}
-				var result engine.SpinResult
+				var result runtime.Result
 				if resolveErr == nil {
-					result, resolveErr = game.Spin(ctx, engine.SpinRequest{BetMinorUnits: req.BetMinorUnits, State: order.Before})
+					result, resolveErr = game.Draw(ctx, runtime.Request{BetMinorUnits: req.BetMinorUnits, State: order.Before})
 				}
-				if resolveErr == nil && (result.GameID != req.GameID || result.ChargeMinorUnits != req.BetMinorUnits || result.WinMinorUnits < 0) {
+				if resolveErr == nil {
+					resolveErr = result.Validate()
+				}
+				if resolveErr == nil {
+					resolveErr = game.ValidateStoredResult(result)
+				}
+				if resolveErr == nil && (result.GameID != req.GameID || result.ChargeMinorUnits != req.BetMinorUnits || result.WinMinorUnits < 0 || result.Version != game.Version() || result.RuleType != game.Type()) {
 					resolveErr = fmt.Errorf("invalid engine settlement")
 				}
 				if resolveErr != nil {

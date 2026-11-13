@@ -3,8 +3,10 @@ package bet_test
 import (
 	"aislots/slots_service/internal/application/bet"
 	"aislots/slots_service/internal/application/betlist"
+	runtime "aislots/slots_service/internal/domain/game"
 	"aislots/slots_service/internal/domain/identity"
 	"aislots/slots_service/internal/engine"
+	"aislots/slots_service/internal/games/ag1"
 	"aislots/slots_service/internal/infrastructure/memory"
 	adapters "aislots/slots_service/internal/infrastructure/platform"
 	"aislots/slots_service/internal/platform"
@@ -25,20 +27,42 @@ type fakeGame struct {
 
 func (g *fakeGame) Type() string    { return "test_v1" }
 func (g *fakeGame) Version() string { return "v1" }
-func (g *fakeGame) Spin(ctx context.Context, r engine.SpinRequest) (engine.SpinResult, error) {
+func (g *fakeGame) Draw(ctx context.Context, r runtime.Request) (runtime.Result, error) {
 	g.calls.Add(1)
 	if g.fail {
-		return engine.SpinResult{}, engine.ErrFill
+		return runtime.Result{}, engine.ErrFill
 	}
 	state := r.State
-	state.Version = "v1"
-	state.Sequence++
-	if g.free && state.Free == nil {
-		state.Free = &engine.FreeSession{Remaining: 1, BetMinorUnits: r.BetMinorUnits}
-	} else {
-		state.Free = nil
+	var data struct {
+		Sequence uint64 `json:"sequence"`
 	}
-	return engine.SpinResult{GameID: "AG1", ChargeMinorUnits: r.BetMinorUnits, WinMinorUnits: 40, NextState: state}, nil
+	if len(state.Payload) > 0 {
+		if err := json.Unmarshal(state.Payload, &data); err != nil {
+			return runtime.Result{}, err
+		}
+	}
+	data.Sequence++
+	payload, _ := json.Marshal(data)
+	state = runtime.State{RuleType: g.Type(), Version: g.Version(), SchemaVersion: 1, Pending: g.free && !state.Pending, Payload: payload}
+	action := "complete"
+	if state.Pending {
+		action = "start_bonus"
+	}
+	return runtime.Result{Frames: []runtime.Frame{{WinMinorUnits: 40, NextAction: action, Payload: json.RawMessage(`{}`)}}, SchemaVersion: 1, RuleType: g.Type(), GameID: "AG1", Version: g.Version(), BetMinorUnits: 100, ChargeMinorUnits: r.BetMinorUnits, WinMinorUnits: 40, NextState: state, Payload: json.RawMessage(`{}`)}, nil
+}
+func (g *fakeGame) ValidateStoredResult(runtime.Result) error { return nil }
+func (g *fakeGame) Present(runtime.Result, runtime.FrameContext) (json.RawMessage, error) {
+	return nil, nil
+}
+func sequence(s runtime.State) uint64 {
+	var data struct{ Sequence uint64 }
+	_ = json.Unmarshal(s.Payload, &data)
+	return data.Sequence
+}
+func rawMultiplier(r *runtime.Result) string {
+	var old engine.SpinResult
+	_ = json.Unmarshal(r.Payload, &old)
+	return old.Round.RawMultiplier
 }
 
 type games struct{ g bet.Spinner }
@@ -161,7 +185,7 @@ func TestPlatformAndApplicationIsolation(t *testing.T) {
 		req := request()
 		req.Player.Subject = subject
 		r, err := s.Bet(context.Background(), req)
-		if err != nil || r.Result.NextState.Sequence != 1 {
+		if err != nil || sequence(r.Result.NextState) != 1 {
 			t.Fatal("identity state leaked", r, err)
 		}
 	}
@@ -189,7 +213,7 @@ func TestTimeoutRecoversWithoutDuplicateTransfer(t *testing.T) {
 				t.Fatal("new bet bypassed pending round", err)
 			}
 			r, err = s.Bet(context.Background(), request())
-			if err != nil || r.Status != bet.Settled || r.Result.NextState.Sequence != 1 || g.calls.Load() != 1 || p.calls[platform.Debit] != 1 || p.calls[platform.Credit] != 1 {
+			if err != nil || r.Status != bet.Settled || sequence(r.Result.NextState) != 1 || g.calls.Load() != 1 || p.calls[platform.Debit] != 1 || p.calls[platform.Credit] != 1 {
 				t.Fatal("recovery duplicated operation", r, err, p.calls)
 			}
 		})
@@ -228,7 +252,7 @@ func TestFailedSpinRefundsAndPreservesState(t *testing.T) {
 	req := request()
 	req.RequestID = "next"
 	r, err = s.Bet(context.Background(), req)
-	if err != nil || r.Result.NextState.Sequence != 1 {
+	if err != nil || sequence(r.Result.NextState) != 1 {
 		t.Fatal("failed bet advanced state", r, err)
 	}
 }
@@ -241,11 +265,11 @@ func TestFreeSpinSkipsDebit(t *testing.T) {
 		t.Fatal(err)
 	}
 	paid.Result.NextState.Version = "caller-mutated"
-	paid.Result.NextState.Free.Remaining = 100 // Must not mutate persisted state.
+	paid.Result.NextState.Payload[0] = 'x' // Must not mutate persisted state.
 	req.RequestID = "free"
 	req.BetMinorUnits = 0
 	r, err := s.Bet(context.Background(), req)
-	if err != nil || r.Result.NextState.Free != nil || p.calls[platform.Debit] != 1 || p.calls[platform.Credit] != 2 {
+	if err != nil || r.Result.NextState.Pending || p.calls[platform.Debit] != 1 || p.calls[platform.Credit] != 2 {
 		t.Fatal("free settlement wrong", r, err, p.calls)
 	}
 }
@@ -356,7 +380,8 @@ func TestOrderFlowWithRealEngine(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	s, err := bet.New(games{actual}, memory.New(), registry, policies)
+
+	s, err := bet.New(games{ag1.New(actual)}, memory.New(), registry, policies)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -364,7 +389,7 @@ func TestOrderFlowWithRealEngine(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if first.Result.WinMinorUnits != 10 || first.Result.Round.RawMultiplier != "2" || first.Result.NextState.Sequence != 1 || p.transfers[0].AmountMinorUnits != 100 || p.transfers[1].AmountMinorUnits != 10 {
+	if first.Result.WinMinorUnits != 10 || rawMultiplier(first.Result) != "2" || sequence(first.Result.NextState) != 1 || p.transfers[0].AmountMinorUnits != 100 || p.transfers[1].AmountMinorUnits != 10 {
 		t.Fatal("engine/platform amounts differ", first)
 	}
 	again, err := s.Bet(context.Background(), request())

@@ -29,6 +29,8 @@
     "http://127.0.0.1:7459",
     "http://localhost:5181",
     "http://localhost:7458",
+    "http://127.0.0.1:5184",
+    "http://localhost:5184",
     "http://localhost:7459",
     "http://127.0.0.1:5182",
     "http://localhost:5182"
@@ -140,6 +142,13 @@
       },
       "maxFillAttempts": 64,
       "current": true
+    },
+    {
+      "configDir": "../testdata/deployments/2026-11-13-ag4-modules/AG4",
+      "baseLibraryDir": "../testdata/deployments/2026-11-13-ag4-modules/AG4/base-library",
+      "freeLibraryDir": "../testdata/deployments/2026-11-13-ag4-modules/AG4/free-library",
+      "maxFillAttempts": 64,
+      "current": true
     }
   ],
   "lobby": {
@@ -152,7 +161,8 @@
     "gameIds": [
       "AG1",
       "AG2",
-      "AG3"
+      "AG3",
+      "AG4"
     ]
   }
 }

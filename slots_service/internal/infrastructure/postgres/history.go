@@ -111,12 +111,36 @@ func (s *Store) ReadBetReplay(ctx context.Context, player identity.Context, game
 	}
 	record.TotalRoundCount = rounds
 	record.WinningRoundCount = wins
+	if q.AfterSpin == -1 {
+		// Only expose the settled board, never the preceding order or its balance.
+		var board, bottom []byte
+		err = tx.QueryRow(ctx, `SELECT s.response->'board', s.response->'bottomSymbols', COALESCE((s.response->>'previewRows')::int,0)
+ FROM bet_tickets t JOIN LATERAL (
+   SELECT response FROM spin_steps WHERE bet_id=t.id ORDER BY spin_index DESC, step_index DESC LIMIT 1
+ ) s ON true
+ WHERE t.appname=$1 AND t.appkey=$2 AND t.uid=$3 AND t.data->>'GameID'=$4
+ AND t.data->'Player'->>'country'=$5 AND t.data->'Player'->>'currency'=$6
+ AND t.status IN ('active','complete') AND t.status='complete'
+ AND (t.created_at,t.id)<($7,$8)
+ ORDER BY t.created_at DESC,t.id DESC LIMIT 1`, player.Subject.AppName, player.Subject.AppKey,
+			player.Subject.UID, game, player.Country, player.Currency, created, id).Scan(&board, &bottom, &record.ReplayStartPreviewRows)
+		if err == nil {
+			err = json.Unmarshal(board, &record.ReplayStartBoard)
+			if err == nil && bottom != nil {
+				err = json.Unmarshal(bottom, &record.ReplayStartBottomSymbols)
+			}
+		}
+		if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+			return play.BetRecord{}, nil, err
+		}
+	}
 	// 只返回已提交盘面。game_spins仅提取投注单位和此前raw累计值，不读取或返回未来盘面。
 	rows, err := tx.Query(ctx, `SELECT s.response,s.created_at,
- COALESCE(g.data->'Result'->>'exactWinMinorUnits','0'),
- COALESCE(g.data->'Result'->'round'->>'rawMultiplier','0'),
- COALESCE((g.data->'Result'->>'lineCount')::int,0),
- COALESCE((SELECT sum((v.value->>'rawPayout')::numeric)::text FROM jsonb_array_elements(g.data->'Result'->'round'->'steps') WITH ORDINALITY v(value,n) WHERE v.n<s.step_index),'0')
+ COALESCE(COALESCE(g.data->'Result'->'payload',g.data->'Result')->>'exactWinMinorUnits','0'),
+ COALESCE(COALESCE(g.data->'Result'->'payload',g.data->'Result')->'round'->>'rawMultiplier','0'),
+ COALESCE((s.response->'gameData'->'replay'->>'lineCount')::int,(COALESCE(g.data->'Result'->'payload',g.data->'Result')->>'lineCount')::int,0),
+ COALESCE((SELECT sum((v.value->>'rawPayout')::numeric)::text FROM jsonb_array_elements(COALESCE(g.data->'Result'->'payload',g.data->'Result')->'round'->'steps') WITH ORDINALITY v(value,n) WHERE v.n<s.step_index),'0'),
+ COALESCE(s.response->'gameData'->'replay'->>'payoutUnit','')
  FROM spin_steps s LEFT JOIN game_spins g ON g.bet_id=s.bet_id AND g.spin_index=s.spin_index
  WHERE s.bet_id=$1 AND (s.spin_index,s.step_index)>($2,$3) ORDER BY s.spin_index,s.step_index LIMIT $4`, id, q.AfterSpin, q.AfterStep, q.Limit)
 	if err != nil {
@@ -127,7 +151,7 @@ func (s *Store) ReadBetReplay(ctx context.Context, player identity.Context, game
 		var frame play.ReplayFrame
 		var data []byte
 		var exact, total string
-		if err = rows.Scan(&data, &frame.SettledAt, &exact, &total, &frame.LineCount, &frame.PriorRawPayout); err != nil {
+		if err = rows.Scan(&data, &frame.SettledAt, &exact, &total, &frame.LineCount, &frame.PriorRawPayout, &frame.PayoutUnit); err != nil {
 			rows.Close()
 			return play.BetRecord{}, nil, err
 		}
@@ -135,7 +159,7 @@ func (s *Store) ReadBetReplay(ctx context.Context, player identity.Context, game
 			rows.Close()
 			return play.BetRecord{}, nil, err
 		}
-		if e, ok := new(big.Rat).SetString(exact); ok {
+		if e, ok := new(big.Rat).SetString(exact); ok && frame.PayoutUnit == "" {
 			if r, ok := new(big.Rat).SetString(total); ok && r.Sign() > 0 {
 				frame.PayoutUnit = new(big.Rat).Quo(e, r).RatString()
 			}

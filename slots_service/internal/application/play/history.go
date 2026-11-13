@@ -1,6 +1,7 @@
 package play
 
 import (
+	"aislots/slots_service/internal/engine"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -11,18 +12,21 @@ import (
 
 // BetRecord 一次付费下注及其全部免费链共用一个记录；金额只统计已结算部分。
 type BetRecord struct {
-	WinningRoundCount int       `json:"winningRoundCount"`
-	TotalRoundCount   int       `json:"totalRoundCount"`
-	ProfitAmount      string    `json:"profitAmount"`
-	BetID             string    `json:"betId"`
-	GameID            string    `json:"gameId"`
-	BetAmount         string    `json:"betAmount"`
-	TotalWinAmount    string    `json:"totalWinAmount"`
-	Status            string    `json:"status"`
-	Country           string    `json:"country"`
-	Currency          string    `json:"currency"`
-	CreatedAt         time.Time `json:"createdAt"`
-	UpdatedAt         time.Time `json:"updatedAt"`
+	ReplayStartBoard         engine.Board `json:"-"`
+	ReplayStartBottomSymbols []int        `json:"-"`
+	ReplayStartPreviewRows   int          `json:"-"`
+	WinningRoundCount        int          `json:"winningRoundCount"`
+	TotalRoundCount          int          `json:"totalRoundCount"`
+	ProfitAmount             string       `json:"profitAmount"`
+	BetID                    string       `json:"betId"`
+	GameID                   string       `json:"gameId"`
+	BetAmount                string       `json:"betAmount"`
+	TotalWinAmount           string       `json:"totalWinAmount"`
+	Status                   string       `json:"status"`
+	Country                  string       `json:"country"`
+	Currency                 string       `json:"currency"`
+	CreatedAt                time.Time    `json:"createdAt"`
+	UpdatedAt                time.Time    `json:"updatedAt"`
 }
 
 type HistoryFilter struct{ From, To time.Time }
@@ -60,10 +64,13 @@ type ReplayFrame struct {
 }
 
 type BetReplay struct {
-	AmountScale int           `json:"amountScale"`
-	Bet         BetRecord     `json:"bet"`
-	Frames      []ReplayFrame `json:"frames"`
-	NextCursor  string        `json:"nextCursor,omitempty"`
+	StartBoard         engine.Board  `json:"startBoard,omitempty"`
+	StartBottomSymbols []int         `json:"startBottomSymbols,omitempty"`
+	StartPreviewRows   int           `json:"startPreviewRows,omitempty"`
+	AmountScale        int           `json:"amountScale"`
+	Bet                BetRecord     `json:"bet"`
+	Frames             []ReplayFrame `json:"frames"`
+	NextCursor         string        `json:"nextCursor,omitempty"`
 }
 
 // 数据库查询端口使用已验证的边界，HTTP游标不直接参与SQL。
@@ -180,7 +187,7 @@ func (s *Service) BetReplay(ctx context.Context, session Session, gameID, betID 
 	if frames == nil {
 		frames = []ReplayFrame{}
 	}
-	out := BetReplay{Bet: record, Frames: frames}
+	out := BetReplay{Bet: record, Frames: frames, StartBoard: record.ReplayStartBoard, StartBottomSymbols: record.ReplayStartBottomSymbols, StartPreviewRows: record.ReplayStartPreviewRows}
 	if policy, e := s.bets.List(ctx, session.Player, gameID); e == nil {
 		out.AmountScale = policy.AmountScale
 	}

@@ -2,6 +2,10 @@
 
 服务端 `http://127.0.0.1:8080`，客户端 `http://127.0.0.1:5180`。仅在 `testProfile.enabled=true` 启用；真实平台钱包尚未接入。统一成功响应 `{ "code":"OK", "data":... }`，失败为 HTTP 错误状态和 `{ "code":"...", "message":"..." }`。金额为整数分的十进制字符串。登录后携带 `Authorization: Bearer <accessToken>`。
 
+## 游戏模块兼容说明
+
+AG1～AG3 服务端已通过各自游戏模块提供展示与逐帧派奖计划，现有 HTTP 字段、金额单位、nextAction、预览行及 bottomSymbols 保持原样。新的运行状态/结果封套只用于内部存储，不透传给现有客户端。旧存档与新存档可继续恢复、回放和分享；回放仍只返回已结算的帧。AG4 已接入本地测试配置，同样使用这些路由；专属字段见下方说明，AG4 Cocos 尚未适配。
+
 ## 登录
 
 `POST /api/v1/login`
@@ -33,7 +37,7 @@
 `POST /api/v1/games/AG1/spin`
 
 ```json
-{"requestId":"从state或上一响应获得的标识","betAmount":"200"}
+{"requestId":"从state或上一响应获得的标识","bet":"10","betLevel":1}
 ```
 
 服务端根据已保存进度选择下一轮：没有进行中的投注时，校验档位、扣一次投注并结算第一轮；有进行中的投注时，结算下一轮消除或免费，不重复扣投注。继续轮沿用原投注金额，客户端不能修改金额。投注结果、逐轮派奖、进度、响应回执及下次请求标识在同一个数据库事务提交。
@@ -70,9 +74,31 @@
 
 当前轮在响应前已经扣款/派奖并推进服务端进度，无论客户端动画是否播完。断线重进通过state恢复最后已结算盘面、余额及本局累计赢分；补播动画不重复派奖，再用最新请求标识继续下一未结算轮。已经整笔完成时，重进不会自动再扣下一笔投注。
 
+## AG4 本地接口
+
+以 `gameId: "AG4"` 登录，将上述路由中的 AG1 换成 AG4。投注输入为 `bet`（基础投注的整数分字符串）与 `betLevel`（整数等级），总投注 = bet × betLevel × lineCount。AG4 当前 lineCount=5、amountScale=2。例如：
+
+```http
+POST /api/v1/games/AG4/spin
+Authorization: Bearer <accessToken>
+Content-Type: application/json
+
+{"requestId":"从state取得的标识","bet":"10","betLevel":1}
+```
+
+此例总投注50分，展示为0.50；基础投注和等级从 bets 接口取得，继续帧沿用原值。
+
+- `mode` 为 `base` 或 `respin`。`board` 按列从左到右、列内从上到下，共3×3，格子 ID 为1～9。符号0为空位，1～6为普通符号，7为Wild，无 Ways 预览行或底部装饰。
+- 重转首帧为空盘，后续锁定目标符号并新增，无新增或填满结束。`nextAction=continue` 时继续 spin，最终为 `complete`，不进入 `start_free`。
+- 第一帧只扣一次；中间帧 winAmount=0，最终帧一次派奖。奖金 = 总投注 × 原始每线倍率合计 ÷ 5，九格同符号再乘10，最终取整一次。
+- 可选 `gameData` 包含 `targetSymbolId`（普通为空）、`lockedCellIds`、`addedCellIds`（均为1～9格子ID）、`bonusMultiplier`、`lineWins` 及 `replay: {payoutUnit, lineCount}`。最终帧返回中奖线和全屏倍数；中间帧不预告奖金。
+- state、历史、排行榜及公开分享保留已结算展示；重启和重复请求不重新抽样或补盘，不返回未来帧。内部状态/结果封套不透传。
+
+本地启动使用 `configs/server.test.json`；`server.lobby.json` 也已注册 AG4 快照 `testdata/deployments/2026-11-13-ag4-modules/AG4`。未适配 AG4 Cocos，未远程部署。
+
 ## 超时和重复请求
 
-同一次请求超时，仍使用原requestId和原betAmount重试，返回完全相同的原响应，不重新开奖、扣款、派奖或推进下一轮。请求标识绑定完整会话身份及游戏；伪造/过时但无回执的标识、修改原请求金额均拒绝。成功响应带回的nextRequestId用于下一次请求。
+同一次请求超时，仍使用原 requestId、bet 和 betLevel 重试，返回完全相同的原响应，不重新开奖、扣款、派奖或推进下一轮。请求标识绑定完整会话身份及游戏；伪造/过时但无回执的标识、修改原请求金额均拒绝。成功响应带回的nextRequestId用于下一次请求。
 
 当前客户端在同一页面内保留失败请求供重试；刷新后丢弃旧页面请求状态，重新通过state继续下一轮。不会把已结算轮保存在浏览器等待确认。服务端请求回执保存在PostgreSQL，重启仍可幂等重试。
 
@@ -173,6 +199,8 @@ curl -H 'Authorization: Bearer <accessToken>' \
 `POST /api/v1/games/AG1/bet-records/{betId}/share`：需要当前登录 Bearer token，验证该交易属于当前用户。返回 `data: { betId, shareToken }`，分享凭据持久化保存，服务重启后继续可用。
 
 `GET /api/v1/games/AG1/shared-replays/{betId}?share=<shareToken>&limit=100&cursor=...`：无需登录，只能读取凭据绑定的游戏和交易，分页结构与本人 replay 相同。无效凭据或不匹配的交易统一返回404。不会读取未来未结算盘面，不修改钱包、状态或下一下注标识；响应不包含登录身份、请求标识与内部推进信息。`balance` 固定为占位0，分享客户端必须隐藏余额，不能作为真实钱包余额展示。
+
+AG1–AG4 的本人回放和公开回放可在第一页返回 `startBoard`：同一玩家、游戏、国家和币种上一笔已完成订单的最终盘面。首屏一并返回已有的 `startBottomSymbols` 和 `startPreviewRows`。这些字段只用于转轴启动前的显示，不属于本笔的 `frames`；没有可用上一笔盘面时省略。
 
 客户端分享链接使用本站游戏路径：`?replay=<betId>&share=<shareToken>`。链接不能携带 appname/appkey/uid 或登录token；分享凭据不能用于登录或下注。公开页面仅运行回放，不调用 login、bets、state、spin。生产默认同源 `/api/v1`，开发环境继续连接本机8080。
 

@@ -1,8 +1,8 @@
 package bet
 
 import (
+	runtime "aislots/slots_service/internal/domain/game"
 	"aislots/slots_service/internal/domain/identity"
-	"aislots/slots_service/internal/engine"
 	"context"
 	"errors"
 )
@@ -35,11 +35,11 @@ const (
 func (s Status) Terminal() bool { return s == Settled || s == Failed }
 
 type Response struct {
-	RoundID                   string             `json:"roundId"`
-	RequestID                 string             `json:"requestId"`
-	Status                    Status             `json:"status"`
-	PlatformBalanceMinorUnits *int64             `json:"platformBalanceMinorUnits,omitempty"`
-	Result                    *engine.SpinResult `json:"result,omitempty"`
+	RoundID                   string          `json:"roundId"`
+	RequestID                 string          `json:"requestId"`
+	Status                    Status          `json:"status"`
+	PlatformBalanceMinorUnits *int64          `json:"platformBalanceMinorUnits,omitempty"`
+	Result                    *runtime.Result `json:"result,omitempty"`
 }
 
 // StateKey isolates game state across currency and country as well as the complete platform identity.
@@ -52,8 +52,8 @@ type Order struct {
 	Request                                                      Request
 	RoundID                                                      string
 	Status                                                       Status
-	Before                                                       engine.State
-	Result                                                       *engine.SpinResult
+	Before                                                       runtime.State
+	Result                                                       *runtime.Result
 	DebitTransactionID, CreditTransactionID, RefundTransactionID string
 	PlatformBalanceMinorUnits                                    *int64
 	FailureCode, LastError                                       string
@@ -69,16 +69,13 @@ type Store interface {
 type LockedStore interface {
 	FindOrder(context.Context, string) (Order, bool, error)
 	FindPending(context.Context) (Order, bool, error)
-	LoadState(context.Context, StateKey) (engine.State, error)
+	LoadState(context.Context, StateKey) (runtime.State, error)
 	// commitState atomically persists Order.Result.NextState along with the settled order.
 	SaveOrder(ctx context.Context, order Order, commitState bool) error
 }
-type Spinner interface {
-	// Type identifies the rules used for generating and validating the outcome.
-	Type() string
-	Version() string
-	Spin(context.Context, engine.SpinRequest) (engine.SpinResult, error)
-}
+
+// Spinner is kept as a compatibility name for the neutral module contract.
+type Spinner = runtime.Runtime
 type Games interface {
 	Resolve(gameID, version string) (Spinner, error)
 }

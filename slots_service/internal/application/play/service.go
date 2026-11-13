@@ -3,15 +3,15 @@ package play
 import (
 	"aislots/slots_service/internal/application/bet"
 	"aislots/slots_service/internal/application/betlist"
+	runtime "aislots/slots_service/internal/domain/game"
 	"aislots/slots_service/internal/domain/identity"
-	"aislots/slots_service/internal/engine"
 	"context"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"math"
-	"math/big"
 	"time"
 )
 
@@ -118,7 +118,7 @@ func (s *Service) prepareTx(ctx context.Context, tx Tx, session Session, gameID 
 		if err != nil {
 			return err
 		}
-		if state.Free != nil {
+		if state.Pending {
 			return ErrConflict
 		}
 		// A new paid ticket selects current rules. Active tickets and free spins
@@ -223,102 +223,94 @@ func (s *Service) advanceTx(ctx context.Context, tx Tx, session Session, gameID,
 			}
 			stake := int64(0)
 			if cursor.SpinIndex == 0 {
-				if state.Free != nil {
+				if state.Pending {
 					return ErrConflict
 				}
 				stake = t.Amount
-				state.Version = t.Version
-			} else if state.Free == nil {
+			} else if !state.Pending {
 				return ErrConflict
 			}
-			game, err := s.games.Resolve(gameID, state.Version)
+			game, err := s.games.Resolve(gameID, t.Version)
 			if err != nil {
 				return err
 			}
-			result, err := game.Spin(ctx, engine.SpinRequest{BetMinorUnits: stake, State: state})
+			result, err := game.Draw(ctx, runtime.Request{BetMinorUnits: stake, State: state})
 			if err != nil {
 				return err
 			}
-			if result.GameID != gameID || result.ChargeMinorUnits != stake {
+			if result.GameID != gameID || result.ChargeMinorUnits != stake || result.Version != game.Version() || result.RuleType != game.Type() {
 				return fmt.Errorf("engine settlement mismatch")
 			}
-			amounts, err := splitAwards(result)
-			if err != nil {
+			if err = result.Validate(); err != nil {
 				return err
 			}
-			spin = StoredSpin{Result: result, StepAmounts: amounts}
+			if err = game.ValidateStoredResult(result); err != nil {
+				return err
+			}
+			spin = StoredSpin{Result: result}
 			if err = tx.SaveSpin(ctx, id, cursor.SpinIndex, spin); err != nil {
 				return err
 			}
 		}
 		result := spin.Result
-		n := len(result.Round.Steps)
-		if cursor.StepIndex > n+1 {
+		module, err := s.games.Resolve(gameID, t.Version)
+		if err != nil {
+			return err
+		}
+		if err = result.Validate(); err != nil {
+			return err
+		}
+		if result.GameID != gameID || result.Version != t.Version || result.RuleType != module.Type() {
+			return fmt.Errorf("stored settlement identity mismatch")
+		}
+		if err = module.ValidateStoredResult(result); err != nil {
+			return err
+		}
+		if cursor.StepIndex > len(result.Frames) {
 			return ErrConflict
 		}
-		frame := Frame{BetID: id, SpinIndex: cursor.SpinIndex, StepIndex: cursor.StepIndex, Mode: result.Mode, Status: "ready", BetAmount: money(result.BetMinorUnits), WinAmount: 0, Wins: []engine.Win{}, RemovedIDs: []int{}, TransformedIDs: []int{}, TriggeredFree: result.TriggeredFree}
-		if result.NextState.Free != nil {
-			frame.FreeRemaining = result.NextState.Free.Remaining
+		plan := result.Frames[cursor.StepIndex-1]
+		presentation, err := module.Present(result, runtime.FrameContext{RoundID: id, SpinIndex: cursor.SpinIndex, FrameIndex: cursor.StepIndex - 1})
+		if err != nil {
+			return err
 		}
-		if cursor.StepIndex <= n {
-			step := result.Round.Steps[cursor.StepIndex-1]
-			amount := spin.StepAmounts[cursor.StepIndex-1]
-			if amount < 0 || t.TotalWin > math.MaxInt64-amount {
-				return fmt.Errorf("win total overflow")
+		var frame Frame
+		if err = json.Unmarshal(presentation, &frame); err != nil {
+			return err
+		}
+		// Presentation cannot supply financial fields, identity or progress.
+		frame.BetID = id
+		frame.SpinIndex = cursor.SpinIndex
+		frame.StepIndex = cursor.StepIndex
+		frame.Status = "ready"
+		frame.BetAmount = money(result.BetMinorUnits)
+		frame.WinAmount = money(plan.WinMinorUnits)
+		frame.NextAction = plan.NextAction
+		frame.Next = nil
+		frame.RequestID = ""
+		frame.NextRequestID = ""
+		amount := plan.WinMinorUnits
+		if t.TotalWin > math.MaxInt64-amount {
+			return fmt.Errorf("win total overflow")
+		}
+		if amount > 0 {
+			if _, err = tx.Wallet(ctx, fmt.Sprintf("%s:%d:%d:credit", id, cursor.SpinIndex, cursor.StepIndex), "credit", amount); err != nil {
+				return err
 			}
-			if amount > 0 {
-				if _, err = tx.Wallet(ctx, fmt.Sprintf("%s:%d:%d:credit", id, cursor.SpinIndex, cursor.StepIndex), "credit", amount); err != nil {
-					return err
-				}
-			}
-			t.TotalWin += amount
-			frame.Board = step.Before
-			frame.Wins = step.Wins
-			frame.RemovedIDs = step.Removed
-			frame.TransformedIDs = step.Transformed
-			frame.WinAmount = money(amount)
-			frame.NextAction = "continue"
+		}
+		t.TotalWin += amount
+		if cursor.StepIndex < len(result.Frames) {
 			frame.Next = &Cursor{cursor.SpinIndex, cursor.StepIndex + 1}
 		} else {
-			frame.Board = result.Round.Final
 			if err = tx.SaveState(ctx, gameID, result.NextState); err != nil {
 				return err
 			}
-			if result.NextState.Free != nil {
-				frame.NextAction = "start_free"
+			if result.NextState.Pending {
 				frame.Next = &Cursor{cursor.SpinIndex + 1, 1}
 			} else {
-				frame.NextAction = "complete"
 				t.Status = "complete"
 			}
 		}
-		displayPreview := len(result.Round.Previews) == n+1
-		for _, col := range frame.Board {
-			if len(col) > 4 && gameID != "AG2" && gameID != "AG3" {
-				displayPreview = false
-			}
-		} // Preserve the legacy five-active-row wire layout.
-		if displayPreview {
-			previews := result.Round.Previews[cursor.StepIndex-1]
-			if len(previews) != len(frame.Board) {
-				return fmt.Errorf("invalid preview columns")
-			}
-			display := make(engine.Board, len(frame.Board))
-			for c, col := range frame.Board {
-				display[c] = append([]engine.Cell{previews[c]}, col...)
-			}
-			frame.Board = display
-			frame.PreviewRows = 1
-		}
-		frame.BottomSymbols = bottomSymbols(gameID, id, cursor.SpinIndex, result.Mode == "free")
-		frame.AwardedFreeSpins = result.AwardedFreeSpins
-		spinWin := int64(0)
-		for _, amount := range spin.StepAmounts[:min(cursor.StepIndex, len(spin.StepAmounts))] {
-			spinWin += amount
-		}
-		frame.SpinWinAmount = money(spinWin)
-		frame.CascadeFactors = result.Round.CascadeFactors
-		frame.CascadeIndex = max(0, min(cursor.StepIndex-1, len(frame.CascadeFactors)-1))
 		frame.TotalWinAmount = money(t.TotalWin)
 		frame.Balance = money(tx.Balance())
 		t.SpinIndex = cursor.SpinIndex
@@ -338,38 +330,6 @@ func (s *Service) advanceTx(ctx context.Context, tx Tx, session Session, gameID,
 	return response, err
 }
 
-// splitAwards floors cumulative exact amounts so stage credits sum to the total.
-func splitAwards(result engine.SpinResult) ([]int64, error) {
-	total, ok := new(big.Rat).SetString(result.Round.RawMultiplier)
-	if !ok || total.Sign() < 0 {
-		return nil, fmt.Errorf("invalid raw multiplier")
-	}
-	exact, ok := new(big.Rat).SetString(result.ExactWinMinorUnits)
-	if !ok || exact.Sign() < 0 {
-		return nil, fmt.Errorf("invalid exact payout")
-	}
-	awards := []int64{}
-	sum := new(big.Rat)
-	previous := int64(0)
-	for _, step := range result.Round.Steps {
-		raw, ok := new(big.Rat).SetString(step.RawPayout)
-		if !ok || raw.Sign() < 0 || total.Sign() == 0 {
-			return nil, fmt.Errorf("invalid step payout")
-		}
-		sum.Add(sum, raw)
-		cumulative := new(big.Rat).Mul(sum, new(big.Rat).Quo(exact, total))
-		minor := new(big.Int).Quo(cumulative.Num(), cumulative.Denom())
-		if !minor.IsInt64() || minor.Int64() < previous {
-			return nil, fmt.Errorf("step payout overflow")
-		}
-		awards = append(awards, minor.Int64()-previous)
-		previous = minor.Int64()
-	}
-	if sum.Cmp(total) != 0 || previous != result.WinMinorUnits {
-		return nil, fmt.Errorf("step and total payouts differ")
-	}
-	return awards, nil
-}
 func (s *Service) Recover(ctx context.Context, session Session, gameID string) (Recovery, error) {
 	if gameID != session.GameID {
 		return Recovery{}, ErrUnauthorized

@@ -70,6 +70,19 @@ func NewGameRouter(ready func() bool, service *play.Service, origins []string, l
 		return nil
 	})
 
+	handle("GET /api/v1/games/AG4/presentation/{betId}", func(w http.ResponseWriter, r *http.Request) error {
+		session, err := auth(r)
+		if err != nil {
+			return err
+		}
+		out, err := service.AG4Presentation(r.Context(), session, r.PathValue("betId"))
+		if err != nil {
+			return err
+		}
+		success(w, out)
+		return nil
+	})
+
 	handle("POST /api/v1/games/{gameId}/spin", func(w http.ResponseWriter, r *http.Request) error {
 		session, err := auth(r)
 		if err != nil {
