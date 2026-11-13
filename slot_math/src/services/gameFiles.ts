@@ -1,3 +1,4 @@
+import { validatePaylines } from '../domain/paylines';
 import { validateGameFiles, type GameDocument, type GameFiles } from '../domain/settings';
 import { validateBoardFile, type BoardDocument, type BoardFile } from '../domain/board';
 const endpoint = '/__game-files/games';
@@ -36,4 +37,14 @@ export async function saveBoard(gameId: string, revision: string, file: BoardFil
 
 export async function saveLibrary(gameId: string, revision: string, result: import('../domain/boardLibrary').LibraryResult): Promise<{path:string;bytes:number;retained:number}> {
   return request(`${endpoint}/${encodeURIComponent(gameId)}/library/${result.options.mode}`, {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file:result})});
+}
+
+export async function readPaylines(gameId: string): Promise<import('../domain/paylines').PaylineDocument> {
+  const data = await request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`);
+  if (data.gameId !== gameId || typeof data.revision !== 'string') throw new Error('连线文件响应格式错误。');
+  return { gameId, revision: data.revision, file: validatePaylines(data.file) };
+}
+export async function savePaylines(gameId: string, revision: string, file: import('../domain/paylines').PaylineConfig): Promise<{revision: string}> {
+  validatePaylines(file);
+  return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`, {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({revision, file})});
 }

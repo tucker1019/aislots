@@ -93,6 +93,14 @@ function createFileStore(root, names, validate, io) {
 export function createGameStore(root, validate, io = fs) {
   return createFileStore(root, ['base.json', 'free.json', 'config.json'], validate, io);
 }
+export function createPaylineStore(root, validate, io = fs) {
+  const store = createFileStore(root, ['paylines.json'], files => ({ paylines: validate(files.paylines) }), io);
+  return {
+    async read(gameId) { const doc = await store.read(gameId); return { gameId, revision: doc.revision, file: doc.files.paylines }; },
+    save: (gameId, revision, file) => store.save(gameId, revision, { paylines: file }),
+  };
+}
+
 export function createBoardStore(root, validate, io = fs) {
   const store = createFileStore(root, ['board.json'], files => ({ board: validate(files.board) }), io);
   return {
@@ -113,7 +121,7 @@ export function createBoardStore(root, validate, io = fs) {
   };
 }
 
-export function createGameMiddleware(store, boardStore, libraryStore) {
+export function createGameMiddleware(store, boardStore, libraryStore, paylineStore) {
   return async (req, res, next) => {
     const route = (req.url || '').split('?')[0];
     if (route !== '/__game-files/games' && !route.startsWith('/__game-files/games/')) return next();
@@ -134,9 +142,10 @@ export function createGameMiddleware(store, boardStore, libraryStore) {
       }
       if (req.headers['sec-fetch-site'] === 'cross-site') throw new FileError(403, '文件服务不接受跨站请求。');
       const libraryRoute = /^([^/]+)\/library\/(base|free)$/.exec(route.slice('/__game-files/games/'.length));
+      const paylineRoute = /^[^/]+\/paylines$/.test(route.slice('/__game-files/games/'.length));
       const boardRoute = /^[^/]+\/board$/.test(route.slice('/__game-files/games/'.length));
-      const gameId = libraryRoute ? decodeURIComponent(libraryRoute[1]) : route === '/__game-files/games' ? null : decodeURIComponent(route.slice('/__game-files/games/'.length, boardRoute ? -'/board'.length : undefined));
-      const target = libraryRoute ? libraryStore : boardRoute ? boardStore : store;
+      const gameId = libraryRoute ? decodeURIComponent(libraryRoute[1]) : route === '/__game-files/games' ? null : decodeURIComponent(route.slice('/__game-files/games/'.length, boardRoute ? -'/board'.length : paylineRoute ? -'/paylines'.length : undefined));
+      const target = libraryRoute ? libraryStore : boardRoute ? boardStore : paylineRoute ? paylineStore : store;
       if (libraryRoute && req.method !== 'PUT') throw new FileError(405, '盘面库仅支持保存生成结果。');
       if (!target) throw new FileError(503, '盘面文件服务尚未启动。');
       if (req.method === 'GET') return send(200, gameId === null ? { games: await store.list() } : await target.read(gameId));
@@ -153,7 +162,7 @@ export function createGameMiddleware(store, boardStore, libraryStore) {
       try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); }
       catch { throw new FileError(400, '保存内容不是有效 JSON。'); }
       if (!body || typeof body !== 'object') throw new FileError(400, '保存内容格式错误。');
-      return send(200, await target.save(gameId, body.revision, boardRoute || libraryRoute ? body.file : body.files, libraryRoute?.[2]));
+      return send(200, await target.save(gameId, body.revision, boardRoute || libraryRoute || paylineRoute ? body.file : body.files, libraryRoute?.[2]));
     } catch (error) {
       const status = error.status || (error.code === 'ENOENT' ? 404 : 500);
       const message = error.code === 'ENOENT' ? '游戏目录或所需 JSON 文件缺失，请检查当前游戏目录。' : error.status ? error.message : '读取或保存文件失败，请检查文件权限和本地终端日志。';

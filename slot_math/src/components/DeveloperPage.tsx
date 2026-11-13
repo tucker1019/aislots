@@ -1,3 +1,4 @@
+import { PaylinePage } from './paylines/PaylinePage';
 import { useEffect, useRef, useState } from 'react';
 import { PersistentDetails } from './PersistentDetails';
 import { PageNav } from './PageNav';
@@ -18,6 +19,10 @@ import { CascadeInspector } from './developer/CascadeInspector';
 import './developer.css';
 
 export function DeveloperPage({ active }: { active: boolean }) {
+  const workspace = useGameWorkspace();
+  return workspace.document?.files.config.ruleType === 'paylines_v1' ? <PaylinePage /> : <CascadeDeveloperPage active={active} />;
+}
+function CascadeDeveloperPage({ active }: { active: boolean }) {
   const workspace = useGameWorkspace();
   const [source, setSource] = useState<BoardDocument | null>(null);
   const [loadKey, setLoadKey] = useState(0);

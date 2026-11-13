@@ -1,0 +1,10 @@
+.payline-layout{display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:24px;align-items:start}
+.payline-card{background:#fff;border:1px solid #d8e2f2;border-radius:16px;padding:24px;margin-bottom:20px;min-width:0}
+.payline-card h2{font-size:18px;margin:0 0 16px}.payline-card p{font-size:13px;line-height:1.7;color:#6a7d9f}
+.payline-card input,.payline-card select{max-width:100%;padding:9px;border:1px solid #ccd9ec;border-radius:6px;background:#fff;color:#304e7b;font:inherit;min-width:0}
+.payline-grid{display:grid;gap:8px;overflow:auto;margin:18px 0;padding:2px}.payline-grid>button{height:56px;border:1px solid #c8d6ee;border-radius:8px;background:#f3f6fc;color:#385b90;cursor:pointer}.payline-grid>button.selected{background:#3265b1;color:#fff;border-color:#3265b1}
+.payline-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.payline-actions input{width:110px}.payline-actions .button{min-width:115px}
+.payline-groups{padding-left:25px}.payline-groups li{padding:6px}.payline-groups button{border:1px solid #d3dff1;background:#f6f8fc;color:#33557c;border-radius:6px;padding:8px;margin-right:8px;cursor:pointer}
+.payline-table{overflow:auto;margin-bottom:16px}.payline-table table{width:100%;border-collapse:collapse;min-width:580px}.payline-table th,.payline-table td{padding:8px;text-align:left;border-bottom:1px solid #edf0f7}.payline-table th{font-size:12px;color:#647b9e}.payline-table input{width:85px}.payline-table td:nth-child(2) input{width:110px}
+.payline-test-grid>label{background:#f4f6fa;padding:10px;border:1px solid #d6dfed;border-radius:9px;display:flex;flex-direction:column;gap:8px}.payline-test-grid>label.winner{background:#e6f6ef;border-color:#70b89c}.payline-test-grid small{color:#6c7e99}.payline-result{background:#edf3fc;border-radius:10px;padding:16px;overflow-wrap:anywhere}.payline-result li{margin:8px 0}
+@media(max-width:850px){.payline-layout{grid-template-columns:minmax(0,1fr)}.payline-card{padding:16px}}

@@ -1,10 +1,12 @@
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
-import { createBoardStore, createGameMiddleware, createGameStore } from './server/game-files.mjs';
+import { createPaylineStore, createBoardStore, createGameMiddleware, createGameStore } from './server/game-files.mjs';
 import { validateGameFiles } from './src/domain/settings';
 import { createLibraryStore } from './server/board-library.mjs';
 import { auditLibrary, validateLibrary } from './src/domain/boardLibrary';
 import { validateBoardFile } from './src/domain/board';
+
+import { validatePaylines } from './src/domain/paylines';
 
 const root = fileURLToPath(new URL('../game_configs/', import.meta.url));
 const boardStore = createBoardStore(root, validateBoardFile);
@@ -14,7 +16,7 @@ const libraryStore = createLibraryStore(libraryRoot, boardStore, validateLibrary
   const document = await gameStore.read(gameId);
   return auditLibrary(value, { ...current.file, lineCount: 1 }, document.files[value.options.mode as 'base' | 'free']);
 });
-const middleware = createGameMiddleware(gameStore, boardStore, libraryStore);
+const middleware = createGameMiddleware(gameStore, boardStore, libraryStore, createPaylineStore(root, validatePaylines));
 export default defineConfig({
   base: './',
   plugins: [{

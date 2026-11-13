@@ -22,7 +22,7 @@ export function App() {
     <main>
       <div className="page-heading"><div><h1>理论分析</h1><p>读取游戏文件调整数值，保存后供服务端使用。</p></div></div>
       <GameFilesBar />
-      {document ? <fieldset className="analysis-editor-fieldset" disabled={loading} aria-busy={loading}><AnalysisEditor key={`${document.gameId}:${generation}`} document={document} onDirtyChange={setAnalysisDirty} onSavingChange={setAnalysisSaving} onSaved={analysisSaved} /></fieldset> : <div className="game-file-empty">未加载配置。数值工具没有内置默认配置；数值始终从游戏 JSON 文件读取。</div>}
+      {document?.files.config.ruleType === 'paylines_v1' ? <div className="game-file-empty">连线玩法请进入 <a href="#/developer">开发页</a> 配置盘面、中奖组合和符号赔率。当前尚未接入倍率权重分析、盘面库及特殊玩法，不显示消除模型的 RTP。</div> : document ? <fieldset className="analysis-editor-fieldset" disabled={loading} aria-busy={loading}><AnalysisEditor key={`${document.gameId}:${generation}`} document={document} onDirtyChange={setAnalysisDirty} onSavingChange={setAnalysisSaving} onSaved={analysisSaved} /></fieldset> : <div className="game-file-empty">未加载配置。数值工具没有内置默认配置；数值始终从游戏 JSON 文件读取。</div>}
     </main>
   </div>;
 }
@@ -89,7 +89,7 @@ function AnalysisEditor({ document, onDirtyChange, onSavingChange, onSaved }: { 
             <option value="paylines_v1">连线 · v1（盘面工具待实现）</option>
             <option value="cluster_cascade_v1">集群消除 · v1（盘面工具待实现）</option>
             {!['ways_cascade_v1', 'paylines_v1', 'cluster_cascade_v1'].includes(ruleType) && <option value={ruleType}>{ruleType}</option>}
-          </select></label><p className="input-note">保存到当前游戏 config.json 的 ruleType，服务端据此选择开奖与验证实现。当前盘面工具仅支持 Ways 连续消除。</p></section>
+          </select></label><p className="input-note">保存到当前游戏 config.json 的 ruleType，服务端据此选择开奖与验证实现。盘面工具支持 Ways 连续消除和可配置格子组合连线。</p></section>
           <PersistentDetails className="config-group config-subgroup" storageId="analysis.倍率权重表" defaultOpen><summary>倍率权重表</summary><section className="config-section"><p className="section-description">倍率表来自当前游戏目录。确认编辑后点击「保存文件」写回对应 JSON。</p><FileTable kind="base" value={base} onEdit={validLineCount ? () => setEditing('base') : undefined} /><FileTable kind="free" value={free} onEdit={validLineCount ? () => setEditing('free') : undefined} /><p className="weight-table-file-note">文件保存原始倍率，实际奖金 = 文件倍率 ÷ 线数 × 总投注。应用配置用于计算，保存文件用于写入磁盘。</p></section></PersistentDetails>
           <PersistentDetails className="config-group config-subgroup" storageId="analysis.开奖参数" defaultOpen><summary>开奖参数</summary><section className="config-section"><p className="section-description">修改后点击「应用配置」更新理论结果与模拟配置。</p>
             {([['lineCount', '线数', '线'], ['baseSpinWinProbability', '普通局中奖概率', '%'], ['freeSpinWinProbability', '免费局中奖概率', '%'], ['freeSpinTriggerProbability', '免费触发概率', '%']] as const).map(([key, label, unit]) => <label className="field" key={key}><span>{label}</span><span className="input-wrap"><input type="number" min={unit === '%' ? 0 : 1} max={unit === '%' ? 100 : undefined} step={unit === '%' ? 'any' : 1} value={inputs[key]} onChange={e => setInputs({ ...inputs, [key]: e.target.value })} /><span>{unit}</span></span></label>)}
