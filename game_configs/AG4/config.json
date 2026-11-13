@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "ruleType": "paylines_v1",
+  "parameters": {
+    "lineCount": 5,
+    "baseSpinWinProbability": 0,
+    "freeSpinWinProbability": 0,
+    "freeSpinTriggerProbability": 0,
+    "freeSpinGuaranteedWin": false,
+    "lossStreakRtpCompensation": false,
+    "freeTriggerRtpCompensation": false,
+    "freeSpinAwardWeights": [
+      [
+        1,
+        1
+      ]
+    ]
+  },
+  "simulationOptions": {
+    "paidSpins": 100000000,
+    "seed": null
+  }
+}
