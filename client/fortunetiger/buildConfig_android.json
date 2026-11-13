@@ -1,0 +1,34 @@
+{
+  "platform": "android",
+  "debug": false,
+  "md5Cache": true,
+  "outputName": "android",
+  "packages": {
+    "android": {
+      "packageName": "com.inw.harland.brg",
+      "orientation": {
+        "portrait": false,
+        "upsideDown": false,
+        "landscapeRight": true,
+        "landscapeLeft": true
+      },
+      "apiLevel": "android-33",
+      "appABIs": [
+        "arm64-v8a"
+      ],
+      "useDebugKeystore": true
+    },
+    "native": {
+      "encrypted": true,
+      "xxteaKey": "nrly_20230511_szng"
+    }
+  },
+  "startScene": "7dfdd5f3-9fca-49de-9ac2-4c8bf718b81c",
+  "scenes": [
+    {
+      "url": "db://assets/FTGameScene.scene",
+      "uuid": "7dfdd5f3-9fca-49de-9ac2-4c8bf718b81c",
+      "inBundle": false
+    }
+  ]
+}

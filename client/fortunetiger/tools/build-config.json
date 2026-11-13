@@ -1,0 +1,28 @@
+{
+  "gameName": "szcw_1017fortunetiger",
+  "nrly": [
+    {
+      "app_name": "szng",
+      "package": "com.inw.harland.brg",
+      "xxteaKey": "nrly_20230511_szng"
+    }
+  ],
+  "kny": [
+    {
+      "app_name": "szng",
+      "package": "com.inw.harland.brg",
+      "xxteaKey": "nrly_20230511_szng"
+    }
+  ],
+  "knyweb": [
+    {
+      "app_name": "szng"
+    }
+    
+  ],
+  "pirsea": [
+    {
+      "app_name": "pirsea"
+    }
+  ]
+}

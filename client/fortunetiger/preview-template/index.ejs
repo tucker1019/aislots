@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>fortunetiger</title>
+
+  <!-- 关键：刘海屏 + 全屏适配 -->
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+
+  <!-- 全屏 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- 禁止电话识别 -->
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- 强制内核 -->
+  <meta name="renderer" content="webkit" />
+  <meta name="force-rendering" content="webkit" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+
+      /* ✅ 关键：解决点击延迟 */
+      touch-action: manipulation;
+    }
+
+    /* 游戏容器 */
+    #GameDiv {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    #Cocos3dGameContainer {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ✅ Canvas 核心设置 */
+    #GameCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+
+      /* ✅ 只限制 Canvas，不影响页面 */
+      touch-action: none;
+
+      /* 防止长按问题 */
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    /* ✅ 防止背景挡点击（如果你有背景图） */
+    #background {
+      pointer-events: none;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* iOS 某些点击问题 */
+    * {
+      cursor: pointer;
+    }
+  </style>
+
+  <link rel="stylesheet" href="loading/cover.css" />
+</head>
+
+<body>
+  <div id="AGOpening" role="status" aria-label="AG 加载中">
+    <svg viewBox="0 0 200 112" aria-hidden="true">
+      <rect x="50" y="12" width="100" height="88" rx="8" fill="#ae252a"/>
+      <rect x="55" y="17" width="90" height="78" rx="5" fill="none" stroke="#f3dbc0" stroke-opacity=".45"/>
+      <text x="99" y="72" text-anchor="middle" fill="#fff0d9" font-family="Georgia, serif"
+        font-size="48" font-weight="700" letter-spacing="-4">AG</text>
+    </svg>
+  </div>
+
+  <div id="GameDiv">
+    <div id="AG4LoadingCover" aria-label="Loading">
+      <div id="AG4LoadingLayout">
+        <img src="loading/fortunetiger-cover.jpg" alt="" fetchpriority="high" />
+        <div id="AG4LoadingProgress" role="progressbar" aria-label="Loading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="AG4LoadingFill"></div></div>
+        <button id="AG4StartButton" type="button" hidden>START</button>
+      </div>
+    </div>
+    <div id="Cocos3dGameContainer">
+      <canvas id="GameCanvas" tabindex="99"></canvas>
+    </div>
+  </div>
+
+  <script src="loading/opening.js"></script>
+  <script src="loading/cover.js"></script>
+  <%- include(cocosTemplate, {}) %>
+
+  <script>
+    // ✅ 解决 iOS 点击延迟
+    document.addEventListener('touchstart', function () {}, { passive: true });
+
+    // ✅ 安卓必须：防止滑动穿透 / 事件丢失
+    document.getElementById('GameCanvas').addEventListener('touchmove', function (e) {
+      e.preventDefault();
+    }, { passive: false });
+  </script>
+
+</body>
+
+</html>

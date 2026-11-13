@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>respin_vfx_s_add.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{301,446}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false/>
+				<key>sourceColorRect</key>
+				<string>{{0,0},{301,446}}</string>
+				<key>sourceSize</key>
+				<string>{301,446}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>realTextureFileName</key>
+			<string>1c35103b-7399-4e12-b83e-0b0a53363cb3.8eda2.jpg</string>
+			<key>size</key>
+			<string>{301,446}</string>
+			<key>smartupdate</key>
+			<string>$TexturePacker:SmartUpdate : 8d6a3b5c6f98d0eff99dd6242c8d6db7$</string>
+			<key>textureFileName</key>
+			<string>1c35103b-7399-4e12-b83e-0b0a53363cb3.8eda2.jpg</string>
+		</dict>
+	</dict>
+</plist>
