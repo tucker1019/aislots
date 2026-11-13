@@ -260,4 +260,4 @@ AG4 使用原有 `base.json`（普通）和 `free.json`（重转），搭配 `co
 
 Web Worker 分片生成，可停止并保留候选结果。按倍率去重和限额保留，总上限 20,000 条、24 MiB；每倍率上限 10,000 条。普通与重转结果分别保留，并对照各自倍率表显示覆盖和缺失，不用生成频率估计 RTP。
 
-保存入口 `PUT /__game-files/games/<game>/paylines/library`。服务端验证当前盘面与数值配置版本、线数及每条骨架，重新计算覆盖；只保存候选，不自动启用或改写缺失倍率。输出 `game_libraries/<game>/base|free/<run-id>/library.json`（纯倍率桶）和 manifest（配置、表、版本、哈希、覆盖、partial）。此前试做的 rounds 完整局文件不属于此骨架格式，不会读取或启用。游戏服务端尚未接入 AG4 骨架。
+保存入口 `PUT /__game-files/games/<game>/paylines/library`。服务端验证当前盘面与数值配置版本、线数及每条骨架，重新计算覆盖；只保存候选，不自动启用或改写缺失倍率。输出 `game_libraries/<game>/base|free/<run-id>/library.json`（纯倍率桶）和 manifest（配置、表、版本、哈希、覆盖、partial）。此前试做的 rounds 完整局文件不属于此骨架格式，不会读取或启用。Go 游戏服务端已通过独立 AG4 模块接入本地测试，使用 `slots_service/testdata/deployments/2026-11-13-ag4-modules/AG4` 的重验快照，独立校验普通135/135、重转26/26正倍率。候选目录不自动启用，零奖实时生成，不读取旧零桶。Cocos 尚未适配，未远程部署。
