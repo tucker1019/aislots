@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
 import { createPortal } from 'react-dom';
-import { calculateModel, type Parameters, type WeightTable } from '../domain/model';
+import { calculateModel, calculateRespinModel, type Parameters, type WeightTable } from '../domain/model';
 import { type LoadedTable } from '../domain/settings';
 import { createWeightDraft, draftRowValues, tableFromDraft, weightFromPosition, type DraftRow } from '../domain/weightDraft';
 
@@ -9,12 +9,12 @@ const multiplier = (x: number) => `${x > 0 && x < 1e-8 ? x.toExponential(4) : nu
 const percent = (x: number) => `${number(x * 100, 4)}%`;
 const PAGE_SIZE = 30;
 interface Props {
-  kind: 'base' | 'free'; value: LoadedTable; other: LoadedTable | null; parameters: Parameters;
+  model?: 'respin'; kind: 'base' | 'free'; value: LoadedTable; other: LoadedTable | null; parameters: Parameters;
   onSave: (value: LoadedTable) => void; onClose: () => void;
 }
 interface Drag { rowId: number; pointerId: number; top: number; height: number; maximum: number; logarithmic: boolean }
 
-export function WeightTableEditor({ kind, value, other, parameters, onSave, onClose }: Props) {
+export function WeightTableEditor({ model, kind, value, other, parameters, onSave, onClose }: Props) {
   const lineCount = parameters.lineCount;
   const [rows, setRows] = useState(() => createWeightDraft(value.table, lineCount));
   const [selectedId, setSelectedId] = useState<number | null>(rows[0]?.id ?? null);
@@ -42,10 +42,10 @@ export function WeightTableEditor({ kind, value, other, parameters, onSave, onCl
   const preview = useMemo(() => {
     if (!other) return { current: null, saved: null, error: '读取另一份权重表后可预览完整 RTP。' };
     if (!draft.table) return { current: null, saved: null, error: '' };
-    const calculate = (table: WeightTable) => calculateModel(kind === 'base' ? table : other.table, kind === 'free' ? table : other.table, parameters);
+    const calculate = (table: WeightTable) => (model==='respin'?calculateRespinModel:calculateModel)(kind === 'base' ? table : other.table, kind === 'free' ? table : other.table, parameters);
     try { return { current: calculate(draft.table), saved: calculate(value.table), error: '' }; }
     catch (error) { return { current: null, saved: null, error: (error as Error).message }; }
-  }, [draft.table, other, kind, parameters, value.table]);
+  }, [draft.table, other, kind, parameters, value.table,model]);
   const filtered = useMemo(() => rows.filter(row => !search.trim() || row.multiplierText.includes(search.trim())), [rows, search]);
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const activePage = Math.min(page, pageCount - 1);
@@ -109,14 +109,14 @@ export function WeightTableEditor({ kind, value, other, parameters, onSave, onCl
     else return;
     event.preventDefault(); setSelectedId(row.id); editWeight(row.id, String(Number(next.toPrecision(12))));
   }
-  const title = kind === 'base' ? '编辑普通局权重表' : '编辑免费局权重表';
+  const title = kind === 'base' ? '编辑普通局权重表' : model==='respin'?'编辑重转局权重表':'编辑免费局权重表';
   return createPortal(<dialog className={`weight-editor ${kind}`} ref={dialog} aria-labelledby="weight-editor-title" onCancel={event => { event.preventDefault(); onClose(); }}>
     <div className="editor-heading"><div><h2 id="weight-editor-title">{title}</h2><p>{value.name} <span>· {rows.length} 条记录 · {lineCount} 线</span></p></div><button className="editor-close" aria-label="关闭并放弃修改" onClick={onClose}>×</button></div>
     <div className="editor-body">
       <div className="editor-preview" aria-live="polite">
         <Preview label="Total RTP" current={preview.current?.totalRtp} saved={preview.saved?.totalRtp} format={percent} />
         <Preview label="Base RTP" current={preview.current?.baseRtp} saved={preview.saved?.baseRtp} format={percent} />
-        <Preview label="Free RTP" current={preview.current?.freeRtp} saved={preview.saved?.freeRtp} format={percent} />
+        <Preview label={model==='respin'?'重转 RTP':'Free RTP'} current={preview.current?.freeRtp} saved={preview.saved?.freeRtp} format={percent} />
         <Preview label="总奖金方差" current={preview.current?.totalVariance} saved={preview.saved?.totalVariance} format={number} />
         <Preview label="标准差" current={preview.current?.standardDeviation} saved={preview.saved?.standardDeviation} format={number} />
       </div>

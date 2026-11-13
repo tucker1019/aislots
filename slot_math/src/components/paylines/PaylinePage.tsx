@@ -19,7 +19,7 @@ export function PaylinePage() {
   },[gameId,workspace.generation,reload]);
   useEffect(()=>{workspace.setBoardDirty(dirty);return ()=>workspace.setBoardDirty(false);},[dirty,workspace.setBoardDirty]);
   return <div className="developer-page"><header className="topbar"><a className="brand" href="#/analysis">∑ Slot Math</a><PageNav page="developer"/><span>格子组合连线</span></header><main>
-    <div className="page-heading"><div><h1>连线配置与验奖</h1><p>自定义列高与中奖格子组合；每组全部匹配，Wild 替代，每组只支付最高奖。</p></div></div>
+    <div className="page-heading"><div><h1>连线盘面与骨架</h1><p>配置连线规则，分别生成普通、重转骨架；RTP 在数值分析页由两张倍率表决定。</p></div></div>
     <GameFilesBar />
     <div className="board-file-source"><span>配置：game_configs/{gameId}/paylines.json</span><button className="button secondary" disabled={loading||workspace.saving||workspace.loading} onClick={()=>{if(!dirty||window.confirm('重新读取会丢弃未保存的连线修改，是否继续？'))setReload(v=>v+1);}}>重新读取配置</button></div>
     {error&&<div role="alert" className="dev-alert">{error}<button className="button secondary" onClick={()=>setReload(v=>v+1)}>重试</button></div>}

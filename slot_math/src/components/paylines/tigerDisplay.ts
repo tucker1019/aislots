@@ -1,0 +1,4 @@
+export function tigerMoney(value:string){const n=BigInt(value),a=n<0n?-n:n;return `${n<0n?'-':''}${(a/100n).toLocaleString('en-US')}.${String(a%100n).padStart(2,'0')}`;}
+export function tigerPercent(numerator:string|number,denominator:string|number){const n=BigInt(numerator),d=BigInt(denominator);if(d===0n)return '—';const scaled=(n*10000n+d/2n)/d;return `${scaled/100n}.${String(scaled%100n).padStart(2,'0')}%`;}
+export function parseTigerStake(value:string){if(!/^\d+(\.\d{1,2})?$/.test(value))throw new Error('投注最多保留两位小数。');const [whole,decimal='']=value.split('.');const n=BigInt(whole)*100n+BigInt(decimal.padEnd(2,'0'));if(n<=0n||n.toString().length>18)throw new Error('投注必须大于 0 且最多 18 位最小货币单位。');return n.toString();}
+export function newTigerSeed(){return Math.floor(Math.random()*0x100000000);}

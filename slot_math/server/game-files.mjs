@@ -121,7 +121,7 @@ export function createBoardStore(root, validate, io = fs) {
   };
 }
 
-export function createGameMiddleware(store, boardStore, libraryStore, paylineStore) {
+export function createGameMiddleware(store, boardStore, libraryStore, paylineStore, tigerLibraryStore) {
   return async (req, res, next) => {
     const route = (req.url || '').split('?')[0];
     if (route !== '/__game-files/games' && !route.startsWith('/__game-files/games/')) return next();
@@ -141,12 +141,13 @@ export function createGameMiddleware(store, boardStore, libraryStore, paylineSto
         if (origin.host !== req.headers.host || !['http:', 'https:'].includes(origin.protocol)) throw new FileError(403, '文件服务不接受跨站请求。');
       }
       if (req.headers['sec-fetch-site'] === 'cross-site') throw new FileError(403, '文件服务不接受跨站请求。');
+      const tigerRoute = /^([^/]+)\/paylines\/library$/.exec(route.slice('/__game-files/games/'.length));
       const libraryRoute = /^([^/]+)\/library\/(base|free)$/.exec(route.slice('/__game-files/games/'.length));
       const paylineRoute = /^[^/]+\/paylines$/.test(route.slice('/__game-files/games/'.length));
       const boardRoute = /^[^/]+\/board$/.test(route.slice('/__game-files/games/'.length));
-      const gameId = libraryRoute ? decodeURIComponent(libraryRoute[1]) : route === '/__game-files/games' ? null : decodeURIComponent(route.slice('/__game-files/games/'.length, boardRoute ? -'/board'.length : paylineRoute ? -'/paylines'.length : undefined));
-      const target = libraryRoute ? libraryStore : boardRoute ? boardStore : paylineRoute ? paylineStore : store;
-      if (libraryRoute && req.method !== 'PUT') throw new FileError(405, '盘面库仅支持保存生成结果。');
+      const gameId = tigerRoute ? decodeURIComponent(tigerRoute[1]) : libraryRoute ? decodeURIComponent(libraryRoute[1]) : route === '/__game-files/games' ? null : decodeURIComponent(route.slice('/__game-files/games/'.length, boardRoute ? -'/board'.length : paylineRoute ? -'/paylines'.length : undefined));
+      const target = tigerRoute ? tigerLibraryStore : libraryRoute ? libraryStore : boardRoute ? boardStore : paylineRoute ? paylineStore : store;
+      if ((libraryRoute || tigerRoute) && req.method !== 'PUT') throw new FileError(405, '盘面库仅支持保存生成结果。');
       if (!target) throw new FileError(503, '盘面文件服务尚未启动。');
       if (req.method === 'GET') return send(200, gameId === null ? { games: await store.list() } : await target.read(gameId));
       if (req.method !== 'PUT' || gameId === null) throw new FileError(405, '不支持的文件操作。');
@@ -155,14 +156,14 @@ export function createGameMiddleware(store, boardStore, libraryStore, paylineSto
       const chunks = [];
       for await (const chunk of req) {
         size += chunk.length;
-        if (size > (libraryRoute ? 40 : 16) * 1024 * 1024) throw new FileError(413, '保存数据超过容量限制，请减小数据量。');
+        if (size > ((libraryRoute || tigerRoute) ? 40 : 16) * 1024 * 1024) throw new FileError(413, '保存数据超过容量限制，请减小数据量。');
         chunks.push(chunk);
       }
       let body;
       try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); }
       catch { throw new FileError(400, '保存内容不是有效 JSON。'); }
       if (!body || typeof body !== 'object') throw new FileError(400, '保存内容格式错误。');
-      return send(200, await target.save(gameId, body.revision, boardRoute || libraryRoute || paylineRoute ? body.file : body.files, libraryRoute?.[2]));
+      return send(200, await target.save(gameId, body.revision, boardRoute || libraryRoute || paylineRoute || tigerRoute ? body.file : body.files, libraryRoute?.[2]));
     } catch (error) {
       const status = error.status || (error.code === 'ENOENT' ? 404 : 500);
       const message = error.code === 'ENOENT' ? '游戏目录或所需 JSON 文件缺失，请检查当前游戏目录。' : error.status ? error.message : '读取或保存文件失败，请检查文件权限和本地终端日志。';

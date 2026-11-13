@@ -1,0 +1,7 @@
+import type {PaylineConfig} from '../../domain/paylines';
+export function TigerGenerationSettings({config,onChange}:{config:PaylineConfig;onChange:(c:PaylineConfig)=>void}){
+ const f=config.feature;if(!f)return null;const update=(patch:Partial<typeof f>)=>onChange({...config,feature:{...f,...patch}});
+ return <section className="payline-card"><h2>AG4 骨架生成参数</h2><label>重转空位填入概率 % <input aria-label="骨架空位填入概率" type="number" min="0" max="100" value={Number((f.fillProbability*100).toFixed(8))} onChange={e=>update({fillProbability:Number((e.target.valueAsNumber/100).toFixed(10))})}/></label><p>这里只影响骨架形态和生成效率。普通/重转中奖率与触发概率在数值分析页配置。</p>
+ <h3>重转目标符号生成权重</h3><div className="payline-actions">{config.symbols.filter(s=>s.role==='normal').map(s=><label key={s.id}>{s.name}<input aria-label={`${s.name}目标权重`} type="number" min="0" value={f.targetWeights.find(t=>t.symbolId===s.id)?.weight??0} onChange={e=>update({targetWeights:config.symbols.filter(t=>t.role==='normal').map(t=>({symbolId:t.id,weight:t.id===s.id?e.target.valueAsNumber:f.targetWeights.find(w=>w.symbolId===t.id)?.weight??0}))})}/></label>)}</div>
+ <h3>普通盘面向同列上方复制</h3><div className="payline-actions">{f.baseSpreadWeights.map((v,i)=><label key={i}>复制 {i} 格权重<input aria-label={`复制${i}格权重`} type="number" min="0" value={v} onChange={e=>update({baseSpreadWeights:f.baseSpreadWeights.map((w,j)=>j===i?e.target.valueAsNumber:w) as [number,number,number]})}/></label>)}</div><p>九格同符号时，最终验奖 ×10；没有独立的 ×10 概率或倍率表。</p></section>;
+}

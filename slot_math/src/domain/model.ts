@@ -464,3 +464,12 @@ export function classifyBasePrizes(table: WeightTable, lineCount: number) {
   }
   return tiers.map(({ weightedMultiplier, ...tier }) => ({ ...tier, probability: tier.weight / table.totalWeight, averageMultiplier: tier.weight > 0 ? weightedMultiplier / tier.weight : null }));
 }
+
+/** AG4: one paid outcome is either ordinary or one complete respin sequence. No free-spin branching. */
+export function calculateRespinModel(base:WeightTable,free:WeightTable,p:Pick<Parameters,'lineCount'|'baseSpinWinProbability'|'freeSpinWinProbability'|'freeSpinTriggerProbability'>){
+ if(!Number.isSafeInteger(p.lineCount)||p.lineCount<1||[p.baseSpinWinProbability,p.freeSpinWinProbability,p.freeSpinTriggerProbability].some(v=>!Number.isFinite(v)||v<0||v>1))throw new Error('线数须为正整数，中奖率和重转触发率须为 0～100%。');
+ const b=p.baseSpinWinProbability*base.mean/p.lineCount,r=p.freeSpinWinProbability*free.mean/p.lineCount,t=p.freeSpinTriggerProbability;
+ const baseRtp=(1-t)*b,freeRtp=t*r,totalRtp=baseRtp+freeRtp;
+ const second=((1-t)*p.baseSpinWinProbability*base.secondMoment+t*p.freeSpinWinProbability*free.secondMoment)/(p.lineCount*p.lineCount),totalVariance=Math.max(0,second-totalRtp*totalRtp);
+ return {baseRtp,freeRtp,totalRtp,totalVariance,standardDeviation:Math.sqrt(totalVariance),baseMean:base.mean/p.lineCount,respinMean:free.mean/p.lineCount,baseModeRtp:b,respinModeRtp:r,hitProbability:(1-t)*p.baseSpinWinProbability*base.positiveProbability+t*p.freeSpinWinProbability*free.positiveProbability};
+}

@@ -1,4 +1,4 @@
-import { calculateModel, parseWeightTable, type FreeTriggerRule, type Parameters, type WeightRow, type WeightTable } from './model';
+import { calculateModel, calculateRespinModel, parseWeightTable, type FreeTriggerRule, type Parameters, type WeightRow, type WeightTable } from './model';
 
 export type LoadedTable = { name: string; table: WeightTable };
 export interface FreeSpinAwardInput { spins: string; weight: string }
@@ -123,7 +123,7 @@ export function validateGameFiles(value: unknown): GameFiles {
   if (!Number.isSafeInteger(paidSpins) || (paidSpins as number) < 1 || (paidSpins as number) > 1_000_000_000) throw new Error('config.json：模拟付费局数必须为 1 到 10 亿的整数。');
   if (seed !== null && (!Number.isSafeInteger(seed) || (seed as number) < 0 || (seed as number) > 0xffffffff)) throw new Error('config.json：种子必须为 0 到 4294967295 的整数，或 null。');
   const files = value as unknown as GameFiles;
-  try { calculateModel(tables[0], tables[1], parametersFromFile(files.config.parameters)); }
+  try { (files.config.ruleType==='paylines_v1'?calculateRespinModel:calculateModel)(tables[0], tables[1], parametersFromFile(files.config.parameters)); }
   catch (error) { throw new Error(`config.json：${(error as Error).message}`); }
   return files;
 }

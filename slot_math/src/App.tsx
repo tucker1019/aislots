@@ -1,3 +1,5 @@
+import {RespinAnalysis} from './components/paylines/RespinAnalysis';
+import './components/paylines/paylines.css';
 import { BasePrizeTiers } from './components/BasePrizeTiers';
 import { PersistentDetails } from './components/PersistentDetails';
 import { StreakStrategies } from './components/StreakStrategies';
@@ -22,7 +24,7 @@ export function App() {
     <main>
       <div className="page-heading"><div><h1>理论分析</h1><p>读取游戏文件调整数值，保存后供服务端使用。</p></div></div>
       <GameFilesBar />
-      {document?.files.config.ruleType === 'paylines_v1' ? <div className="game-file-empty">连线玩法请进入 <a href="#/developer">开发页</a> 配置盘面、中奖组合和符号赔率。当前尚未接入倍率权重分析、盘面库及特殊玩法，不显示消除模型的 RTP。</div> : document ? <fieldset className="analysis-editor-fieldset" disabled={loading} aria-busy={loading}><AnalysisEditor key={`${document.gameId}:${generation}`} document={document} onDirtyChange={setAnalysisDirty} onSavingChange={setAnalysisSaving} onSaved={analysisSaved} /></fieldset> : <div className="game-file-empty">未加载配置。数值工具没有内置默认配置；数值始终从游戏 JSON 文件读取。</div>}
+      {document?.files.config.ruleType === 'paylines_v1' ? <fieldset className="analysis-editor-fieldset" disabled={loading}><RespinAnalysis key={`${document.gameId}:${generation}`} document={document} onDirtyChange={setAnalysisDirty} onSavingChange={setAnalysisSaving} onSaved={analysisSaved}/></fieldset> : document ? <fieldset className="analysis-editor-fieldset" disabled={loading} aria-busy={loading}><AnalysisEditor key={`${document.gameId}:${generation}`} document={document} onDirtyChange={setAnalysisDirty} onSavingChange={setAnalysisSaving} onSaved={analysisSaved} /></fieldset> : <div className="game-file-empty">未加载配置。数值工具没有内置默认配置；数值始终从游戏 JSON 文件读取。</div>}
     </main>
   </div>;
 }
@@ -86,7 +88,7 @@ function AnalysisEditor({ document, onDirtyChange, onSavingChange, onSaved }: { 
           <PersistentDetails className="config-group" storageId="analysis.基础配置" defaultOpen><summary>基础配置</summary>
           <section className="config-section"><label className="field"><span>玩法规则</span><select aria-label="玩法规则" value={ruleType} onChange={e => setRuleType(e.target.value)}>
             <option value="ways_cascade_v1">Ways 连续消除 · v1</option>
-            <option value="paylines_v1">连线 · v1（盘面工具待实现）</option>
+            <option value="paylines_v1">连线 · v1</option>
             <option value="cluster_cascade_v1">集群消除 · v1（盘面工具待实现）</option>
             {!['ways_cascade_v1', 'paylines_v1', 'cluster_cascade_v1'].includes(ruleType) && <option value={ruleType}>{ruleType}</option>}
           </select></label><p className="input-note">保存到当前游戏 config.json 的 ruleType，服务端据此选择开奖与验证实现。盘面工具支持 Ways 连续消除和可配置格子组合连线。</p></section>

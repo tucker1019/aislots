@@ -1,0 +1,6 @@
+import {TigerSkeletonGenerator,type TigerSkeletonOptions} from '../domain/tigerSkeleton';
+import type {PaylineConfig} from '../domain/paylines';
+const worker=self as unknown as {onmessage:((e:MessageEvent<{type:'start';config:PaylineConfig;options:TigerSkeletonOptions}|{type:'stop'}>)=>void)|null;postMessage(v:unknown):void};
+let generator:TigerSkeletonGenerator|null=null,stop=false,started=0,last=0;
+worker.onmessage=({data})=>{if(data.type==='stop'){stop=true;return;}try{generator=new TigerSkeletonGenerator(data.config,data.options);stop=false;started=performance.now();last=0;tick();}catch(e){worker.postMessage({type:'error',message:(e as Error).message});}};
+function tick(){if(!generator)return;try{const deadline=performance.now()+25;while(!stop&&!generator.done&&performance.now()<deadline)generator.step();const elapsedMs=performance.now()-started;if(stop||generator.done){worker.postMessage({type:'complete',result:generator.result(),elapsedMs});generator=null;return;}if(performance.now()-last>=250){worker.postMessage({type:'progress',stats:{...generator.stats},elapsedMs});last=performance.now();}setTimeout(tick,0);}catch(e){worker.postMessage({type:'error',message:(e as Error).message});generator=null;}}

@@ -48,3 +48,7 @@ export async function savePaylines(gameId: string, revision: string, file: impor
   validatePaylines(file);
   return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`, {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({revision, file})});
 }
+
+export async function saveTigerLibrary(gameId:string,revision:string,file:import('../domain/tigerSkeleton').TigerSkeletonLibrary & {gameRevision:string}):Promise<{path:string;bytes:number;retained:number}> {
+  return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines/library`, {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
+}
