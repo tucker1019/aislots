@@ -34,6 +34,8 @@ sudo docker compose up -d --build --wait --wait-timeout 180
 sudo docker compose ps
 ```
 
+容器重建后执行 `sudo docker compose exec -T web nginx -t` 和 `sudo docker compose exec -T web nginx -s reload`，刷新反向代理缓存的容器地址，再验证公网 API；容器自身 healthy 不能代替代理检查。
+
 升级前运行 `sudo ./backup.sh`，保留上一版本的包；不运行 `down -v`、不删除数据卷。迁移由服务启动执行，回滚前检查数据库迁移是否向后兼容。
 
 ## 运维
