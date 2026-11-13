@@ -310,6 +310,7 @@ func (s *Service) advanceTx(ctx context.Context, tx Tx, session Session, gameID,
 			frame.Board = display
 			frame.PreviewRows = 1
 		}
+		frame.BottomSymbols = bottomSymbols(gameID, id, cursor.SpinIndex, result.Mode == "free")
 		frame.AwardedFreeSpins = result.AwardedFreeSpins
 		spinWin := int64(0)
 		for _, amount := range spin.StepAmounts[:min(cursor.StepIndex, len(spin.StepAmounts))] {

@@ -193,3 +193,9 @@ curl -H 'Authorization: Bearer <accessToken>' \
 ## 内部整局执行
 
 `POST /internal/auto-round` 仅供持有服务凭据的大厅调用，协议见 `protos/auto_round.proto`。复用正常 spin、钱包结算与回放，每局返回完成回执及 betId；大厅使用原 requestId 重试恢复，不影响普通玩家逐轮接口。运行说明见大厅 `docs/experience-accounts.md`。
+
+### 底部显示格子：`bottomSymbols`
+
+AG1/AG2 每帧返回 5 个、AG3 返回 6 个服务端符号 ID，按列从左到右，对应有效盘面下方露出的格子。它不属于有效盘面，也不是顶部预览格，不参与验奖。顶部仍通过 `board` / `previewRows` 返回并参与补落。
+
+同一 `betId + spinIndex` 的连续消除保持底部不变；新转轴旋转生成对应的一组。该字段随结算帧持久化，spin、请求重试、`state.lastFrame`、历史及公开回放透传相同值。旧帧缺少此字段时客户端继续原有随机兼容，不回填历史。`state` 没有任何历史帧时仍不伪造 `lastFrame`。

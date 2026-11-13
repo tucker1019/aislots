@@ -69,6 +69,7 @@ type Cursor struct {
 	StepIndex int `json:"stepIndex"`
 }
 type Frame struct {
+	BottomSymbols    []int        `json:"bottomSymbols,omitempty"`
 	SpinWinAmount    int64        `json:"spinWinAmount,omitempty"`
 	AwardedFreeSpins int          `json:"awardedFreeSpins,omitempty"`
 	CascadeFactors   []string     `json:"cascadeFactors,omitempty"`
