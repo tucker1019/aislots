@@ -1,0 +1,50 @@
+{
+  "method": "exhaustive-targeted-skeletons-v1",
+  "sourceLibrary": "game_libraries/AG4/base/2026-11-13T10-23-14-757Z-5b2f7782/library.json",
+  "examinedBoards": 40353607,
+  "addedTargets": [
+    39,
+    131,
+    138,
+    153,
+    160,
+    170,
+    220,
+    230,
+    233,
+    273,
+    356,
+    365,
+    370,
+    450,
+    460,
+    503,
+    510
+  ],
+  "addedSkeletons": {
+    "39": 100,
+    "131": 100,
+    "138": 100,
+    "153": 100,
+    "160": 100,
+    "170": 48,
+    "220": 100,
+    "230": 100,
+    "233": 100,
+    "273": 100,
+    "356": 100,
+    "365": 100,
+    "370": 100,
+    "450": 100,
+    "460": 100,
+    "503": 14,
+    "510": 50
+  },
+  "totalAdded": 1512,
+  "explanation": "Original random-generation counters retained; generated/wins/count increased only by retained, independently verified targeted constructions. Enumerated boards are recorded separately.",
+  "coverage": {
+    "required": 135,
+    "covered": 135,
+    "missing": []
+  }
+}
