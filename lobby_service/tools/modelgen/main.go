@@ -34,6 +34,9 @@ func main() {
 		}
 		g.GenerateModel(table)
 	}
+	g.GenerateModel("lobby_admin_member_totals")
+	g.GenerateModel("lobby_admin_game_totals")
+	g.GenerateModel("lobby_admin_overview_initialized")
 	g.GenerateModel("lobby_experience_accounts")
 	g.GenerateModel("lobby_experience_schedule")
 	g.GenerateModel("lobby_turnover_activation")

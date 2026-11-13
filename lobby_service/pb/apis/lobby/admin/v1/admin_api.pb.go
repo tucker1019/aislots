@@ -481,6 +481,12 @@ type OverviewResponse struct {
 	PendingWithdrawals int64                  `protobuf:"varint,3,opt,name=pending_withdrawals,json=pendingWithdrawals,proto3" json:"pending_withdrawals,omitempty"`
 	TodayDeposits      string                 `protobuf:"bytes,4,opt,name=today_deposits,json=todayDeposits,proto3" json:"today_deposits,omitempty"`
 	TodayWithdrawals   string                 `protobuf:"bytes,5,opt,name=today_withdrawals,json=todayWithdrawals,proto3" json:"today_withdrawals,omitempty"`
+	RealMembers        int64                  `protobuf:"varint,6,opt,name=real_members,json=realMembers,proto3" json:"real_members,omitempty"`
+	ExperienceMembers  int64                  `protobuf:"varint,7,opt,name=experience_members,json=experienceMembers,proto3" json:"experience_members,omitempty"`
+	RealBet            string                 `protobuf:"bytes,8,opt,name=real_bet,json=realBet,proto3" json:"real_bet,omitempty"`
+	RealWin            string                 `protobuf:"bytes,9,opt,name=real_win,json=realWin,proto3" json:"real_win,omitempty"`
+	ExperienceBet      string                 `protobuf:"bytes,10,opt,name=experience_bet,json=experienceBet,proto3" json:"experience_bet,omitempty"`
+	ExperienceWin      string                 `protobuf:"bytes,11,opt,name=experience_win,json=experienceWin,proto3" json:"experience_win,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -546,6 +552,48 @@ func (x *OverviewResponse) GetTodayDeposits() string {
 func (x *OverviewResponse) GetTodayWithdrawals() string {
 	if x != nil {
 		return x.TodayWithdrawals
+	}
+	return ""
+}
+
+func (x *OverviewResponse) GetRealMembers() int64 {
+	if x != nil {
+		return x.RealMembers
+	}
+	return 0
+}
+
+func (x *OverviewResponse) GetExperienceMembers() int64 {
+	if x != nil {
+		return x.ExperienceMembers
+	}
+	return 0
+}
+
+func (x *OverviewResponse) GetRealBet() string {
+	if x != nil {
+		return x.RealBet
+	}
+	return ""
+}
+
+func (x *OverviewResponse) GetRealWin() string {
+	if x != nil {
+		return x.RealWin
+	}
+	return ""
+}
+
+func (x *OverviewResponse) GetExperienceBet() string {
+	if x != nil {
+		return x.ExperienceBet
+	}
+	return ""
+}
+
+func (x *OverviewResponse) GetExperienceWin() string {
+	if x != nil {
+		return x.ExperienceWin
 	}
 	return ""
 }
@@ -1315,13 +1363,20 @@ const file_apis_lobby_admin_v1_admin_api_proto_rawDesc = "" +
 	"request_id\x18\x05 \x01(\tR\trequestId\"C\n" +
 	"\x0eReviewResponse\x12\x19\n" +
 	"\border_id\x18\x01 \x01(\tR\aorderId\x12\x16\n" +
-	"\x06status\x18\x02 \x01(\tR\x06status\"\xdc\x01\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\"\xb2\x03\n" +
 	"\x10OverviewResponse\x12\x18\n" +
 	"\amembers\x18\x01 \x01(\x03R\amembers\x12)\n" +
 	"\x10pending_deposits\x18\x02 \x01(\x03R\x0fpendingDeposits\x12/\n" +
 	"\x13pending_withdrawals\x18\x03 \x01(\x03R\x12pendingWithdrawals\x12%\n" +
 	"\x0etoday_deposits\x18\x04 \x01(\tR\rtodayDeposits\x12+\n" +
-	"\x11today_withdrawals\x18\x05 \x01(\tR\x10todayWithdrawals\"\xfa\x01\n" +
+	"\x11today_withdrawals\x18\x05 \x01(\tR\x10todayWithdrawals\x12!\n" +
+	"\freal_members\x18\x06 \x01(\x03R\vrealMembers\x12-\n" +
+	"\x12experience_members\x18\a \x01(\x03R\x11experienceMembers\x12\x19\n" +
+	"\breal_bet\x18\b \x01(\tR\arealBet\x12\x19\n" +
+	"\breal_win\x18\t \x01(\tR\arealWin\x12%\n" +
+	"\x0eexperience_bet\x18\n" +
+	" \x01(\tR\rexperienceBet\x12%\n" +
+	"\x0eexperience_win\x18\v \x01(\tR\rexperienceWin\"\xfa\x01\n" +
 	"\x06Member\x12\x10\n" +
 	"\x03uid\x18\x01 \x01(\tR\x03uid\x12\x18\n" +
 	"\aaccount\x18\x02 \x01(\tR\aaccount\x12\x1a\n" +

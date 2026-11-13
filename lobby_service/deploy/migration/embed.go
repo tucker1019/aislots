@@ -80,5 +80,8 @@ var experienceGamesSchema string
 //go:embed 027_game_settlement_lookup.sql
 var gameSettlementLookupSchema string
 
+//go:embed 028_admin_overview_totals.sql
+var adminOverviewTotalsSchema string
+
 // Schema applies initial schema and backward-compatible upgrades in order.
-var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema + "\n" + gameSchema + "\n" + uidSchema + "\n" + gameStatisticsSchema + "\n" + inviteSchema + "\n" + inviteChestSchema + "\n" + rankReplaySchema + "\n" + agentSchema + "\n" + payoutSchema + "\n" + withdrawalSchema + "\n" + turnoverSchema + "\n" + accountNicknameSchema + "\n" + experienceSchema + "\n" + experiencePoolSchema + "\n" + adminSchema + "\n" + adminConfigSchema + "\n" + returnRateSchema + "\n" + experienceGamesSchema + "\n" + gameSettlementLookupSchema
+var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema + "\n" + gameSchema + "\n" + uidSchema + "\n" + gameStatisticsSchema + "\n" + inviteSchema + "\n" + inviteChestSchema + "\n" + rankReplaySchema + "\n" + agentSchema + "\n" + payoutSchema + "\n" + withdrawalSchema + "\n" + turnoverSchema + "\n" + accountNicknameSchema + "\n" + experienceSchema + "\n" + experiencePoolSchema + "\n" + adminSchema + "\n" + adminConfigSchema + "\n" + returnRateSchema + "\n" + experienceGamesSchema + "\n" + gameSettlementLookupSchema + "\n" + adminOverviewTotalsSchema

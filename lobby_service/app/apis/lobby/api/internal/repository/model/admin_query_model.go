@@ -20,6 +20,12 @@ type AdminOrderCriteria struct {
 	Limit               int
 }
 type AdminOverview struct {
+	RealMembers        int64  `json:"realMembers"`
+	ExperienceMembers  int64  `json:"experienceMembers"`
+	RealBet            string `json:"realBet"`
+	RealWin            string `json:"realWin"`
+	ExperienceBet      string `json:"experienceBet"`
+	ExperienceWin      string `json:"experienceWin"`
 	Members            int64  `json:"members"`
 	PendingDeposits    int64  `json:"pendingDeposits"`
 	PendingWithdrawals int64  `json:"pendingWithdrawals"`
@@ -87,7 +93,15 @@ func (m AdminQueryModel) Overview(ctx context.Context, now time.Time, loc *time.
 	start := time.Date(local.Year(), local.Month(), local.Day(), 0, 0, 0, 0, loc)
 	end := start.AddDate(0, 0, 1)
 	var v AdminOverview
-	e := m.DB.WithContext(ctx).Raw(`SELECT (SELECT count(*) FROM lobby_users) members,(SELECT count(*) FROM lobby_recharge_orders WHERE status='pending') pending_deposits,(SELECT count(*) FROM lobby_withdrawal_orders WHERE status='pending') pending_withdrawals,(SELECT coalesce(sum(amount),0)::text FROM lobby_recharge_orders WHERE status='success' AND settled_at>=? AND settled_at<?) today_deposits,(SELECT coalesce(sum(amount),0)::text FROM lobby_withdrawal_orders WHERE status='success' AND settled_at>=? AND settled_at<?) today_withdrawals`, start, end, start, end).Scan(&v).Error
+	e := m.DB.WithContext(ctx).Raw(`SELECT
+ (SELECT coalesce(sum(members),0) FROM lobby_admin_member_totals) members,
+ (SELECT coalesce(sum(members),0) FROM lobby_admin_member_totals WHERE account_type='real') real_members,
+ (SELECT coalesce(sum(members),0) FROM lobby_admin_member_totals WHERE account_type='experience') experience_members,
+ (SELECT coalesce(sum(bet_amount),0)::text FROM lobby_admin_game_totals WHERE account_type='real') real_bet,
+ (SELECT coalesce(sum(win_amount),0)::text FROM lobby_admin_game_totals WHERE account_type='real') real_win,
+ (SELECT coalesce(sum(bet_amount),0)::text FROM lobby_admin_game_totals WHERE account_type='experience') experience_bet,
+ (SELECT coalesce(sum(win_amount),0)::text FROM lobby_admin_game_totals WHERE account_type='experience') experience_win,
+(SELECT count(*) FROM lobby_recharge_orders WHERE status='pending') pending_deposits,(SELECT count(*) FROM lobby_withdrawal_orders WHERE status='pending') pending_withdrawals,(SELECT coalesce(sum(amount),0)::text FROM lobby_recharge_orders WHERE status='success' AND settled_at>=? AND settled_at<?) today_deposits,(SELECT coalesce(sum(amount),0)::text FROM lobby_withdrawal_orders WHERE status='success' AND settled_at>=? AND settled_at<?) today_withdrawals`, start, end, start, end).Scan(&v).Error
 	return v, e
 }
 func (m AdminQueryModel) memberQuery(ctx context.Context) *gorm.DB {

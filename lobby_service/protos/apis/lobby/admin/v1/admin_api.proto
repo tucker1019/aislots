@@ -9,7 +9,7 @@ message Query {string q=1;string cursor=2;int32 limit=3;string kind=4;string sta
 message MemberRequest {string uid=1;}
 message ReviewRequest {string kind=1;string order_id=2;string decision=3;string reason=4;string request_id=5;}
 message ReviewResponse {string order_id=1;string status=2;}
-message OverviewResponse {int64 members=1;int64 pending_deposits=2;int64 pending_withdrawals=3;string today_deposits=4;string today_withdrawals=5;}
+message OverviewResponse {int64 members=1;int64 pending_deposits=2;int64 pending_withdrawals=3;string today_deposits=4;string today_withdrawals=5;int64 real_members=6;int64 experience_members=7;string real_bet=8;string real_win=9;string experience_bet=10;string experience_win=11;}
 message Member {string uid=1;string account=2;string nickname=3;int32 avatar_id=4;int32 vip_level=5;string coins=6;string created_at=7;optional string last_login_at=8;}
 message MembersResponse {repeated Member items=1;string next_cursor=2;}
 message Wallet {string coins=1;string turnover_required=2;}
