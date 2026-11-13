@@ -21,6 +21,6 @@ export function isGameId(value: string): value is GameId {
 
 export function gameDisplay(gameId: string, entry?: LobbyGame) {
  const fallback = gameId === 'AG1' ? lobbyGames.AG1 : gameId === 'AG2' ? lobbyGames.AG2 : undefined;
- const title = entry ? (getLocale() === 'en-US' && entry.nameEn ? entry.nameEn : entry.name) : fallback ? t(fallback.titleKey) : gameId;
+ const title = entry ? (getLocale() !== 'zh-TW' && entry.nameEn ? entry.nameEn : entry.name) : fallback ? t(fallback.titleKey) : gameId;
  return { title, frameTitle: gameId === 'AG1' ? `AG1 ${title}` : title, cover: entry?.cover ?? fallback?.cover ?? '', provider: entry?.provider ?? 'AG' };
 }

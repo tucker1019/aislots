@@ -25,8 +25,8 @@ it('個人報表全部服務端指標都有英文文案',()=>{
  expect(gameLabel('AG1','服務端名稱變化')).toBe('Mahjong Ways');
 });
 
-it('only Traditional Chinese and English are selectable; previous Simplified preference migrates',async()=>{
- expect(languages.map(item=>item.id)).toEqual(['zh-TW','en-US']);
+it('registered languages are selectable; previous Simplified preference migrates',async()=>{
+ expect(languages.map(item=>item.id)).toEqual(['zh-TW','en-US','id-ID']);
  expect(isLocale('zh-CN')).toBe(false);expect(resolveLocale('zh-CN')).toBe('zh-TW');
  expect(resolveLocale('en-US')).toBe('en-US');
  localStorage.setItem('aislots-language','zh-CN');vi.resetModules();

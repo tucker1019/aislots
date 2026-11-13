@@ -1,11 +1,14 @@
 import zhTW from 'antd/locale/zh_TW';
 import enUS from 'antd/locale/en_US';
+import idID from 'antd/locale/id_ID';
 import zh from './locales/zh-TW.json';
 import en from './locales/en-US.json';
+import id from './locales/id-ID.json';
 // Add a catalog, Ant Design locale and language label here to register a language.
 export const languages = [
   {id:'zh-TW',labelKey:'language.chinese',messages:zh,antd:zhTW},
   {id:'en-US',labelKey:'language.english',messages:en,antd:enUS},
+  {id:'id-ID',labelKey:'language.indonesian',messages:id,antd:idID},
 ] as const;
 export type Locale=typeof languages[number]['id'];
 export type MessageKey=keyof typeof zh;

@@ -13,7 +13,7 @@ export function OffersPage() {
     {offerCategories.map(item=><button key={item} type="button" aria-pressed={category===item} onClick={()=>setCategory(item)}>{t(`offers.${item}`)}</button>)}
    </nav>
    <section className="offers-posters" aria-label={t('copy.offers')}>
-    {posters.map((poster,index)=><img key={`${poster.id}-${locale}`} src={`/assets/lobby/offers/${poster.id}-${locale==='en-US'?'en':'zh-tw'}.webp`} alt={t(poster.label)} width={960} height={320} loading={index<2?'eager':'lazy'} decoding="async"/>)}
+    {posters.map((poster,index)=><img key={`${poster.id}-${locale}`} src={`/assets/lobby/offers/${poster.id}-${locale==='zh-TW'?'zh-tw':'en'}.webp`} alt={t(poster.label)} width={960} height={320} loading={index<2?'eager':'lazy'} decoding="async"/>)}
    </section>
   </div>
  </RecordsLayout>;

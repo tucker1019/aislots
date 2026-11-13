@@ -72,7 +72,7 @@ export function HomeContent({ onComingSoon }: { onComingSoon: () => void }) {
     <section className="home-game-list" aria-label={t('copy.gameList')}>
       <div className="home-game-grid">
         {visibleGames.map((game, index) => (
-          <GameTile key={game.id} cover={game.cover} label={game.id === 'AG1' ? t('copy.enterMahjongWays') : (getLocale() === 'en-US' && game.nameEn ? game.nameEn : game.name)} onEnter={game.enabled ? () => navigateLobby('game', { gameId: game.id }) : onComingSoon} lazy={index >= 12 && index < GAMES_PER_BATCH} />
+          <GameTile key={game.id} cover={game.cover} label={game.id === 'AG1' ? t('copy.enterMahjongWays') : (getLocale() !== 'zh-TW' && game.nameEn ? game.nameEn : game.name)} onEnter={game.enabled ? () => navigateLobby('game', { gameId: game.id }) : onComingSoon} lazy={index >= 12 && index < GAMES_PER_BATCH} />
         ))}
         {catalog.isPending && <span className="home-game-catalog-state" role="status" aria-label={t('copy.loading')}><Spin size="small" /></span>}
         {catalog.isError && <div className="home-game-catalog-state"><NetworkError onRetry={() => void catalog.refetch()} disabled={catalog.isFetching}/></div>}

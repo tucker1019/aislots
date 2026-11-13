@@ -6,11 +6,18 @@ import {fileURLToPath,URL} from 'node:url';
 import ts from 'typescript';
 const root=fileURLToPath(new URL('../src',import.meta.url));
 const issues=[];
-const catalogs=['zh-TW','en-US'].map(locale=>({locale,messages:JSON.parse(fs.readFileSync(path.join(root,'i18n/locales',`${locale}.json`),'utf8'))}));
+const catalogs=fs.readdirSync(path.join(root,'i18n/locales')).filter(file=>file.endsWith('.json')).map(file=>file.slice(0,-5)).map(locale=>({locale,messages:JSON.parse(fs.readFileSync(path.join(root,'i18n/locales',`${locale}.json`),'utf8'))}));
 for(const {locale,messages} of catalogs){
  for(const key of Object.keys(messages))if(!/^[A-Za-z][A-Za-z0-9_-]*(?:\.[A-Za-z][A-Za-z0-9_-]*)*$/.test(key))issues.push(`${locale}: use an English semantic message key: ${key}`);
 }
-if(JSON.stringify(Object.keys(catalogs[0].messages).sort())!==JSON.stringify(Object.keys(catalogs[1].messages).sort()))issues.push('locale message keys must match');
+for(const {locale,messages} of catalogs) {
+ if(JSON.stringify(Object.keys(catalogs[0].messages).sort())!==JSON.stringify(Object.keys(messages).sort()))issues.push(`${locale}: locale message keys must match`);
+ for(const [key,value] of Object.entries(messages)) {
+  const base=catalogs[0].messages[key];
+  if(typeof value!=='string'||!value.trim())issues.push(`${locale}: empty message ${key}`);
+  else if(typeof base==='string'&&JSON.stringify([...value.matchAll(/\{(\w+)\}/g)].map(x=>x[1]).sort())!==JSON.stringify([...base.matchAll(/\{(\w+)\}/g)].map(x=>x[1]).sort()))issues.push(`${locale}: interpolation mismatch ${key}`);
+ }
+}
 
 function scan(directory){
  for(const entry of fs.readdirSync(directory,{withFileTypes:true})){
