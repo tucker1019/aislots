@@ -20,9 +20,8 @@ test('HTML dialogs dispatch once, clean up and never insert message HTML',async(
  assert.equal(nodes.find(n=>n.tag==='p').textContent,'<img src=x>');
  const b=nodes.find(n=>n.tag==='button');b.handlers.click();b.handlers.click();assert.equal(calls,1);close();
 });
-test('funds, unfinished round and busy-exit warnings use HTML rather than missing prefab',()=>{
+test('game warnings use HTML rather than missing prefabs',()=>{
  const mgr=read('wbsgame/mgr/WBSLoadManager.ts');assert.match(mgr,/showGameDialog/);assert.doesNotMatch(mgr,/AlertLayer|prefab\/com\/Toast/);
  assert.match(read('wbsgame/view/WBSOptLayer.ts'),/showAlert\('余额不足'/);
- assert.match(read('wbsgame/view/WBSGameLayer.ts'),/showAlert\('继续未完成的游戏'/);
  assert.match(read('network/error_overlay.ts'),/showGameDialog/);
 });

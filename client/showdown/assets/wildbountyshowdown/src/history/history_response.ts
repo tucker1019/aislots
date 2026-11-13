@@ -22,6 +22,9 @@ export function historyListResponse(value: unknown): HistoryList {
 }
 export function historyReplayResponse(value: unknown): HistoryReplay {
     if (!object(value) || !record(value.bet) || !Number.isInteger(value.amountScale) ||
+        (value.startBoard !== undefined && (!Array.isArray(value.startBoard) || value.startBoard.length !== 6)) ||
+        (value.startBottomSymbols !== undefined && (!value.startBoard || !Array.isArray(value.startBottomSymbols) ||
+            value.startBottomSymbols.length !== 6 || !value.startBottomSymbols.every(n => Number.isSafeInteger(n)))) ||
         !Array.isArray(value.frames) || !value.frames.every(frame => object(frame) &&
             amount(frame.chargeAmount) && amount(frame.profitAmount) &&
             Array.isArray(frame.payouts) && Array.isArray(frame.board) && Array.isArray(frame.wins))) {

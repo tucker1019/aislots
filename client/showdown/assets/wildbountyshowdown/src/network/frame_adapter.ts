@@ -1,7 +1,7 @@
 import { Frame, ViewAward } from './game_types';
 export const HEIGHTS = [3, 4, 5, 5, 4, 3];
 export const INDICES = [[0, 6, 12], [1, 7, 13, 18], [2, 8, 14, 19, 22], [3, 9, 15, 20, 23], [4, 10, 16, 21], [5, 11, 17]];
-export function activeColumns(frame: Frame): number[][] {
+export function activeColumns(frame: Pick<Frame, 'board' | 'previewRows'>): number[][] {
     if (frame.board.length !== 6)
         throw Error('Invalid board columns');
     return frame.board.map((col, c) => { const active = col.slice(frame.previewRows || 0); if (active.length !== HEIGHTS[c])

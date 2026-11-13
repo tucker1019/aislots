@@ -138,14 +138,13 @@ export class WBSGameLayer extends WBSBaseLayer {
             if(state.hasNext){
                 this.isGameEnd=false;
                 this.optCtrl.updateBtnState(false);
-                const prompt = () => {
-                    if (this.isValid) void wbsgame.loadMgr.showAlert('继续未完成的游戏', () => { void this.centerRollCtrl.resumeFrame(); }, '你有一局尚未结束的游戏，点击继续播放。', '继续');
+                const resume = () => {
+                    if (this.isValid) void this.centerRollCtrl.resumeFrame();
                 };
                 if (document.getElementById('AG3LoadingCover')) {
-                    const revealed = () => this.scheduleOnce(prompt, 2);
-                    window.addEventListener('aislots-game-revealed', revealed, {once:true});
-                    this.node.once(Node.EventType.NODE_DESTROYED, () => window.removeEventListener('aislots-game-revealed', revealed));
-                } else prompt();
+                    window.addEventListener('aislots-game-revealed', resume, {once:true});
+                    this.node.once(Node.EventType.NODE_DESTROYED, () => window.removeEventListener('aislots-game-revealed', resume));
+                } else resume();
             }
             wbsgame.platformMgr.loadingHide();
         },0.1);
@@ -288,7 +287,7 @@ export class WBSGameLayer extends WBSBaseLayer {
         };
         this.replayControls = new ReplayControls(canvas, session.data.bet.betId, exit, {share}, () => {
             if (!this.isGameEnd) return;
-            session.restart(); void this.beginNativeReplay();
+            session.restart(); void this.beginNativeReplay(true);
         });
         // Keep native Collect / skip-animation buttons usable; wager handlers are guarded read-only.
         if (channel) window.parent.postMessage({type:'ag3-replay-playing',channel},location.origin);
@@ -297,11 +296,17 @@ export class WBSGameLayer extends WBSBaseLayer {
             this.replayControls?.progress(session.index,session.length,frame.mode === 'free');
         };
     }
-    private async beginNativeReplay() {
+    private async beginNativeReplay(restarting = false) {
         if (!this.isValid || !wbsgame.sendMgr.replaySession || wbsgame.sendMgr.replaySession.index !== -1) return;
         this.isGameEnd = false;
         const mgr = wbsgame.gameMgr;
         mgr.reset();
+        const session = wbsgame.sendMgr.replaySession;
+        if (restarting) {
+            this.centerRollCtrl.showReplayOpening(session.data);
+            if (session.data.startBoard) await new Promise<void>(resolve => setTimeout(resolve, 350));
+        }
+        if (!this.isValid || wbsgame.sendMgr.replaySession !== session) return;
         const frame = await wbsgame.sendMgr.nextFrame();
         if (!this.isValid) return;
         mgr.setState(frame.mode === 'free' ? WBSSTATE.FREEING : WBSSTATE.RUNING);

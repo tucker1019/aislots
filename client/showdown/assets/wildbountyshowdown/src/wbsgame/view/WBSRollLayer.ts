@@ -1,8 +1,9 @@
+import type { HistoryReplay } from '../../history/history_types';
 import { restoredFree } from '../../network/display';
 import { _decorator, find, UITransform, Vec3, tween, instantiate, Node, Tween, sp, Animation, isValid, NodeEventType, Sprite, UIOpacity } from "cc";
 import { consoleLog, findValueIn2DArray, } from "../../xtools/WBSUtils";
 import { xNodeWBS } from "../../xtools/xNodeWBS";
-import { adaptFrame } from "../../network/frame_adapter";
+import { activeColumns, adaptFrame } from "../../network/frame_adapter";
 import { describeFrame, FrameGate } from "../../network/round_controller";
 import { WBSConstant, WBSSTATE } from "../constant/WBSConstant";
 import { WBSAwardlAni } from "./WBSAwardlAni";
@@ -64,10 +65,30 @@ export class WBSRollLayer extends WBSBaseLayer {
         nodeList.active = false
     }
 
+    private static readonly initialIcons = [[7, 3, 8], [5, 10, 1, 4], [2, 1004, 1001, 9, 6], [2, 1004, 1001, 9, 6], [5, 10, 1, 4], [7, 3, 8]];
+
+    private openingReels(data?: HistoryReplay) {
+        const columns = data?.startBoard
+            ? activeColumns({board: data.startBoard, previewRows: data.startPreviewRows})
+            : WBSRollLayer.initialIcons;
+        const bottom = data?.startBottomSymbols;
+        if (bottom !== undefined && (bottom.length !== 6 || bottom.some(value =>
+            !Number.isSafeInteger(value) || value % 1000 < 1 || value % 1000 > 8 || value >= 2000))) {
+            throw Error('服务端底部格子无效');
+        }
+        return {columns, bottom};
+    }
+
+    showReplayOpening(data: HistoryReplay) {
+        const {columns, bottom} = this.openingReels(data);
+        this.cellLayerCtrlList.forEach((col, c) => col.creatOne(columns[c],
+            bottom?.[c] ?? wbsgame.gameMgr.getRandomType()));
+    }
+
     initCellItem() {
         let nodeList = this.node.getChildByName("cellLayer");
         nodeList.active = true;
-        let icons = [[7, 3, 8], [5, 10, 1, 4], [2, 1004, 1001, 9, 6], [2, 1004, 1001, 9, 6], [5, 10, 1, 4], [7, 3, 8]];
+        const {columns, bottom} = this.openingReels(wbsgame.sendMgr.replaySession?.data);
 
         for (let index = 1; index <= 6; index++) {
 
@@ -76,7 +97,7 @@ export class WBSRollLayer extends WBSBaseLayer {
             this.cellLayerCtrlList.push(cellLayerCtrl);
 
             cellLayerCtrl.init(index - 1, this);
-            cellLayerCtrl.creatOne(icons[index - 1]);
+            cellLayerCtrl.creatOne(columns[index - 1], bottom?.[index - 1]);
         }
     }
 
@@ -340,7 +361,7 @@ export class WBSRollLayer extends WBSBaseLayer {
         wbsgame.gamelayer.isGameEnd=false;
         wbsgame.gamelayer.optCtrl.updateBtnState(false);
         this.syncMultiplier(false);
-        // A refresh restores the settled board; only explicit Continue starts its remaining animation.
+        // Continue from the restored settlement frame.
         this.checkItem();
     }
 

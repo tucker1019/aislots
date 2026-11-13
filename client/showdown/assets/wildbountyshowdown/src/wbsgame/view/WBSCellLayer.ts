@@ -55,7 +55,7 @@ export class WBSCellLayer extends Component {
         this._tag = this.indexLayer * 10;
     }
 
-    creatOne(datas: number[]) {
+    creatOne(datas: number[], bottomSymbol?: number) {
         this.node.removeAllChildren();
         for (let i = 0; i < this.rowCnt + 2; i++) {  // 上下都余一个
             let node = instantiate(wbsgame.gamelayer.CellPrefab);
@@ -75,7 +75,7 @@ export class WBSCellLayer extends Component {
                 }
             } else {
                 node.active = false;
-                const extraType=i===0 ? wbsgame.gameMgr.getBottomSymbol(this.indexLayer) : wbsgame.gameMgr.getRandomType();
+                const extraType=i===0 ? (bottomSymbol ?? wbsgame.gameMgr.getBottomSymbol(this.indexLayer)) : wbsgame.gameMgr.getRandomType();
                 node.getComponent(WBSCellItem).initTypeView(extraType);
                 node["type"] = extraType;
                 node["sortIndex"] = -1;
