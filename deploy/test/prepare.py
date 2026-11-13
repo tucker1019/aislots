@@ -17,7 +17,7 @@ if u.scheme not in ('http', 'https') or not u.netloc or u.username or u.password
 origin = args.origin.rstrip('/')
 out = Path(args.output).resolve()
 out.mkdir(parents=True, exist_ok=False)
-for name in ('compose.yaml', 'Dockerfile.service', 'nginx.conf', '.env.example', 'backup.sh', 'renew-certificate.sh', 'enable-https.py', 'README.md'):
+for name in ('compose.yaml', 'Dockerfile.service', '.dockerignore', 'nginx.conf', '.env.example', 'backup.sh', 'renew-certificate.sh', 'enable-https.py', 'README.md'):
     shutil.copy2(repo / 'deploy/test' / name, out / name)
 payload = out / 'payload'
 payload.mkdir()

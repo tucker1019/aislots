@@ -1,0 +1,7 @@
+**
+!Dockerfile.service
+!payload/
+!payload/bin/
+!payload/bin/lobby
+!payload/bin/admin
+!payload/bin/game
