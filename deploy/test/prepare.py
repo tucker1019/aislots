@@ -24,8 +24,11 @@ payload.mkdir()
 shutil.copytree(repo / 'lobby_service/etc', payload / 'lobby-etc')
 games_path = payload / 'lobby-etc/games.json'
 games = json.loads(games_path.read_text())
-game_paths = {'AG1': 'ag1', 'AG2': 'ag2', 'AG3': 'ag3', 'AG4': 'ag4'}
-for name, path in game_paths.items():
+projects = ('mahjongway', 'mahjongway2', 'showdown', 'fortunetiger',
+            'fortunerabbit', 'fortunemouse', 'fortuneox', 'fortunedragon')
+game_paths = {f'AG{i}': project for i, project in enumerate(projects, start=1)}
+for name in game_paths:
+    path = name.lower()
     game = games['games'][name]
     game['url'] = origin + '/games/' + path + '/'
     game['apiUrl'] = 'http://game:8080'
@@ -36,20 +39,33 @@ invite['baseUrl'] = origin + '/'
 invite_path.write_text(json.dumps(invite, ensure_ascii=False, indent=2) + '\n')
 shutil.copytree(repo / 'slots_lobby/dist', payload / 'www')
 shutil.copytree(repo / 'slots_lobby_admin/dist', payload / 'www/ops')
-for project, path in [('mahjongway', 'ag1'), ('mahjongway2', 'ag2'), ('showdown', 'ag3'), ('fortunetiger', 'ag4')]:
-    shutil.copytree(repo / 'client' / project / 'build/web-mobile', payload / 'www/games' / path)
+for game, project in game_paths.items():
+    shutil.copytree(repo / 'client' / project / 'build/web-mobile', payload / 'www/games' / game.lower())
 shutil.copytree(repo / 'game_libraries/AG1', payload / 'game-libraries/AG1')
 shutil.copytree(repo / 'game_libraries/AG2', payload / 'game-libraries/AG2')
 shutil.copytree(repo / 'game_libraries/AG3', payload / 'game-libraries/AG3')
-shutil.copytree(repo / 'slots_service/testdata/deployments', payload / 'game-data/deployments')
+deployments = repo / 'slots_service/testdata/deployments'
+for version in sorted(deployments.iterdir()):
+    if not version.is_dir():
+        continue
+    for game in game_paths.keys() & {path.name for path in version.iterdir() if path.is_dir()}:
+        shutil.copytree(version / game, payload / 'game-data/deployments' / version.name / game)
 shutil.copytree(repo / 'slots_service/testdata/integration/AG1', payload / 'game-data/integration/AG1')
 configs = payload / 'game-configs'
 configs.mkdir()
 config = json.loads((repo / 'slots_service/configs/server.lobby.json').read_text())
+if set(config['lobby']['gameIds']) != set(game_paths):
+    raise SystemExit('lobby gameIds must match the published game clients')
 config['http']['address'] = '0.0.0.0:8080'
 config['allowedOrigins'] = [origin]
 config['lobby']['url'] = 'http://lobby:8081'
 (configs / 'server.test-cloud.json').write_text(json.dumps(config, ensure_ascii=False, indent=2) + '\n')
-shutil.copy2(repo / 'slots_service/configs/bets.test.json', configs)
+policies = json.loads((repo / 'slots_service/configs/bets.test.json').read_text())
+(configs / 'bets.test.json').write_text(json.dumps(
+    [row for row in policies if row['gameId'] in game_paths], ensure_ascii=False, indent=2) + '\n')
 (payload / 'bin').mkdir()
+# Runtime containers use a non-root UID, while a validated AG4 snapshot may
+# retain the private directory mode of the publisher's temporary directory.
+for path in payload.rglob('*'):
+    path.chmod(path.stat().st_mode | (0o055 if path.is_dir() else 0o044))
 print(out)
