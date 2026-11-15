@@ -1,6 +1,5 @@
 import { _decorator, Component, Node, SpriteFrame, Sprite } from 'cc';
 import { xNodeFT } from '../../xtools/xNodeFT';
-import { FTPlatformMgr } from '../3rd/FTPlatformMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('FTLanguageSprite')
@@ -13,9 +12,7 @@ export class FTLanguageSprite extends Component {
 
 
     start() {
-        let language = FTPlatformMgr.getLanguage();
-        language = "en"
-        let sp = language == "en" ? this.enSp : this.brSp;
+        let sp = this.enSp;
         xNodeFT.setSpriteFrame("", this.node, sp)
     }
 

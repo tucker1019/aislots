@@ -1,0 +1,15 @@
+info face="Arial" size=136 bold=0 italic=0 charset="" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=2,2
+common lineHeight=136 base=10 scaleW=949 scaleH=136 pages=1 packed=0
+page id=0 file="fnt_pink.png"
+chars count=11
+char id=48 x=0 y=0 width=95 height=136 xoffset=0 yoffset=0 xadvance=95 page=0 chnl=0 page=0 letter="0"
+char id=49 x=95 y=0 width=61 height=136 xoffset=0 yoffset=0 xadvance=61 page=0 chnl=0 page=0 letter="1"
+char id=50 x=156 y=0 width=92 height=134 xoffset=0 yoffset=0 xadvance=92 page=0 chnl=0 page=0 letter="2"
+char id=51 x=248 y=0 width=84 height=134 xoffset=0 yoffset=0 xadvance=84 page=0 chnl=0 page=0 letter="3"
+char id=52 x=332 y=0 width=92 height=133 xoffset=0 yoffset=0 xadvance=92 page=0 chnl=0 page=0 letter="4"
+char id=53 x=424 y=0 width=87 height=133 xoffset=0 yoffset=0 xadvance=87 page=0 chnl=0 page=0 letter="5"
+char id=54 x=511 y=0 width=84 height=134 xoffset=0 yoffset=0 xadvance=84 page=0 chnl=0 page=0 letter="6"
+char id=55 x=595 y=0 width=81 height=133 xoffset=0 yoffset=0 xadvance=81 page=0 chnl=0 page=0 letter="7"
+char id=56 x=676 y=0 width=90 height=135 xoffset=0 yoffset=0 xadvance=90 page=0 chnl=0 page=0 letter="8"
+char id=57 x=766 y=0 width=88 height=134 xoffset=0 yoffset=0 xadvance=88 page=0 chnl=0 page=0 letter="9"
+char id=32 x=854 y=0 width=95 height=136 xoffset=0 yoffset=0 xadvance=95 page=0 chnl=0 page=0 letter="space"

@@ -3,7 +3,6 @@ import  { Component } from 'cc';
 import  { ftframe } from '../../ftframe/ftframe';
 
 
-import FTNetController from '../net/FTNetController';
 const { ccclass, property } = _decorator;
 
 @ccclass('FTBaseLayer')
@@ -21,8 +20,6 @@ export class FTBaseLayer extends Component {
             .start()
     }
     protected onDestroy() {
-        let Node = FTNetController.netNode;
-        Node.removeResponeHandlerByTarget(this);
         ftframe.message.offByTarger(this);
     }
     protected closeLayer() {

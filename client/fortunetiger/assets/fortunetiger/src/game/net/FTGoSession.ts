@@ -1,5 +1,8 @@
 import { LaunchSession, resolveApiBase } from './launch_session';
 import { GoFrame, toOriginalAward } from './FTResultAdapter';
+import { historyListResponse, historyReplayResponse } from '../history/history_response';
+import type { HistoryQuery, HistoryReplay } from '../history/history_types';
+import { loadAg4Replay } from '../history/replay_data';
 
 const game = '/games/AG4';
 type Receipt = GoFrame & { requestId: string; nextRequestId: string };
@@ -12,7 +15,7 @@ export class FTGoSession {
     private token = '';
     private next = '';
     private receipt: Receipt;
-    private plan: GoFrame[] = [];
+    private received: GoFrame[] = [];
     private stake: { bet: string; betLevel: number };
     replay = false;
     entry?: { live?: { policy: Policy; state: Status; uid: string }; replay?: {
@@ -31,7 +34,7 @@ export class FTGoSession {
                 });
                 const envelope = await response.json().catch(() => null);
                 if (!response.ok || envelope?.code !== 'OK') {
-                    if (response.status < 500) throw Object.assign(new Error(envelope?.message || 'Request failed'), { definitive: true });
+                    if (response.status < 500) throw Object.assign(new Error(envelope?.message || 'Request failed'), { definitive: true, status: response.status });
                     throw new Error(envelope?.message || 'Server unavailable');
                 }
                 return envelope.data as T;
@@ -63,53 +66,65 @@ export class FTGoSession {
     }
 
     async readReplay(betId: string, share?: string) {
-        const route = share ? '/shared-replays/' : '/bet-records/';
         if (!share) this.token = this.launch.read().token || '';
-        const data = await this.request<{frames: GoFrame[];startBoard?:GoFrame['board'];nextCursor?:string}>(
-            game + route + encodeURIComponent(betId) + (share ? '?share=' + encodeURIComponent(share) : '/replay'), undefined, !!share);
-        if (data.nextCursor || !data.frames.length || data.frames.some(f => f.betId !== betId)) throw new Error('Invalid AG4 replay');
+        const data = await loadAg4Replay({historyReplay: (id, cursor) => this.historyReplay(id, cursor, share)}, betId);
+        return this.prepareReplay(data);
+    }
+
+    prepareReplay(data: HistoryReplay) {
+        if (data.frames[0]?.stepIndex !== 1 || data.frames[data.frames.length - 1]?.nextAction !== 'complete')
+            throw new Error('Incomplete AG4 replay');
+        const award = toOriginalAward(data.frames);
         this.replay = true;
-        this.plan = data.frames;
-        return { startBoard: data.startBoard, betId, count: this.plan.length, betAmount: Number(this.plan[0].betAmount),
-            award: toOriginalAward(this.plan, 0, 0) };
+        return { startBoard: data.startBoard, betId: data.bet.betId, count: data.frames.length,
+            betAmount: Number(data.frames[0].betAmount), award };
     }
 
     async shareReplay(betId: string) {
         return this.request<{shareToken:string}>(game + '/bet-records/' + encodeURIComponent(betId) + '/share', {});
     }
 
-    async history(from: string, to: string, cursor?: string) {
+    async historyRecords({from, to, cursor}: HistoryQuery) {
         const query = new URLSearchParams({from, to, limit:'20'});
         if (cursor) query.set('cursor', cursor);
-        return this.request<{items:Array<{betId:string;betAmount:string;totalWinAmount:string;createdAt:string;status:string}>;nextCursor?:string}>(game + '/bet-records?' + query);
+        return historyListResponse(await this.request<unknown>(game + '/bet-records?' + query));
     }
 
-    private async spin(): Promise<Receipt> {
+    async historyReplay(betId: string, cursor?: string, share?: string) {
+        const id = encodeURIComponent(betId);
+        const path = share ? '/shared-replays/' + id : '/bet-records/' + id + '/replay';
+        const query = new URLSearchParams({limit:'100'});
+        if (cursor) query.set('cursor', cursor);
+        if (share) query.set('share', share);
+        return historyReplayResponse(await this.request<unknown>(game + path + '?' + query, undefined, !!share));
+    }
+
+    private async spin(previous?: GoFrame): Promise<Receipt> {
         const requestId = this.next;
         const frame = await this.request<Receipt>(game + '/spin', { ...this.stake, requestId });
-        if (frame.requestId !== requestId || !frame.nextRequestId || frame.nextRequestId === requestId) throw new Error('Invalid spin receipt');
+        if (frame.requestId !== requestId || !frame.nextRequestId || frame.nextRequestId === requestId ||
+            frame.stepIndex !== (previous ? previous.stepIndex + 1 : 1) ||
+            (previous && (frame.betId !== previous.betId || frame.mode !== previous.mode ||
+                frame.gameData?.targetSymbolId !== previous.gameData?.targetSymbolId))) {
+            throw new Error('Invalid AG4 spin receipt');
+        }
         this.next = frame.nextRequestId;
         this.receipt = frame;
         return frame;
     }
 
-    private async loadPlan(betId: string) {
-        this.plan = await this.request<GoFrame[]>(game + '/presentation/' + encodeURIComponent(betId));
-        if (!this.plan.length || this.plan.some(f => f.betId !== betId)) throw new Error('Invalid round plan');
-    }
-
-    async begin(bet: number, level: number, index: number) {
+    async begin(bet: number, level: number) {
         this.stake = {bet:String(bet), betLevel:level};
         const frame = await this.spin();
-        if (frame.stepIndex !== 1) throw new Error('Unexpected pending round');
-        this.plan = [frame];
-        if (frame.nextAction === 'continue') await this.loadPlan(frame.betId);
-        return { award: toOriginalAward(this.plan, index, level - 1), balance: Number(frame.balance) };
+        this.received = [frame];
+        return { award: toOriginalAward(this.received),
+            balance: frame.nextAction === 'continue' ? Number(frame.balance) : undefined };
     }
 
-    async restore(state: Status, policy: Policy) {
+    restore(state: Status, policy: Policy) {
         const frame = state.lastFrame;
-        if (!state.hasNext || !frame) throw new Error('Missing pending round');
+        if (!state.hasNext || !frame || frame.mode !== 'respin' || frame.nextAction !== 'continue')
+            throw new Error('Missing pending respin');
         const amount = Number(frame.betAmount);
         const index = policy.betOptions.findIndex(bet => {
             const level = amount / (Number(bet) * 5);
@@ -119,18 +134,17 @@ export class FTGoSession {
         const level = amount / (Number(policy.betOptions[index]) * 5);
         this.stake = {bet:policy.betOptions[index], betLevel:level};
         this.receipt = {...frame, requestId:'', nextRequestId:this.next};
-        await this.loadPlan(frame.betId);
-        return { award: toOriginalAward(this.plan, index, level - 1), balance: state.balance, index, level };
+        this.received = [frame];
+        return { award: toOriginalAward(this.received), balance: state.balance, index, level };
     }
 
-    async afterStop(index: number) {
-        if (this.replay || !this.receipt || index <= this.receipt.stepIndex) return;
-        if (index !== this.receipt.stepIndex + 1 || this.receipt.nextAction !== 'continue') throw new Error('Invalid respin step');
-        const expected = this.plan[index - 1];
-        const frame = await this.spin();
-        if (!expected || frame.betId !== expected.betId || frame.stepIndex !== expected.stepIndex ||
-            frame.nextAction !== expected.nextAction || Number(frame.totalWinAmount) !== Number(expected.totalWinAmount) ||
-            JSON.stringify(frame.board) !== JSON.stringify(expected.board)) throw new Error('Respin differs from saved plan');
+    get hasNextRespin() { return this.receipt?.mode === 'respin' && this.receipt.nextAction === 'continue'; }
+
+    async nextRespin() {
+        if (this.replay || !this.hasNextRespin) throw new Error('No pending AG4 respin');
+        const frame = await this.spin(this.receipt);
+        this.received.push(frame);
+        return toOriginalAward(this.received);
     }
 
     get balance(): number | undefined {

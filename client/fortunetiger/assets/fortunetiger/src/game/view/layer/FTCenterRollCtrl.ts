@@ -1,7 +1,7 @@
 import { _decorator, instantiate, Vec3, tween, find, sp, Label, Node, UIOpacity, UITransform, Sprite, Color, isValid, Prefab, Tween, ParticleSystem2D, bezier, NodeEventType, Animation, math, view, Vec2, } from 'cc';
 import { ftframe } from '../../../ftframe/ftframe';
 import { xNodeFT } from '../../../xtools/xNodeFT';
-import { onceRotateInfo } from '../../3rd/game_1017';
+import type { RotateData } from '../../net/FTResultAdapter';
 import { FTBaseNode } from '../../base/FTBaseNode';
 import { longToNumber, showMoney } from '../../common/FTUtils';
 
@@ -20,6 +20,9 @@ import type { OriginalAward } from '../../net/FTResultAdapter';
 import { goSession } from '../../net/FTGoSession';
 import { FTCellLayer } from './FTCellLayer';
 import { FTBigWinCtrl } from './FTBigWinCtrl';
+
+// Reel positions in the same order as AG4's five pay lines.
+const RESPIN_LINES = [[3, 4, 5], [6, 7, 8], [0, 1, 2], [6, 4, 2], [0, 4, 8]];
 
 const { ccclass } = _decorator;
 
@@ -168,16 +171,17 @@ export default class FTCenterRollCtrl extends FTBaseNode {
     private startRespinStage() {
         this.resData();
         this._startMove = true;
-        this._canStop = true;
+        this._canStop = goSession.replay;
         for (const reel of this.cellLayerCtrlList) {
             reel.allCellList.forEach(node => { node.active = true; });
             reel.setStartMove();
         }
+        if (!goSession.replay) void this.layerCtrl.requestNextRespin();
     }
 
-    resumeRespin(step: number, symbols: number[]) {
+    resumeRespin(symbols: number[]) {
         const data = FTGameManager.getRotateData();
-        FTGameManager.setFreeIndex(step - 1);
+        FTGameManager.setFreeIndex(0);
         this._canCLickMultPanel = false;
         this.setIdleBoard(symbols);
         this.node.setScale(0.9, 0.9, 1);
@@ -200,9 +204,7 @@ export default class FTCenterRollCtrl extends FTBaseNode {
             cell.active = true;
             cell.getComponent(FTCellItem).playIdleAnim();
         });
-        for (const win of data.mAwardList ?? []) {
-            if (win.mIconIdxs.every(id => symbols[id - 1])) this.playOneLine(win.flag_id - 1);
-        }
+        this.showRespinLines(symbols, false);
         this.startRespinStage();
     }
 
@@ -221,23 +223,13 @@ export default class FTCenterRollCtrl extends FTBaseNode {
 
     async oneRoundEnd() {
         ftframe.log.logView("oneRoundEnd")
-        let rotateData: onceRotateInfo = null;
+        let rotateData: RotateData = null;
         rotateData = FTGameManager.getRotateData();
-        let rotateDatas = FTGameManager.getRotateData(true);
         if (rotateData == null) {
             this.roundEnd();
-            return
-        }
-
-        try {
-            const step = FTGameManager.getFreeIndex() + 2;
-            this.layerCtrl.reportReplayStep(step);
-            await goSession.afterStop(step);
-        } catch (error) {
-            if (this.isValid) this.layerCtrl.goFailure(error);
             return;
         }
-        if (!this.isValid) return;
+        this.layerCtrl.reportReplayStep(FTGameManager.getFreeIndex() + 2);
         this._canCLickMultPanel = true;
 
         let awardList = rotateData.mAwardList;
@@ -298,26 +290,11 @@ export default class FTCenterRollCtrl extends FTBaseNode {
                     cellTop.getComponent(FTCellItem).playIdleAnim();
                 }
             }
-            if (awardList) {
-                let lineEffId = -1;
-                for (let i = 0; i < awardList.length; i++) {
-                    if (mFreeIcons[awardList[i].mIconIdxs[0] - 1] && mFreeIcons[awardList[i].mIconIdxs[1] - 1] && mFreeIcons[awardList[i].mIconIdxs[2] - 1]) {
-                        let flag_id = awardList[i].flag_id - 1;
-                        let line = xNodeFT.find(`node_line/line${flag_id}`, this.node);
-                        if (!line || !line.active) {
-                            lineEffId = flag_id;
-                            this.playOneLine(flag_id);
-                        }
-                    }
-                }
-                if (lineEffId >= 0) {
-                    FTAudioMgr.Instance.playSound("games/re_result" + (lineEffId + 1));
-                }
-
-            }
+            this.showRespinLines(mFreeIcons, true);
             await this.delayTime(0.5);
 
-            if (freeIndex == freeList.length - 1) {  // 最后一局
+            const hasNext = goSession.replay ? freeIndex < freeList.length - 1 : goSession.hasNextRespin;
+            if (!hasNext) {
                 if (awardList) {
                     if (multiplier === 10) {
                         let type = rotateData.mFreeIconIdx;
@@ -370,6 +347,17 @@ export default class FTCenterRollCtrl extends FTBaseNode {
         this.roundEnd()
     }
 
+
+    private showRespinLines(symbols: number[], sound: boolean) {
+        let last = -1;
+        RESPIN_LINES.forEach((positions, index) => {
+            if (!positions.every(pos => symbols[pos] !== 0)) return;
+            if (xNodeFT.find(`node_line/line${index}`, this.node)?.active) return;
+            this.playOneLine(index);
+            last = index;
+        });
+        if (sound && last >= 0) FTAudioMgr.Instance.playSound('games/re_result' + (last + 1));
+    }
 
     showWinTrace(awardList, index, multiplier = 1) {
 
@@ -1339,7 +1327,6 @@ export default class FTCenterRollCtrl extends FTBaseNode {
     roundEnd() {
         ftframe.log.logView("round end");
         if (goSession.balance !== undefined) FTGlobal.USER.gold = goSession.balance;
-        this.layerCtrl.setAllNum();
         this.layerCtrl.optCtrl.setAllNum();
         this.layerCtrl.optCtrl.canSendSpin = true;
         FTGameManager.restRound();

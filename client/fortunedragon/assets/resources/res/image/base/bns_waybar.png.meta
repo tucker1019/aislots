@@ -1,0 +1,134 @@
+{
+  "ver": "1.0.27",
+  "importer": "image",
+  "imported": true,
+  "uuid": "0e21fa89-548c-4482-8f2d-1fab5f8a0cfb",
+  "files": [
+    ".json",
+    ".png"
+  ],
+  "subMetas": {
+    "6c48a": {
+      "importer": "texture",
+      "uuid": "0e21fa89-548c-4482-8f2d-1fab5f8a0cfb@6c48a",
+      "displayName": "bns_waybar",
+      "id": "6c48a",
+      "name": "texture",
+      "userData": {
+        "wrapModeS": "repeat",
+        "wrapModeT": "repeat",
+        "minfilter": "linear",
+        "magfilter": "linear",
+        "mipfilter": "nearest",
+        "anisotropy": 0,
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "0e21fa89-548c-4482-8f2d-1fab5f8a0cfb",
+        "visible": false
+      },
+      "ver": "1.0.22",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "f9941": {
+      "importer": "sprite-frame",
+      "uuid": "0e21fa89-548c-4482-8f2d-1fab5f8a0cfb@f9941",
+      "displayName": "bns_waybar",
+      "id": "f9941",
+      "name": "spriteFrame",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0.5,
+        "offsetY": -0.5,
+        "trimX": 1,
+        "trimY": 2,
+        "width": 80,
+        "height": 717,
+        "rawWidth": 81,
+        "rawHeight": 720,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [
+            -40,
+            -358.5,
+            0,
+            40,
+            -358.5,
+            0,
+            -40,
+            358.5,
+            0,
+            40,
+            358.5,
+            0
+          ],
+          "indexes": [
+            0,
+            1,
+            2,
+            2,
+            1,
+            3
+          ],
+          "uv": [
+            1,
+            718,
+            81,
+            718,
+            1,
+            1,
+            81,
+            1
+          ],
+          "nuv": [
+            0.012345679012345678,
+            0.001388888888888889,
+            1,
+            0.001388888888888889,
+            0.012345679012345678,
+            0.9972222222222222,
+            1,
+            0.9972222222222222
+          ],
+          "minPos": [
+            -40,
+            -358.5,
+            0
+          ],
+          "maxPos": [
+            40,
+            358.5,
+            0
+          ]
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "0e21fa89-548c-4482-8f2d-1fab5f8a0cfb@6c48a",
+        "atlasUuid": ""
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "type": "sprite-frame",
+    "fixAlphaTransparencyArtifacts": true,
+    "hasAlpha": true,
+    "redirect": "0e21fa89-548c-4482-8f2d-1fab5f8a0cfb@6c48a"
+  }
+}

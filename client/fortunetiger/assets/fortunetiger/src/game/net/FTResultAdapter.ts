@@ -1,5 +1,3 @@
-import type { Long, requestOpenAwardS2C } from '../3rd/game_1017';
-
 type Money = number | string;
 type Board = ReadonlyArray<ReadonlyArray<{ id: number; symbolId: number }>>;
 export type GoFrame = {
@@ -45,18 +43,24 @@ export function originalBoard(board: Board): number[] {
     return result;
 }
 
-export type OriginalAward = requestOpenAwardS2C & {
-    mRotateData: requestOpenAwardS2C['mRotateData'] & { bonusMultiplier?: number };
+type Long = { low: number; high: number; unsigned: boolean };
+export type RotateData = {
+    mIcons?: number[];
+    mAwardList?: { mIconIdxs: number[]; mMoney: Long; flag_id: number; mWinOdds: number }[];
+    mFreeList?: { mFreeIcons: number[] }[];
+    mFreeIconIdx: number;
+    bonusMultiplier?: number;
 };
+export type OriginalAward = { mRotateData: RotateData; mMoney: Long; win_money_all: Long };
 
-/** Adapts completed Go results to the same decoded 10174 data used by the original controllers. */
-export function toOriginalAward(frames: readonly GoFrame[], betIndex: number, levelIndex: number): OriginalAward {
+/** Adapts received frames only; live respins may still be in progress. */
+export function toOriginalAward(frames: readonly GoFrame[]): OriginalAward {
     const first = frames[0];
     const last = frames[frames.length - 1];
-    if (!first || last.nextAction !== 'complete' || frames.some((f, i) =>
+    if (!first || !['continue', 'complete'].includes(last.nextAction) || frames.some((f, i) =>
         f.betId !== first.betId || f.mode !== first.mode || money(f.betAmount) !== money(first.betAmount) ||
-        f.stepIndex !== i + 1 || (i < frames.length - 1 && f.nextAction !== 'continue'))) {
-        throw new Error('AG4: incomplete or mismatched round');
+        f.stepIndex !== first.stepIndex + i || (i < frames.length - 1 && f.nextAction !== 'continue'))) {
+        throw new Error('AG4: mismatched round');
     }
     const boards = frames.map(f => originalBoard(f.board));
     const data = last.gameData;
@@ -88,27 +92,19 @@ export function toOriginalAward(frames: readonly GoFrame[], betIndex: number, le
     const rotate: OriginalAward['mRotateData'] = { mFreeIconIdx: 0, bonusMultiplier: data.bonusMultiplier };
     if (awards.length) rotate.mAwardList = awards;
     if (first.mode === 'base') {
-        if (boards.length !== 1 || boards[0].includes(0)) throw new Error('AG4: invalid base result');
+        if (boards.length !== 1 || last.nextAction !== 'complete' || boards[0].includes(0)) throw new Error('AG4: invalid base result');
         rotate.mIcons = boards[0];
     } else if (first.mode === 'respin') {
         const target = first.gameData?.targetSymbolId;
-        if (target == null || !Number.isInteger(target) || target < 1 || target > 6 || boards[0].some(Boolean) ||
+        if (target == null || !Number.isInteger(target) || target < 1 || target > 6 ||
             frames.some(f => f.gameData?.targetSymbolId !== target) || boards.some((board, i) =>
-                board.some((id, j) => (id !== 0 && id !== target) || (i > 0 && boards[i - 1][j] !== 0 && id === 0)))) {
+                board.some((id, j) => (id !== 0 && id !== target) || (i > 0 && boards[i - 1][j] !== 0 && id !== boards[i - 1][j])))) {
             throw new Error('AG4: invalid respin progression');
-        }
-        const terminal = boards[boards.length - 1];
-        if (terminal.includes(0)) {
-            const prior = boards[boards.length - 2];
-            if (!prior || !terminal.every((id, i) => id === prior[i])) throw new Error('AG4: missing final no-add respin');
-            // setEveryType adds this exact no-add pass for partial boards.
-            boards.pop();
         }
         rotate.mFreeIconIdx = target;
         rotate.mFreeList = boards.map(mFreeIcons => ({ mFreeIcons }));
     } else {
         throw new Error('AG4: unexpected round mode');
     }
-    return { mResult: 0, mMultipleIdx: betIndex + 1, moddsLevel: levelIndex + 1, isFree: 0,
-        mMoney: asLong(money(last.balance)), win_money_all: asLong(paid), mRotateData: rotate };
+    return { mMoney: asLong(money(last.balance)), win_money_all: asLong(paid), mRotateData: rotate };
 }

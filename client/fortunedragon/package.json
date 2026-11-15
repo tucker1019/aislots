@@ -1,0 +1,16 @@
+{
+  "name": "fortunedragon",
+  "uuid": "33b5cbad-dcab-43a4-acb3-2e196facc4b6",
+  "version": "3.6.3",
+  "creator": {
+    "version": "3.8.5"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check:frames": "node --experimental-strip-types scripts/check-frames.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "private": true
+}

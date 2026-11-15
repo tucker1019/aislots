@@ -1,7 +1,7 @@
 
 import { ftframe } from "../../ftframe/ftframe";
-import { onceRotateInfo } from "../3rd/game_1017";
-import { cloneArray, mergeObjectRecursion } from "../common/FTUtils";
+import type { RotateData } from "../net/FTResultAdapter";
+import { cloneArray } from "../common/FTUtils";
 import { FTConstant, FTSTATE, RandomCellType } from "../FTConstant/FTConstant";
 import { FTGlobal } from "../view/layer/FTGlobal";
 
@@ -20,23 +20,22 @@ class M {
     private _bitIndex: number = 0;
     private _bitMultIndex: number = 0;
     private _totalBitIndex: number = 0;
-    private _mRotateData: onceRotateInfo = null;
+    private _mRotateData: RotateData = null;
 
-    private _everyMRotateData: onceRotateInfo = null;
     private _everyIndexList: number[] = [];
 
 
-    private _mFreeGameRotates: onceRotateInfo[] = null;
+    private _mFreeGameRotates: RotateData[] = null;
     private _freeIndex: number = -1;
-    private _everyMFreeGameRotates: onceRotateInfo[] = null;
+    private _everyMFreeGameRotates: RotateData[] = null;
     private _everyFreeIndexList: number[][] = [];
 
-    private _mBonusRotates: onceRotateInfo[] = null;
+    private _mBonusRotates: RotateData[] = null;
     private _bonusMaxCnt: number = -1;  // 总次数
     private _bonusRemainCnt: number = -1;   // 剩余次数
     private _bonusIndex: number = -1;   // 当前轮次
     private _bonusIdxsLadtList: number[] = [];
-    private _everyMBonusRotates: onceRotateInfo[] = null;
+    private _everyMBonusRotates: RotateData[] = null;
     private _everyBonusIndexList: number[][] = [];
 
     private _winAllMoney: number = 0;
@@ -218,7 +217,6 @@ class M {
         this._state = 0; //游戏状态
         this._Money = 0
         this._mRotateData = null;
-        this._everyMRotateData = null;
         this._everyIndexList = [];
         this._mFreeGameRotates = null;
         this._freeIndex = -1;
@@ -244,39 +242,6 @@ class M {
     }
 
 
-    setEveryType(): void {
-        if (!this._mRotateData) {
-            ftframe.log.logError("setEveryType error")
-            return
-        }
-        this._everyMRotateData = mergeObjectRecursion({}, this._mRotateData);
-        if (this._everyMRotateData.mFreeList && this._everyMRotateData.mFreeList.length > 0) {
-            if (this._everyMRotateData.mFreeList[this._everyMRotateData.mFreeList.length - 1].mFreeIcons.indexOf(0) >= 0) {
-                this._everyMRotateData.mFreeList.push(this._everyMRotateData.mFreeList[this._everyMRotateData.mFreeList.length - 1])
-            }
-
-
-            // for (let i = this._everyMRotateData.mFreeList.length - 1; i > 0; i--) {
-            //     for (let j = 0; j < this._everyMRotateData.mFreeList[i].mFreeIcons.length; j++) {
-            //         if (this._everyMRotateData.mFreeList[i].mFreeIcons[j] == 1 && this._everyMRotateData.mFreeList[i].mFreeIcons[j] == this._everyMRotateData.mFreeList[i-1].mFreeIcons[j]){
-            //             this._everyMRotateData.mFreeList[i].mFreeIcons[j] = 0;
-            //         }
-            //     }
-
-            // }
-        }
-
-
-        // if (this.isHaveBonus()) {
-        //     this._everyMBonusRotates = mergeObjectRecursion([], this._mBonusRotates)
-        // }
-
-        // if (this.isHaveFree()) {
-
-        //     this._everyMFreeGameRotates = mergeObjectRecursion([], this._mFreeGameRotates)
-
-        // }
-    }
     canPlay(): boolean {
         let gold = FTGlobal.USER.gold;
         if (FTGlobal.MODE == "fun") gold = FTGlobal.USER.experienceGold
@@ -321,10 +286,10 @@ class M {
     setEveryFreeIndexList(everyFreeIndexList: number[][]) {
         this._everyFreeIndexList = everyFreeIndexList;
     }
-    setFreeGameRotates(mFreeGameRotates: onceRotateInfo[]) {
+    setFreeGameRotates(mFreeGameRotates: RotateData[]) {
         this._mFreeGameRotates = mFreeGameRotates;
     }
-    getFreeGameDataByIndex(isEveryType: boolean = false): onceRotateInfo {
+    getFreeGameDataByIndex(isEveryType: boolean = false): RotateData {
         let index = this._freeIndex;
         if (index < 0) {
             ftframe.log.logError(index, "getFreeGameDataByIndex")
@@ -333,7 +298,7 @@ class M {
         if (isEveryType) return this._mFreeGameRotates[index];
         return this._everyMFreeGameRotates[index];
     }
-    getFreeGameRotates(): onceRotateInfo[] {
+    getFreeGameRotates(): RotateData[] {
         return this._mFreeGameRotates
     }
 
@@ -364,10 +329,10 @@ class M {
     setBonusMaxCnt(count: number) {
         this._bonusMaxCnt = count;
     }
-    setBonusGameRotates(mBonusRotates: onceRotateInfo[]) {
+    setBonusGameRotates(mBonusRotates: RotateData[]) {
         this._mBonusRotates = mBonusRotates;
     }
-    getBonusGameDataByIndex(isEveryType: boolean = false): onceRotateInfo {
+    getBonusGameDataByIndex(isEveryType: boolean = false): RotateData {
         let index = this._bonusIndex;
         if (index < 0) {
             ftframe.log.logError(index, "getBonusDataByIndex")
@@ -376,7 +341,7 @@ class M {
         if (isEveryType) return this._mBonusRotates[index];
         return this._everyMBonusRotates[index];
     }
-    getBonusGameRotates(): onceRotateInfo[] {
+    getBonusGameRotates(): RotateData[] {
         return this._mBonusRotates
     }
 
@@ -502,15 +467,14 @@ class M {
     getWinMoney(): number {
         return this._winMoney || 0;
     }
-    setRotateData(mRotateData: onceRotateInfo) {
+    setRotateData(mRotateData: RotateData) {
         this._mRotateData = mRotateData;
 
     }
 
-    getRotateData(isEveryType: boolean = false): onceRotateInfo {
+    getRotateData(isEveryType: boolean = false): RotateData {
         if (this.getState() == FTSTATE.RUNING) {
-            if (isEveryType) return this._mRotateData;
-            return this._everyMRotateData;
+            return this._mRotateData;
         } else if (this.isStateBonus()) {
             return this.getBonusGameDataByIndex(isEveryType)
         } else if (this.isStateFree()) {

@@ -1,16 +1,6 @@
 import { Button, js, Label, random, setDisplayStats, Size, sys, Vec3, view, View } from "cc"
-import { FTAudioManager } from "../../ftframe/audio/FTAudioManager"
 
-import { FTPlatformMgr } from "../3rd/FTPlatformMgr"
-import Long from "../3rd/Long"
-import FTLoadManager from "../load/FTLoadManager"
-import FTNetController from "../net/FTNetController"
-import FTSendManager from "../net/FTSendManager"
-import { FTAudioMgr } from "../view/layer/FTAudioMgr"
-import { FTGameConstants } from "../view/layer/FTGameConstants"
 import { FTGlobal } from "../view/layer/FTGlobal"
-import { FTGameManager } from "../mgr/FTGameManager"
-import { FTSTATE } from "../FTConstant/FTConstant"
 
 
 
@@ -71,38 +61,12 @@ export function getAdapterScale(): Vec3 {
 
 
 
-// 返回到大厅
-export function exitToPlatform() {
-    reset_all()
-    FTPlatformMgr.exitToPlatform()
-}
-export function exitToLogin() {
-    reset_all()
-    FTPlatformMgr.exitToLogin()
-}
-
-// 重置全部
-export function reset_all() {
-    FTGameManager.setState(FTSTATE.READY);
-    FTGlobal.MODE = "real";
-    FTGlobal.USER.experienceGold = 10000000;
-    if (FTAudioMgr.Instance) FTAudioMgr.Instance.removeAudioRootNode()
-    FTLoadManager.rest();
-    FTLoadManager.ins = null;
-    FTNetController.closeNet();
-    FTSendManager.rest()
-    FTAudioMgr.Instance = null;
-    FTAudioManager.instance = null;
-
-}
-
 export function recordTime() {
     return new Date().getTime()
 }
 export function longToNumber(value): number {
     if (!value) return 0
-    let newLong = new Long(value.low, value.high, value.unsigned);
-    return newLong.toNumber();
+    return value.high * 0x100000000 + (value.low >>> 0);
 }
 export function showMoney(value: number, is: boolean = true) {
     value = Math.floor(value)

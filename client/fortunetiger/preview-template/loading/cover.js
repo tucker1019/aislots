@@ -7,7 +7,7 @@
   var button = document.getElementById('AG4StartButton');
   var ready = false, started = false, percent = 0;
   var params = new URLSearchParams(window.location.search);
-  var replay = params.has('replay');
+  var replay = params.has('replay') || params.has('nativeReplay');
   function progress(event) {
     var value = event.detail && event.detail.progress;
     if (typeof value !== 'number' || !isFinite(value)) return;

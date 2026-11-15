@@ -1,0 +1,47 @@
+syntax = "proto2";
+
+//多福多财proto
+package Game_10005;
+
+//===============================主游戏部分===============================
+//游戏图标类型 1福字，2锣，3凤凰，4船，5龟，6元宝，7铜钱，8A，9K，10 Q，11 J，12 10，13 9
+
+//一次转盘的数据结构
+message onceRotateInfo{
+  repeated int32 mIcons = 1;  //15个框中的图标类型，一列列的区分，第一列1,2,3第二列456...
+  message awardIconInfo{  //中奖数据结构
+    repeated int32 mIconIdxs = 1; //中奖的图标的索引[1-15]
+    required int64 mMoney=2; //中奖金额
+  }
+  repeated awardIconInfo mAwardList=2; //所有中奖的数据列表
+  required int32 mFreeGameCount=3; //该次转盘之后免费游戏的次数
+}
+
+//获取游戏状态 id=10501
+message getGameStateC2S{
+}
+//游戏状态返回 id=10502
+message getGameStateS2C{
+  repeated int32 mMultiples=1; //筹码列表
+  repeated int64 mBonusList=2; //小中大巨四个奖池的奖金数
+}
+
+//请求开奖 id=10503
+message requestOpenAwardC2S{
+  required int32 mMultipleIdx=1; //下注的筹码索引
+}
+//下注返回 id=10504
+message requestOpenAwardS2C{
+  required int32 mResult=1; //下注返回，0是成功，1是身上钱不足，2是当前状态不允许下注，3是其他失败原因
+  required int32 mMultipleIdx = 2; //所使用的筹码索引
+  required onceRotateInfo mRotateData=3; //转盘数据
+  required int32 mFreeGameCount=4; //免费游戏的次数，不触发就是0,只算第一次触发的，目前固定是10次，免费游戏中触发的免费游戏在后面累计
+  repeated onceRotateInfo mFreeGameRotates=5; //如果触发了免费游戏，需要赋值
+  required int32 mBonusIndex =6; //0是不中彩金，1是小彩金，2是中彩金，3是大彩金，4是巨彩金
+  required int64 mBonusMoney=7; //得彩金时获得的彩金数
+}
+
+//更新四个奖池的奖金数 id = 10505
+message pushUpdateBonusS2C{
+  repeated int64 mBonusList = 1; //小中大巨四个奖池的奖金数
+}

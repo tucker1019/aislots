@@ -1,12 +1,12 @@
-import { Asset, assetManager, AssetManager, director, ImageAsset, instantiate, isValid, LoadCompleteCallback, LoadProgressCallback, Node, Prefab, SceneAsset, SpriteFrame, Texture2D, __private } from "cc";
+import { Asset, assetManager, AssetManager, ImageAsset, instantiate, isValid, LoadCompleteCallback, LoadProgressCallback, Node, Prefab, SpriteFrame, Texture2D, __private } from "cc";
 import { ftframe } from "../../ftframe/ftframe";
 
-import { xNodeFT } from "../../xtools/xNodeFT";
 import { FTConstant } from "../FTConstant/FTConstant";
 
-import { FTAlertLayer } from "../view/layer/FTAlertLayer";
-import { FTEventManager } from "../../ftframe/event/FTEventManager";
 import { FTEventName } from "../../ftframe/event/FTEventName";
+import { closeGameDialogs, showGameDialog } from "../ui/game_dialogs";
+import { FTConfigCtrl } from "../view/layer/FTConfigCtrl";
+import { FTLanguage } from "../view/layer/FTLanguage";
 
 
 export default class FTLoadManager {
@@ -21,18 +21,16 @@ export default class FTLoadManager {
     }
     private bundle: AssetManager.Bundle = null;
     private loadingLayer: Node = null;
-    private netLoadingLayer: Node = null;
     private lineLayer: Node = null;
 
 
     public static rest() {
+        closeGameDialogs();
         FTLoadManager.ins.bundle = null;
         if (isValid(FTLoadManager.ins.loadingLayer)) FTLoadManager.ins.loadingLayer.destroy()
         FTLoadManager.ins.loadingLayer = null;
         if (isValid(FTLoadManager.ins.loadingLayer)) FTLoadManager.ins.lineLayer.destroy()
         FTLoadManager.ins.lineLayer = null;
-        if (isValid(FTLoadManager.ins.netLoadingLayer)) FTLoadManager.ins.netLoadingLayer.destroy();
-        FTLoadManager.ins.netLoadingLayer = null;
         FTLoadManager._ins = null;
     }
 
@@ -62,25 +60,6 @@ export default class FTLoadManager {
         else ftframe.log.logError("getSpriteFrame" + " path :" + path + " error")
     }
 
-    public loadScene(sceneName: string) {
-        this.bundle.loadScene(sceneName, (err: Error, scene: SceneAsset) => {
-            if (err) {
-                ftframe.log.logError(sceneName, "加载失败")
-            }
-            director.runScene(scene);
-        })
-    }
-
-    showNetLoading(tipStr?: string) {
-        console.log("showNetLoading===<", this.netLoadingLayer)
-        ftframe.message.dispatchEvent(FTEventName.SHOW_LOADING, true)
-
-    }
-    hideNetLoading() {
-        if (this.netLoadingLayer && isValid(this.netLoadingLayer)) {
-            this.netLoadingLayer.removeFromParent();
-        }
-    }
     showLoading(tipStr?: string) {
         ftframe.message.dispatchEvent(FTEventName.SHOW_LOADING, true)
 
@@ -122,17 +101,12 @@ export default class FTLoadManager {
         node.parent = parent;
     }
 
-    async showAlertWithInit(tip: string, yseFun?: Function, noFun?: Function) {
-        let parent = xNodeFT.find("Canvas/GameLayer");
-        if (!parent || xNodeFT.find("FTAlertLayer", parent)) return
-        let prefab: Prefab = this.getPrefab("res/load/prefab/layer/FTAlertLayer");
-        if (!prefab) {
-            prefab = await this.loadPrefab("res/load/prefab/layer/FTAlertLayer");
-           
-        }
-        let node: Node = instantiate(prefab);
-        node.parent = parent;
-        node.getComponent(FTAlertLayer).showAlert(tip, yseFun, noFun);
+    showAlertWithInit(message: string, confirm?: () => void, cancel?: () => void) {
+        if (document.querySelector('.ag4-game-dialog')) return;
+        const config = FTConfigCtrl.Instance;
+        const actions = [{ label: config.getLanguageText(FTLanguage.BTN_OK), run: confirm }];
+        if (cancel) actions.push({ label: config.getLanguageText(FTLanguage.BTN_CANCEL), run: cancel });
+        showGameDialog({ title: '提示', message, actions });
     }
 
 }

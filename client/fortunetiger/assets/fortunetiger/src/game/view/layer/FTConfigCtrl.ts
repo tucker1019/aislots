@@ -1,5 +1,4 @@
 import { _decorator, sys } from 'cc';
-import { FTPlatformMgr } from '../../3rd/FTPlatformMgr';
 import { FTGlobal } from './FTGlobal';
 import { En, Pt } from './FTLanguage';
 const { ccclass, property } = _decorator;
@@ -72,8 +71,7 @@ export class FTConfigCtrl {
 
     // 是否时葡萄牙语
     isPT() {
-        // console.log("==========>",FTPlatformMgr.getLanguage())
-        return FTPlatformMgr.getLanguage() == Language.PT
+        return FTGlobal.LANG == Language.PT
     }
 
     private setKey(key, value) {

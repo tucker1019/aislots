@@ -3,7 +3,6 @@ import { ftframe } from '../../ftframe/ftframe';
 
 import { xNodeFT } from '../../xtools/xNodeFT';
 
-import FTNetController from '../net/FTNetController';
 import { FTEventName } from '../../ftframe/event/FTEventName';
 
 const { ccclass, property } = _decorator;
@@ -32,8 +31,6 @@ export abstract class FTBaseScene extends Component {
     }
 
     onDestroy() {
-        let Node = FTNetController.netNode;
-        Node.removeResponeHandlerByTarget(this);
         ftframe.message.offByTarger(this);
     }
 }

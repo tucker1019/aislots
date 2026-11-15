@@ -1,4 +1,3 @@
-import { FTPlatformMgr } from "../3rd/FTPlatformMgr";
 
 export const FTConstant = {
 
@@ -34,7 +33,6 @@ export const FTConstant = {
     MULT_INDEXS: [1],   // 押注倍数表  --FTGlobal.LEAVE=1/2/3为分房  分房MULT_INDEXS固定1， 不分1-10
     MULT_INDEXS_M:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 
-    // languagePath: `res/load/image/language/${FTPlatformMgr.getLanguage()}/`,
     languagePath: "",
 }
 export enum FTSTATE {

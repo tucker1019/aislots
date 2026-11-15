@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>bg_main.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,1},{756,1263}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false/>
+				<key>sourceColorRect</key>
+				<string>{{1,1},{756,1263}}</string>
+				<key>sourceSize</key>
+				<string>{756,1263}</string>
+			</dict>
+			<key>bg_shine.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1,1266},{540,519}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false/>
+				<key>sourceColorRect</key>
+				<string>{{1,1266},{540,519}}</string>
+				<key>sourceSize</key>
+				<string>{540,519}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>realTextureFileName</key>
+			<string>8f840a1c-7612-4920-bb50-b599b41b1554.0d1f1.jpg</string>
+			<key>size</key>
+			<string>{758,1786}</string>
+			<key>smartupdate</key>
+			<string>$TexturePacker:SmartUpdate : 8d6a3b5c6f98d0eff99dd6242c8d6db7$</string>
+			<key>textureFileName</key>
+			<string>8f840a1c-7612-4920-bb50-b599b41b1554.0d1f1.jpg</string>
+		</dict>
+	</dict>
+</plist>

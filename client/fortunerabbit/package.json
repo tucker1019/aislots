@@ -1,0 +1,26 @@
+{
+  "name": "fortunerabbit",
+  "uuid": "c6db68ad-27ed-46ac-842a-bff4c2a69755",
+  "version": "3.6.3",
+  "creator": {
+    "version": "3.8.5"
+  },
+  "dependencies": {
+    "protobufjs": "^5.0.3",
+    "cross-spawn": "^7.0.3",
+    "cross-env": "^7.0.3",
+    "jsonfile": "^6.1.0"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build:sing:test": "cross-env-shell PLATFORM=android APP_KEY=sing DEPLOY_ENV=test COCOS_CREATOR_VERSION=3.6.3 node tools/build-bundle.js",
+    "build:sing:master": "cross-env-shell  PLATFORM=android APP_KEY=sing DEPLOY_ENV=master COCOS_CREATOR_VERSION=3.6.3 node tools/build-bundle.js",
+    "build:sing:test:ios": "cross-env-shell PLATFORM=ios APP_KEY=sing DEPLOY_ENV=test COCOS_CREATOR_VERSION=3.6.3 node tools/build-bundle.js",
+    "build:sing:master:ios": "cross-env-shell PLATFORM=ios APP_KEY=sing DEPLOY_ENV=master COCOS_CREATOR_VERSION=3.6.3 node tools/build-bundle.js",
+    "build:singweb:test": "cross-env-shell  PLATFORM=web-mobile APP_KEY=sing DEPLOY_ENV=test COCOS_CREATOR_VERSION=3.6.3 node tools/build-bundle.js",
+    "build:singweb:master": "cross-env-shell  PLATFORM=web-mobile APP_KEY=sing DEPLOY_ENV=master COCOS_CREATOR_VERSION=3.6.3 node tools/build-bundle.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

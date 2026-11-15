@@ -1,0 +1,41 @@
+{
+  "name": "fortunedragon",
+  "platform": "web-mobile",
+  "buildPath": "project://build",
+  "debug": false,
+  "md5Cache": true,
+  "skipCompressTexture": false,
+  "sourceMaps": false,
+  "polyfills": {
+    "asyncFunctions": true
+  },
+  "experimentalEraseModules": false,
+  "useBuiltinServer": false,
+  "mainBundleIsRemote": false,
+  "mainBundleCompressionType": "merge_dep",
+  "replaceSplashScreen": false,
+  "startScene": "e9b418d0-8299-40ac-adee-e84e8d2e0793",
+  "outputName": "web-mobile",
+  "scenes": [
+    {
+      "url": "db://assets/FDGameScene.scene",
+      "uuid": "e9b418d0-8299-40ac-adee-e84e8d2e0793",
+      "inBundle": false
+    }
+  ],
+  "web-desktop": [],
+  "packages": {
+    "web-mobile": {
+      "orientation": "auto",
+      "embedWebDebugger": false,
+      "__version__": "1.0.1"
+    },
+    "cocos-service": {
+      "configID": "664ca9",
+      "services": []
+    }
+  },
+  "__version__": "1.3.3",
+  "web-mobile": [],
+  "useSplashScreen": false
+}

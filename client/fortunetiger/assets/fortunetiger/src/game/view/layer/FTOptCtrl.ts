@@ -1,3 +1,4 @@
+import { RulesPage } from '../../ui/rules_page';
 import { BetOptionsPage } from '../../ui/bet_options_page';
 import { AutoSpinPage } from '../../ui/auto_spin_page';
 import { goSession } from '../../net/FTGoSession';
@@ -20,8 +21,6 @@ import { FTGameLayerCtrl } from './FTGameLayerCtrl';
 import { FTGlobal } from './FTGlobal';
 import { FTLanguage } from './FTLanguage';
 import FTCenterRollCtrl from './FTCenterRollCtrl';
-import { FTPlatformMgr } from '../../3rd/FTPlatformMgr';
-import GameBridge from '../../../../../game.bridge';
 const { ccclass, property } = _decorator;
 
 export enum OPT_STATE {
@@ -45,7 +44,6 @@ export class FTOptCtrl extends FTBaseNode {
     lab_bit_bottom: Label = null;   // 当前押注
     lab_award_num: Label = null;    // 当前赢钱
 
-    btn_all: Node = null;    // 总钱点击
     btn_bet: Node = null;    // 押注点击
 
     panel1: Node = null;    // 第一页panel--包含spin等按钮
@@ -123,7 +121,6 @@ export class FTOptCtrl extends FTBaseNode {
         this.lab_all_money = xNodeFT.findComponent("node_all/lab", this.node, Label);
         this.lab_bit_bottom = xNodeFT.findComponent("node_bet/lab", this.node, Label);
         this.lab_award_num = xNodeFT.findComponent("node_win/lab", this.node, Label);
-        this.btn_all = xNodeFT.find("node_all", this.node);
         this.btn_bet = xNodeFT.find("node_bet", this.node);
 
         this.panel1 = xNodeFT.find("panel1", this.node);
@@ -156,7 +153,6 @@ export class FTOptCtrl extends FTBaseNode {
         // this.layout_auto = xNodeFT.find("layout_auto", this.node)
     }
     initBtnClick() {
-        xNodeFT.addClick("", this.btn_all, this.onALLMoneyClick.bind(this));
         xNodeFT.addClick("", this.btn_bet, this.onBetClick.bind(this));
         xNodeFT.addClick("", this.btn_turbo, this.onTurboClick.bind(this));
         xNodeFT.addClick("", this.addBtnNode, this.onAddBtnClick.bind(this));
@@ -170,32 +166,21 @@ export class FTOptCtrl extends FTBaseNode {
         xNodeFT.addClick("", this.btn_exit, this.onBtnExit.bind(this));
         xNodeFT.addClick("", this.btn_sound, this.onSoundBtnClick.bind(this));
         xNodeFT.addClick("", this.btn_rule, this.onRuleBtnClick.bind(this));
+        const historyButton = this.panel2.getChildByName('btn_history');
+        historyButton.active = !this.layerCtrl.isReplay;
+        xNodeFT.addClick('', historyButton, () => {
+            FTAudioMgr.Instance.playSound('games/menu_icon_press');
+            this.layerCtrl.onBtnMenu();
+        });
         xNodeFT.addClick("", this.btn_close, this.onCloseBtnClick.bind(this));
 
 
 
-        xNodeFT.addClick("qp", this.node, this.hideQipaoPanel.bind(this));
-        xNodeFT.addClick("qp/an", this.node, () => FTPlatformMgr.pay(0));
-        xNodeFT.addClick("qp/an1", this.node, () => FTPlatformMgr.toVip());
-        if (FTGlobal.LANG == "id_ID") {
-            xNodeFT.setRichText("qp/RichText", this.node, "Top up apa pun untuk mendapatkan <color=#00FF1F>VIP</color> dan buka benefit lebih tinggi");
-        } else if (FTGlobal.LANG == "es_MX") {
-            xNodeFT.setRichText("qp/RichText", this.node, "Recarga cualquier monto para obtener el  <color=#00FF1F>VIP</color> y desbloquear beneficios más altos.");
-        } else {
-            xNodeFT.setRichText("qp/RichText", this.node, "Top up any amount to become a <color=#00FF1F>VIP</color> and unlock greater benefits.");
-        }
+
 
     }
-    hideQipaoPanel() {
-        xNodeFT.hide("qp", this.node);
-    }
-    showQipaoPanel() {
-        xNodeFT.show("qp", this.node);
-        this.unschedule(this.hideQipaoPanel);
-        this.scheduleOnce(this.hideQipaoPanel, 6);
-    }
+
     initLanguageView() {
-        // xNodeFT.find("btn_auto_panel", this.node).getComponent(UITransform).width = FTPlatformMgr.getLanguage() == "en" ? 100 : 180;
         // let path = FTConstant.languagePath;        
         // xNodeFT.setSpriteFrame("btn_go/spr_spin", this.node, FTLoadManager.ins.getSpriteFrame(path + "img_spin/spriteFrame"))
         // xNodeFT.setSpriteFrame("btn_stop/img_stop", this.node, FTLoadManager.ins.getSpriteFrame(path + "img_stop/spriteFrame"))
@@ -418,7 +403,7 @@ export class FTOptCtrl extends FTBaseNode {
         // xNodeFT.setBtnInteractable("", xNodeFT.find("btn_rule", this.node), isshow)
         this.updateBtnAudo();
         if (isshow) this.updateBitView()
-        this.layerCtrl.setRealSwitchInteractable(isshow);
+
         this.updateGoBtnAnim();
     }
     updateBtnAudo() {
@@ -648,11 +633,7 @@ export class FTOptCtrl extends FTBaseNode {
     }
 
     onAddBtnClick() {
-        // FTAudioMgr.Instance.playSound("button/BetButton");
-        if (FTGlobal.playerType == 0) {
-            this.showQipaoPanel();
-            return;
-        }
+
         this.updateBitView(FTGameManager.getTotalBitIndex() + 1, true);
     }
 
@@ -664,8 +645,7 @@ export class FTOptCtrl extends FTBaseNode {
     async onGoBtnClick(bCLick = false) {
         if (this.layerCtrl.isReplay) return;
         FTAudioMgr.Instance.playSound("games/spin")
-        this.unschedule(this.hideQipaoPanel);
-        this.hideQipaoPanel();
+
         if (FTGameManager.getState() != FTSTATE.READY) return
         if (FTGameManager.canPlay()) {
             if (!this.canSendSpin) return
@@ -849,6 +829,10 @@ export class FTOptCtrl extends FTBaseNode {
     // 刷新总钱
     setAllNum(nums: number = null) {
         Tween.stopAllByTarget(this.lab_all_money.node);
+        if (this.layerCtrl.isReplay) {
+            this.lab_all_money.string = '******';
+            return;
+        }
         let num = nums;
         if (!nums) {
             num = FTGlobal.USER.gold
@@ -981,8 +965,9 @@ export class FTOptCtrl extends FTBaseNode {
     onRuleBtnClick() {
         FTAudioMgr.Instance.playSound("games/menu_icon_press");
         // FTAudioMgr.Instance.playSound("button/InfoButton")
-        this.layerCtrl.popupMenuCtrl.showRulePanel();
-        // FTLoadManager.ins.showPrefabWithLoading("res/load/prefab/layer/RuleLayer", xNodeFT.find("Canvas"))
+        const canvas = document.getElementById('GameCanvas');
+        if (!(canvas instanceof HTMLCanvasElement)) return;
+        (this.rulesPage ??= new RulesPage(canvas)).open();
     }
 
     onCloseBtnClick() {
@@ -990,21 +975,14 @@ export class FTOptCtrl extends FTBaseNode {
         this.changePanel(1);
     }
 
-    onALLMoneyClick() {
-        FTAudioMgr.Instance.playSound("games/menu_icon_press");
-        this.layerCtrl.popupMenuCtrl.showAllMoneyPanel();
-    }
-
+    private rulesPage?: RulesPage;
     private betPage?: BetOptionsPage;
     private autoPage?: AutoSpinPage;
 
     onBetClick() {
         if (this.layerCtrl.isReplay || FTGameManager.getState() !== FTSTATE.READY) return;
         FTAudioMgr.Instance.playSound("games/menu_icon_press");
-        if (FTGlobal.playerType == 0) {
-            this.showQipaoPanel();
-            return;
-        }
+
         const canvas = document.getElementById('GameCanvas') as HTMLCanvasElement;
         if (!canvas) return;
         (this.betPage ??= new BetOptionsPage(canvas, () => ({
@@ -1024,6 +1002,7 @@ export class FTOptCtrl extends FTBaseNode {
 
 
     onDestroy() {
+        this.rulesPage?.close();
         this.betPage?.destroy();
         this.autoPage?.close();
         super.destroy()

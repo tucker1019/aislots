@@ -1,0 +1,16 @@
+{
+  "name": "fortunemouse",
+  "uuid": "b39a6eba-a192-4481-bb1c-06f21fc3dd59",
+  "version": "3.6.3",
+  "creator": {
+    "version": "3.8.5"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check:frames": "node --experimental-strip-types scripts/check-frames.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "private": true
+}

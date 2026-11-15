@@ -1,0 +1,63 @@
+{
+  "ver": "1.0.8",
+  "importer": "sprite-atlas",
+  "imported": true,
+  "uuid": "af869850-5b12-42e4-ac27-9828ce34b786",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "9ce11": {
+      "importer": "sprite-frame",
+      "uuid": "af869850-5b12-42e4-ac27-9828ce34b786@9ce11",
+      "displayName": "",
+      "id": "9ce11",
+      "name": "mf_top_particle",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 0,
+        "trimY": 0,
+        "width": 29,
+        "height": 29,
+        "rawWidth": 29,
+        "rawHeight": 29,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "3130886d-20ef-446b-a6f3-59344a8f0b17@6c48a",
+        "atlasUuid": "af869850-5b12-42e4-ac27-9828ce34b786"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "atlasTextureName": "589f93de-8fdc-43c2-b77f-623bed816488.d1c2d.jpg",
+    "format": 2,
+    "uuid": "af869850-5b12-42e4-ac27-9828ce34b786",
+    "textureUuid": "3130886d-20ef-446b-a6f3-59344a8f0b17@6c48a"
+  }
+}

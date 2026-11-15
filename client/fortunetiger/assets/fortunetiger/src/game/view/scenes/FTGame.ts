@@ -1,3 +1,4 @@
+import { receiveNativeReplay } from '../../history/native_replay_bridge';
 import { _decorator, assetManager, Director, director, game, ResolutionPolicy, screen, setDisplayStats, view } from 'cc';
 import { ftframe } from '../../../ftframe/ftframe';
 import { FTAudioManager } from '../../../ftframe/audio/FTAudioManager';
@@ -7,7 +8,6 @@ import FTLoadManager from '../../load/FTLoadManager';
 import { FTGameManager } from '../../mgr/FTGameManager';
 import { goSession } from '../../net/FTGoSession';
 import { FTGlobal } from '../layer/FTGlobal';
-import GameBridge from '../../../../../game.bridge';
 const { ccclass } = _decorator;
 
 @ccclass('FTGame')
@@ -17,7 +17,6 @@ export class FTGame extends FTBaseScene {
     async start() {
         setDisplayStats(false);
         game.frameRate = 59;
-        GameBridge.init(window.parent);
         const fit = () => {
             const size = screen.windowSize;
             const policy = size.width / size.height > 750 / 1334 ? ResolutionPolicy.FIXED_HEIGHT : ResolutionPolicy.FIXED_WIDTH;
@@ -35,7 +34,7 @@ export class FTGame extends FTBaseScene {
         FTGlobal.debugLog = false;
         const emit = (name: string, progress?: number) => window.dispatchEvent(new CustomEvent(name, { detail:{progress} }));
         const enable = () => {
-            for (const name of ['SafeLayer', 'TopLayer', 'GameLayer']) this.node.getChildByName(name).active = true;
+            for (const name of ['SafeLayer', 'GameLayer']) this.node.getChildByName(name).active = true;
             director.once(Director.EVENT_AFTER_DRAW, () => {
                 if (this.isValid) emit('aislots-game-revealed');
             });
@@ -73,8 +72,11 @@ export class FTGame extends FTBaseScene {
         ftframe.audio = FTAudioManager.instance;
         const params = new URLSearchParams(location.search);
         const replay = params.get('replay');
-        if (replay) {
-            const data = await goSession.readReplay(replay, params.get('share'));
+        const nativeReplay = params.get('nativeReplay');
+        if (replay || nativeReplay) {
+            const data = nativeReplay
+                ? goSession.prepareReplay(await receiveNativeReplay(nativeReplay))
+                : await goSession.readReplay(replay, params.get('share'));
             goSession.entry = { replay: data };
             FTGameManager.setMultiples([data.betAmount / 5]);
             FTGameManager.setAllMultiples([data.betAmount]);

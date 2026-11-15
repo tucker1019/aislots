@@ -1,0 +1,63 @@
+{
+  "ver": "1.0.8",
+  "importer": "sprite-atlas",
+  "imported": true,
+  "uuid": "88f6a3a2-9b1b-41cc-b03a-4bc7d39f09bc",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "f2f5b": {
+      "importer": "sprite-frame",
+      "uuid": "88f6a3a2-9b1b-41cc-b03a-4bc7d39f09bc@f2f5b",
+      "displayName": "",
+      "id": "f2f5b",
+      "name": "bi_discoball_glow_add",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 0,
+        "trimY": 0,
+        "width": 491,
+        "height": 494,
+        "rawWidth": 491,
+        "rawHeight": 494,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "183ba428-643f-4c1a-9447-2dfd3e279d8d@6c48a",
+        "atlasUuid": "88f6a3a2-9b1b-41cc-b03a-4bc7d39f09bc"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "atlasTextureName": "4f20921f-0e24-4e08-a9ec-d913596c7394.7deb7.jpg",
+    "format": 2,
+    "uuid": "88f6a3a2-9b1b-41cc-b03a-4bc7d39f09bc",
+    "textureUuid": "183ba428-643f-4c1a-9447-2dfd3e279d8d@6c48a"
+  }
+}

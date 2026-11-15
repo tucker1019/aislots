@@ -1,0 +1,230 @@
+
+mg_mouse_guangquan.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arm_R
+  rotate: true
+  xy: 248, 658
+  size: 62, 69
+  orig: 62, 69
+  offset: 0, 0
+  index: -1
+dragon_particle_000
+  rotate: false
+  xy: 206, 882
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_001
+  rotate: false
+  xy: 2, 245
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_002
+  rotate: false
+  xy: 348, 882
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_003
+  rotate: false
+  xy: 2, 103
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_004
+  rotate: false
+  xy: 490, 882
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_005
+  rotate: false
+  xy: 632, 882
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_006
+  rotate: false
+  xy: 774, 882
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_007
+  rotate: false
+  xy: 144, 83
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_008
+  rotate: false
+  xy: 177, 722
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_009
+  rotate: false
+  xy: 319, 740
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_010
+  rotate: false
+  xy: 461, 740
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_011
+  rotate: false
+  xy: 603, 740
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_012
+  rotate: false
+  xy: 745, 740
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_013
+  rotate: false
+  xy: 319, 598
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_014
+  rotate: false
+  xy: 461, 598
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_015
+  rotate: false
+  xy: 603, 598
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+dragon_particle_016
+  rotate: false
+  xy: 745, 598
+  size: 140, 140
+  orig: 140, 140
+  offset: 0, 0
+  index: -1
+fx_glow
+  rotate: false
+  xy: 2, 711
+  size: 173, 151
+  orig: 173, 151
+  offset: 0, 0
+  index: -1
+fx_ing_01
+  rotate: false
+  xy: 144, 10
+  size: 112, 71
+  orig: 112, 71
+  offset: 0, 0
+  index: -1
+fx_ing_02
+  rotate: false
+  xy: 887, 789
+  size: 112, 71
+  orig: 112, 71
+  offset: 0, 0
+  index: -1
+fx_ing_03
+  rotate: false
+  xy: 887, 716
+  size: 112, 71
+  orig: 112, 71
+  offset: 0, 0
+  index: -1
+fx_ing_04
+  rotate: false
+  xy: 887, 643
+  size: 112, 71
+  orig: 112, 71
+  offset: 0, 0
+  index: -1
+fx_ing_05
+  rotate: false
+  xy: 887, 570
+  size: 112, 71
+  orig: 112, 71
+  offset: 0, 0
+  index: -1
+fx_ing_outline
+  rotate: false
+  xy: 2, 2
+  size: 140, 99
+  orig: 140, 99
+  offset: 0, 0
+  index: -1
+fx_ing_zoomblur
+  rotate: false
+  xy: 2, 864
+  size: 202, 158
+  orig: 202, 158
+  offset: 0, 0
+  index: -1
+fx_ingot_glow01
+  rotate: false
+  xy: 2, 549
+  size: 161, 160
+  orig: 161, 160
+  offset: 0, 0
+  index: -1
+fx_ingot_glow02
+  rotate: false
+  xy: 2, 387
+  size: 161, 160
+  orig: 161, 160
+  offset: 0, 0
+  index: -1
+fx_sparkle
+  rotate: false
+  xy: 165, 673
+  size: 35, 36
+  orig: 35, 36
+  offset: 0, 0
+  index: -1
+ingot_new
+  rotate: true
+  xy: 916, 862
+  size: 160, 102
+  orig: 160, 102
+  offset: 0, 0
+  index: -1
+ingot_new2
+  rotate: true
+  xy: 144, 225
+  size: 160, 102
+  orig: 160, 102
+  offset: 0, 0
+  index: -1
+shoulder_R
+  rotate: false
+  xy: 258, 13
+  size: 53, 68
+  orig: 53, 68
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,188 @@
+[
+  {
+    "__type__": "cc.AnimationClip",
+    "_name": "mf_ib_particle",
+    "_objFlags": 0,
+    "__editorExtras__": {
+      "embeddedPlayerGroups": []
+    },
+    "_native": "",
+    "sample": 60,
+    "speed": 0.3,
+    "wrapMode": 1,
+    "enableTrsBlending": false,
+    "_duration": 0.4166666666666667,
+    "_hash": 500763545,
+    "_tracks": [
+      {
+        "__id__": 1
+      }
+    ],
+    "_exoticAnimation": null,
+    "_events": [],
+    "_embeddedPlayers": []
+  },
+  {
+    "__type__": "cc.animation.ObjectTrack",
+    "_binding": {
+      "__type__": "cc.animation.TrackBinding",
+      "path": {
+        "__id__": 2
+      }
+    },
+    "_channel": {
+      "__id__": 4
+    }
+  },
+  {
+    "__type__": "cc.animation.TrackPath",
+    "_paths": [
+      {
+        "__id__": 3
+      },
+      "spriteFrame"
+    ]
+  },
+  {
+    "__type__": "cc.animation.ComponentPath",
+    "component": "cc.Sprite"
+  },
+  {
+    "__type__": "cc.animation.Channel",
+    "_curve": {
+      "__id__": 5
+    }
+  },
+  {
+    "__type__": "cc.ObjectCurve",
+    "_times": [
+      0,
+      0.016666666666666666,
+      0.03333333333333333,
+      0.05,
+      0.06666666666666667,
+      0.08333333333333333,
+      0.1,
+      0.11666666666666667,
+      0.13333333333333333,
+      0.15,
+      0.16666666666666666,
+      0.18333333333333332,
+      0.2,
+      0.21666666666666667,
+      0.23333333333333334,
+      0.25,
+      0.26666666666666666,
+      0.2833333333333333,
+      0.3,
+      0.31666666666666665,
+      0.3333333333333333,
+      0.35,
+      0.36666666666666664,
+      0.38333333333333336,
+      0.4
+    ],
+    "_values": [
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@7d359",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@34a01",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@bfa6e",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@2497e",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@ce6a4",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@932c8",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@f3beb",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@b86f9",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@b5d94",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@991fd",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@953aa",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@a91a4",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@8c192",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@b5b73",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@9598a",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@e9973",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@a901e",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@80d63",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@bac8e",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@444f9",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@ad3a8",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@fa25c",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@d6888",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@ff801",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "be68ada1-fc59-4286-98a4-23337ba850a7@338b7",
+        "__expectedType__": "cc.SpriteFrame"
+      }
+    ]
+  }
+]

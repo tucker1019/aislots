@@ -1,0 +1,41 @@
+{
+  "name": "fortunemouse",
+  "platform": "web-mobile",
+  "buildPath": "project://build",
+  "debug": false,
+  "md5Cache": true,
+  "skipCompressTexture": false,
+  "sourceMaps": false,
+  "polyfills": {
+    "asyncFunctions": true
+  },
+  "experimentalEraseModules": false,
+  "useBuiltinServer": false,
+  "mainBundleIsRemote": false,
+  "mainBundleCompressionType": "merge_dep",
+  "replaceSplashScreen": false,
+  "startScene": "02281e6c-b914-4452-854f-9cc53d0f7f79",
+  "outputName": "web-mobile",
+  "scenes": [
+    {
+      "url": "db://assets/FMGameScene.scene",
+      "uuid": "02281e6c-b914-4452-854f-9cc53d0f7f79",
+      "inBundle": false
+    }
+  ],
+  "web-desktop": [],
+  "packages": {
+    "web-mobile": {
+      "orientation": "auto",
+      "embedWebDebugger": false,
+      "__version__": "1.0.1"
+    },
+    "cocos-service": {
+      "configID": "664ca9",
+      "services": []
+    }
+  },
+  "__version__": "1.3.3",
+  "web-mobile": [],
+  "useSplashScreen": false
+}

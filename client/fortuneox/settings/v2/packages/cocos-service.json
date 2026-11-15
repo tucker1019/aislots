@@ -1,0 +1,54 @@
+{
+  "__version__": "3.0.8",
+  "game": {
+    "name": "未知游戏",
+    "app_id": "UNKNOW",
+    "c_id": "0"
+  },
+  "appConfigMaps": [
+    {
+      "app_id": "UNKNOW",
+      "config_id": "664ca9"
+    },
+    {
+      "app_id": "692730431",
+      "config_id": "dc0dc5"
+    },
+    {
+      "app_id": "692730437",
+      "config_id": "2983e7"
+    }
+  ],
+  "configs": [
+    {
+      "app_id": "UNKNOW",
+      "config_id": "664ca9",
+      "config_name": "Default",
+      "config_remarks": "",
+      "services": []
+    },
+    {
+      "app_id": "692730431",
+      "config_id": "dc0dc5",
+      "config_name": "Default",
+      "config_remarks": "",
+      "services": []
+    },
+    {
+      "app_id": "692730437",
+      "config_id": "2983e7",
+      "config_name": "Default",
+      "config_remarks": "",
+      "services": [
+        {
+          "service_id": "235",
+          "enable": false,
+          "param": {
+            "app_id": "692730437",
+            "store_id": "Android"
+          }
+        }
+      ]
+    }
+  ]
+}

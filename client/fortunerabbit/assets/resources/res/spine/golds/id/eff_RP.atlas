@@ -1,0 +1,118 @@
+
+eff_RP.png
+size: 284,284
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+jinbi/1
+  rotate: false
+  xy: 2, 146
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/10
+  rotate: false
+  xy: 212, 214
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/11
+  rotate: false
+  xy: 72, 10
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/12
+  rotate: false
+  xy: 142, 78
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/13
+  rotate: false
+  xy: 212, 146
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/14
+  rotate: false
+  xy: 142, 10
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/15
+  rotate: false
+  xy: 212, 78
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/16
+  rotate: false
+  xy: 212, 10
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/2
+  rotate: false
+  xy: 72, 214
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/3
+  rotate: false
+  xy: 2, 78
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/4
+  rotate: false
+  xy: 72, 146
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/5
+  rotate: false
+  xy: 142, 214
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/6
+  rotate: false
+  xy: 2, 10
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/7
+  rotate: false
+  xy: 72, 78
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/8
+  rotate: false
+  xy: 142, 146
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1
+jinbi/9
+  rotate: false
+  xy: 2, 214
+  size: 68, 66
+  orig: 68, 66
+  offset: 0, 0
+  index: -1

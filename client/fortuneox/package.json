@@ -1,0 +1,16 @@
+{
+  "name": "fortuneox",
+  "uuid": "ca096753-d47f-456e-8a50-e535df93bb54",
+  "version": "3.6.3",
+  "creator": {
+    "version": "3.8.5"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check:frames": "node --experimental-strip-types scripts/check-frames.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "private": true
+}

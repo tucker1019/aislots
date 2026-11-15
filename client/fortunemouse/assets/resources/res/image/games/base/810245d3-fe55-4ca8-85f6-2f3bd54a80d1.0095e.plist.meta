@@ -1,0 +1,63 @@
+{
+  "ver": "1.0.8",
+  "importer": "sprite-atlas",
+  "imported": true,
+  "uuid": "728a9f80-964e-45d5-aa60-9e5c4f4058f3",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "bbe9a": {
+      "importer": "sprite-frame",
+      "uuid": "728a9f80-964e-45d5-aa60-9e5c4f4058f3@bbe9a",
+      "displayName": "",
+      "id": "bbe9a",
+      "name": "ui_paytable",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 0,
+        "trimY": 0,
+        "width": 452,
+        "height": 216,
+        "rawWidth": 452,
+        "rawHeight": 216,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "28369e4e-493a-4eb8-af48-90086e2d63cf@6c48a",
+        "atlasUuid": "728a9f80-964e-45d5-aa60-9e5c4f4058f3",
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        }
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "atlasTextureName": "810245d3-fe55-4ca8-85f6-2f3bd54a80d1.0095e.png",
+    "format": 2,
+    "uuid": "728a9f80-964e-45d5-aa60-9e5c4f4058f3",
+    "textureUuid": "28369e4e-493a-4eb8-af48-90086e2d63cf@6c48a"
+  }
+}

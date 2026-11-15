@@ -1,0 +1,247 @@
+{
+  "ver": "1.0.8",
+  "importer": "sprite-atlas",
+  "imported": true,
+  "uuid": "a777dee8-6dc2-4806-a9e2-ba9d1d2365fd",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "5a05c": {
+      "importer": "sprite-frame",
+      "uuid": "a777dee8-6dc2-4806-a9e2-ba9d1d2365fd@5a05c",
+      "displayName": "",
+      "id": "5a05c",
+      "name": "bw_firework_03",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 16,
+        "offsetY": 16,
+        "trimX": 1,
+        "trimY": 1519,
+        "width": 294,
+        "height": 287,
+        "rawWidth": 540,
+        "rawHeight": 527,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "377153e0-0325-4876-bf10-dd0a3f54b74b@6c48a",
+        "atlasUuid": "a777dee8-6dc2-4806-a9e2-ba9d1d2365fd"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "747f4": {
+      "importer": "sprite-frame",
+      "uuid": "a777dee8-6dc2-4806-a9e2-ba9d1d2365fd@747f4",
+      "displayName": "",
+      "id": "747f4",
+      "name": "bw_firework_04",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 16,
+        "offsetY": 13,
+        "trimX": 1,
+        "trimY": 1168,
+        "width": 358,
+        "height": 349,
+        "rawWidth": 540,
+        "rawHeight": 527,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "377153e0-0325-4876-bf10-dd0a3f54b74b@6c48a",
+        "atlasUuid": "a777dee8-6dc2-4806-a9e2-ba9d1d2365fd"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "a4f47": {
+      "importer": "sprite-frame",
+      "uuid": "a777dee8-6dc2-4806-a9e2-ba9d1d2365fd@a4f47",
+      "displayName": "",
+      "id": "a4f47",
+      "name": "bw_firework_05",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": true,
+        "offsetX": 7,
+        "offsetY": 10,
+        "trimX": 1,
+        "trimY": 778,
+        "width": 388,
+        "height": 399,
+        "rawWidth": 540,
+        "rawHeight": 527,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "377153e0-0325-4876-bf10-dd0a3f54b74b@6c48a",
+        "atlasUuid": "a777dee8-6dc2-4806-a9e2-ba9d1d2365fd"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "b927a": {
+      "importer": "sprite-frame",
+      "uuid": "a777dee8-6dc2-4806-a9e2-ba9d1d2365fd@b927a",
+      "displayName": "",
+      "id": "b927a",
+      "name": "bw_firework_22",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": true,
+        "offsetX": 10,
+        "offsetY": 20,
+        "trimX": 1,
+        "trimY": 1,
+        "width": 404,
+        "height": 405,
+        "rawWidth": 540,
+        "rawHeight": 527,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "377153e0-0325-4876-bf10-dd0a3f54b74b@6c48a",
+        "atlasUuid": "a777dee8-6dc2-4806-a9e2-ba9d1d2365fd"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "99b6d": {
+      "importer": "sprite-frame",
+      "uuid": "a777dee8-6dc2-4806-a9e2-ba9d1d2365fd@99b6d",
+      "displayName": "",
+      "id": "99b6d",
+      "name": "bw_firework_23",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 9,
+        "offsetY": 1,
+        "trimX": 1,
+        "trimY": 407,
+        "width": 404,
+        "height": 369,
+        "rawWidth": 540,
+        "rawHeight": 527,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [],
+          "indexes": [],
+          "uv": [],
+          "nuv": [],
+          "minPos": [],
+          "maxPos": []
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "377153e0-0325-4876-bf10-dd0a3f54b74b@6c48a",
+        "atlasUuid": "a777dee8-6dc2-4806-a9e2-ba9d1d2365fd"
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "atlasTextureName": "81ab0dbd-92c4-48a9-91bb-446c231b698a.03bd1.jpg",
+    "format": 2,
+    "uuid": "a777dee8-6dc2-4806-a9e2-ba9d1d2365fd",
+    "textureUuid": "377153e0-0325-4876-bf10-dd0a3f54b74b@6c48a"
+  }
+}

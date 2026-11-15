@@ -1,7 +1,6 @@
 import { _decorator, Component } from 'cc';
 import { ftframe } from '../../ftframe/ftframe';
 
-import FTNetController from '../net/FTNetController';
 
 const { ccclass } = _decorator;
 
@@ -17,8 +16,6 @@ export abstract class FTBaseNode extends Component {
         })
     }
     onDestroy() {
-        let Node = FTNetController.netNode;
-        Node.removeResponeHandlerByTarget(this);
         ftframe.message.offByTarger(this);
     }
     protected abstract initAttribute(): void;
