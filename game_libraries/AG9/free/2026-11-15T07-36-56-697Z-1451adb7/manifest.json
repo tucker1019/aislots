@@ -1,0 +1,269 @@
+{
+  "version": 1,
+  "format": "payline-skeleton-v1",
+  "gameId": "AG9",
+  "mode": "free",
+  "createdAt": "2026-11-15T07:36:56.698Z",
+  "paylineRevision": "fd1b25080e4c110dd56804773032c5c002735dd6c543f343af59916172292988",
+  "gameRevision": "d4dc439382c2d36c594debb52cf9aa8b1f0db88a5d5581e9b4788881121d7892",
+  "config": {
+    "version": 1,
+    "ruleType": "paylines_v1",
+    "columnHeights": [
+      3,
+      3,
+      3
+    ],
+    "lines": [
+      [
+        2,
+        5,
+        8
+      ],
+      [
+        1,
+        4,
+        7
+      ],
+      [
+        3,
+        6,
+        9
+      ],
+      [
+        1,
+        5,
+        9
+      ],
+      [
+        3,
+        5,
+        7
+      ]
+    ],
+    "symbols": [
+      {
+        "id": 1,
+        "name": "橘子",
+        "role": "normal",
+        "payout": 3,
+        "weight": 1000
+      },
+      {
+        "id": 2,
+        "name": "鞭炮",
+        "role": "normal",
+        "payout": 5,
+        "weight": 950
+      },
+      {
+        "id": 3,
+        "name": "红包",
+        "role": "normal",
+        "payout": 8,
+        "weight": 950
+      },
+      {
+        "id": 4,
+        "name": "福袋",
+        "role": "normal",
+        "payout": 10,
+        "weight": 800
+      },
+      {
+        "id": 5,
+        "name": "如意",
+        "role": "normal",
+        "payout": 25,
+        "weight": 550
+      },
+      {
+        "id": 6,
+        "name": "金元宝",
+        "role": "normal",
+        "payout": 100,
+        "weight": 500
+      },
+      {
+        "id": 7,
+        "name": "幸运豹百搭",
+        "role": "wild",
+        "payout": 250,
+        "weight": 200
+      }
+    ],
+    "feature": {
+      "type": "fortune_leopard_v1",
+      "fillProbability": 0.2,
+      "targetWeights": [
+        {
+          "symbolId": 1,
+          "weight": 1000
+        },
+        {
+          "symbolId": 2,
+          "weight": 900
+        },
+        {
+          "symbolId": 3,
+          "weight": 800
+        },
+        {
+          "symbolId": 4,
+          "weight": 700
+        },
+        {
+          "symbolId": 5,
+          "weight": 600
+        },
+        {
+          "symbolId": 6,
+          "weight": 500
+        }
+      ],
+      "baseSpreadWeights": [
+        50,
+        35,
+        15
+      ],
+      "wildProbability": 0.1
+    }
+  },
+  "dataHash": "2aaad23d23d29ebbc8b6eda4b0020e8829217ad1230b9bdd737250573f576d92",
+  "options": {
+    "mode": "free",
+    "count": 118098,
+    "seed": 1021,
+    "perMultiplier": 3,
+    "maxRetained": 15000
+  },
+  "stats": {
+    "generated": 118098,
+    "wins": 87984,
+    "losses": 30114,
+    "retained": 252,
+    "duplicates": 0,
+    "capacitySkipped": 117846,
+    "bytes": 15866
+  },
+  "partial": false,
+  "candidate": true,
+  "validation": {
+    "required": 26,
+    "covered": 22,
+    "missing": [
+      "45",
+      "120",
+      "375",
+      "1500"
+    ]
+  },
+  "multiplierUnit": "raw-before-line-count",
+  "positionOrder": "column-major-top-to-bottom-zero-based",
+  "table": [
+    [
+      3,
+      1314879.2470768
+    ],
+    [
+      5,
+      748039.3626254
+    ],
+    [
+      6,
+      473464.5983379
+    ],
+    [
+      8,
+      440962.3502986
+    ],
+    [
+      9,
+      240157.9770782
+    ],
+    [
+      10,
+      470861.7113383
+    ],
+    [
+      12,
+      115005.3519379
+    ],
+    [
+      15,
+      136538.8110781
+    ],
+    [
+      16,
+      158923.2939597
+    ],
+    [
+      20,
+      147426.318172
+    ],
+    [
+      24,
+      160902.3623717
+    ],
+    [
+      25,
+      365226.7822539
+    ],
+    [
+      30,
+      237574.2376551
+    ],
+    [
+      32,
+      193066.6445422
+    ],
+    [
+      40,
+      171144.9766127
+    ],
+    [
+      45,
+      163590.8225922
+    ],
+    [
+      50,
+      351289.7910946
+    ],
+    [
+      75,
+      255931.637957
+    ],
+    [
+      100,
+      205660.5263515
+    ],
+    [
+      120,
+      180455.1792452
+    ],
+    [
+      150,
+      150342.3041549
+    ],
+    [
+      200,
+      116307.3078352
+    ],
+    [
+      300,
+      79374.0299148
+    ],
+    [
+      375,
+      63786.0578187
+    ],
+    [
+      400,
+      58928.7818474
+    ],
+    [
+      1500,
+      159.5358499
+    ]
+  ]
+}

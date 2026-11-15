@@ -1,0 +1,298 @@
+{
+  "version": 1,
+  "format": "ox-skeleton-v1",
+  "gameId": "AG7",
+  "mode": "free",
+  "createdAt": "2026-11-14T19:28:46.268Z",
+  "paylineRevision": "08ae87a3c75f77d0d77cf186c01d63b7ddbe64c758668a92047f2f0214c86ffd",
+  "gameRevision": "f0637cbd1ca0a328956e143ebc5a6f30be4ff4ce9da5abacc29ef8052aa889e1",
+  "config": {
+    "version": 1,
+    "ruleType": "fortune_ox_v1",
+    "columnHeights": [
+      3,
+      4,
+      3
+    ],
+    "lines": [
+      [
+        1,
+        4,
+        8
+      ],
+      [
+        1,
+        5,
+        8
+      ],
+      [
+        1,
+        5,
+        9
+      ],
+      [
+        2,
+        5,
+        8
+      ],
+      [
+        2,
+        5,
+        9
+      ],
+      [
+        2,
+        6,
+        9
+      ],
+      [
+        2,
+        6,
+        10
+      ],
+      [
+        3,
+        6,
+        9
+      ],
+      [
+        3,
+        6,
+        10
+      ],
+      [
+        3,
+        7,
+        10
+      ]
+    ],
+    "symbols": [
+      {
+        "id": 1,
+        "name": "鞭炮",
+        "role": "normal",
+        "payout": 3,
+        "weight": 1000
+      },
+      {
+        "id": 2,
+        "name": "橘子",
+        "role": "normal",
+        "payout": 5,
+        "weight": 900
+      },
+      {
+        "id": 3,
+        "name": "红包",
+        "role": "normal",
+        "payout": 10,
+        "weight": 850
+      },
+      {
+        "id": 4,
+        "name": "钱袋",
+        "role": "normal",
+        "payout": 20,
+        "weight": 800
+      },
+      {
+        "id": 5,
+        "name": "钱箱",
+        "role": "normal",
+        "payout": 50,
+        "weight": 750
+      },
+      {
+        "id": 6,
+        "name": "金元宝",
+        "role": "normal",
+        "payout": 100,
+        "weight": 700
+      },
+      {
+        "id": 7,
+        "name": "金牛百搭",
+        "role": "wild",
+        "payout": 200,
+        "weight": 300
+      }
+    ],
+    "jackpotRaw": 20000,
+    "fullBoardMultiplier": 10
+  },
+  "numericalConfig": {
+    "version": 1,
+    "ruleType": "fortune_ox_v1",
+    "parameters": {
+      "lineCount": 10,
+      "baseSpinWinProbability": 0.29,
+      "freeSpinWinProbability": 1,
+      "freeSpinTriggerProbability": 0.007
+    },
+    "simulationOptions": {
+      "paidSpins": 1000000,
+      "seed": 1023
+    }
+  },
+  "table": [
+    [
+      3,
+      293254.5442232
+    ],
+    [
+      5,
+      291312.2901418
+    ],
+    [
+      6,
+      5312.9352467
+    ],
+    [
+      10,
+      475217.3250782
+    ],
+    [
+      15,
+      340067.635059
+    ],
+    [
+      20,
+      343027.9300723
+    ],
+    [
+      24,
+      27967.9670389
+    ],
+    [
+      25,
+      352717.6982479
+    ],
+    [
+      27,
+      396373.7273286
+    ],
+    [
+      30,
+      561377.8881523
+    ],
+    [
+      40,
+      91143.7647471
+    ],
+    [
+      45,
+      631945.5208911
+    ],
+    [
+      50,
+      1258260.6998213
+    ],
+    [
+      80,
+      94925.344816
+    ],
+    [
+      90,
+      650350.2125276
+    ],
+    [
+      100,
+      1138805.5987844
+    ],
+    [
+      160,
+      86470.0655744
+    ],
+    [
+      180,
+      576637.252197
+    ],
+    [
+      200,
+      636803.2565319
+    ],
+    [
+      250,
+      539491.5562683
+    ],
+    [
+      400,
+      68853.4624299
+    ],
+    [
+      450,
+      465689.3679991
+    ],
+    [
+      500,
+      672513.9286088
+    ],
+    [
+      800,
+      63.5193947
+    ],
+    [
+      900,
+      551.8607381
+    ],
+    [
+      1000,
+      864.6480814
+    ]
+  ],
+  "dataHash": "d0f5bec88a5b687e9cbc79b07635279789999b91f39c707b46bd5c7213a6631c",
+  "options": {
+    "mode": "free",
+    "count": 1000000,
+    "seed": 1023,
+    "perMultiplier": 3,
+    "maxRetained": 15000
+  },
+  "stats": {
+    "generated": 14406,
+    "retained": 78,
+    "duplicates": 632,
+    "rejected": 4714,
+    "capacitySkipped": 8982,
+    "bytes": 3426
+  },
+  "targets": [
+    3,
+    5,
+    6,
+    10,
+    15,
+    20,
+    24,
+    25,
+    27,
+    30,
+    40,
+    45,
+    50,
+    80,
+    90,
+    100,
+    160,
+    180,
+    200,
+    250,
+    400,
+    450,
+    500,
+    800,
+    900,
+    1000
+  ],
+  "partial": false,
+  "candidate": true,
+  "validation": {
+    "required": 26,
+    "covered": 26,
+    "missing": []
+  },
+  "multiplierUnit": "raw-before-line-count",
+  "positionOrder": "column-major-top-to-bottom-zero-based",
+  "unit": "one-final-winning-feature-board",
+  "featureLosses": "generated-live-six-identical-ordinary-sides"
+}
