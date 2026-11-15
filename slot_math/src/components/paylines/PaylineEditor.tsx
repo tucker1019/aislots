@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import {AsyncButton} from '../ox/OxShared';
+import { useEffect, useRef, useState } from 'react';
 import { generatePaylineBoard, gridCells, validatePaylines, type PaylineConfig, type PaylineDocument } from '../../domain/paylines';
 import { evaluateFortuneTiger } from '../../domain/fortuneTiger';
 import {TigerSkeletonPanel} from './TigerSkeletonPanel';
@@ -9,6 +10,7 @@ export function PaylineEditor({document,onDirty,onSaving}:{document:PaylineDocum
   const [config,setConfig]=useState<PaylineConfig>(()=>structuredClone(document.file));
   const [shape,setShape]=useState(config.columnHeights.join(' '));
   const [revision,setRevision]=useState(document.revision),[saved,setSaved]=useState(JSON.stringify(config));
+  const saveLock=useRef(false);
   const [librarySaving,setLibrarySaving]=useState(false);
   const [saving,setSaving]=useState(false),[message,setMessage]=useState(''),[error,setError]=useState('');
   const [selected,setSelected]=useState<number[]>([]),[editing,setEditing]=useState<number|null>(null);
@@ -33,14 +35,14 @@ export function PaylineEditor({document,onDirty,onSaving}:{document:PaylineDocum
     const next={...config,lines:editing===null?[...config.lines,[...selected]]:config.lines.map((line,i)=>i===editing?[...selected]:line)};
     validatePaylines(next);setConfig(next);setSelected([]);setEditing(null);
   });}
-  async function save(){if(saving)return;setError('');setMessage('');try{
+  async function save(){if(saveLock.current||saving)return;saveLock.current=true;setError('');setMessage('');try{
     if(shape!==config.columnHeights.join(' '))throw new Error('请先应用列高。');
     validatePaylines(config);setSaving(true);onSaving(true);
     const next=await savePaylines(document.gameId,revision,config);setRevision(next.revision);setSaved(fingerprint);setMessage('连线配置已保存。');
-  }catch(e){setError((e as Error).message);}finally{setSaving(false);onSaving(false);}}
+  }catch(e){setError((e as Error).message);}finally{saveLock.current=false;setSaving(false);onSaving(false);}}
   const updateSymbol=(index:number,patch:Partial<PaylineConfig['symbols'][number]>)=>setConfig({...config,symbols:config.symbols.map((s,i)=>i===index?{...s,...patch}:s)});
   return <>
-    <div className="analysis-file-heading"><span>{dirty?'连线配置有未保存修改':'连线配置与文件一致'}</span><button className="button primary" disabled={!dirty||saving||librarySaving||!!invalid} onClick={()=>void save()}>{saving?'保存中…':'保存连线配置'}</button></div>
+    <div className="analysis-file-heading"><span>{dirty?'连线配置有未保存修改':'连线配置与文件一致'}</span><AsyncButton aria-label="保存连线配置" className="primary" busy={saving} disabled={!dirty||librarySaving||!!invalid} onClick={()=>void save()}>保存连线配置</AsyncButton></div>
     {(error||invalid)&&<div className="dev-alert" role="alert">{error||invalid}</div>}{message&&<p className="game-file-success" role="status">{message}</p>}
     <fieldset disabled={saving||librarySaving} className="analysis-editor-fieldset"><div className="payline-layout">
       <section className="payline-card"><h2>盘面与中奖组合</h2><label className="field">每列格数<input aria-label="每列格数" value={shape} onChange={e=>setShape(e.target.value)}/></label><button className="button secondary" onClick={applyShape}>应用列高</button>

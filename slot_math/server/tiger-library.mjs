@@ -9,7 +9,7 @@ export function createTigerLibraryStore(root,paylineStore,gameStore,validate,cov
   if(!/^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/.test(gameId))throw new FileError(400,'游戏 ID 无效。');
   const current=await paylineStore.read(gameId),game=await gameStore.read(gameId);
   if(current.revision!==revision||game.revision!==value?.gameRevision)throw new FileError(409,'盘面配置或倍率表已改变，请重新读取并生成骨架。');
-  if(game.files.config.ruleType!=='paylines_v1'||game.files.config.parameters.lineCount!==current.file.lines.length)throw new FileError(422,'分析页线数必须与开发页中奖组合数一致。');
+  if(!['paylines_v1','fortune_leopard_v1'].includes(game.files.config.ruleType)||game.files.config.parameters.lineCount!==current.file.lines.length)throw new FileError(422,'分析页线数必须与开发页中奖组合数一致。');
   try{validate(value,current.file);}catch(error){throw new FileError(422,error.message);}
   const mode=value.mode,validation=coverage(value,game.files[mode]),data=JSON.stringify(value.buckets)+'\n',bytes=Buffer.byteLength(data);
   if(bytes>26*1024*1024)throw new FileError(413,'骨架库超过容量限制。');

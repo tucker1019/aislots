@@ -2,7 +2,9 @@ import {evaluatePaylines, generatePaylineBoard, gridCells, validatePaylines, typ
 
 export function evaluateFortuneTiger(config:PaylineConfig,board:number[]) {
  const result=evaluatePaylines(config,board);
- const bonusMultiplier=config.feature?.type==='fortune_tiger_v1'&&result.wins.length>0&&board[0]!==0&&board.every(id=>id===board[0])?10:1;
+ const leopard=config.feature?.type==='fortune_leopard_v1';
+ const fullWin=leopard?result.winningCellIds.length===board.length:board[0]!==0&&board.every(id=>id===board[0]);
+ const bonusMultiplier=config.feature&&result.wins.length>0&&fullWin?10:1;
  return {...result,bonusMultiplier,totalBetMultiplier:result.totalBetMultiplier*bonusMultiplier};
 }
 function draw(random:()=>number){const v=random();if(!Number.isFinite(v)||v<0||v>=1)throw new Error('随机源必须返回 [0,1)。');return v;}
@@ -28,7 +30,7 @@ export interface TigerFrame {board:number[];lockedCellIds:number[];addedCellIds:
 export interface TigerRound {mode:'normal'|'feature';targetSymbolId:number|null;frames:TigerFrame[];endReason:TigerEndReason;betMinor:string;winMinor:string;profitMinor:string;result:ReturnType<typeof evaluateFortuneTiger>}
 export function runFortuneTigerRound(config:PaylineConfig,betMinor:bigint,random:()=>number=Math.random,mode:'base'|'free'='base'):TigerRound{
  validatePaylines(config);const feature=config.feature;
- if(!feature||feature.type!=='fortune_tiger_v1')throw new Error('尚未配置 AG4 特殊玩法。');
+ if(!feature||!['fortune_tiger_v1','fortune_leopard_v1'].includes(feature.type))throw new Error('尚未配置锁定重转玩法。');
  if(betMinor<=0n)throw new Error('总投注必须大于 0。');
  const frames:TigerFrame[]=[];
  const snapshot=(board:number[],added:number[],done:boolean):TigerFrame=>({board:[...board],lockedCellIds:board.flatMap((id,i)=>id?[i+1]:[]),addedCellIds:[...added],chargeMinor:frames.length===0?betMinor.toString():'0',winMinor:'0',done});
@@ -39,7 +41,7 @@ export function runFortuneTigerRound(config:PaylineConfig,betMinor:bigint,random
   const wild=new Set(config.symbols.filter(s=>s.role==='wild').map(s=>s.id));
   const cells=gridCells(config.columnHeights);const byPosition=new Map(cells.map(c=>[`${c.column}:${c.row}`,c.id-1]));
   // Original normal-spin spreading order is row-major, although config IDs are column-major.
-  for(let row=0;row<Math.max(...config.columnHeights);row++)for(let col=0;col<config.columnHeights.length;col++){
+  if(feature.type==='fortune_tiger_v1')for(let row=0;row<Math.max(...config.columnHeights);row++)for(let col=0;col<config.columnHeights.length;col++){
    const index=byPosition.get(`${col}:${row}`);if(index===undefined||wild.has(board[index]))continue;
    const symbol=board[index],count=weighted([0,1,2],feature.baseSpreadWeights,random);
    for(let offset=1;offset<=count&&row-offset>=0;offset++)board[byPosition.get(`${col}:${row-offset}`)!]=symbol;
@@ -51,7 +53,7 @@ export function runFortuneTigerRound(config:PaylineConfig,betMinor:bigint,random
   // Each successful attempt fills at least one cell; at most cell-count + 1 attempts.
   for(;;){
    const added:number[]=[];const next=[...board];
-   for(let i=0;i<next.length;i++)if(next[i]===0&&draw(random)<feature.fillProbability){next[i]=targetSymbolId;added.push(i+1);}
+   for(let i=0;i<next.length;i++)if(next[i]===0&&draw(random)<feature.fillProbability){next[i]=feature.type==='fortune_leopard_v1'&&draw(random)<feature.wildProbability!?config.symbols.find(s=>s.role==='wild')!.id:targetSymbolId;added.push(i+1);}
    board=next;
    const full=board.every(id=>id!==0),done=full||added.length===0;
    frames.push(snapshot(board,added,done));

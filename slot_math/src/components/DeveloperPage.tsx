@@ -1,4 +1,8 @@
+import {DragonDeveloper} from './dragon/DragonDeveloper';
 import { PaylinePage } from './paylines/PaylinePage';
+import { RabbitDeveloper } from './rabbit/RabbitDeveloper';
+import {OxDeveloper} from './ox/OxDeveloper';
+import {MouseDeveloper} from './mouse/MouseDeveloper';
 import { useEffect, useRef, useState } from 'react';
 import { PersistentDetails } from './PersistentDetails';
 import { PageNav } from './PageNav';
@@ -20,7 +24,11 @@ import './developer.css';
 
 export function DeveloperPage({ active }: { active: boolean }) {
   const workspace = useGameWorkspace();
-  return workspace.document?.files.config.ruleType === 'paylines_v1' ? <PaylinePage /> : <CascadeDeveloperPage active={active} />;
+  if(workspace.document?.files.config.ruleType==='fortune_dragon_v1')return <DragonDeveloper/>;
+  if(workspace.document?.files.config.ruleType==='fortune_ox_v1')return <OxDeveloper/>;
+  if(workspace.document?.files.config.ruleType==='fortune_mouse_v1')return <MouseDeveloper/>;
+  if(workspace.document?.files.config.ruleType==='fortune_rabbit_v1')return <RabbitDeveloper/>;
+  return ['paylines_v1','fortune_leopard_v1'].includes(workspace.document?.files.config.ruleType??'') ? <PaylinePage /> : <CascadeDeveloperPage active={active} />;
 }
 function CascadeDeveloperPage({ active }: { active: boolean }) {
   const workspace = useGameWorkspace();

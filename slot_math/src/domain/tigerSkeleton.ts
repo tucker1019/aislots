@@ -18,7 +18,7 @@ export function inspectTigerSkeleton(data:TigerSkeleton,c:PaylineConfig,mode:Tig
  const fixed=new Set<number>();
  data.stages.forEach((pairs,stage)=>{
   ensure(Array.isArray(pairs)&&pairs.length%2===0&&pairs.length<=size*2);
-  for(let i=0;i<pairs.length;i+=2){const pos=pairs[i],id=pairs[i+1];ensure(Number.isSafeInteger(pos)&&pos>=0&&pos<size&&Number.isSafeInteger(id)&&ids.has(id)&&!fixed.has(pos));ensure(mode==='base'||id===data.target);board[pos]=id;fixed.add(pos);}
+  for(let i=0;i<pairs.length;i+=2){const pos=pairs[i],id=pairs[i+1];ensure(Number.isSafeInteger(pos)&&pos>=0&&pos<size&&Number.isSafeInteger(id)&&ids.has(id)&&!fixed.has(pos));ensure(mode==='base'||id===data.target||(c.feature?.type==='fortune_leopard_v1'&&c.symbols.some(s=>s.id===id&&s.role==='wild')));board[pos]=id;fixed.add(pos);}
   boards.push([...board]);
   if(mode==='free'){const full=fixed.size===size,last=stage===data.stages.length-1;ensure(last?(full||pairs.length===0):!full&&pairs.length>0,'重转骨架须以填满或无新增结束，不能修改锁定格。');}
  });
@@ -36,10 +36,11 @@ export class TigerSkeletonGenerator {
  readonly config:PaylineConfig;readonly options:TigerSkeletonOptions;
  readonly stats:TigerSkeletonStats={generated:0,wins:0,losses:0,retained:0,duplicates:0,capacitySkipped:0,bytes:0};
  private buckets:Record<string,TigerSkeleton[]>={};private seen=new Set<string>();private random:()=>number;
- constructor(c:PaylineConfig,o:TigerSkeletonOptions){validatePaylines(c);ensure(c.feature,'请配置 AG4 骨架生成规则。');validateTigerSkeletonOptions(o);this.config=structuredClone(c);this.options={...o};this.random=seededRandom(o.seed);}
+ constructor(c:PaylineConfig,o:TigerSkeletonOptions){validatePaylines(c);ensure(c.feature,'请配置锁定重转骨架生成规则。');validateTigerSkeletonOptions(o);this.config=structuredClone(c);this.options={...o};this.random=seededRandom(o.seed);}
  get done(){return this.stats.generated>=this.options.count;}
  step(){if(this.done)return;const round=runFortuneTigerRound(this.config,BigInt(this.config.lines.length)*100n,this.random,this.options.mode),skeleton=encodeTigerSkeleton(round),key=String(Number((round.result.rawPayout*round.result.bonusMultiplier).toPrecision(14))),positive=round.result.rawPayout>0;
   this.stats.generated++;if(positive)this.stats.wins++;else this.stats.losses++;
+  if(this.config.feature?.type==='fortune_leopard_v1'&&!positive){this.stats.capacitySkipped++;return;}
   const encoded=JSON.stringify(skeleton),signature=`${key}:${encoded}`;if(this.seen.has(signature)){this.stats.duplicates++;return;}
   const bytes=new TextEncoder().encode(encoded).length;
   if(this.stats.retained>=this.options.maxRetained||(this.buckets[key]?.length??0)>=this.options.perMultiplier||this.stats.bytes+bytes>MAX_BYTES){this.stats.capacitySkipped++;return;}

@@ -1,6 +1,6 @@
 /** Positions are 1-based, column-major, top to bottom. Symbol IDs are client IDs. */
 export interface PaylineSymbol { id: number; name: string; role: 'normal' | 'wild'; payout: number; weight: number }
-export interface FortuneTigerFeature { type: 'fortune_tiger_v1'; fillProbability: number; targetWeights: {symbolId:number;weight:number}[]; baseSpreadWeights: [number,number,number] }
+export interface FortuneTigerFeature { type: 'fortune_tiger_v1' | 'fortune_leopard_v1'; wildProbability?: number; fillProbability: number; targetWeights: {symbolId:number;weight:number}[]; baseSpreadWeights: [number,number,number] }
 export interface PaylineConfig { feature?: FortuneTigerFeature; version: 1; ruleType: 'paylines_v1'; columnHeights: number[]; lines: number[][]; symbols: PaylineSymbol[] }
 export interface PaylineDocument { gameId: string; revision: string; file: PaylineConfig }
 export function gridCells(heights: number[]) {
@@ -34,10 +34,16 @@ export function validatePaylines(value: unknown): PaylineConfig {
   if (!value.symbols.some(s => s.weight > 0)) throw new Error('至少一个符号的生成权重必须大于 0。');
   if (value.feature !== undefined) {
     const f=value.feature;
-    if(!object(f)||f.type!=='fortune_tiger_v1')throw new Error('不支持的连线特殊玩法。');
-    for(const key of Object.keys(f))if(!['type','fillProbability','targetWeights','baseSpreadWeights'].includes(key))throw new Error(`特殊玩法不支持字段 ${key}。`);
+    if(!object(f)||!['fortune_tiger_v1','fortune_leopard_v1'].includes(String(f.type)))throw new Error('不支持的连线特殊玩法。');
+    for(const key of Object.keys(f))if(!['type','fillProbability','targetWeights','baseSpreadWeights',...(f.type==='fortune_leopard_v1'?['wildProbability']:[])].includes(key))throw new Error(`特殊玩法不支持字段 ${key}。`);
     if(!finite(f.fillProbability)||f.fillProbability>1)throw new Error('填入概率必须在 0～1。');
     if(!Array.isArray(f.baseSpreadWeights)||f.baseSpreadWeights.length!==3||f.baseSpreadWeights.some(w=>!finite(w))||!f.baseSpreadWeights.some(w=>w>0))throw new Error('向上复制需配置 0、1、2 格的非负权重，合计大于 0。');
+    if(f.type==='fortune_leopard_v1'){
+      if((value.symbols as PaylineSymbol[]).filter(s=>s.role==='normal'&&s.weight>0).length<4)throw Error('AG9一次补空至少需要4种正权重普通图标。');
+      if(!finite(f.wildProbability)||f.wildProbability>1)throw Error('重转百搭概率必须为0～1。');
+      const expected=[[2,5,8],[1,4,7],[3,6,9],[1,5,9],[3,5,7]].map(l=>l.join(',')).sort().join(';');
+      if(JSON.stringify(heights)!=='[3,3,3]'||value.lines.map(l=>l.join(',')).sort().join(';')!==expected||value.symbols.length!==7||[3,5,8,10,25,100,250].some((p,i)=>!(value.symbols as PaylineSymbol[]).some(s=>s.id===i+1&&s.payout===p&&s.role===(i===6?'wild':'normal'))))throw Error('AG9固定三列三行五条线及截图赔付表。');
+    }
     const targets=new Set<number>();
     if(!Array.isArray(f.targetWeights)||!f.targetWeights.length)throw new Error('需要特殊目标符号权重。');
     for(const target of f.targetWeights){

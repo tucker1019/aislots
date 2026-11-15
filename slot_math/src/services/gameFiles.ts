@@ -1,7 +1,41 @@
+import {validateDragonConfig,type DragonConfig,type DragonLibrary,dragonCoverage} from '../domain/fortuneDragon';
+import {validateOxConfig,type OxConfig,type OxLibrary,oxCoverage} from '../domain/fortuneOx';
 import { validatePaylines } from '../domain/paylines';
+import { validateRabbitConfig } from '../domain/fortuneRabbit';
+import {validateMouseConfig,type MouseConfig,type MouseLibrary,mouseCoverage} from '../domain/fortuneMouse';
 import { validateGameFiles, type GameDocument, type GameFiles } from '../domain/settings';
 import { validateBoardFile, type BoardDocument, type BoardFile } from '../domain/board';
 const endpoint = '/__game-files/games';
+export async function readDragonConfig(gameId:string):Promise<{gameId:string;revision:string;file:DragonConfig}>{
+ const data=await request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`);
+ if(data.gameId!==gameId||typeof data.revision!=='string')throw Error('金龙盘面响应格式错误。');return {...data,file:validateDragonConfig(data.file)};
+}
+export async function saveDragonConfig(gameId:string,revision:string,file:DragonConfig):Promise<{revision:string}>{
+ validateDragonConfig(file);return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
+}
+export async function saveDragonLibrary(gameId:string,revision:string,file:DragonLibrary&{gameRevision:string}):Promise<{path:string;bytes:number;retained:number;validation:ReturnType<typeof dragonCoverage>}>{
+ return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines/library`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
+}
+export async function readOxConfig(gameId:string):Promise<{gameId:string;revision:string;file:OxConfig}>{
+ const data=await request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`);
+ if(data.gameId!==gameId||typeof data.revision!=='string')throw Error('金牛盘面响应格式错误。');return {...data,file:validateOxConfig(data.file)};
+}
+export async function saveOxConfig(gameId:string,revision:string,file:OxConfig):Promise<{revision:string}>{
+ validateOxConfig(file);return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
+}
+export async function saveOxLibrary(gameId:string,revision:string,file:OxLibrary&{gameRevision:string}):Promise<{path:string;bytes:number;retained:number;validation:ReturnType<typeof oxCoverage>}>{
+ return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines/library`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
+}
+export async function readMouseConfig(gameId:string):Promise<{gameId:string;revision:string;file:MouseConfig}>{
+ const data=await request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`);
+ if(data.gameId!==gameId||typeof data.revision!=='string')throw Error('金鼠盘面响应格式错误。');return {...data,file:validateMouseConfig(data.file)};
+}
+export async function saveMouseConfig(gameId:string,revision:string,file:MouseConfig):Promise<{revision:string}>{
+ validateMouseConfig(file);return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
+}
+export async function saveMouseLibrary(gameId:string,revision:string,file:MouseLibrary&{gameRevision:string}):Promise<{path:string;bytes:number;retained:number;validation:ReturnType<typeof mouseCoverage>}>{
+ return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines/library`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
+}
 async function request(path: string, options?: RequestInit) {
   let response: Response;
   try { response = await fetch(path, { ...options, cache: 'no-store' }); }
@@ -51,4 +85,15 @@ export async function savePaylines(gameId: string, revision: string, file: impor
 
 export async function saveTigerLibrary(gameId:string,revision:string,file:import('../domain/tigerSkeleton').TigerSkeletonLibrary & {gameRevision:string}):Promise<{path:string;bytes:number;retained:number}> {
   return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines/library`, {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
+}
+
+export async function readRabbitConfig(gameId:string):Promise<{gameId:string;revision:string;file:import('../domain/fortuneRabbit').RabbitConfig}>{
+ const data=await request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`);
+ if(data.gameId!==gameId||typeof data.revision!=='string')throw Error('盘面响应格式错误。');return {...data,file:validateRabbitConfig(data.file)};
+}
+export async function saveRabbitConfig(gameId:string,revision:string,file:import('../domain/fortuneRabbit').RabbitConfig):Promise<{revision:string}>{
+ return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
+}
+export async function saveRabbitLibrary(gameId:string,revision:string,file:import('../domain/fortuneRabbit').RabbitLibrary & {gameRevision:string}):Promise<{path:string;bytes:number;retained:number;validation:ReturnType<typeof import('../domain/fortuneRabbit').rabbitCoverage>}>{
+ return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines/library`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
 }

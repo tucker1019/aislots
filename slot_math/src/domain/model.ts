@@ -1,4 +1,5 @@
 export type WeightRow = [multiplier: number, weight: number];
+export interface Parameters { featureSpins?: number; maxWinMultiplier?: number }
 export interface WeightTable { rows: WeightRow[]; totalWeight: number; mean: number; secondMoment: number; maximum: number; positiveProbability: number }
 export interface StreakRule { enabled: boolean; start: number; probability: number; interval: number; step: number; cap: number }
 export interface FreeTriggerRule extends StreakRule { resetProbability?: number }
@@ -472,4 +473,56 @@ export function calculateRespinModel(base:WeightTable,free:WeightTable,p:Pick<Pa
  const baseRtp=(1-t)*b,freeRtp=t*r,totalRtp=baseRtp+freeRtp;
  const second=((1-t)*p.baseSpinWinProbability*base.secondMoment+t*p.freeSpinWinProbability*free.secondMoment)/(p.lineCount*p.lineCount),totalVariance=Math.max(0,second-totalRtp*totalRtp);
  return {baseRtp,freeRtp,totalRtp,totalVariance,standardDeviation:Math.sqrt(totalVariance),baseMean:base.mean/p.lineCount,respinMean:free.mean/p.lineCount,baseModeRtp:b,respinModeRtp:r,hitProbability:(1-t)*p.baseSpinWinProbability*base.positiveProbability+t*p.freeSpinWinProbability*free.positiveProbability};
+}
+
+/** AG5 uses integer raw payouts and an absorbing cap, in total-bet units. */
+export function validateRabbitParameters(p: Parameters) {
+  if (p.lineCount !== 10 || p.featureSpins !== 8 || p.maxWinMultiplier !== 5000) throw new Error('金兔规则固定为 10 线、8 次特殊转和整局 5000 倍封顶。');
+  for (const v of [p.baseSpinWinProbability,p.freeSpinWinProbability,p.freeSpinTriggerProbability]) if (!Number.isFinite(v)||v<0||v>1) throw new Error('中奖率、触发率须为 0～100%。');
+  if (p.freeSpinGuaranteedWin || p.freeSpinAwardWeights?.length || p.freeSpinsPerTrigger !== undefined || p.freeRetriggerLimit !== undefined || p.lossStreakRule || p.winStreakRule || p.freeTriggerRule || p.lossStreakRtpCompensation || p.freeTriggerRtpCompensation) throw new Error('金兔不支持免费追加、保底或连输连赢策略。');
+}
+export function validateRabbitTable(t: WeightTable) {
+  if(t.rows.some(([m])=>!Number.isSafeInteger(m)||m<=0||m>1e7)) throw new Error('金兔倍率表只保存正整数原始中奖倍率（最大 10000000）；零奖使用独立中奖率。');
+  if(new Set(t.rows.map(r=>r[0])).size!==t.rows.length) throw new Error('金兔倍率表不能包含重复倍率。');
+}
+function rabbitFft(real: Float64Array, imaginary: Float64Array, inverse: boolean) {
+  const n=real.length;
+  for(let i=1,j=0;i<n;i++){let bit=n>>1;for(;j&bit;bit>>=1)j^=bit;j^=bit;if(i<j){[real[i],real[j]]=[real[j],real[i]];[imaginary[i],imaginary[j]]=[imaginary[j],imaginary[i]];}}
+  for(let length=2;length<=n;length*=2){const angle=(inverse?2:-2)*Math.PI/length,wr=Math.cos(angle),wi=Math.sin(angle);
+    for(let start=0;start<n;start+=length){let ar=1,ai=0;for(let j=0;j<length/2;j++){const a=start+j,b=a+length/2,br=real[b]*ar-imaginary[b]*ai,bi=real[b]*ai+imaginary[b]*ar;real[b]=real[a]-br;imaginary[b]=imaginary[a]-bi;real[a]+=br;imaginary[a]+=bi;const nr=ar*wr-ai*wi;ai=ar*wi+ai*wr;ar=nr;}}}
+  if(inverse)for(let i=0;i<n;i++){real[i]/=n;imaginary[i]/=n;}
+}
+/** Linear convolution, folding overflow onto the cap; no payout rounding or simulation. */
+function rabbitConvolve(a: Float64Array,b: Float64Array,cap: number): Float64Array {
+  const entries=(v:Float64Array)=>{const out:[number,number][]=[];for(let i=0;i<v.length;i++)if(v[i]>0)out.push([i,v[i]]);return out;};
+  const ae=entries(a),be=entries(b);
+  if(ae.length*be.length<=100000){const out=new Float64Array(Math.min(cap+1,a.length+b.length-1));for(const [i,p] of ae)for(const [j,q] of be)out[Math.min(cap,i+j)]+=p*q;return out;}
+  const size=a.length+b.length-1;let n=1;while(n<size)n*=2;
+  const ar=new Float64Array(n),ai=new Float64Array(n),br=new Float64Array(n),bi=new Float64Array(n);ar.set(a);br.set(b);
+  rabbitFft(ar,ai,false);rabbitFft(br,bi,false);
+  for(let i=0;i<n;i++){const r=ar[i]*br[i]-ai[i]*bi[i];ai[i]=ar[i]*bi[i]+ai[i]*br[i];ar[i]=r;}
+  rabbitFft(ar,ai,true);
+  const out=new Float64Array(Math.min(cap+1,size));let mass=0;
+  for(let i=0;i<size;i++){const probability=Math.max(0,ar[i]);out[Math.min(cap,i)]+=probability;mass+=probability;}
+  for(let i=0;i<out.length;i++)out[i]/=mass;
+  return out;
+}
+let rabbitModelCache: {key: string; result: ReturnType<typeof rabbitModelUncached>} | undefined;
+function rabbitModelUncached(base: WeightTable,free: WeightTable,p: Parameters){
+  const cap=50000;
+  const distribution=(t: WeightTable,hit: number)=>{const a=new Float64Array(Math.min(cap,t.maximum)+1);a[0]=1-hit;for(const [m,w] of t.rows)a[Math.min(cap,m)]+=hit*w/t.totalWeight;return a;};
+  const moments=(a: Float64Array)=>{let mean=0,second=0;for(let i=1;i<a.length;i++){mean+=i*a[i]/10;second+=(i/10)**2*a[i];}return {mean,second};};
+  const ordinary=distribution(base,p.baseSpinWinProbability),single=distribution(free,p.freeSpinWinProbability);
+  let eight:Float64Array=single;for(let i=0;i<3;i++)eight=rabbitConvolve(eight,eight,cap);
+  const combined=rabbitConvolve(ordinary,eight,cap),bm=moments(ordinary),cm=moments(combined),q=p.freeSpinTriggerProbability;
+  const baseRtp=bm.mean,freeRtp=q*Math.max(0,cm.mean-bm.mean),totalRtp=baseRtp+freeRtp;
+  const totalVariance=Math.max(0,(1-q)*bm.second+q*cm.second-totalRtp**2);
+  const uncappedBaseRtp=p.baseSpinWinProbability*base.mean/10,uncappedFreeRtp=q*8*p.freeSpinWinProbability*free.mean/10;
+  return {baseRtp,freeRtp,totalRtp,totalVariance,standardDeviation:Math.sqrt(totalVariance),uncappedBaseRtp,uncappedFreeRtp,uncappedRtp:uncappedBaseRtp+uncappedFreeRtp,capLoss:Math.max(0,uncappedBaseRtp+uncappedFreeRtp-totalRtp),capProbability:(1-q)*(ordinary[cap]??0)+q*(combined[cap]??0),hitProbability:1-(1-p.baseSpinWinProbability)*((1-q)+q*(1-p.freeSpinWinProbability)**8),baseMean:base.mean/10,specialMean:free.mean/10};
+}
+export function calculateRabbitModel(base: WeightTable,free: WeightTable,p: Parameters){
+  validateRabbitParameters(p);validateRabbitTable(base);validateRabbitTable(free);
+  const key=JSON.stringify([base.rows,free.rows,p.baseSpinWinProbability,p.freeSpinWinProbability,p.freeSpinTriggerProbability]);
+  if(rabbitModelCache?.key===key)return rabbitModelCache.result;
+  const result=rabbitModelUncached(base,free,p);rabbitModelCache={key,result};return result;
 }
