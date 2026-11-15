@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "format": "dragon-skeleton-v1",
+  "gameId": "AG8",
+  "mode": "base",
+  "moduleVersion": "fortune-dragon-v1",
+  "schemaVersion": 1,
+  "configHashes": {
+    "base.json": "6ff0b46bfb642f31dc3d81cd7eb1477bf1f45048208728cef721117276bd1114",
+    "config.json": "214ec9b4633ddf52799208c3239c2c8366cc78b7ee75a761be6641141e165355",
+    "free.json": "ad18d1fb49f566fb6626ea28a65606490477a5a366874e2956f2a84445b3b24f",
+    "paylines.json": "812129f5362c6d535938edf2f1e2a2d2ae321080c1e5c0dd808da27d7b376bf6"
+  },
+  "dataHash": "5b7aba7db981ff87e8dc831a6899d98e5351d2fdef75ecc9b67ca744382d8028",
+  "validated": true,
+  "required": 194,
+  "covered": 194,
+  "ignoredZeroSkeletons": 0,
+  "source": "2026-11-14T20-16-18-805Z-5091957b"
+}

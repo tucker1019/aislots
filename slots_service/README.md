@@ -102,6 +102,8 @@ AG1 uses `"freeAwardSymbolCounts": {"8": 3, "10": 4, "12": 5}` in its server gam
 
 ## 验证
 
+AG6金鼠已作为独立`fortune_mouse_v1`模块接入本地测试配置，使用`testdata/deployments/2026-11-15-ag6/AG6`不可变快照。普通与特殊模式互斥，中列三个百搭固定，特殊仅最后帧派奖；空奖实时生成、中奖骨架一次补齐。普通312/312、特殊267/267正权重档均由Go独立重验。配置、发布命令及验证说明见[AG6模块说明](internal/games/ag6/README.md)，客户端字段和固定结果见[AG6接口](docs/client-api.md#ag6-本地接口)及[联调样例](testdata/ag6-client-examples.json)。
+
 ```sh
 cd slots_service
 go test ./...
@@ -139,6 +141,12 @@ The mapping participates in the engine version. The test server configuration ke
 两套库均覆盖快照中所有正权重倍率，并通过数值工具骨架重放校验。
 当前数值配置赠送免费局数为 10/12/14，对应 3/4/5 个胡。
 旧配置和旧库保留为非当前版本，供已开始的下注继续使用；新下注使用新的金底版本。
+
+## AG5 金兔
+
+本地测试配置已注册 AG5 独立模块和十线投注策略，绑定 `testdata/deployments/2026-11-15-ag5/AG5`。它读取已保存倍率权重及中奖率，普通奖与八次特殊奖逐转结算，整局总投注5000倍封顶；空奖及骨架补空每格过滤后只抽一次。
+
+发布命令、不可变配置校验、跨语言验奖和数据库测试见 [AG5 模块说明](internal/games/ag5/README.md)，客户端字段和样例见 [联调协议](docs/client-api.md#ag5-本地接口)。
 
 ## 大厅接入与统一钱包
 
@@ -178,3 +186,13 @@ go run ./cmd/library-check \
 大厅和测试配置启用 `testdata/deployments/2026-11-12-ag3-validated/AG3` 的不可变规则快照，使用普通批次 `2026-11-12T04-01-40-317Z-38756647` 及免费批次 `2026-11-12T04-03-50-060Z-2ac6680f`。原始批次和 manifest 保持不变；服务启动依据实际快照重新检查正权重倍率和普通图标中奖覆盖，不能仅依赖生成时的旧验收报告。
 
 AG3 为六列，列高 3/4/5/5/4/3；逐轮响应含一行预览，免费奖励 10/12/14 局对应 3/4/5 个 Scatter。印尼盾投注列表为 10/50/100/500/1000，金额精度 2、线数 20、投注等级 1–10。AG1/AG2 的所有历史版本继续保留。
+
+## AG7 本地模块
+
+已接入独立金牛模块 fortune_ox_v1，三列3、4、3格十线、特殊左右六格同一种普通图标、满盘十倍及纯百搭总投注2000倍。普通77/77、特殊26/26正权重档完整覆盖，空奖及骨架补空按规则一次生成。
+
+configs/server.test.json和configs/bets.test.json引用testdata/deployments/2026-11-15-ag7/AG7本地快照。特殊只在最终中奖帧派奖，支持幂等、恢复、回放及自动整局。发布命令与验证见[AG7模块](internal/games/ag7/README.md)，固定样例见[联调样例](testdata/ag7-client-examples.json)。
+
+## AG8 本地模块
+
+AG8金龙使用独立 `fortune_dragon_v1` 模块及 `testdata/deployments/2026-11-15-ag8/AG8` 不可变快照，已接入本地测试配置。普通/免费库各580条、覆盖194/194档；实时空奖及一次补空。公共spin支持普通/五倍投注，免费逐帧派奖，八次全空完整保留；达到实际扣款2500倍时截断并结束。已接入幂等、恢复、版本固定、历史回放与普通投注自动整局。详见[AG8模块](internal/games/ag8/README.md)、[接口](docs/client-api.md#ag8-本地接口)和[固定样例](testdata/ag8-client-examples.json)。

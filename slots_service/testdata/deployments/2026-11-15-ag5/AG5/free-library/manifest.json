@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "format": "rabbit-skeleton-v1",
+  "gameId": "AG5",
+  "mode": "free",
+  "moduleVersion": "fortune-rabbit-v1",
+  "schemaVersion": 1,
+  "configHashes": {
+    "base.json": "61b028eb33f52cab471fb5d27bc53d27c430c5d95dd7748a91f3f31ef3711edf",
+    "config.json": "982fb7d1b4a90364b9516c6dbf97f7d77218f0d4645714b03491d6257e2bee53",
+    "free.json": "7fc84eee11b3dff9733525404530e87afe33fe5c0dc3054bb04dcbb45b2b4f9c",
+    "paylines.json": "12436a89a37079b904283590bdb82fd3be90053999e587fb1948eb2188d1c7b5"
+  },
+  "dataHash": "18651c49bbfb2d7020c7ec69a0c9f97bbaa26ebaf4b928053bc980e44fb4f0e6",
+  "validated": true,
+  "required": 2635,
+  "covered": 2635,
+  "ignoredZeroSkeletons": 0,
+  "source": "2026-11-14T08-53-18-079Z-e260cd78"
+}

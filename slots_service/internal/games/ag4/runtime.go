@@ -37,6 +37,8 @@ type outcome struct {
 	NextSequence uint64   `json:"nextSequence"`
 	Sequence     Sequence `json:"sequence"`
 	Multiplier   string   `json:"multiplier"`
+	// Legacy stored results include the animation-only opening frame.
+	OmitIntro bool `json:"omitIntro,omitempty"`
 }
 
 func Load(configDir, baseDir, freeDir string, options Options) (*Runtime, error) {
@@ -216,7 +218,7 @@ func (r *Runtime) Draw(ctx context.Context, request game.Request) (game.Result, 
 	if err = ctx.Err(); err != nil {
 		return game.Result{}, err
 	}
-	return r.result(request.BetMinorUnits, outcome{Mode: mode, NextSequence: state.Sequence + 1, Sequence: seq, Multiplier: multiplier})
+	return r.result(request.BetMinorUnits, outcome{Mode: mode, NextSequence: state.Sequence + 1, Sequence: seq, Multiplier: multiplier, OmitIntro: mode == "respin"})
 }
 
 func payout(stake int64, raw string) (int64, error) {

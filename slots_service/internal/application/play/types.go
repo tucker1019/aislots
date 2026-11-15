@@ -57,6 +57,7 @@ type LoginResponse struct {
 	Balance     int64            `json:"balance"`
 }
 type Ticket struct {
+	BuyMode                 int `json:",omitempty"`
 	ID                      string
 	Player                  identity.Context
 	GameID, Version, Status string
@@ -70,6 +71,7 @@ type Cursor struct {
 	StepIndex int `json:"stepIndex"`
 }
 type Frame struct {
+	BuyMode          int             `json:"buyMode,omitempty"`
 	GameData         json.RawMessage `json:"gameData,omitempty"`
 	BottomSymbols    []int           `json:"bottomSymbols,omitempty"`
 	SpinWinAmount    int64           `json:"spinWinAmount,omitempty"`
@@ -184,8 +186,9 @@ type Tx interface {
 
 // SpinReceipt and the next request token commit alongside the round and wallet.
 type SpinReceipt struct {
-	Amount int64
-	Frame  Frame
+	BuyMode int `json:",omitempty"`
+	Amount  int64
+	Frame   Frame
 }
 type Status struct {
 	LastFrame *Frame `json:"lastFrame,omitempty"`

@@ -1,0 +1,2026 @@
+{
+  "cap": [
+    {
+      "code": "OK",
+      "data": {
+        "awardedFreeSpins": 8,
+        "balance": 1199900,
+        "betAmount": 100,
+        "betId": "cap-example",
+        "board": [
+          [
+            {
+              "id": 1,
+              "symbolId": 19
+            },
+            {
+              "id": 2,
+              "symbolId": 19
+            },
+            {
+              "id": 3,
+              "symbolId": 19
+            }
+          ],
+          [
+            {
+              "id": 4,
+              "symbolId": 19
+            },
+            {
+              "id": 5,
+              "symbolId": 19
+            },
+            {
+              "id": 6,
+              "symbolId": 19
+            },
+            {
+              "id": 7,
+              "symbolId": 19
+            }
+          ],
+          [
+            {
+              "id": 8,
+              "symbolId": 19
+            },
+            {
+              "id": 9,
+              "symbolId": 19
+            },
+            {
+              "id": 10,
+              "symbolId": 19
+            }
+          ]
+        ],
+        "freeRemaining": 8,
+        "gameData": {
+          "capped": false,
+          "dueAmount": 200000,
+          "lineWins": [],
+          "paidAmount": 200000,
+          "paidRawPayout": 20000,
+          "rawPayout": 20000,
+          "replay": {
+            "lineCount": 10,
+            "payoutUnit": "10",
+            "payouts": [
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              }
+            ]
+          },
+          "rewardCount": 10,
+          "rewards": [
+            {
+              "cellId": 1,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 2,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 3,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 4,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 5,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 6,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 7,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 8,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 9,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 10,
+              "payout": 2000,
+              "symbolId": 19
+            }
+          ],
+          "ruleType": "fortune_rabbit_v1",
+          "specialIndex": 0,
+          "specialRemaining": 8,
+          "specialTotal": 8,
+          "truncatedAmount": 0
+        },
+        "mode": "base",
+        "nextAction": "continue",
+        "nextRequestId": "example-token-1",
+        "removedIds": [],
+        "requestId": "example-token-0",
+        "spinIndex": 0,
+        "spinWinAmount": 200000,
+        "status": "ready",
+        "stepIndex": 1,
+        "totalWinAmount": 200000,
+        "transformedIds": [],
+        "triggeredFree": true,
+        "winAmount": 200000,
+        "wins": [
+          {
+            "cellIds": [
+              1
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              2
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              3
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              4
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              5
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              6
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              7
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              8
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              9
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              10
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          }
+        ]
+      }
+    },
+    {
+      "code": "OK",
+      "data": {
+        "awardedFreeSpins": 0,
+        "balance": 1399900,
+        "betAmount": 100,
+        "betId": "cap-example",
+        "board": [
+          [
+            {
+              "id": 1,
+              "symbolId": 19
+            },
+            {
+              "id": 2,
+              "symbolId": 19
+            },
+            {
+              "id": 3,
+              "symbolId": 19
+            }
+          ],
+          [
+            {
+              "id": 4,
+              "symbolId": 19
+            },
+            {
+              "id": 5,
+              "symbolId": 19
+            },
+            {
+              "id": 6,
+              "symbolId": 19
+            },
+            {
+              "id": 7,
+              "symbolId": 19
+            }
+          ],
+          [
+            {
+              "id": 8,
+              "symbolId": 19
+            },
+            {
+              "id": 9,
+              "symbolId": 19
+            },
+            {
+              "id": 10,
+              "symbolId": 19
+            }
+          ]
+        ],
+        "freeRemaining": 7,
+        "gameData": {
+          "capped": false,
+          "dueAmount": 200000,
+          "lineWins": [],
+          "paidAmount": 200000,
+          "paidRawPayout": 20000,
+          "rawPayout": 20000,
+          "replay": {
+            "lineCount": 10,
+            "payoutUnit": "10",
+            "payouts": [
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              }
+            ]
+          },
+          "rewardCount": 10,
+          "rewards": [
+            {
+              "cellId": 1,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 2,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 3,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 4,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 5,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 6,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 7,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 8,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 9,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 10,
+              "payout": 2000,
+              "symbolId": 19
+            }
+          ],
+          "ruleType": "fortune_rabbit_v1",
+          "specialIndex": 1,
+          "specialRemaining": 7,
+          "specialTotal": 8,
+          "truncatedAmount": 0
+        },
+        "mode": "free",
+        "nextAction": "continue",
+        "nextRequestId": "example-token-2",
+        "removedIds": [],
+        "requestId": "example-token-1",
+        "spinIndex": 0,
+        "spinWinAmount": 200000,
+        "status": "ready",
+        "stepIndex": 2,
+        "totalWinAmount": 400000,
+        "transformedIds": [],
+        "triggeredFree": false,
+        "winAmount": 200000,
+        "wins": [
+          {
+            "cellIds": [
+              1
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              2
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              3
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              4
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              5
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              6
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              7
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              8
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              9
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              10
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          }
+        ]
+      }
+    },
+    {
+      "code": "OK",
+      "data": {
+        "awardedFreeSpins": 0,
+        "balance": 1469900,
+        "betAmount": 100,
+        "betId": "cap-example",
+        "board": [
+          [
+            {
+              "id": 1,
+              "symbolId": 19
+            },
+            {
+              "id": 2,
+              "symbolId": 19
+            },
+            {
+              "id": 3,
+              "symbolId": 19
+            }
+          ],
+          [
+            {
+              "id": 4,
+              "symbolId": 17
+            },
+            {
+              "id": 5,
+              "symbolId": 17
+            },
+            {
+              "id": 6,
+              "symbolId": 0
+            },
+            {
+              "id": 7,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 8,
+              "symbolId": 0
+            },
+            {
+              "id": 9,
+              "symbolId": 0
+            },
+            {
+              "id": 10,
+              "symbolId": 0
+            }
+          ]
+        ],
+        "freeRemaining": 6,
+        "gameData": {
+          "capped": false,
+          "dueAmount": 70000,
+          "lineWins": [],
+          "paidAmount": 70000,
+          "paidRawPayout": 7000,
+          "rawPayout": 7000,
+          "replay": {
+            "lineCount": 10,
+            "payoutUnit": "10",
+            "payouts": [
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "5000",
+                "columns": 1,
+                "rawPayout": "500",
+                "symbolId": 17,
+                "ways": 1
+              },
+              {
+                "amount": "5000",
+                "columns": 1,
+                "rawPayout": "500",
+                "symbolId": 17,
+                "ways": 1
+              }
+            ]
+          },
+          "rewardCount": 5,
+          "rewards": [
+            {
+              "cellId": 1,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 2,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 3,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 4,
+              "payout": 500,
+              "symbolId": 17
+            },
+            {
+              "cellId": 5,
+              "payout": 500,
+              "symbolId": 17
+            }
+          ],
+          "ruleType": "fortune_rabbit_v1",
+          "specialIndex": 2,
+          "specialRemaining": 6,
+          "specialTotal": 8,
+          "truncatedAmount": 0
+        },
+        "mode": "free",
+        "nextAction": "continue",
+        "nextRequestId": "example-token-3",
+        "removedIds": [],
+        "requestId": "example-token-2",
+        "spinIndex": 0,
+        "spinWinAmount": 70000,
+        "status": "ready",
+        "stepIndex": 3,
+        "totalWinAmount": 470000,
+        "transformedIds": [],
+        "triggeredFree": false,
+        "winAmount": 70000,
+        "wins": [
+          {
+            "cellIds": [
+              1
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              2
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              3
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              4
+            ],
+            "columns": 1,
+            "rawPayout": "500",
+            "symbolId": 17,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              5
+            ],
+            "columns": 1,
+            "rawPayout": "500",
+            "symbolId": 17,
+            "ways": 1
+          }
+        ]
+      }
+    },
+    {
+      "code": "OK",
+      "data": {
+        "awardedFreeSpins": 0,
+        "balance": 1499900,
+        "betAmount": 100,
+        "betId": "cap-example",
+        "board": [
+          [
+            {
+              "id": 1,
+              "symbolId": 19
+            },
+            {
+              "id": 2,
+              "symbolId": 19
+            },
+            {
+              "id": 3,
+              "symbolId": 19
+            }
+          ],
+          [
+            {
+              "id": 4,
+              "symbolId": 19
+            },
+            {
+              "id": 5,
+              "symbolId": 19
+            },
+            {
+              "id": 6,
+              "symbolId": 0
+            },
+            {
+              "id": 7,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 8,
+              "symbolId": 0
+            },
+            {
+              "id": 9,
+              "symbolId": 0
+            },
+            {
+              "id": 10,
+              "symbolId": 0
+            }
+          ]
+        ],
+        "freeRemaining": 0,
+        "gameData": {
+          "capped": true,
+          "dueAmount": 100000,
+          "lineWins": [],
+          "paidAmount": 30000,
+          "paidRawPayout": 3000,
+          "rawPayout": 10000,
+          "replay": {
+            "lineCount": 10,
+            "payoutUnit": "10",
+            "payouts": [
+              {
+                "amount": "20000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "10000",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "0",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "0",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              },
+              {
+                "amount": "0",
+                "columns": 1,
+                "rawPayout": "2000",
+                "symbolId": 19,
+                "ways": 1
+              }
+            ]
+          },
+          "rewardCount": 5,
+          "rewards": [
+            {
+              "cellId": 1,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 2,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 3,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 4,
+              "payout": 2000,
+              "symbolId": 19
+            },
+            {
+              "cellId": 5,
+              "payout": 2000,
+              "symbolId": 19
+            }
+          ],
+          "ruleType": "fortune_rabbit_v1",
+          "specialIndex": 3,
+          "specialRemaining": 0,
+          "specialTotal": 8,
+          "truncatedAmount": 70000
+        },
+        "mode": "free",
+        "nextAction": "complete",
+        "nextRequestId": "example-token-4",
+        "removedIds": [],
+        "requestId": "example-token-3",
+        "spinIndex": 0,
+        "spinWinAmount": 30000,
+        "status": "ready",
+        "stepIndex": 4,
+        "totalWinAmount": 500000,
+        "transformedIds": [],
+        "triggeredFree": false,
+        "winAmount": 30000,
+        "wins": [
+          {
+            "cellIds": [
+              1
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              2
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              3
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              4
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              5
+            ],
+            "columns": 1,
+            "rawPayout": "2000",
+            "symbolId": 19,
+            "ways": 1
+          }
+        ]
+      }
+    }
+  ],
+  "note": "固定结果联调样例，使用独立测试倍率表覆盖流程；不代表已保存数值配置的抽样概率。",
+  "trigger_loss_win_end": [
+    {
+      "code": "OK",
+      "data": {
+        "awardedFreeSpins": 8,
+        "balance": 1000900,
+        "betAmount": 100,
+        "betId": "trigger_loss_win_end-example",
+        "board": [
+          [
+            {
+              "id": 1,
+              "symbolId": 6
+            },
+            {
+              "id": 2,
+              "symbolId": 5
+            },
+            {
+              "id": 3,
+              "symbolId": 4
+            }
+          ],
+          [
+            {
+              "id": 4,
+              "symbolId": 6
+            },
+            {
+              "id": 5,
+              "symbolId": 2
+            },
+            {
+              "id": 6,
+              "symbolId": 1
+            },
+            {
+              "id": 7,
+              "symbolId": 1
+            }
+          ],
+          [
+            {
+              "id": 8,
+              "symbolId": 6
+            },
+            {
+              "id": 9,
+              "symbolId": 2
+            },
+            {
+              "id": 10,
+              "symbolId": 6
+            }
+          ]
+        ],
+        "freeRemaining": 8,
+        "gameData": {
+          "capped": false,
+          "dueAmount": 1000,
+          "lineWins": [
+            {
+              "cellIds": [
+                1,
+                4,
+                8
+              ],
+              "line": 1,
+              "payout": 100,
+              "symbolId": 6
+            }
+          ],
+          "paidAmount": 1000,
+          "paidRawPayout": 100,
+          "rawPayout": 100,
+          "replay": {
+            "lineCount": 10,
+            "payoutUnit": "10",
+            "payouts": [
+              {
+                "amount": "1000",
+                "columns": 3,
+                "rawPayout": "100",
+                "symbolId": 6,
+                "ways": 1
+              }
+            ]
+          },
+          "rewardCount": 0,
+          "rewards": [],
+          "ruleType": "fortune_rabbit_v1",
+          "specialIndex": 0,
+          "specialRemaining": 8,
+          "specialTotal": 8,
+          "truncatedAmount": 0
+        },
+        "mode": "base",
+        "nextAction": "continue",
+        "nextRequestId": "example-token-1",
+        "removedIds": [],
+        "requestId": "example-token-0",
+        "spinIndex": 0,
+        "spinWinAmount": 1000,
+        "status": "ready",
+        "stepIndex": 1,
+        "totalWinAmount": 1000,
+        "transformedIds": [],
+        "triggeredFree": true,
+        "winAmount": 1000,
+        "wins": [
+          {
+            "cellIds": [
+              1,
+              4,
+              8
+            ],
+            "columns": 3,
+            "rawPayout": "100",
+            "symbolId": 6,
+            "ways": 1
+          }
+        ]
+      }
+    },
+    {
+      "code": "OK",
+      "data": {
+        "awardedFreeSpins": 0,
+        "balance": 1000900,
+        "betAmount": 100,
+        "betId": "trigger_loss_win_end-example",
+        "board": [
+          [
+            {
+              "id": 1,
+              "symbolId": 0
+            },
+            {
+              "id": 2,
+              "symbolId": 0
+            },
+            {
+              "id": 3,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 4,
+              "symbolId": 0
+            },
+            {
+              "id": 5,
+              "symbolId": 0
+            },
+            {
+              "id": 6,
+              "symbolId": 0
+            },
+            {
+              "id": 7,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 8,
+              "symbolId": 0
+            },
+            {
+              "id": 9,
+              "symbolId": 11
+            },
+            {
+              "id": 10,
+              "symbolId": 0
+            }
+          ]
+        ],
+        "freeRemaining": 7,
+        "gameData": {
+          "capped": false,
+          "dueAmount": 0,
+          "lineWins": [],
+          "paidAmount": 0,
+          "paidRawPayout": 0,
+          "rawPayout": 0,
+          "replay": {
+            "lineCount": 10,
+            "payoutUnit": "10",
+            "payouts": []
+          },
+          "rewardCount": 1,
+          "rewards": [
+            {
+              "cellId": 9,
+              "payout": 5,
+              "symbolId": 11
+            }
+          ],
+          "ruleType": "fortune_rabbit_v1",
+          "specialIndex": 1,
+          "specialRemaining": 7,
+          "specialTotal": 8,
+          "truncatedAmount": 0
+        },
+        "mode": "free",
+        "nextAction": "continue",
+        "nextRequestId": "example-token-2",
+        "removedIds": [],
+        "requestId": "example-token-1",
+        "spinIndex": 0,
+        "spinWinAmount": 0,
+        "status": "ready",
+        "stepIndex": 2,
+        "totalWinAmount": 1000,
+        "transformedIds": [],
+        "triggeredFree": false,
+        "winAmount": 0,
+        "wins": []
+      }
+    },
+    {
+      "code": "OK",
+      "data": {
+        "awardedFreeSpins": 0,
+        "balance": 1001150,
+        "betAmount": 100,
+        "betId": "trigger_loss_win_end-example",
+        "board": [
+          [
+            {
+              "id": 1,
+              "symbolId": 11
+            },
+            {
+              "id": 2,
+              "symbolId": 11
+            },
+            {
+              "id": 3,
+              "symbolId": 11
+            }
+          ],
+          [
+            {
+              "id": 4,
+              "symbolId": 11
+            },
+            {
+              "id": 5,
+              "symbolId": 11
+            },
+            {
+              "id": 6,
+              "symbolId": 0
+            },
+            {
+              "id": 7,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 8,
+              "symbolId": 0
+            },
+            {
+              "id": 9,
+              "symbolId": 0
+            },
+            {
+              "id": 10,
+              "symbolId": 0
+            }
+          ]
+        ],
+        "freeRemaining": 6,
+        "gameData": {
+          "capped": false,
+          "dueAmount": 250,
+          "lineWins": [],
+          "paidAmount": 250,
+          "paidRawPayout": 25,
+          "rawPayout": 25,
+          "replay": {
+            "lineCount": 10,
+            "payoutUnit": "10",
+            "payouts": [
+              {
+                "amount": "50",
+                "columns": 1,
+                "rawPayout": "5",
+                "symbolId": 11,
+                "ways": 1
+              },
+              {
+                "amount": "50",
+                "columns": 1,
+                "rawPayout": "5",
+                "symbolId": 11,
+                "ways": 1
+              },
+              {
+                "amount": "50",
+                "columns": 1,
+                "rawPayout": "5",
+                "symbolId": 11,
+                "ways": 1
+              },
+              {
+                "amount": "50",
+                "columns": 1,
+                "rawPayout": "5",
+                "symbolId": 11,
+                "ways": 1
+              },
+              {
+                "amount": "50",
+                "columns": 1,
+                "rawPayout": "5",
+                "symbolId": 11,
+                "ways": 1
+              }
+            ]
+          },
+          "rewardCount": 5,
+          "rewards": [
+            {
+              "cellId": 1,
+              "payout": 5,
+              "symbolId": 11
+            },
+            {
+              "cellId": 2,
+              "payout": 5,
+              "symbolId": 11
+            },
+            {
+              "cellId": 3,
+              "payout": 5,
+              "symbolId": 11
+            },
+            {
+              "cellId": 4,
+              "payout": 5,
+              "symbolId": 11
+            },
+            {
+              "cellId": 5,
+              "payout": 5,
+              "symbolId": 11
+            }
+          ],
+          "ruleType": "fortune_rabbit_v1",
+          "specialIndex": 2,
+          "specialRemaining": 6,
+          "specialTotal": 8,
+          "truncatedAmount": 0
+        },
+        "mode": "free",
+        "nextAction": "continue",
+        "nextRequestId": "example-token-3",
+        "removedIds": [],
+        "requestId": "example-token-2",
+        "spinIndex": 0,
+        "spinWinAmount": 250,
+        "status": "ready",
+        "stepIndex": 3,
+        "totalWinAmount": 1250,
+        "transformedIds": [],
+        "triggeredFree": false,
+        "winAmount": 250,
+        "wins": [
+          {
+            "cellIds": [
+              1
+            ],
+            "columns": 1,
+            "rawPayout": "5",
+            "symbolId": 11,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              2
+            ],
+            "columns": 1,
+            "rawPayout": "5",
+            "symbolId": 11,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              3
+            ],
+            "columns": 1,
+            "rawPayout": "5",
+            "symbolId": 11,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              4
+            ],
+            "columns": 1,
+            "rawPayout": "5",
+            "symbolId": 11,
+            "ways": 1
+          },
+          {
+            "cellIds": [
+              5
+            ],
+            "columns": 1,
+            "rawPayout": "5",
+            "symbolId": 11,
+            "ways": 1
+          }
+        ]
+      }
+    },
+    {
+      "code": "OK",
+      "data": {
+        "awardedFreeSpins": 0,
+        "balance": 1001150,
+        "betAmount": 100,
+        "betId": "trigger_loss_win_end-example",
+        "board": [
+          [
+            {
+              "id": 1,
+              "symbolId": 0
+            },
+            {
+              "id": 2,
+              "symbolId": 0
+            },
+            {
+              "id": 3,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 4,
+              "symbolId": 0
+            },
+            {
+              "id": 5,
+              "symbolId": 0
+            },
+            {
+              "id": 6,
+              "symbolId": 0
+            },
+            {
+              "id": 7,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 8,
+              "symbolId": 0
+            },
+            {
+              "id": 9,
+              "symbolId": 11
+            },
+            {
+              "id": 10,
+              "symbolId": 0
+            }
+          ]
+        ],
+        "freeRemaining": 5,
+        "gameData": {
+          "capped": false,
+          "dueAmount": 0,
+          "lineWins": [],
+          "paidAmount": 0,
+          "paidRawPayout": 0,
+          "rawPayout": 0,
+          "replay": {
+            "lineCount": 10,
+            "payoutUnit": "10",
+            "payouts": []
+          },
+          "rewardCount": 1,
+          "rewards": [
+            {
+              "cellId": 9,
+              "payout": 5,
+              "symbolId": 11
+            }
+          ],
+          "ruleType": "fortune_rabbit_v1",
+          "specialIndex": 3,
+          "specialRemaining": 5,
+          "specialTotal": 8,
+          "truncatedAmount": 0
+        },
+        "mode": "free",
+        "nextAction": "continue",
+        "nextRequestId": "example-token-4",
+        "removedIds": [],
+        "requestId": "example-token-3",
+        "spinIndex": 0,
+        "spinWinAmount": 0,
+        "status": "ready",
+        "stepIndex": 4,
+        "totalWinAmount": 1250,
+        "transformedIds": [],
+        "triggeredFree": false,
+        "winAmount": 0,
+        "wins": []
+      }
+    },
+    {
+      "code": "OK",
+      "data": {
+        "awardedFreeSpins": 0,
+        "balance": 1001150,
+        "betAmount": 100,
+        "betId": "trigger_loss_win_end-example",
+        "board": [
+          [
+            {
+              "id": 1,
+              "symbolId": 0
+            },
+            {
+              "id": 2,
+              "symbolId": 0
+            },
+            {
+              "id": 3,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 4,
+              "symbolId": 0
+            },
+            {
+              "id": 5,
+              "symbolId": 0
+            },
+            {
+              "id": 6,
+              "symbolId": 0
+            },
+            {
+              "id": 7,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 8,
+              "symbolId": 0
+            },
+            {
+              "id": 9,
+              "symbolId": 11
+            },
+            {
+              "id": 10,
+              "symbolId": 0
+            }
+          ]
+        ],
+        "freeRemaining": 4,
+        "gameData": {
+          "capped": false,
+          "dueAmount": 0,
+          "lineWins": [],
+          "paidAmount": 0,
+          "paidRawPayout": 0,
+          "rawPayout": 0,
+          "replay": {
+            "lineCount": 10,
+            "payoutUnit": "10",
+            "payouts": []
+          },
+          "rewardCount": 1,
+          "rewards": [
+            {
+              "cellId": 9,
+              "payout": 5,
+              "symbolId": 11
+            }
+          ],
+          "ruleType": "fortune_rabbit_v1",
+          "specialIndex": 4,
+          "specialRemaining": 4,
+          "specialTotal": 8,
+          "truncatedAmount": 0
+        },
+        "mode": "free",
+        "nextAction": "continue",
+        "nextRequestId": "example-token-5",
+        "removedIds": [],
+        "requestId": "example-token-4",
+        "spinIndex": 0,
+        "spinWinAmount": 0,
+        "status": "ready",
+        "stepIndex": 5,
+        "totalWinAmount": 1250,
+        "transformedIds": [],
+        "triggeredFree": false,
+        "winAmount": 0,
+        "wins": []
+      }
+    },
+    {
+      "code": "OK",
+      "data": {
+        "awardedFreeSpins": 0,
+        "balance": 1001150,
+        "betAmount": 100,
+        "betId": "trigger_loss_win_end-example",
+        "board": [
+          [
+            {
+              "id": 1,
+              "symbolId": 0
+            },
+            {
+              "id": 2,
+              "symbolId": 0
+            },
+            {
+              "id": 3,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 4,
+              "symbolId": 0
+            },
+            {
+              "id": 5,
+              "symbolId": 0
+            },
+            {
+              "id": 6,
+              "symbolId": 0
+            },
+            {
+              "id": 7,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 8,
+              "symbolId": 0
+            },
+            {
+              "id": 9,
+              "symbolId": 11
+            },
+            {
+              "id": 10,
+              "symbolId": 0
+            }
+          ]
+        ],
+        "freeRemaining": 3,
+        "gameData": {
+          "capped": false,
+          "dueAmount": 0,
+          "lineWins": [],
+          "paidAmount": 0,
+          "paidRawPayout": 0,
+          "rawPayout": 0,
+          "replay": {
+            "lineCount": 10,
+            "payoutUnit": "10",
+            "payouts": []
+          },
+          "rewardCount": 1,
+          "rewards": [
+            {
+              "cellId": 9,
+              "payout": 5,
+              "symbolId": 11
+            }
+          ],
+          "ruleType": "fortune_rabbit_v1",
+          "specialIndex": 5,
+          "specialRemaining": 3,
+          "specialTotal": 8,
+          "truncatedAmount": 0
+        },
+        "mode": "free",
+        "nextAction": "continue",
+        "nextRequestId": "example-token-6",
+        "removedIds": [],
+        "requestId": "example-token-5",
+        "spinIndex": 0,
+        "spinWinAmount": 0,
+        "status": "ready",
+        "stepIndex": 6,
+        "totalWinAmount": 1250,
+        "transformedIds": [],
+        "triggeredFree": false,
+        "winAmount": 0,
+        "wins": []
+      }
+    },
+    {
+      "code": "OK",
+      "data": {
+        "awardedFreeSpins": 0,
+        "balance": 1001150,
+        "betAmount": 100,
+        "betId": "trigger_loss_win_end-example",
+        "board": [
+          [
+            {
+              "id": 1,
+              "symbolId": 0
+            },
+            {
+              "id": 2,
+              "symbolId": 0
+            },
+            {
+              "id": 3,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 4,
+              "symbolId": 0
+            },
+            {
+              "id": 5,
+              "symbolId": 0
+            },
+            {
+              "id": 6,
+              "symbolId": 0
+            },
+            {
+              "id": 7,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 8,
+              "symbolId": 0
+            },
+            {
+              "id": 9,
+              "symbolId": 11
+            },
+            {
+              "id": 10,
+              "symbolId": 0
+            }
+          ]
+        ],
+        "freeRemaining": 2,
+        "gameData": {
+          "capped": false,
+          "dueAmount": 0,
+          "lineWins": [],
+          "paidAmount": 0,
+          "paidRawPayout": 0,
+          "rawPayout": 0,
+          "replay": {
+            "lineCount": 10,
+            "payoutUnit": "10",
+            "payouts": []
+          },
+          "rewardCount": 1,
+          "rewards": [
+            {
+              "cellId": 9,
+              "payout": 5,
+              "symbolId": 11
+            }
+          ],
+          "ruleType": "fortune_rabbit_v1",
+          "specialIndex": 6,
+          "specialRemaining": 2,
+          "specialTotal": 8,
+          "truncatedAmount": 0
+        },
+        "mode": "free",
+        "nextAction": "continue",
+        "nextRequestId": "example-token-7",
+        "removedIds": [],
+        "requestId": "example-token-6",
+        "spinIndex": 0,
+        "spinWinAmount": 0,
+        "status": "ready",
+        "stepIndex": 7,
+        "totalWinAmount": 1250,
+        "transformedIds": [],
+        "triggeredFree": false,
+        "winAmount": 0,
+        "wins": []
+      }
+    },
+    {
+      "code": "OK",
+      "data": {
+        "awardedFreeSpins": 0,
+        "balance": 1001150,
+        "betAmount": 100,
+        "betId": "trigger_loss_win_end-example",
+        "board": [
+          [
+            {
+              "id": 1,
+              "symbolId": 0
+            },
+            {
+              "id": 2,
+              "symbolId": 0
+            },
+            {
+              "id": 3,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 4,
+              "symbolId": 0
+            },
+            {
+              "id": 5,
+              "symbolId": 0
+            },
+            {
+              "id": 6,
+              "symbolId": 0
+            },
+            {
+              "id": 7,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 8,
+              "symbolId": 0
+            },
+            {
+              "id": 9,
+              "symbolId": 11
+            },
+            {
+              "id": 10,
+              "symbolId": 0
+            }
+          ]
+        ],
+        "freeRemaining": 1,
+        "gameData": {
+          "capped": false,
+          "dueAmount": 0,
+          "lineWins": [],
+          "paidAmount": 0,
+          "paidRawPayout": 0,
+          "rawPayout": 0,
+          "replay": {
+            "lineCount": 10,
+            "payoutUnit": "10",
+            "payouts": []
+          },
+          "rewardCount": 1,
+          "rewards": [
+            {
+              "cellId": 9,
+              "payout": 5,
+              "symbolId": 11
+            }
+          ],
+          "ruleType": "fortune_rabbit_v1",
+          "specialIndex": 7,
+          "specialRemaining": 1,
+          "specialTotal": 8,
+          "truncatedAmount": 0
+        },
+        "mode": "free",
+        "nextAction": "continue",
+        "nextRequestId": "example-token-8",
+        "removedIds": [],
+        "requestId": "example-token-7",
+        "spinIndex": 0,
+        "spinWinAmount": 0,
+        "status": "ready",
+        "stepIndex": 8,
+        "totalWinAmount": 1250,
+        "transformedIds": [],
+        "triggeredFree": false,
+        "winAmount": 0,
+        "wins": []
+      }
+    },
+    {
+      "code": "OK",
+      "data": {
+        "awardedFreeSpins": 0,
+        "balance": 1001150,
+        "betAmount": 100,
+        "betId": "trigger_loss_win_end-example",
+        "board": [
+          [
+            {
+              "id": 1,
+              "symbolId": 0
+            },
+            {
+              "id": 2,
+              "symbolId": 0
+            },
+            {
+              "id": 3,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 4,
+              "symbolId": 0
+            },
+            {
+              "id": 5,
+              "symbolId": 0
+            },
+            {
+              "id": 6,
+              "symbolId": 0
+            },
+            {
+              "id": 7,
+              "symbolId": 0
+            }
+          ],
+          [
+            {
+              "id": 8,
+              "symbolId": 0
+            },
+            {
+              "id": 9,
+              "symbolId": 11
+            },
+            {
+              "id": 10,
+              "symbolId": 0
+            }
+          ]
+        ],
+        "freeRemaining": 0,
+        "gameData": {
+          "capped": false,
+          "dueAmount": 0,
+          "lineWins": [],
+          "paidAmount": 0,
+          "paidRawPayout": 0,
+          "rawPayout": 0,
+          "replay": {
+            "lineCount": 10,
+            "payoutUnit": "10",
+            "payouts": []
+          },
+          "rewardCount": 1,
+          "rewards": [
+            {
+              "cellId": 9,
+              "payout": 5,
+              "symbolId": 11
+            }
+          ],
+          "ruleType": "fortune_rabbit_v1",
+          "specialIndex": 8,
+          "specialRemaining": 0,
+          "specialTotal": 8,
+          "truncatedAmount": 0
+        },
+        "mode": "free",
+        "nextAction": "complete",
+        "nextRequestId": "example-token-9",
+        "removedIds": [],
+        "requestId": "example-token-8",
+        "spinIndex": 0,
+        "spinWinAmount": 0,
+        "status": "ready",
+        "stepIndex": 9,
+        "totalWinAmount": 1250,
+        "transformedIds": [],
+        "triggeredFree": false,
+        "winAmount": 0,
+        "wins": []
+      }
+    }
+  ]
+}

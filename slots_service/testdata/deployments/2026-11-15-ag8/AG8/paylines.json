@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "ruleType": "fortune_dragon_v1",
+  "columnHeights": [
+    3,
+    3,
+    3
+  ],
+  "lines": [
+    [
+      2,
+      5,
+      8
+    ],
+    [
+      1,
+      4,
+      7
+    ],
+    [
+      3,
+      6,
+      9
+    ],
+    [
+      1,
+      5,
+      9
+    ],
+    [
+      3,
+      5,
+      7
+    ]
+  ],
+  "symbols": [
+    {
+      "id": 1,
+      "name": "铜钱",
+      "role": "normal",
+      "payout": 2,
+      "weight": 1150
+    },
+    {
+      "id": 2,
+      "name": "中国结",
+      "role": "normal",
+      "payout": 3,
+      "weight": 1100
+    },
+    {
+      "id": 3,
+      "name": "鞭炮",
+      "role": "normal",
+      "payout": 5,
+      "weight": 1050
+    },
+    {
+      "id": 4,
+      "name": "灯笼",
+      "role": "normal",
+      "payout": 10,
+      "weight": 950
+    },
+    {
+      "id": 5,
+      "name": "红包",
+      "role": "normal",
+      "payout": 25,
+      "weight": 880
+    },
+    {
+      "id": 6,
+      "name": "金元宝",
+      "role": "normal",
+      "payout": 50,
+      "weight": 750
+    },
+    {
+      "id": 7,
+      "name": "金龙百搭",
+      "role": "wild",
+      "payout": 100,
+      "weight": 300
+    }
+  ]
+}

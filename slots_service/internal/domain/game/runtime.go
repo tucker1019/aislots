@@ -21,6 +21,7 @@ type State struct {
 }
 
 type Request struct {
+	BuyMode       int
 	BetMinorUnits int64
 	State         State
 }

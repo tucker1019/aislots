@@ -57,9 +57,19 @@ func (s *Service) Status(ctx context.Context, session Session, gameID string) (S
 
 // Spin settles the next unconsumed round. Animation state is never an input.
 // Reusing a request token returns its exact committed receipt, including after restart.
-func (s *Service) Spin(ctx context.Context, session Session, gameID, requestID string, amount int64) (Frame, error) {
+func (s *Service) Spin(ctx context.Context, session Session, gameID, requestID string, amount int64, modes ...int) (Frame, error) {
 	if gameID != session.GameID {
 		return Frame{}, ErrUnauthorized
+	}
+	mode := 1
+	if len(modes) > 1 {
+		return Frame{}, ErrInvalid
+	}
+	if len(modes) == 1 {
+		mode = normalBuyMode(modes[0])
+	}
+	if mode < 1 || mode > 2 {
+		return Frame{}, ErrInvalid
 	}
 	if requestID == "" || len(requestID) > 128 || amount < 0 {
 		return Frame{}, ErrInvalid
@@ -71,7 +81,7 @@ func (s *Service) Spin(ctx context.Context, session Session, gameID, requestID s
 			return err
 		}
 		if found {
-			if receipt.Amount != amount {
+			if receipt.Amount != amount || normalBuyMode(receipt.BuyMode) != mode {
 				return ErrConflict
 			}
 			out = receipt.Frame
@@ -94,7 +104,7 @@ func (s *Service) Spin(ctx context.Context, session Session, gameID, requestID s
 		cursor := Cursor{0, 1}
 		initial := true
 		if ok && t.Status == "active" {
-			if amount != t.Amount {
+			if amount != t.Amount || normalBuyMode(t.BuyMode) != mode {
 				return ErrConflict
 			}
 			prior, found, err := tx.Frame(ctx, t.ID, t.SpinIndex, t.StepIndex)
@@ -110,12 +120,12 @@ func (s *Service) Spin(ctx context.Context, session Session, gameID, requestID s
 			if amount <= 0 {
 				return ErrInvalid
 			}
-			if err := s.bets.AllowedTotal(ctx, session.Player, gameID, amount); err != nil {
+			if err := s.allowedModeStake(ctx, session, gameID, amount, mode, ""); err != nil {
 				return err
 			}
 			// Reuse a still-valid legacy preparation; no prepare call is needed by new clients.
-			if !ok || t.Amount != amount || time.Now().After(t.ExpiresAt) {
-				prepared, err := s.prepareTx(ctx, tx, session, gameID, amount)
+			if !ok || t.Amount != amount || normalBuyMode(t.BuyMode) != mode || time.Now().After(t.ExpiresAt) {
+				prepared, err := s.prepareTx(ctx, tx, session, gameID, amount, mode)
 				if err != nil {
 					return err
 				}
@@ -132,7 +142,7 @@ func (s *Service) Spin(ctx context.Context, session Session, gameID, requestID s
 		frame.Next = nil // Cursors remain private; clients only decide when to request another round.
 		frame.RequestID = requestID
 		frame.NextRequestID = rand.Text()
-		if err := tx.SaveSpinReceipt(ctx, gameID, requestID, SpinReceipt{Amount: amount, Frame: frame}, frame.NextRequestID); err != nil {
+		if err := tx.SaveSpinReceipt(ctx, gameID, requestID, SpinReceipt{Amount: amount, Frame: frame, BuyMode: mode}, frame.NextRequestID); err != nil {
 			return err
 		}
 		out = frame

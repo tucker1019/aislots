@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "format": "ox-skeleton-v1",
+  "gameId": "AG7",
+  "mode": "free",
+  "moduleVersion": "fortune-ox-v1",
+  "schemaVersion": 1,
+  "configHashes": {
+    "base.json": "a72752ce187f75c4062dc9677032ae2370d2e1398e6e0e1076e4e65162a6144d",
+    "config.json": "d222680ffa19a57720397f8b621018f383214656003938b4a9aa3658c469227b",
+    "free.json": "350f65a59400817faee9be57a1d8f371cd33d17e32d731b4237879b5ac233217",
+    "paylines.json": "08ae87a3c75f77d0d77cf186c01d63b7ddbe64c758668a92047f2f0214c86ffd"
+  },
+  "dataHash": "d0f5bec88a5b687e9cbc79b07635279789999b91f39c707b46bd5c7213a6631c",
+  "validated": true,
+  "required": 26,
+  "covered": 26,
+  "ignoredZeroSkeletons": 0,
+  "source": "2026-11-14T19-28-46-268Z-28265623"
+}

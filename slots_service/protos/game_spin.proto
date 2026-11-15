@@ -1,0 +1,18 @@
+syntax = "proto3";
+package aislots.game.v1;
+// POST /api/v1/games/{gameId}/spin. Bearer session fixes game and currency.
+// bet is the per-line base denomination in minor units; bet_level selects level.
+// buy_mode: 0/1 normal, 2 fivefold stake (only games advertising it).
+// A pending round and idempotency receipt lock buy_mode and the charged amount.
+message SpinRequest {
+ string request_id = 1;
+ string bet = 2;
+ int32 bet_level = 3;
+ int32 buy_mode = 4;
+}
+// GET /api/v1/games/{gameId}/bets advertises this optional field for AG8.
+// The ordinary total (bet * lineCount * betLevel) is multiplied by bet_multiplier.
+message BuyMode { int32 buy_mode = 1; int64 bet_multiplier = 2; }
+message BetModes { repeated BuyMode buy_modes = 1; }
+// AG8's persisted gameData supplies multipliers, awarded/remaining free spins,
+// pre-cap and paid raw sums, line awards and cap status for state/replay parity.

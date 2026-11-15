@@ -94,7 +94,11 @@ func (s *Service) Prepare(ctx context.Context, session Session, gameID string, a
 	})
 	return prepared, err
 }
-func (s *Service) prepareTx(ctx context.Context, tx Tx, session Session, gameID string, amount int64) (Prepared, error) {
+func (s *Service) prepareTx(ctx context.Context, tx Tx, session Session, gameID string, amount int64, modes ...int) (Prepared, error) {
+	mode := 1
+	if len(modes) > 0 {
+		mode = normalBuyMode(modes[0])
+	}
 	var prepared Prepared
 	err := func() error {
 		open, ok, err := tx.FindOpen(ctx, gameID)
@@ -105,7 +109,7 @@ func (s *Service) prepareTx(ctx context.Context, tx Tx, session Session, gameID 
 			if open.Status == "active" {
 				return ErrConflict
 			}
-			if open.Amount == amount && open.GameID == gameID && open.Player == session.Player && time.Now().Before(open.ExpiresAt) {
+			if normalBuyMode(open.BuyMode) == mode && open.Amount == amount && open.GameID == gameID && open.Player == session.Player && time.Now().Before(open.ExpiresAt) {
 				prepared = prepareResponse(open)
 				return nil
 			}
@@ -130,7 +134,7 @@ func (s *Service) prepareTx(ctx context.Context, tx Tx, session Session, gameID 
 		if tx.Balance() < amount {
 			return ErrFunds
 		}
-		ticket := Ticket{ID: rand.Text(), Player: session.Player, GameID: gameID, Version: game.Version(), Status: "prepared", Amount: amount, ExpiresAt: time.Now().UTC().Add(2 * time.Minute)}
+		ticket := Ticket{BuyMode: mode, ID: rand.Text(), Player: session.Player, GameID: gameID, Version: game.Version(), Status: "prepared", Amount: amount, ExpiresAt: time.Now().UTC().Add(2 * time.Minute)}
 		if err = tx.SaveTicket(ctx, ticket); err != nil {
 			return err
 		}
@@ -190,7 +194,7 @@ func (s *Service) advanceTx(ctx context.Context, tx Tx, session Session, gameID,
 			if time.Now().After(t.ExpiresAt) {
 				return ErrExpired
 			}
-			if err = s.bets.AllowedTotal(ctx, session.Player, gameID, t.Amount); err != nil {
+			if err = s.allowedModeStake(ctx, session, gameID, t.Amount, normalBuyMode(t.BuyMode), t.Version); err != nil {
 				return err
 			}
 			if _, err = tx.Wallet(ctx, id+":debit", "debit", -t.Amount); err != nil {
@@ -234,7 +238,7 @@ func (s *Service) advanceTx(ctx context.Context, tx Tx, session Session, gameID,
 			if err != nil {
 				return err
 			}
-			result, err := game.Draw(ctx, runtime.Request{BetMinorUnits: stake, State: state})
+			result, err := game.Draw(ctx, runtime.Request{BetMinorUnits: stake, State: state, BuyMode: t.BuyMode})
 			if err != nil {
 				return err
 			}

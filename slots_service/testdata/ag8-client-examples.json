@@ -1,0 +1,3488 @@
+{
+  "boost_coin": {
+    "buyMode": 2,
+    "betAmount": 250,
+    "totalWinAmount": 100,
+    "frames": [
+      {
+        "stepIndex": 1,
+        "chargeAmount": 250,
+        "winAmount": 100,
+        "balance": 499850,
+        "nextAction": "complete",
+        "display": {
+          "mode": "base",
+          "buyMode": 2,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 2
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 1
+              },
+              {
+                "id": 8,
+                "symbolId": 1
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 1,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "10"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 100,
+          "freeRemaining": 0,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 2,
+            "special": false,
+            "stageIndex": 1,
+            "stageTotal": 1,
+            "featureSpins": 8,
+            "stagesRemaining": 0,
+            "lockedCellIds": [],
+            "multipliers": [
+              5
+            ],
+            "multiplierSum": 5,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 2,
+                "symbolId": 1,
+                "payout": 2,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 2,
+            "rawWin": 10,
+            "paidRawWin": 10,
+            "totalPaidRaw": 10,
+            "capRaw": 62500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 1,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "10",
+                  "amount": "100"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "boost_free_cap": {
+    "buyMode": 2,
+    "betAmount": 250,
+    "totalWinAmount": 625000,
+    "frames": [
+      {
+        "stepIndex": 1,
+        "chargeAmount": 250,
+        "winAmount": 150000,
+        "balance": 649750,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 2,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 7
+              },
+              {
+                "id": 2,
+                "symbolId": 7
+              },
+              {
+                "id": 3,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 7
+              },
+              {
+                "id": 8,
+                "symbolId": 7
+              },
+              {
+                "id": 9,
+                "symbolId": 7
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                2,
+                5,
+                8
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                6,
+                9
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                5,
+                9
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                5,
+                7
+              ],
+              "rawPayout": "3000"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 150000,
+          "freeRemaining": 7,
+          "triggeredFree": true,
+          "awardedFreeSpins": 8,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 2,
+            "special": true,
+            "stageIndex": 1,
+            "stageTotal": 5,
+            "featureSpins": 8,
+            "stagesRemaining": 7,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 1,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  2,
+                  5,
+                  8
+                ]
+              },
+              {
+                "line": 2,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              },
+              {
+                "line": 3,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  3,
+                  6,
+                  9
+                ]
+              },
+              {
+                "line": 4,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  1,
+                  5,
+                  9
+                ]
+              },
+              {
+                "line": 5,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  3,
+                  5,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 500,
+            "rawWin": 15000,
+            "paidRawWin": 15000,
+            "totalPaidRaw": 15000,
+            "capRaw": 62500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 2,
+        "chargeAmount": 0,
+        "winAmount": 150000,
+        "balance": 799750,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 2,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 7
+              },
+              {
+                "id": 2,
+                "symbolId": 7
+              },
+              {
+                "id": 3,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 7
+              },
+              {
+                "id": 8,
+                "symbolId": 7
+              },
+              {
+                "id": 9,
+                "symbolId": 7
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                2,
+                5,
+                8
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                6,
+                9
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                5,
+                9
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                5,
+                7
+              ],
+              "rawPayout": "3000"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 150000,
+          "freeRemaining": 6,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 2,
+            "special": true,
+            "stageIndex": 2,
+            "stageTotal": 5,
+            "featureSpins": 8,
+            "stagesRemaining": 6,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 1,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  2,
+                  5,
+                  8
+                ]
+              },
+              {
+                "line": 2,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              },
+              {
+                "line": 3,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  3,
+                  6,
+                  9
+                ]
+              },
+              {
+                "line": 4,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  1,
+                  5,
+                  9
+                ]
+              },
+              {
+                "line": 5,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  3,
+                  5,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 500,
+            "rawWin": 15000,
+            "paidRawWin": 15000,
+            "totalPaidRaw": 30000,
+            "capRaw": 62500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 3,
+        "chargeAmount": 0,
+        "winAmount": 150000,
+        "balance": 949750,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 2,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 7
+              },
+              {
+                "id": 2,
+                "symbolId": 7
+              },
+              {
+                "id": 3,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 7
+              },
+              {
+                "id": 8,
+                "symbolId": 7
+              },
+              {
+                "id": 9,
+                "symbolId": 7
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                2,
+                5,
+                8
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                6,
+                9
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                5,
+                9
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                5,
+                7
+              ],
+              "rawPayout": "3000"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 150000,
+          "freeRemaining": 5,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 2,
+            "special": true,
+            "stageIndex": 3,
+            "stageTotal": 5,
+            "featureSpins": 8,
+            "stagesRemaining": 5,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 1,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  2,
+                  5,
+                  8
+                ]
+              },
+              {
+                "line": 2,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              },
+              {
+                "line": 3,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  3,
+                  6,
+                  9
+                ]
+              },
+              {
+                "line": 4,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  1,
+                  5,
+                  9
+                ]
+              },
+              {
+                "line": 5,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  3,
+                  5,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 500,
+            "rawWin": 15000,
+            "paidRawWin": 15000,
+            "totalPaidRaw": 45000,
+            "capRaw": 62500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 4,
+        "chargeAmount": 0,
+        "winAmount": 150000,
+        "balance": 1099750,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 2,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 7
+              },
+              {
+                "id": 2,
+                "symbolId": 7
+              },
+              {
+                "id": 3,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 7
+              },
+              {
+                "id": 8,
+                "symbolId": 7
+              },
+              {
+                "id": 9,
+                "symbolId": 7
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                2,
+                5,
+                8
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                6,
+                9
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                5,
+                9
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                5,
+                7
+              ],
+              "rawPayout": "3000"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 150000,
+          "freeRemaining": 4,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 2,
+            "special": true,
+            "stageIndex": 4,
+            "stageTotal": 5,
+            "featureSpins": 8,
+            "stagesRemaining": 4,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 1,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  2,
+                  5,
+                  8
+                ]
+              },
+              {
+                "line": 2,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              },
+              {
+                "line": 3,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  3,
+                  6,
+                  9
+                ]
+              },
+              {
+                "line": 4,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  1,
+                  5,
+                  9
+                ]
+              },
+              {
+                "line": 5,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  3,
+                  5,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 500,
+            "rawWin": 15000,
+            "paidRawWin": 15000,
+            "totalPaidRaw": 60000,
+            "capRaw": 62500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 5,
+        "chargeAmount": 0,
+        "winAmount": 25000,
+        "balance": 1124750,
+        "nextAction": "complete",
+        "display": {
+          "mode": "free",
+          "buyMode": 2,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 7
+              },
+              {
+                "id": 2,
+                "symbolId": 7
+              },
+              {
+                "id": 3,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 7
+              },
+              {
+                "id": 8,
+                "symbolId": 7
+              },
+              {
+                "id": 9,
+                "symbolId": 7
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                2,
+                5,
+                8
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                6,
+                9
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                5,
+                9
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                5,
+                7
+              ],
+              "rawPayout": "3000"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 25000,
+          "freeRemaining": 0,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 2,
+            "special": true,
+            "stageIndex": 5,
+            "stageTotal": 5,
+            "featureSpins": 8,
+            "stagesRemaining": 0,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 1,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  2,
+                  5,
+                  8
+                ]
+              },
+              {
+                "line": 2,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              },
+              {
+                "line": 3,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  3,
+                  6,
+                  9
+                ]
+              },
+              {
+                "line": 4,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  1,
+                  5,
+                  9
+                ]
+              },
+              {
+                "line": 5,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  3,
+                  5,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 500,
+            "rawWin": 15000,
+            "paidRawWin": 2500,
+            "totalPaidRaw": 62500,
+            "capRaw": 62500,
+            "capReached": true,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "25000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "0"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "0"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "0"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "0"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "eight_free_coin": {
+    "buyMode": 1,
+    "betAmount": 50,
+    "totalWinAmount": 4800,
+    "frames": [
+      {
+        "stepIndex": 1,
+        "chargeAmount": 50,
+        "winAmount": 600,
+        "balance": 500550,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 2
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 1
+              },
+              {
+                "id": 8,
+                "symbolId": 1
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 1,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "60"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 600,
+          "freeRemaining": 7,
+          "triggeredFree": true,
+          "awardedFreeSpins": 8,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 1,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 7,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 2,
+                "symbolId": 1,
+                "payout": 2,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 2,
+            "rawWin": 60,
+            "paidRawWin": 60,
+            "totalPaidRaw": 60,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 1,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "60",
+                  "amount": "600"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 2,
+        "chargeAmount": 0,
+        "winAmount": 600,
+        "balance": 501150,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 2
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 1
+              },
+              {
+                "id": 8,
+                "symbolId": 1
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 1,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "60"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 600,
+          "freeRemaining": 6,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 2,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 6,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 2,
+                "symbolId": 1,
+                "payout": 2,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 2,
+            "rawWin": 60,
+            "paidRawWin": 60,
+            "totalPaidRaw": 120,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 1,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "60",
+                  "amount": "600"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 3,
+        "chargeAmount": 0,
+        "winAmount": 600,
+        "balance": 501750,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 2
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 1
+              },
+              {
+                "id": 8,
+                "symbolId": 1
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 1,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "60"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 600,
+          "freeRemaining": 5,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 3,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 5,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 2,
+                "symbolId": 1,
+                "payout": 2,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 2,
+            "rawWin": 60,
+            "paidRawWin": 60,
+            "totalPaidRaw": 180,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 1,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "60",
+                  "amount": "600"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 4,
+        "chargeAmount": 0,
+        "winAmount": 600,
+        "balance": 502350,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 2
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 1
+              },
+              {
+                "id": 8,
+                "symbolId": 1
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 1,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "60"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 600,
+          "freeRemaining": 4,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 4,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 4,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 2,
+                "symbolId": 1,
+                "payout": 2,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 2,
+            "rawWin": 60,
+            "paidRawWin": 60,
+            "totalPaidRaw": 240,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 1,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "60",
+                  "amount": "600"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 5,
+        "chargeAmount": 0,
+        "winAmount": 600,
+        "balance": 502950,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 2
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 1
+              },
+              {
+                "id": 8,
+                "symbolId": 1
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 1,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "60"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 600,
+          "freeRemaining": 3,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 5,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 3,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 2,
+                "symbolId": 1,
+                "payout": 2,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 2,
+            "rawWin": 60,
+            "paidRawWin": 60,
+            "totalPaidRaw": 300,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 1,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "60",
+                  "amount": "600"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 6,
+        "chargeAmount": 0,
+        "winAmount": 600,
+        "balance": 503550,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 2
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 1
+              },
+              {
+                "id": 8,
+                "symbolId": 1
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 1,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "60"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 600,
+          "freeRemaining": 2,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 6,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 2,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 2,
+                "symbolId": 1,
+                "payout": 2,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 2,
+            "rawWin": 60,
+            "paidRawWin": 60,
+            "totalPaidRaw": 360,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 1,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "60",
+                  "amount": "600"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 7,
+        "chargeAmount": 0,
+        "winAmount": 600,
+        "balance": 504150,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 2
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 1
+              },
+              {
+                "id": 8,
+                "symbolId": 1
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 1,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "60"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 600,
+          "freeRemaining": 1,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 7,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 1,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 2,
+                "symbolId": 1,
+                "payout": 2,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 2,
+            "rawWin": 60,
+            "paidRawWin": 60,
+            "totalPaidRaw": 420,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 1,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "60",
+                  "amount": "600"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 8,
+        "chargeAmount": 0,
+        "winAmount": 600,
+        "balance": 504750,
+        "nextAction": "complete",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 2
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 1
+              },
+              {
+                "id": 8,
+                "symbolId": 1
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 1,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "60"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 600,
+          "freeRemaining": 0,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 8,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 0,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 2,
+                "symbolId": 1,
+                "payout": 2,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 2,
+            "rawWin": 60,
+            "paidRawWin": 60,
+            "totalPaidRaw": 480,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 1,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "60",
+                  "amount": "600"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "eight_free_losses": {
+    "buyMode": 1,
+    "betAmount": 50,
+    "totalWinAmount": 0,
+    "frames": [
+      {
+        "stepIndex": 1,
+        "chargeAmount": 50,
+        "winAmount": 0,
+        "balance": 499950,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 1
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "freeRemaining": 7,
+          "triggeredFree": true,
+          "awardedFreeSpins": 8,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 1,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 7,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [],
+            "rawPayout": 0,
+            "rawWin": 0,
+            "paidRawWin": 0,
+            "totalPaidRaw": 0,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 2,
+        "chargeAmount": 0,
+        "winAmount": 0,
+        "balance": 499950,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 1
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "freeRemaining": 6,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 2,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 6,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [],
+            "rawPayout": 0,
+            "rawWin": 0,
+            "paidRawWin": 0,
+            "totalPaidRaw": 0,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 3,
+        "chargeAmount": 0,
+        "winAmount": 0,
+        "balance": 499950,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 1
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "freeRemaining": 5,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 3,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 5,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [],
+            "rawPayout": 0,
+            "rawWin": 0,
+            "paidRawWin": 0,
+            "totalPaidRaw": 0,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 4,
+        "chargeAmount": 0,
+        "winAmount": 0,
+        "balance": 499950,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 1
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "freeRemaining": 4,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 4,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 4,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [],
+            "rawPayout": 0,
+            "rawWin": 0,
+            "paidRawWin": 0,
+            "totalPaidRaw": 0,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 5,
+        "chargeAmount": 0,
+        "winAmount": 0,
+        "balance": 499950,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 1
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "freeRemaining": 3,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 5,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 3,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [],
+            "rawPayout": 0,
+            "rawWin": 0,
+            "paidRawWin": 0,
+            "totalPaidRaw": 0,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 6,
+        "chargeAmount": 0,
+        "winAmount": 0,
+        "balance": 499950,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 1
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "freeRemaining": 2,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 6,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 2,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [],
+            "rawPayout": 0,
+            "rawWin": 0,
+            "paidRawWin": 0,
+            "totalPaidRaw": 0,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 7,
+        "chargeAmount": 0,
+        "winAmount": 0,
+        "balance": 499950,
+        "nextAction": "continue",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 1
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "freeRemaining": 1,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 7,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 1,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [],
+            "rawPayout": 0,
+            "rawWin": 0,
+            "paidRawWin": 0,
+            "totalPaidRaw": 0,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 8,
+        "chargeAmount": 0,
+        "winAmount": 0,
+        "balance": 499950,
+        "nextAction": "complete",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 1
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "freeRemaining": 0,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 8,
+            "stageTotal": 8,
+            "featureSpins": 8,
+            "stagesRemaining": 0,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [],
+            "rawPayout": 0,
+            "rawWin": 0,
+            "paidRawWin": 0,
+            "totalPaidRaw": 0,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      }
+    ]
+  },
+  "normal_coin": {
+    "buyMode": 1,
+    "betAmount": 50,
+    "totalWinAmount": 100,
+    "frames": [
+      {
+        "stepIndex": 1,
+        "chargeAmount": 50,
+        "winAmount": 100,
+        "balance": 500050,
+        "nextAction": "complete",
+        "display": {
+          "mode": "base",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 2
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 1
+              },
+              {
+                "id": 8,
+                "symbolId": 1
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 1,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "10"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 100,
+          "freeRemaining": 0,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": false,
+            "stageIndex": 1,
+            "stageTotal": 1,
+            "featureSpins": 8,
+            "stagesRemaining": 0,
+            "lockedCellIds": [],
+            "multipliers": [
+              5
+            ],
+            "multiplierSum": 5,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 2,
+                "symbolId": 1,
+                "payout": 2,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 2,
+            "rawWin": 10,
+            "paidRawWin": 10,
+            "totalPaidRaw": 10,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 1,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "10",
+                  "amount": "100"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "normal_free_cap": {
+    "buyMode": 1,
+    "betAmount": 50,
+    "totalWinAmount": 125000,
+    "frames": [
+      {
+        "stepIndex": 1,
+        "chargeAmount": 50,
+        "winAmount": 125000,
+        "balance": 624950,
+        "nextAction": "complete",
+        "display": {
+          "mode": "free",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 7
+              },
+              {
+                "id": 2,
+                "symbolId": 7
+              },
+              {
+                "id": 3,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 7
+              },
+              {
+                "id": 8,
+                "symbolId": 7
+              },
+              {
+                "id": 9,
+                "symbolId": 7
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                2,
+                5,
+                8
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                6,
+                9
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                5,
+                9
+              ],
+              "rawPayout": "3000"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                5,
+                7
+              ],
+              "rawPayout": "3000"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 125000,
+          "freeRemaining": 0,
+          "triggeredFree": true,
+          "awardedFreeSpins": 8,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": true,
+            "stageIndex": 1,
+            "stageTotal": 1,
+            "featureSpins": 8,
+            "stagesRemaining": 0,
+            "lockedCellIds": [],
+            "multipliers": [
+              10,
+              10,
+              10
+            ],
+            "multiplierSum": 30,
+            "blankMultiplier": false,
+            "lineWins": [
+              {
+                "line": 1,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  2,
+                  5,
+                  8
+                ]
+              },
+              {
+                "line": 2,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              },
+              {
+                "line": 3,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  3,
+                  6,
+                  9
+                ]
+              },
+              {
+                "line": 4,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  1,
+                  5,
+                  9
+                ]
+              },
+              {
+                "line": 5,
+                "symbolId": 7,
+                "payout": 100,
+                "cellIds": [
+                  3,
+                  5,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 500,
+            "rawWin": 15000,
+            "paidRawWin": 12500,
+            "totalPaidRaw": 12500,
+            "capRaw": 12500,
+            "capReached": true,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "30000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "3000",
+                  "amount": "5000"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "normal_loss": {
+    "buyMode": 1,
+    "betAmount": 50,
+    "totalWinAmount": 0,
+    "frames": [
+      {
+        "stepIndex": 1,
+        "chargeAmount": 50,
+        "winAmount": 0,
+        "balance": 499950,
+        "nextAction": "complete",
+        "display": {
+          "mode": "base",
+          "buyMode": 1,
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 1
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "freeRemaining": 0,
+          "triggeredFree": false,
+          "awardedFreeSpins": 0,
+          "gameData": {
+            "ruleType": "fortune_dragon_v1",
+            "buyMode": 1,
+            "special": false,
+            "stageIndex": 1,
+            "stageTotal": 1,
+            "featureSpins": 8,
+            "stagesRemaining": 0,
+            "lockedCellIds": [],
+            "multipliers": [
+              5
+            ],
+            "multiplierSum": 5,
+            "blankMultiplier": false,
+            "lineWins": [],
+            "rawPayout": 0,
+            "rawWin": 0,
+            "paidRawWin": 0,
+            "totalPaidRaw": 0,
+            "capRaw": 12500,
+            "capReached": false,
+            "replay": {
+              "payoutUnit": "10",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      }
+    ]
+  }
+}

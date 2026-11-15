@@ -12,6 +12,11 @@ import (
 	"aislots/slots_service/internal/games/ag2"
 	"aislots/slots_service/internal/games/ag3"
 	"aislots/slots_service/internal/games/ag4"
+	"aislots/slots_service/internal/games/ag5"
+	"aislots/slots_service/internal/games/ag6"
+	"aislots/slots_service/internal/games/ag7"
+	"aislots/slots_service/internal/games/ag8"
+	"aislots/slots_service/internal/games/ag9"
 	"aislots/slots_service/internal/games/legacyways"
 	"aislots/slots_service/internal/rules/paylines"
 )
@@ -48,6 +53,46 @@ func DecodeState(raw []byte) (game.State, error) {
 				return out, fmt.Errorf("unknown AG4 state schema")
 			}
 			decoded, err := ag4.DecodeState(out)
+			if err != nil {
+				return out, err
+			}
+			out.Payload, _ = json.Marshal(decoded)
+			return out, nil
+		}
+		if out.RuleType == ag5.RuleType {
+			decoded, err := ag5.DecodeState(out)
+			if err != nil {
+				return out, err
+			}
+			out.Payload, _ = json.Marshal(decoded)
+			return out, nil
+		}
+		if out.RuleType == ag9.RuleType {
+			decoded, err := ag9.DecodeState(out)
+			if err != nil {
+				return out, err
+			}
+			out.Payload, _ = json.Marshal(decoded)
+			return out, nil
+		}
+		if out.RuleType == ag8.RuleType {
+			decoded, err := ag8.DecodeState(out)
+			if err != nil {
+				return out, err
+			}
+			out.Payload, _ = json.Marshal(decoded)
+			return out, nil
+		}
+		if out.RuleType == ag7.RuleType {
+			decoded, err := ag7.DecodeState(out)
+			if err != nil {
+				return out, err
+			}
+			out.Payload, _ = json.Marshal(decoded)
+			return out, nil
+		}
+		if out.RuleType == ag6.RuleType {
+			decoded, err := ag6.DecodeState(out)
 			if err != nil {
 				return out, err
 			}
@@ -93,6 +138,51 @@ func DecodeResult(raw []byte) (game.Result, error) {
 		if out.RuleType == paylines.RuleType {
 			if out.GameID != ag4.ID || !strings.HasPrefix(out.Version, out.RuleType+":") {
 				return out, fmt.Errorf("unknown AG4 result version")
+			}
+			return out, out.Validate()
+		}
+		if out.RuleType == ag5.RuleType {
+			if out.GameID != ag5.ID || !strings.HasPrefix(out.Version, ag5.RuleType+":") || len(out.Version) != len(ag5.RuleType)+65 {
+				return out, fmt.Errorf("unknown AG5 result version")
+			}
+			if _, err := ag5.DecodeState(out.NextState); err != nil {
+				return out, err
+			}
+			return out, out.Validate()
+		}
+		if out.RuleType == ag9.RuleType {
+			if out.GameID != ag9.ID || !strings.HasPrefix(out.Version, ag9.RuleType+":") || len(out.Version) != len(ag9.RuleType)+65 {
+				return out, fmt.Errorf("unknown AG9 result version")
+			}
+			if _, err := ag9.DecodeState(out.NextState); err != nil {
+				return out, err
+			}
+			return out, out.Validate()
+		}
+		if out.RuleType == ag8.RuleType {
+			if out.GameID != ag8.ID || !strings.HasPrefix(out.Version, ag8.RuleType+":") || len(out.Version) != len(ag8.RuleType)+65 {
+				return out, fmt.Errorf("unknown AG8 result version")
+			}
+			if _, err := ag8.DecodeState(out.NextState); err != nil {
+				return out, err
+			}
+			return out, out.Validate()
+		}
+		if out.RuleType == ag7.RuleType {
+			if out.GameID != ag7.ID || !strings.HasPrefix(out.Version, ag7.RuleType+":") || len(out.Version) != len(ag7.RuleType)+65 {
+				return out, fmt.Errorf("unknown AG7 result version")
+			}
+			if _, err := ag7.DecodeState(out.NextState); err != nil {
+				return out, err
+			}
+			return out, out.Validate()
+		}
+		if out.RuleType == ag6.RuleType {
+			if out.GameID != ag6.ID || !strings.HasPrefix(out.Version, ag6.RuleType+":") || len(out.Version) != len(ag6.RuleType)+65 {
+				return out, fmt.Errorf("unknown AG6 result version")
+			}
+			if _, err := ag6.DecodeState(out.NextState); err != nil {
+				return out, err
 			}
 			return out, out.Validate()
 		}

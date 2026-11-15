@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "ruleType": "fortune_ox_v1",
+  "columnHeights": [
+    3,
+    4,
+    3
+  ],
+  "lines": [
+    [
+      1,
+      4,
+      8
+    ],
+    [
+      1,
+      5,
+      8
+    ],
+    [
+      1,
+      5,
+      9
+    ],
+    [
+      2,
+      5,
+      8
+    ],
+    [
+      2,
+      5,
+      9
+    ],
+    [
+      2,
+      6,
+      9
+    ],
+    [
+      2,
+      6,
+      10
+    ],
+    [
+      3,
+      6,
+      9
+    ],
+    [
+      3,
+      6,
+      10
+    ],
+    [
+      3,
+      7,
+      10
+    ]
+  ],
+  "symbols": [
+    {
+      "id": 1,
+      "name": "鞭炮",
+      "role": "normal",
+      "payout": 3,
+      "weight": 1000
+    },
+    {
+      "id": 2,
+      "name": "橘子",
+      "role": "normal",
+      "payout": 5,
+      "weight": 900
+    },
+    {
+      "id": 3,
+      "name": "红包",
+      "role": "normal",
+      "payout": 10,
+      "weight": 850
+    },
+    {
+      "id": 4,
+      "name": "钱袋",
+      "role": "normal",
+      "payout": 20,
+      "weight": 800
+    },
+    {
+      "id": 5,
+      "name": "钱箱",
+      "role": "normal",
+      "payout": 50,
+      "weight": 750
+    },
+    {
+      "id": 6,
+      "name": "金元宝",
+      "role": "normal",
+      "payout": 100,
+      "weight": 700
+    },
+    {
+      "id": 7,
+      "name": "金牛百搭",
+      "role": "wild",
+      "payout": 200,
+      "weight": 300
+    }
+  ],
+  "jackpotRaw": 20000,
+  "fullBoardMultiplier": 10
+}

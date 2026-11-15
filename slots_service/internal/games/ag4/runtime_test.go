@@ -131,7 +131,7 @@ func TestDrawModesZeroAndRecovery(t *testing.T) {
 						t.Fatal(err)
 					}
 					if mode == "respin" {
-						if len(out.Frames) < 2 {
+						if len(out.Frames) != len(payload.Sequence.Boards)-1 {
 							t.Fatal("missing respin termination")
 						}
 						last := payload.Sequence.Boards[len(payload.Sequence.Boards)-1]
@@ -231,8 +231,21 @@ func TestProbabilityBoundsAndOverflow(t *testing.T) {
 	c.Parameters.RespinWin = "0"
 	r := runtime(t, c, b, f)
 	out, err := r.Draw(context.Background(), game.Request{BetMinorUnits: 50})
-	if err != nil || len(out.Frames) != 2 || out.WinMinorUnits != 0 {
+	if err != nil || len(out.Frames) != 1 || out.Frames[0].NextAction != "complete" || out.WinMinorUnits != 0 {
 		t.Fatal("zero-probability termination", out, err)
+	}
+	// A real first attempt with no additions can itself be empty and terminal.
+	var saved outcome
+	if err := json.Unmarshal(out.Payload, &saved); err != nil {
+		t.Fatal(err)
+	}
+	saved.OmitIntro = false
+	legacy, err := r.result(out.BetMinorUnits, saved)
+	if err != nil || len(legacy.Frames) != 2 || legacy.Frames[0].NextAction != "continue" {
+		t.Fatal("legacy frame layout changed", err)
+	}
+	if err := r.ValidateStoredResult(legacy); err != nil {
+		t.Fatal("legacy order cannot resume", err)
 	}
 	c, b, f = fixture(t)
 	c.Feature.FillProbability = "1"

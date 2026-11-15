@@ -76,7 +76,15 @@ func (r *Runtime) result(stake int64, outcome outcome) (game.Result, error) {
 	}
 	state, _ := json.Marshal(StateData{Sequence: outcome.NextSequence})
 	result := game.Result{SchemaVersion: game.SchemaVersion, RuleType: r.Type(), GameID: ID, Version: r.Version(), BetMinorUnits: stake, ChargeMinorUnits: stake, WinMinorUnits: amount, NextState: game.State{RuleType: r.Type(), Version: r.Version(), SchemaVersion: StateSchema, Payload: state}, Payload: payload}
-	for i, board := range outcome.Sequence.Boards {
+	first := 0
+	if outcome.OmitIntro {
+		if outcome.Mode != "respin" {
+			return game.Result{}, fmt.Errorf("invalid AG4 intro frame format")
+		}
+		first = 1
+	}
+	for i := first; i < len(outcome.Sequence.Boards); i++ {
+		board := outcome.Sequence.Boards[i]
 		last := i == len(outcome.Sequence.Boards)-1
 		display := Display{Mode: outcome.Mode, Wins: []WireWin{}, RemovedIDs: []int{}, TransformedIDs: []int{}, GameData: FeatureData{Target: outcome.Sequence.Target, Locked: []int{}, Added: outcome.Sequence.Added[i], BonusMultiplier: 1, LineWins: []paylines.Win{}, Replay: ReplayInfo{PayoutUnit: big.NewRat(stake, 5).RatString(), LineCount: 5}}}
 		for c := 0; c < 3; c++ {

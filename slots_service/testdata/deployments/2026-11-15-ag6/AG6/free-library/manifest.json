@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "format": "mouse-skeleton-v1",
+  "gameId": "AG6",
+  "mode": "free",
+  "moduleVersion": "fortune-mouse-v1",
+  "schemaVersion": 1,
+  "configHashes": {
+    "base.json": "fc1495534c6e3d0c4d4e4eb83e4361289a8d1042af342decb703835da2d6bfca",
+    "config.json": "63b9ecc501dd9dfda8d411b1c269632a7da91b29fdcbefd756965012b73548a6",
+    "free.json": "f3bae69a42ea27e249d52a5b53d08249ff59acfe727795044dd6a8d377def2c0",
+    "paylines.json": "55c8893868eea57d6b15fa6bc6b6f8991248ec688488e81bcdabbb3f6f92e5f2"
+  },
+  "dataHash": "02099c4eaa1119af3082f59f897f2ac5f77537d9392eff1315055eef983318ac",
+  "validated": true,
+  "required": 267,
+  "covered": 267,
+  "ignoredZeroSkeletons": 0,
+  "source": "2026-11-14T17-46-24-803Z-12bfbdd6"
+}

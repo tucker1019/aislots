@@ -1,0 +1,23 @@
+syntax = "proto3";
+package aislots.game.v1;
+// AG9 uses the existing spin/state/replay endpoints and their JSON frame envelope.
+// Positions are 1-based, column-major; 0 means a visible blank during respins.
+// Ordinary and respin are alternative outcomes of one paid wager.
+message AG9FeatureData {
+ optional int32 target_symbol_id = 1;
+ repeated int32 locked_cell_ids = 2;
+ repeated int32 added_cell_ids = 3;
+ int32 bonus_multiplier = 4; // 10 iff all nine cells belong to winning lines.
+ repeated AG9LineWin line_wins = 5;
+ AG9ReplayInfo replay = 6;
+}
+message AG9LineWin {
+ int32 line_index = 1;
+ repeated int32 cell_ids = 2;
+ int32 symbol_id = 3;
+ string payout = 4; // exact rational per-line payout before the x10 bonus
+}
+message AG9ReplayInfo {
+ string payout_unit = 1; // exact rational: charged minor units / 5
+ int32 line_count = 2;
+}

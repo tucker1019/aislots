@@ -1,0 +1,1293 @@
+{
+  "ordinary_jackpot": {
+    "betAmount": 1000,
+    "totalWinAmount": 1000000,
+    "frames": [
+      {
+        "stepIndex": 1,
+        "chargeAmount": 1000,
+        "winAmount": 1000000,
+        "balance": 1499000,
+        "nextAction": "complete",
+        "display": {
+          "mode": "base",
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 7
+              },
+              {
+                "id": 2,
+                "symbolId": 7
+              },
+              {
+                "id": 3,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 7
+              },
+              {
+                "id": 8,
+                "symbolId": 7
+              },
+              {
+                "id": 9,
+                "symbolId": 7
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ],
+              "rawPayout": "5000"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 1000000,
+          "gameData": {
+            "ruleType": "fortune_mouse_v1",
+            "special": false,
+            "stageIndex": 1,
+            "stageTotal": 1,
+            "stagesRemaining": 0,
+            "lockedCellIds": [],
+            "lineWins": [],
+            "rawPayout": 5000,
+            "jackpot": true,
+            "replay": {
+              "payoutUnit": "200",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "5000",
+                  "amount": "1000000"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "ordinary_loss": {
+    "betAmount": 1000,
+    "totalWinAmount": 0,
+    "frames": [
+      {
+        "stepIndex": 1,
+        "chargeAmount": 1000,
+        "winAmount": 0,
+        "balance": 499000,
+        "nextAction": "complete",
+        "display": {
+          "mode": "base",
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 1
+              },
+              {
+                "id": 5,
+                "symbolId": 1
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "gameData": {
+            "ruleType": "fortune_mouse_v1",
+            "special": false,
+            "stageIndex": 1,
+            "stageTotal": 1,
+            "stagesRemaining": 0,
+            "lockedCellIds": [],
+            "lineWins": [],
+            "rawPayout": 0,
+            "jackpot": false,
+            "replay": {
+              "payoutUnit": "200",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      }
+    ]
+  },
+  "ordinary_non_jackpot_1000": {
+    "betAmount": 1000,
+    "totalWinAmount": 200000,
+    "frames": [
+      {
+        "stepIndex": 1,
+        "chargeAmount": 1000,
+        "winAmount": 200000,
+        "balance": 699000,
+        "nextAction": "complete",
+        "display": {
+          "mode": "base",
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 5
+              },
+              {
+                "id": 2,
+                "symbolId": 7
+              },
+              {
+                "id": 3,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 7
+              },
+              {
+                "id": 8,
+                "symbolId": 7
+              },
+              {
+                "id": 9,
+                "symbolId": 7
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                2,
+                5,
+                8
+              ],
+              "rawPayout": "300"
+            },
+            {
+              "symbolId": 5,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "50"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                6,
+                9
+              ],
+              "rawPayout": "300"
+            },
+            {
+              "symbolId": 5,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                5,
+                9
+              ],
+              "rawPayout": "50"
+            },
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                3,
+                5,
+                7
+              ],
+              "rawPayout": "300"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 200000,
+          "gameData": {
+            "ruleType": "fortune_mouse_v1",
+            "special": false,
+            "stageIndex": 1,
+            "stageTotal": 1,
+            "stagesRemaining": 0,
+            "lockedCellIds": [],
+            "lineWins": [
+              {
+                "line": 1,
+                "symbolId": 7,
+                "payout": 300,
+                "cellIds": [
+                  2,
+                  5,
+                  8
+                ]
+              },
+              {
+                "line": 2,
+                "symbolId": 5,
+                "payout": 50,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              },
+              {
+                "line": 3,
+                "symbolId": 7,
+                "payout": 300,
+                "cellIds": [
+                  3,
+                  6,
+                  9
+                ]
+              },
+              {
+                "line": 4,
+                "symbolId": 5,
+                "payout": 50,
+                "cellIds": [
+                  1,
+                  5,
+                  9
+                ]
+              },
+              {
+                "line": 5,
+                "symbolId": 7,
+                "payout": 300,
+                "cellIds": [
+                  3,
+                  5,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 1000,
+            "jackpot": false,
+            "replay": {
+              "payoutUnit": "200",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "300",
+                  "amount": "60000"
+                },
+                {
+                  "symbolId": 5,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "50",
+                  "amount": "10000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "300",
+                  "amount": "60000"
+                },
+                {
+                  "symbolId": 5,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "50",
+                  "amount": "10000"
+                },
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "300",
+                  "amount": "60000"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "ordinary_orange": {
+    "betAmount": 1000,
+    "totalWinAmount": 1000,
+    "frames": [
+      {
+        "stepIndex": 1,
+        "chargeAmount": 1000,
+        "winAmount": 1000,
+        "balance": 500000,
+        "nextAction": "complete",
+        "display": {
+          "mode": "base",
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 2
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 1
+              },
+              {
+                "id": 6,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 2,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "5"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 1000,
+          "gameData": {
+            "ruleType": "fortune_mouse_v1",
+            "special": false,
+            "stageIndex": 1,
+            "stageTotal": 1,
+            "stagesRemaining": 0,
+            "lockedCellIds": [],
+            "lineWins": [
+              {
+                "line": 2,
+                "symbolId": 2,
+                "payout": 5,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 5,
+            "jackpot": false,
+            "replay": {
+              "payoutUnit": "200",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 2,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "5",
+                  "amount": "1000"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "special_jackpot": {
+    "betAmount": 1000,
+    "totalWinAmount": 1000000,
+    "frames": [
+      {
+        "stepIndex": 1,
+        "chargeAmount": 1000,
+        "winAmount": 0,
+        "balance": 499000,
+        "nextAction": "continue",
+        "display": {
+          "mode": "respin",
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "gameData": {
+            "ruleType": "fortune_mouse_v1",
+            "special": true,
+            "stageIndex": 1,
+            "stageTotal": 6,
+            "stagesRemaining": 5,
+            "lockedCellIds": [
+              4,
+              5,
+              6
+            ],
+            "lineWins": [],
+            "rawPayout": 0,
+            "jackpot": false,
+            "replay": {
+              "payoutUnit": "200",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 2,
+        "chargeAmount": 0,
+        "winAmount": 0,
+        "balance": 499000,
+        "nextAction": "continue",
+        "display": {
+          "mode": "respin",
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "gameData": {
+            "ruleType": "fortune_mouse_v1",
+            "special": true,
+            "stageIndex": 2,
+            "stageTotal": 6,
+            "stagesRemaining": 4,
+            "lockedCellIds": [
+              4,
+              5,
+              6
+            ],
+            "lineWins": [],
+            "rawPayout": 0,
+            "jackpot": false,
+            "replay": {
+              "payoutUnit": "200",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 3,
+        "chargeAmount": 0,
+        "winAmount": 0,
+        "balance": 499000,
+        "nextAction": "continue",
+        "display": {
+          "mode": "respin",
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "gameData": {
+            "ruleType": "fortune_mouse_v1",
+            "special": true,
+            "stageIndex": 3,
+            "stageTotal": 6,
+            "stagesRemaining": 3,
+            "lockedCellIds": [
+              4,
+              5,
+              6
+            ],
+            "lineWins": [],
+            "rawPayout": 0,
+            "jackpot": false,
+            "replay": {
+              "payoutUnit": "200",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 4,
+        "chargeAmount": 0,
+        "winAmount": 0,
+        "balance": 499000,
+        "nextAction": "continue",
+        "display": {
+          "mode": "respin",
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "gameData": {
+            "ruleType": "fortune_mouse_v1",
+            "special": true,
+            "stageIndex": 4,
+            "stageTotal": 6,
+            "stagesRemaining": 2,
+            "lockedCellIds": [
+              4,
+              5,
+              6
+            ],
+            "lineWins": [],
+            "rawPayout": 0,
+            "jackpot": false,
+            "replay": {
+              "payoutUnit": "200",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 5,
+        "chargeAmount": 0,
+        "winAmount": 0,
+        "balance": 499000,
+        "nextAction": "continue",
+        "display": {
+          "mode": "respin",
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "gameData": {
+            "ruleType": "fortune_mouse_v1",
+            "special": true,
+            "stageIndex": 5,
+            "stageTotal": 6,
+            "stagesRemaining": 1,
+            "lockedCellIds": [
+              4,
+              5,
+              6
+            ],
+            "lineWins": [],
+            "rawPayout": 0,
+            "jackpot": false,
+            "replay": {
+              "payoutUnit": "200",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 6,
+        "chargeAmount": 0,
+        "winAmount": 1000000,
+        "balance": 1499000,
+        "nextAction": "complete",
+        "display": {
+          "mode": "respin",
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 7
+              },
+              {
+                "id": 2,
+                "symbolId": 7
+              },
+              {
+                "id": 3,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 7
+              },
+              {
+                "id": 8,
+                "symbolId": 7
+              },
+              {
+                "id": 9,
+                "symbolId": 7
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 7,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ],
+              "rawPayout": "5000"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 1000000,
+          "gameData": {
+            "ruleType": "fortune_mouse_v1",
+            "special": true,
+            "stageIndex": 6,
+            "stageTotal": 6,
+            "stagesRemaining": 0,
+            "lockedCellIds": [
+              4,
+              5,
+              6
+            ],
+            "lineWins": [],
+            "rawPayout": 5000,
+            "jackpot": true,
+            "replay": {
+              "payoutUnit": "200",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 7,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "5000",
+                  "amount": "1000000"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "special_orange": {
+    "betAmount": 1000,
+    "totalWinAmount": 1000,
+    "frames": [
+      {
+        "stepIndex": 1,
+        "chargeAmount": 1000,
+        "winAmount": 0,
+        "balance": 499000,
+        "nextAction": "continue",
+        "display": {
+          "mode": "respin",
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "gameData": {
+            "ruleType": "fortune_mouse_v1",
+            "special": true,
+            "stageIndex": 1,
+            "stageTotal": 3,
+            "stagesRemaining": 2,
+            "lockedCellIds": [
+              4,
+              5,
+              6
+            ],
+            "lineWins": [],
+            "rawPayout": 0,
+            "jackpot": false,
+            "replay": {
+              "payoutUnit": "200",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 2,
+        "chargeAmount": 0,
+        "winAmount": 0,
+        "balance": 499000,
+        "nextAction": "continue",
+        "display": {
+          "mode": "respin",
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 1
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 2
+              }
+            ]
+          ],
+          "wins": [],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 0,
+          "gameData": {
+            "ruleType": "fortune_mouse_v1",
+            "special": true,
+            "stageIndex": 2,
+            "stageTotal": 3,
+            "stagesRemaining": 1,
+            "lockedCellIds": [
+              4,
+              5,
+              6
+            ],
+            "lineWins": [],
+            "rawPayout": 0,
+            "jackpot": false,
+            "replay": {
+              "payoutUnit": "200",
+              "lineCount": 5,
+              "payouts": []
+            }
+          }
+        }
+      },
+      {
+        "stepIndex": 3,
+        "chargeAmount": 0,
+        "winAmount": 1000,
+        "balance": 500000,
+        "nextAction": "complete",
+        "display": {
+          "mode": "respin",
+          "board": [
+            [
+              {
+                "id": 1,
+                "symbolId": 2
+              },
+              {
+                "id": 2,
+                "symbolId": 1
+              },
+              {
+                "id": 3,
+                "symbolId": 1
+              }
+            ],
+            [
+              {
+                "id": 4,
+                "symbolId": 7
+              },
+              {
+                "id": 5,
+                "symbolId": 7
+              },
+              {
+                "id": 6,
+                "symbolId": 7
+              }
+            ],
+            [
+              {
+                "id": 7,
+                "symbolId": 2
+              },
+              {
+                "id": 8,
+                "symbolId": 2
+              },
+              {
+                "id": 9,
+                "symbolId": 3
+              }
+            ]
+          ],
+          "wins": [
+            {
+              "symbolId": 2,
+              "columns": 3,
+              "ways": 1,
+              "cellIds": [
+                1,
+                4,
+                7
+              ],
+              "rawPayout": "5"
+            }
+          ],
+          "removedIds": [],
+          "transformedIds": [],
+          "spinWinAmount": 1000,
+          "gameData": {
+            "ruleType": "fortune_mouse_v1",
+            "special": true,
+            "stageIndex": 3,
+            "stageTotal": 3,
+            "stagesRemaining": 0,
+            "lockedCellIds": [
+              4,
+              5,
+              6
+            ],
+            "lineWins": [
+              {
+                "line": 2,
+                "symbolId": 2,
+                "payout": 5,
+                "cellIds": [
+                  1,
+                  4,
+                  7
+                ]
+              }
+            ],
+            "rawPayout": 5,
+            "jackpot": false,
+            "replay": {
+              "payoutUnit": "200",
+              "lineCount": 5,
+              "payouts": [
+                {
+                  "symbolId": 2,
+                  "columns": 3,
+                  "ways": 1,
+                  "rawPayout": "5",
+                  "amount": "1000"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+}

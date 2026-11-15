@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"math/big"
 	"strconv"
 	"time"
@@ -201,13 +202,15 @@ func (s *Service) BetReplay(ctx context.Context, session Session, gameID, betID 
 		out.Frames[i].RequestID = ""
 		out.Frames[i].NextRequestID = ""
 		out.Frames[i].Next = nil
-		decorateHistoryFrame(&out.Frames[i])
+		if err := decorateHistoryFrame(&out.Frames[i]); err != nil {
+			return BetReplay{}, err
+		}
 	}
 	return out, nil
 }
 
 // 从历史精确单位与本轮之前的raw累计值分配逐项金额，保留逐轮累计取整口径。
-func decorateHistoryFrame(frame *ReplayFrame) {
+func decorateHistoryFrame(frame *ReplayFrame) error {
 	frame.ChargeAmount = "0"
 	if frame.SpinIndex == 0 && frame.StepIndex == 1 {
 		frame.ChargeAmount = strconv.FormatInt(frame.BetAmount, 10)
@@ -218,9 +221,43 @@ func decorateHistoryFrame(frame *ReplayFrame) {
 		frame.ProfitAmount = new(big.Int).Sub(win, charge).String()
 	}
 	frame.Payouts = []HistoryWin{}
+	// Modules with truncated prizes persist actual per-item credits. Reuse
+	// those immutable details instead of recomputing the uncapped raw prize.
+	var saved struct {
+		Replay struct {
+			Payouts *[]HistoryWin `json:"payouts"`
+		} `json:"replay"`
+	}
+	if len(frame.GameData) > 0 {
+		if err := json.Unmarshal(frame.GameData, &saved); err != nil {
+			return err
+		}
+	}
+	if saved.Replay.Payouts != nil {
+		rows := *saved.Replay.Payouts
+		if len(rows) != len(frame.Wins) {
+			return fmt.Errorf("stored replay payout count mismatch")
+		}
+		total := new(big.Int)
+		for i, row := range rows {
+			w := frame.Wins[i]
+			amount, ok := new(big.Int).SetString(row.Amount, 10)
+			raw, valid := new(big.Rat).SetString(row.RawPayout)
+			want, comparable := new(big.Rat).SetString(w.RawPayout)
+			if !ok || amount.Sign() < 0 || !amount.IsInt64() || !valid || !comparable || raw.Cmp(want) != 0 || row.SymbolID != w.Symbol || row.Columns != w.Columns || row.Ways != w.Ways {
+				return fmt.Errorf("stored replay payout identity/amount mismatch")
+			}
+			total.Add(total, amount)
+		}
+		if total.Cmp(big.NewInt(frame.WinAmount)) != 0 {
+			return fmt.Errorf("stored replay payouts differ from credit")
+		}
+		frame.Payouts = append(frame.Payouts, rows...)
+		return nil
+	}
 	unit, ok := new(big.Rat).SetString(frame.PayoutUnit)
 	if !ok {
-		return
+		return nil
 	}
 	prefix, ok := new(big.Rat).SetString(frame.PriorRawPayout)
 	if !ok {
@@ -254,4 +291,5 @@ func decorateHistoryFrame(frame *ReplayFrame) {
 			}
 		}
 	}
+	return nil
 }

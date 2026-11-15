@@ -145,19 +145,10 @@ func TestAG4ProgressiveRestartVersionPinningReplayAndHTTP(t *testing.T) {
 	if err != nil || recovery.LastFrame == nil || recovery.LastFrame.BetID != first.BetID || recovery.LastFrame.Balance != 499950 {
 		t.Fatal("restart state", recovery, err)
 	}
-	plan, err := s.AG4Presentation(ctx, session, first.BetID)
-	if err != nil || len(plan) < 2 || plan[0].StepIndex != 1 || plan[len(plan)-1].NextAction != "complete" {
-		t.Fatalf("saved AG4 presentation: len=%d, error=%v", len(plan), err)
+	if first.StepIndex != 1 || first.NextAction != "continue" || !hasAG4Symbol(first) {
+		t.Fatal("first response must be the first played respin", first)
 	}
-	unchanged, err := s.Status(ctx, session, "AG4")
-	if err != nil || !reflect.DeepEqual(unchanged, recovery) || oldReader.calls.Load() != draws {
-		t.Fatal("presentation advanced settlement or drew another round", err)
-	}
-	for _, f := range plan {
-		if f.Balance != 0 || f.RequestID != "" || f.NextRequestID != "" || f.Next != nil {
-			t.Fatal("presentation exposed settlement metadata", f)
-		}
-	}
+	settled := []play.Frame{first}
 	last := first
 	frames := 1
 	for last.NextAction != "complete" {
@@ -166,12 +157,10 @@ func TestAG4ProgressiveRestartVersionPinningReplayAndHTTP(t *testing.T) {
 			t.Fatal(err)
 		}
 		frames++
+		settled = append(settled, last)
 		if last.NextAction != "complete" && last.WinAmount != 0 {
 			t.Fatal("early credit")
 		}
-	}
-	if len(plan) != frames || !reflect.DeepEqual(plan[frames-1].Board, last.Board) || plan[frames-1].TotalWinAmount != last.TotalWinAmount {
-		t.Fatal("settled result differs from saved presentation", last)
 	}
 	if oldReader.calls.Load() != draws || newReader.calls.Load() != 0 || last.Balance != 499950+last.TotalWinAmount || last.WinAmount != last.TotalWinAmount {
 		t.Fatal("redraw, version switch or duplicate credit", last)
@@ -179,6 +168,11 @@ func TestAG4ProgressiveRestartVersionPinningReplayAndHTTP(t *testing.T) {
 	replay, err := s.BetReplay(ctx, session, "AG4", first.BetID, 100, "")
 	if err != nil || len(replay.Frames) != frames || len(replay.StartBoard) != 0 {
 		t.Fatal("replay", replay, err)
+	}
+	for i, frame := range replay.Frames {
+		if frame.StepIndex != i+1 || !reflect.DeepEqual(frame.Board, settled[i].Board) || frame.TotalWinAmount != settled[i].TotalWinAmount {
+			t.Fatal("replay differs from the settled response", i)
+		}
 	}
 	var payout int64
 	for _, w := range replay.Frames[len(replay.Frames)-1].Payouts {
@@ -269,4 +263,15 @@ func TestAG4AutoRoundIdempotency(t *testing.T) {
 			t.Fatal("auto early credit")
 		}
 	}
+}
+
+func hasAG4Symbol(frame play.Frame) bool {
+	for _, column := range frame.Board {
+		for _, cell := range column {
+			if cell.Symbol != 0 {
+				return true
+			}
+		}
+	}
+	return false
 }

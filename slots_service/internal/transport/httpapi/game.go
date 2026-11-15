@@ -66,18 +66,9 @@ func NewGameRouter(ready func() bool, service *play.Service, origins []string, l
 		for _, amount := range policy.Amounts {
 			amounts = append(amounts, strconv.FormatInt(amount, 10))
 		}
-		success(w, map[string]any{"gameId": policy.GameID, "country": policy.Country, "currency": policy.Currency, "amountScale": policy.AmountScale, "lineCount": policy.LineCount, "betLevel": policy.BetLevel, "betOptions": amounts, "defaultBet": strconv.FormatInt(policy.Default, 10)})
-		return nil
-	})
-
-	handle("GET /api/v1/games/AG4/presentation/{betId}", func(w http.ResponseWriter, r *http.Request) error {
-		session, err := auth(r)
-		if err != nil {
-			return err
-		}
-		out, err := service.AG4Presentation(r.Context(), session, r.PathValue("betId"))
-		if err != nil {
-			return err
+		out := map[string]any{"gameId": policy.GameID, "country": policy.Country, "currency": policy.Currency, "amountScale": policy.AmountScale, "lineCount": policy.LineCount, "betLevel": policy.BetLevel, "betOptions": amounts, "defaultBet": strconv.FormatInt(policy.Default, 10)}
+		if factor, err := service.BetMultiplier(policy.GameID, 2, ""); err == nil {
+			out["buyModes"] = []map[string]int64{{"buyMode": 1, "betMultiplier": 1}, {"buyMode": 2, "betMultiplier": factor}}
 		}
 		success(w, out)
 		return nil
@@ -92,6 +83,7 @@ func NewGameRouter(ready func() bool, service *play.Service, origins []string, l
 			RequestID string `json:"requestId"`
 			Bet       string `json:"bet"`
 			BetLevel  int    `json:"betLevel"`
+			BuyMode   int    `json:"buyMode"`
 		}
 		if err = decode(w, r, &input); err != nil {
 			return err
@@ -109,7 +101,12 @@ func NewGameRouter(ready func() bool, service *play.Service, origins []string, l
 			return play.ErrInvalid
 		}
 		amount *= int64(policy.LineCount) * int64(input.BetLevel)
-		out, err := service.Spin(r.Context(), session, r.PathValue("gameId"), input.RequestID, amount)
+		factor, err := service.BetMultiplier(r.PathValue("gameId"), input.BuyMode, "")
+		if err != nil || amount > (int64(^uint64(0)>>1))/factor {
+			return play.ErrInvalid
+		}
+		amount *= factor
+		out, err := service.Spin(r.Context(), session, r.PathValue("gameId"), input.RequestID, amount, input.BuyMode)
 		if err != nil {
 			return err
 		}

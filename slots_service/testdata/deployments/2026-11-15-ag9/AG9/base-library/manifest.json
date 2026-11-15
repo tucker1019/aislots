@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "format": "payline-skeleton-v1",
+  "gameId": "AG9",
+  "mode": "base",
+  "moduleVersion": "fortune-leopard-v1",
+  "schemaVersion": 1,
+  "configHashes": {
+    "base.json": "d1dcb9721ee1f48936b4be8e93d51c7b4bfc0377126c0833e9166ffef0426329",
+    "config.json": "689e78253cc812835cba30a55fa067525e933b83ee4048210974450a3d7cf46a",
+    "free.json": "6ad6ef1a71fb027620ee278b859ca5c1f25bdde8c2525045a74c9e9bf97844f5",
+    "paylines.json": "fd1b25080e4c110dd56804773032c5c002735dd6c543f343af59916172292988"
+  },
+  "dataHash": "f2692754fc401c695b288e536f5118b75ae3fddb57fec5c5516fcd649fbc0e30",
+  "validated": true,
+  "required": 137,
+  "covered": 137,
+  "ignoredZeroSkeletons": 0,
+  "source": "2026-11-15T07-35-08-354Z-0f17f0f3"
+}
