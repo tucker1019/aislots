@@ -16,6 +16,8 @@
 | `game_configs/` | 按游戏管理规则、倍率与权重 JSON | AG1 的 config/board/base/free 配置 |
 | `game_libraries/` | 普通及免费模式的版本化盘面库 | 与游戏配置版本配套使用 |
 
+新增或复制 Cocos 游戏时，按 [Cocos 机台迁移规范](client/README.md) 执行。
+
 ## 当前功能
 
 - 用户：游客创建、会话续期、自定义账号注册/登录/绑定、昵称和15种头像。默认会话60天，续期从当前时间重新计算；新 UID 从10000001开始。
@@ -145,3 +147,5 @@ flowchart LR
 - 机台服务：`make check`；数据库集成测试配置 `AISLOTS_TEST_DATABASE_URL` 后运行 `make integration`。
 
 开发规范见各模块 `AGENTS.md`。提交按模块拆分，使用仓库 skill 规定的中文前缀。真实支付渠道、Google/Telegram绑定、取款及完整代理系统仍待接入。
+
+AG8金龙已接入数值工具、中奖骨架生成及Go本地模块。支持普通/五倍投注、独立八次免费和2500倍封顶；两库均覆盖194/194正权重倍率。详见[AG8规则](slot_math/docs/ag8-rules.md)及[服务端说明](slots_service/internal/games/ag8/README.md)。
