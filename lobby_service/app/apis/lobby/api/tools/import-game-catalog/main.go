@@ -28,6 +28,8 @@ func main() {
 func run() error {
 	apply := flag.Bool("apply", false, "save and publish the merged catalog")
 	hideFortuneTigerPlaceholder := flag.Bool("hide-fortune-tiger-placeholder", false, "hide G1017 when launching AG4")
+	hideFortuneOxPlaceholder := flag.Bool("hide-fortune-ox-placeholder", false, "hide G1023 when launching AG7")
+	enableReleaseGames := flag.Bool("enable-ag1-through-ag8", false, "enable AG1 through AG8 using the release URLs and hide their legacy placeholders")
 	path := flag.String("defaults", "etc/games.json", "catalog defaults")
 	flag.Parse()
 	db, err := gorm.Open(postgres.Open(os.Getenv("LOBBY_DATABASE_URL")), &gorm.Config{Logger: logger.Default.LogMode(logger.Silent)})
@@ -56,7 +58,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	if *hideFortuneTigerPlaceholder {
+	if *enableReleaseGames || *hideFortuneTigerPlaceholder || *hideFortuneOxPlaceholder {
 		var doc map[string]json.RawMessage
 		var games map[string]map[string]json.RawMessage
 		if err = json.Unmarshal(next, &doc); err != nil {
@@ -65,13 +67,29 @@ func run() error {
 		if err = json.Unmarshal(doc["games"], &games); err != nil {
 			return err
 		}
-		ag4, old := games["AG4"], games["G1017"]
-		if string(ag4["enabled"]) != "true" || string(ag4["visible"]) == "false" {
-			return fmt.Errorf("AG4 必须启用并显示后才能隐藏 G1017")
+		if *enableReleaseGames {
+			if err = activateReleaseGames(games, seed); err != nil {
+				return err
+			}
 		}
-		if old != nil {
-			fmt.Println("目录更新：隐藏同名旧入口 G1017")
-			old["visible"] = json.RawMessage("false")
+		for _, migration := range []struct {
+			enabled      bool
+			current, old string
+		}{
+			{*hideFortuneTigerPlaceholder, "AG4", "G1017"},
+			{*hideFortuneOxPlaceholder, "AG7", "G1023"},
+		} {
+			if !migration.enabled {
+				continue
+			}
+			active := games[migration.current]
+			if string(active["enabled"]) != "true" || string(active["visible"]) == "false" {
+				return fmt.Errorf("%s 必须启用并显示后才能隐藏 %s", migration.current, migration.old)
+			}
+			if old := games[migration.old]; old != nil {
+				fmt.Printf("目录更新：隐藏同名旧入口 %s\n", migration.old)
+				old["visible"] = json.RawMessage("false")
+			}
 		}
 		doc["games"], err = json.Marshal(games)
 		if err != nil {
@@ -108,6 +126,12 @@ func run() error {
 	if *hideFortuneTigerPlaceholder {
 		reason = "启用 AG4 Fortune Tiger 并隐藏旧 G1017 入口"
 	}
+	if *hideFortuneOxPlaceholder {
+		reason += "；启用 AG7 Fortune Ox 并隐藏旧 G1023 入口"
+	}
+	if *enableReleaseGames {
+		reason = "发布 AG1 至 AG8 并隐藏同名旧入口"
+	}
 	if err = store.Draft(ctx, "games", row.Version, next, actor, reason); err != nil {
 		return err
 	}
@@ -119,4 +143,32 @@ func run() error {
 		fmt.Printf("游戏目录已发布 v%d，版本和审计已记录\n", row.Version+1)
 	}
 	return err
+}
+
+func activateReleaseGames(games map[string]map[string]json.RawMessage, seed []byte) error {
+	var release struct {
+		Games map[string]map[string]json.RawMessage
+	}
+	if err := json.Unmarshal(seed, &release); err != nil {
+		return err
+	}
+	for i, placeholder := range []string{"", "G1024", "G1068", "G1017", "G1018", "G1019", "G1023", "G1048"} {
+		id := fmt.Sprintf("AG%d", i+1)
+		entry, defaults := games[id], release.Games[id]
+		if entry == nil {
+			return fmt.Errorf("缺少发布游戏 %s", id)
+		}
+		for _, field := range []string{"url", "apiUrl"} {
+			var value string
+			if err := json.Unmarshal(defaults[field], &value); err != nil || value == "" {
+				return fmt.Errorf("%s 缺少发布地址 %s", id, field)
+			}
+			entry[field] = defaults[field]
+		}
+		entry["enabled"], entry["visible"] = json.RawMessage("true"), json.RawMessage("true")
+		if old := games[placeholder]; placeholder != "" && old != nil {
+			old["visible"] = json.RawMessage("false")
+		}
+	}
+	return nil
 }

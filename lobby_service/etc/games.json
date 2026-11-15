@@ -48,38 +48,39 @@
       "url": "http://127.0.0.1:5184/",
       "apiUrl": "http://127.0.0.1:8080"
     },
-    "G1018": {
-      "enabled": false,
+    "AG5": {
+      "enabled": true,
       "visible": true,
       "sort": 50,
       "name": "Fortune Rabbit",
       "nameEn": "Fortune Rabbit",
       "provider": "AG",
       "cover": "/assets/lobby/games/1018.png",
-      "url": "",
-      "apiUrl": ""
+      "url": "http://127.0.0.1:5185/",
+      "apiUrl": "http://127.0.0.1:8080"
     },
-    "G1019": {
-      "enabled": false,
+    "AG6": {
+      "enabled": true,
       "visible": true,
       "sort": 60,
       "name": "Fortune Mouse",
       "nameEn": "Fortune Mouse",
       "provider": "AG",
       "cover": "/assets/lobby/games/1019.png",
-      "url": "",
-      "apiUrl": ""
+      "url": "http://127.0.0.1:5187/",
+      "apiUrl": "http://127.0.0.1:8080"
     },
-    "G1023": {
-      "enabled": false,
+    "AG7": {
+      "enabled": true,
       "visible": true,
       "sort": 70,
-      "name": "Fortune Ox",
+      "name": "金牛",
       "nameEn": "Fortune Ox",
       "provider": "AG",
       "cover": "/assets/lobby/games/1023.png",
-      "url": "",
-      "apiUrl": ""
+      "url": "http://127.0.0.1:5189/",
+      "apiUrl": "http://127.0.0.1:8080",
+      "maxWin": 2000
     },
     "G1026": {
       "enabled": false,
@@ -158,16 +159,17 @@
       "url": "",
       "apiUrl": ""
     },
-    "G1048": {
-      "enabled": false,
+    "AG8": {
+      "enabled": true,
       "visible": true,
       "sort": 150,
-      "name": "Fortune Dragon",
+      "name": "福运金龙",
       "nameEn": "Fortune Dragon",
       "provider": "AG",
       "cover": "/assets/lobby/games/1048.png",
-      "url": "",
-      "apiUrl": ""
+      "url": "http://127.0.0.1:5190/",
+      "apiUrl": "http://127.0.0.1:8080",
+      "maxWin": 2500
     },
     "G1053": {
       "enabled": false,
