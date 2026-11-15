@@ -26,7 +26,7 @@ go run ./cmd/slots-server -config configs/server.lobby.json
 
 `POST /api/game/launch`：`{"uid":123,"sid":"大厅会话","gameId":"AG1"}`。
 
-返回 `{"code":"OK","data":{"launchUrl":"http://127.0.0.1:5180/?launchTicket=...","expiresAt":"RFC3339"}}`。票据为随机52字符，仅保存SHA256哈希，有效60秒。
+返回 `{"code":"OK","data":{"launchUrl":"http://127.0.0.1:5180/?launchTicket=...","expiresAt":"RFC3339"}}`。票据为随机52字符，仅保存SHA256哈希，首次兑换有效期为5分钟，为机台首次加载资源留出时间。
 
 大厅前端防重复点击，取得地址后进入 `/game/AG1`，在 iframe 内加载游戏，支持返回大厅和重新申请入口。AG1使用 `POST /api/v1/login` 提交 `{"gameId":"AG1","launchTicket":"...","exchangeId":"同一次兑换的稳定随机号"}`，游戏服务向大厅兑换身份。不同兑换号不得重用票据；相同兑换号允许24小时内重试，以恢复丢失的登录响应。游戏服务返回同一个游戏会话，不会因为重试生成多个身份。
 

@@ -15,6 +15,9 @@ import (
 	"apps/pkg/xerr"
 )
 
+// The browser exchanges the ticket after loading the game's opening assets.
+const launchTicketLifetime = 5 * time.Minute
+
 type Logic struct {
 	invite       inviteStore
 	inviteConfig config.InviteConfig
@@ -42,7 +45,7 @@ func (l *Logic) GameLaunch(ctx context.Context, r *pb.GameLaunchRequest) (*pb.Ga
 		return nil, xerr.ErrSession
 	}
 	ticket := rand.Text() + rand.Text()
-	expires := time.Now().UTC().Add(time.Minute)
+	expires := time.Now().UTC().Add(launchTicketLifetime)
 	if e := l.store.Issue(ctx, r.GetUid(), user.Hash(r.GetSid()), user.Hash(ticket), r.GameId, expires); e != nil {
 		return nil, e
 	}
