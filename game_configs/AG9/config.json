@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "ruleType": "fortune_leopard_v1",
+  "parameters": {
+    "lineCount": 5,
+    "baseSpinWinProbability": 0.26999992828754493,
+    "freeSpinWinProbability": 0.6999999999999967,
+    "freeSpinTriggerProbability": 0.015
+  },
+  "simulationOptions": {
+    "paidSpins": 1000000,
+    "seed": 1021
+  }
+}

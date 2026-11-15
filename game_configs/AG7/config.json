@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "ruleType": "fortune_ox_v1",
+  "parameters": {
+    "lineCount": 10,
+    "baseSpinWinProbability": 0.29,
+    "freeSpinWinProbability": 1,
+    "freeSpinTriggerProbability": 0.007
+  },
+  "simulationOptions": {
+    "paidSpins": 1000000,
+    "seed": 1023
+  }
+}

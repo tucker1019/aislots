@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "ruleType": "fortune_mouse_v1",
+  "columnHeights": [
+    3,
+    3,
+    3
+  ],
+  "lines": [
+    [
+      2,
+      5,
+      8
+    ],
+    [
+      1,
+      4,
+      7
+    ],
+    [
+      3,
+      6,
+      9
+    ],
+    [
+      1,
+      5,
+      9
+    ],
+    [
+      3,
+      5,
+      7
+    ]
+  ],
+  "symbols": [
+    {
+      "id": 1,
+      "name": "花生",
+      "role": "normal",
+      "payout": 3,
+      "weight": 1000
+    },
+    {
+      "id": 2,
+      "name": "橘子",
+      "role": "normal",
+      "payout": 5,
+      "weight": 900
+    },
+    {
+      "id": 3,
+      "name": "鞭炮",
+      "role": "normal",
+      "payout": 15,
+      "weight": 850
+    },
+    {
+      "id": 4,
+      "name": "钱袋",
+      "role": "normal",
+      "payout": 30,
+      "weight": 800
+    },
+    {
+      "id": 5,
+      "name": "红包",
+      "role": "normal",
+      "payout": 50,
+      "weight": 750
+    },
+    {
+      "id": 6,
+      "name": "金色鼠纹牌",
+      "role": "normal",
+      "payout": 100,
+      "weight": 700
+    },
+    {
+      "id": 7,
+      "name": "老鼠百搭",
+      "role": "wild",
+      "payout": 300,
+      "weight": 300
+    }
+  ],
+  "jackpotRaw": 5000
+}

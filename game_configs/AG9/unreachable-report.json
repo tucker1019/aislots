@@ -1,0 +1,55 @@
+{
+  "status": "approved-and-applied",
+  "unreachable": [
+    45,
+    120,
+    375,
+    1500
+  ],
+  "replacements": [
+    {
+      "from": 45,
+      "to": [
+        40,
+        50
+      ],
+      "lowerWeightShare": "0.5",
+      "upperWeightShare": "0.5"
+    },
+    {
+      "from": 120,
+      "to": [
+        100,
+        150
+      ],
+      "lowerWeightShare": "0.6",
+      "upperWeightShare": "0.4"
+    },
+    {
+      "from": 375,
+      "to": [
+        350,
+        400
+      ],
+      "lowerWeightShare": "0.5",
+      "upperWeightShare": "0.5"
+    },
+    {
+      "from": 1500,
+      "to": [
+        1250,
+        2620
+      ],
+      "lowerWeightShare": "0.8175182481751824817518248175182481751825",
+      "upperWeightShare": "0.1824817518248175182481751824817518248175"
+    }
+  ],
+  "originalConditionalMean": "7.619529094460883136129920869759087570298",
+  "proposedConditionalMean": "7.619529094460883136129920869759087570298",
+  "unchanged": [
+    "中奖率",
+    "触发率",
+    "中奖后的平均奖金",
+    "理论总返还率"
+  ]
+}
