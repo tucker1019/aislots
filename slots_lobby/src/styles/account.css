@@ -3,25 +3,25 @@
 .account-identity { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; }
 .account-identity > img { border-radius: 50%; flex-shrink: 0; }
 .account-identity-text { flex: 1; min-width: 0; }
-.account-identity h1 { min-width: 0; font-size: 16px; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.account-identity h1 { min-width: 0; font-size: 16px; font-weight: var(--weight-key); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .account-identity p { color: var(--muted); font-size: 12px; margin-top: 5px; }
 .account-settings { width: 32px; height: 40px; padding: 0; border: 0; background: transparent; color: var(--muted); font-size: 21px; }
-.account-balance-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; border-radius: 12px; background: var(--theme-blue-tint,#edf4ff); margin-bottom: 16px; }
+.account-balance-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; border-radius: 12px; background: var(--theme-panel); border: 1px solid var(--line); margin-bottom: 16px; }
 .account-caption { font-size: 12px; color: var(--muted); }
-.account-balance { font-size: 23px; font-weight: 650; margin-top: 5px; font-variant-numeric: tabular-nums; word-break: break-all; }
+.account-balance { font-size: 23px; font-weight: var(--weight-key); margin-top: 5px; font-variant-numeric: tabular-nums; word-break: break-all; }
 .account-balance button { background: transparent; border: 0; color: var(--blue); font-size: 18px; width: 32px; height: 32px; }
 .account-money-actions { display: flex; gap: 7px; flex-shrink: 0; }
-.account-money-actions button { border: 1px solid var(--blue); background: var(--theme-action,var(--blue)); color: white; padding: 9px 12px; border-radius: 8px; font-size: 12px; }
-.account-money-actions button + button { background: var(--theme-surface,white); color: var(--blue); }
+.account-money-actions button { border: 1px solid var(--theme-action); background: var(--theme-action,var(--blue)); color: var(--theme-on-action,#fff); padding: 9px 12px; border-radius: 8px; font-size: 12px; }
+.account-money-actions button + button { background: var(--theme-soft,#f5f5f7); color: var(--ink); border-color: var(--line); }
 .account-card { border: 1px solid var(--line); border-radius: 12px; margin-bottom: 12px; overflow: hidden; background: var(--theme-surface,white); }
 .account-section-heading { display: flex; align-items: center; justify-content: space-between; padding: 14px 12px 7px; gap: 8px; }
-.account-section-heading h2 { font-size: 15px; font-weight: 600; }
+.account-section-heading h2 { font-size: 15px; font-weight: var(--weight-strong); }
 .account-section-heading > span { font-size: 10px; color: var(--muted); }
 .account-actions { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); padding: 6px 5px 12px; gap: 7px 0; }
 .account-card:first-of-type .account-actions { grid-template-columns: repeat(5,minmax(0,1fr)); }
 .account-actions button { border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 7px 0; min-height: 68px; font-size: 11px; color: var(--ink); }
 .account-action-icon { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 10px; background: var(--theme-blue-tint,#edf4ff); color: var(--blue); font-size: 19px; }
-.account-help button { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 50px; padding: 0 14px; border: 0; background: transparent; text-align: left; font-size: 13px; }
+.account-help button { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 50px; padding: 0 14px; border: 0; background: transparent; text-align: left; font-size: 13px; color: var(--ink); }
 .account-help button + button { border-top: 1px solid var(--line); }
 .account-help button > span:last-child { margin-left: auto; color: var(--theme-muted,#9b9ba2); font-size: 20px; }
 .account-help-icon { width: 21px; height: 21px; border-radius: 50%; text-align: center; line-height: 21px; color: var(--blue); background: var(--theme-blue-tint,#edf4ff); font-weight: 600; }
@@ -67,3 +67,30 @@
 .account-name-placeholder { width:110px; height:18px; }
 .account-balance-placeholder { width:120px; height:28px; }
 .account-profile-error { margin-bottom:16px; }
+
+/* The account hub uses the dark lobby's action and reward colors. */
+:root[data-theme="dark"] .my-account .account-balance-card {
+  border-color: #3b5a4a;
+  background: radial-gradient(ellipse at 0 0, #263d32, transparent 78%), var(--theme-panel);
+}
+:root[data-theme="dark"] .my-account .account-section-heading { padding-bottom: 9px; }
+:root[data-theme="dark"] .my-account :is(.account-action-icon, .account-help-icon) {
+  border: 1px solid #416650;
+  background: var(--theme-active-tint);
+  color: var(--theme-active);
+}
+:root[data-theme="dark"] .my-account .account-action-icon { width: 34px; height: 34px; }
+:root[data-theme="dark"] .my-account .account-help-icon { flex-shrink: 0; border-radius: 7px; }
+:root[data-theme="dark"] .my-account .account-avatar-placeholder {
+  background: var(--theme-active-tint);
+  color: var(--theme-active);
+}
+:root[data-theme="dark"] .my-account .account-balance button { color: var(--theme-active); }
+:root[data-theme="dark"] .my-account :is(.account-benefits-card .account-action-icon, .account-vip-badge) {
+  border-color: #705a37;
+  background: var(--theme-gold-tint);
+  color: var(--theme-gold-text);
+}
+:root[data-theme="dark"] .my-account :is(.account-actions, .account-help) button:hover {
+  background: #ffffff07;
+}

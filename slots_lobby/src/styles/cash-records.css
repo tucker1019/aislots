@@ -3,7 +3,7 @@
 .cash-records-page,.cash-record-detail { min-height: calc(var(--lobby-height, 100dvh) - var(--lobby-safe-top, 0px)); background: var(--paper); }
 .cash-records-top { position: sticky; top: 0; z-index: 35; background: var(--theme-surface,#fff); }
 .cash-page-header { height: 50px; display: grid; grid-template-columns: 48px 1fr 48px; align-items: center; border-bottom: 1px solid var(--line); background: var(--theme-surface,#fff); }
-.cash-page-header h1 { margin: 0; font-size: 16px; text-align: center; font-weight: 650; }
+.cash-page-header h1 { margin: 0; font-size: 16px; text-align: center; font-weight: var(--weight-key); }
 .cash-page-header > button { border: 0; background: transparent; color: var(--blue); height: 44px; display: grid; place-items: center; }
 .cash-page-header > button svg { transform: rotate(180deg); }
 .cash-filter-container { position: relative; }
@@ -14,7 +14,7 @@
 .cash-filter-backdrop { position: fixed; top: calc(94px + var(--lobby-safe-top, 0px)); bottom: 0; left: 50%; transform: translateX(-50%); width: min(420px, var(--content)); border: 0; background: rgb(15 25 40 / 12%); backdrop-filter: blur(2px); z-index: 1; }
 .cash-filter-options { position: absolute; top: 100%; left: 0; right: 0; z-index: 2; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 9px; padding: 16px; background: var(--theme-surface,#fff); box-shadow: 0 12px 22px rgb(20 35 60 / 10%); animation: cash-filter-enter 160ms ease-out; }
 .cash-filter-options button { min-height: 39px; border: 1px solid var(--theme-border-blue,#b6d1f1); border-radius: 7px; color: var(--blue); background: var(--theme-surface,#fff); font-size: 13px; }
-.cash-filter-options button[aria-pressed=true] { background: var(--theme-action,var(--blue)); color: #fff; border-color: var(--blue); }
+.cash-filter-options button[aria-pressed=true] { background: var(--theme-action,var(--blue)); color: var(--theme-on-action,#fff); border-color: var(--blue); }
 .cash-records-empty { padding-top: clamp(100px,22dvh,210px); text-align: center; color: var(--muted); font-size: 13px; }
 .cash-empty-art { position: relative; display: inline-flex; color: var(--theme-blue-text,#83a9d3); padding: 14px; border-radius: 20px; background: var(--theme-blue-tint,#e9eff8); margin-bottom: 16px; }
 .cash-empty-art > span { position: absolute; bottom: 3px; right: -5px; border-radius: 50%; background: var(--paper); font-size: 29px; line-height: 31px; }
@@ -43,7 +43,7 @@
 .cash-receipt dl { margin: 0; padding: 17px 19px 24px; }
 .cash-receipt dl > div { display: grid; grid-template-columns: 76px minmax(0,1fr); gap: 12px; align-items: baseline; padding: 11px 0; font-size: 13px; }
 .cash-receipt dt { color: var(--ink); }.cash-receipt dd { text-align: right; margin: 0; color: var(--muted); overflow-wrap: anywhere; }
-.cash-receipt .cash-receipt-credit { color: var(--ink); font-weight: 600; font-size: 16px; }
+.cash-receipt .cash-receipt-credit { color: var(--ink); font-weight: var(--weight-key); font-size: 16px; }
 .cash-receipt-order dd { display: flex; align-items: baseline; gap: 8px; justify-content: flex-end; }
 .cash-receipt-order dd > span { min-width: 0; user-select: all; }
 .cash-receipt-order button { width: 4.5em; min-width: 4.5em; border: 0; padding: 5px 0; background: transparent; color: var(--blue); font-size: 12px; white-space: nowrap; }

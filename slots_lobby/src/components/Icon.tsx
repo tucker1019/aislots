@@ -23,6 +23,8 @@ const paths = {
 
   speaker: <><path d="m11 4-5 4H3v8h3l5 4V4Z" /><path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14" /></>,
   coin: <><circle cx="12" cy="12" r="9" /><path d="M14.5 7.5h-4a2.2 2.2 0 0 0 0 4.5h3a2.2 2.2 0 0 1 0 4.5h-4M12 5.5v13" /></>,
+  rupiah: <><circle cx="12" cy="12" r="10" /><path d="M6.6 15V8.3h2.8a1.75 1.75 0 0 1 0 3.5H6.6m2.3 0 2.6 3.2m2.1 2v-6m0 2.6a2 2 0 1 0 4 0v-.7a2 2 0 0 0-4 0" strokeWidth="1.7" /></>,
+  close: <path d="m6 6 12 12M18 6 6 18" />,
 } as const;
 export type IconName = keyof typeof paths;
 export function Icon({ name, size = 20, filled = false, style }: {

@@ -1,7 +1,7 @@
 #root:has(.bet-records-page) { padding-bottom: var(--lobby-safe-bottom, 0px); }
 .bet-records-page { padding: 0 0 24px; color: var(--ink); }
 .bet-records-heading { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: center; min-height: 54px; background: var(--theme-glass,rgb(255 255 255 / 95%)); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
-.bet-records-heading h1 { margin: 0; font-size: 17px; font-weight: 650; }
+.bet-records-heading h1 { margin: 0; font-size: 17px; font-weight: var(--weight-key); }
 .bet-records-heading > button { position: absolute; left: 0; width: 44px; height: 44px; border: 0; background: transparent; color: var(--blue); display: grid; place-items: center; }
 .bet-records-heading > button svg { transform: rotate(180deg); }
 .bet-records-filters { position: relative; display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
@@ -9,7 +9,7 @@
 .bet-records-filters > button { display: flex; align-items: center; justify-content: center; gap: 9px; color: var(--blue); border: 0; border-left: 1px solid var(--line); background: transparent; }
 .bet-period-options { position: absolute; top: 100%; left: 0; right: 0; z-index: 4; display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; padding: 16px 12px; background: var(--theme-surface,#fff); box-shadow: 0 10px 25px rgb(30 50 80 / 12%); }
 .bet-period-options button,.bet-records-more,.bet-records-feedback button { padding: 10px; border: 1px solid var(--theme-border-blue,#c1d6f2); border-radius: 9px; background: var(--theme-surface,#fff); color: var(--blue); font-size: 13px; }
-.bet-period-options button[aria-pressed=true] { background: var(--theme-action,var(--blue)); color: #fff; border-color: var(--blue); }
+.bet-period-options button[aria-pressed=true] { background: var(--theme-action,var(--blue)); color: var(--theme-on-action,#fff); border-color: var(--blue); }
 .bet-records-summary { display: grid; grid-template-columns: .7fr 1.2fr 1.2fr; gap: 10px; padding: 14px 12px; border-radius: 12px; background: var(--theme-blue-tint,#f3f6fa); }
 .bet-records-summary div { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
 .bet-records-summary span { font-size: 10px; color: var(--muted); }

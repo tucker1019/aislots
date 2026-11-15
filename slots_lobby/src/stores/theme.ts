@@ -1,10 +1,10 @@
 import {create} from 'zustand';
 export type ThemeMode='light'|'dark';
 const storageKey='aislots-theme';
-function initialTheme():ThemeMode{try{return localStorage.getItem(storageKey)==='dark'?'dark':'light';}catch{return 'light';}}
+function initialTheme():ThemeMode{try{return localStorage.getItem(storageKey)==='light'?'light':'dark';}catch{return 'dark';}}
 function applyTheme(mode:ThemeMode){
  document.documentElement.dataset.theme=mode;
- document.querySelector('meta[name="theme-color"]')?.setAttribute('content',mode==='dark'?'#111923':'#ffffff');
+ document.querySelector('meta[name="theme-color"]')?.setAttribute('content',mode==='dark'?'#141415':'#f1f2f4');
 }
 const initial=initialTheme();applyTheme(initial);
 export const useThemeStore=create<{mode:ThemeMode;setTheme:(mode:ThemeMode)=>void}>(set=>({

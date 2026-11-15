@@ -1,6 +1,7 @@
 import { t } from '../i18n';
 import { ensureSession, request } from './account';
 import { isRecord } from '../features/account/types';
+export const checkinDetailKey = (uid?: number) => ['lobby','checkin-detail',uid] as const;
 export interface CheckinDay { day: number; reward: number; requiredBet: number; requiredRecharge: number }
 export interface CheckinInfo { activityDate: string; currentDay: number; claimed: boolean; canClaim: boolean; validBet: number; rechargeAmount: number; days: CheckinDay[]; current: CheckinDay }
 function money(value: unknown): number {

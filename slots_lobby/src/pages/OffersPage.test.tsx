@@ -1,5 +1,5 @@
 import {afterEach,expect,it} from 'vitest';
-import {render,screen} from '@testing-library/react';
+import {act,render,screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {OffersPage} from './OffersPage';
 import {useLanguageStore} from '../i18n';
@@ -9,8 +9,10 @@ it('shows seven inert posters with fixed dimensions and filters by category',asy
  for(const image of screen.getAllByRole('img')){expect(image.getAttribute('src')).toMatch(/-zh-tw.webp$/);expect(image).toHaveAttribute('width','960');expect(image).toHaveAttribute('height','320');expect(image.closest('button,a')).toBeNull();}
  await userEvent.setup().click(screen.getByRole('button',{name:'VIP禮金'}));expect(screen.getAllByRole('img')).toHaveLength(2);
 });
-it('uses English poster assets for English',()=>{
+it('switches from English to Indonesian poster assets in place',()=>{
  useLanguageStore.getState().setLocale('en-US');render(<OffersPage/>);
  for(const image of screen.getAllByRole('img'))expect(image.getAttribute('src')).toMatch(/-en.webp$/);
  expect(screen.getByRole('heading',{name:'Offers'})).toBeInTheDocument();
+ act(()=>useLanguageStore.getState().setLocale('id-ID'));
+ for(const image of screen.getAllByRole('img'))expect(image.getAttribute('src')).toMatch(/-id-id\.webp$/);
 });
