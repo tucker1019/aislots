@@ -6,7 +6,7 @@ import {navigateLobby} from '../../app/useLobbyRoute';
 import {useLobbyContent} from './useLobbyContent';
 import type {ContentBanner,ContentRoute} from '../../services/lobby-content';
 import {defaultPromotions,promotionImage} from './default-promotions';
-const routes={'/':'home','/earn':'earn','/deposit':'deposit','/offers':'offers'} as const satisfies Record<ContentRoute,string>;
+const routes={'/':'home','/earn':'earn','/deposit':'deposit'} as const satisfies Record<ContentRoute,string>;
 function bannerMedia(banner:ContentBanner,locale:Locale){
  if(locale==='zh-TW')return {src:banner.imageZhTw,alt:banner.altZhTw};
  if(locale==='id-ID'){

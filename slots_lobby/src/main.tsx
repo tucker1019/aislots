@@ -31,7 +31,6 @@ import './styles/invite.css';
 
 import './styles/agent.css';
 
-import './styles/offers.css';
 
 import './styles/design-viewport.css';
 

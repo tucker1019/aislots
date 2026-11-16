@@ -791,5 +791,7 @@
   "theme.choose": "Pilih tema",
   "theme.light": "Terang",
   "theme.dark": "Gelap",
-  "language.indonesian": "Bahasa Indonesia"
+  "language.indonesian": "Bahasa Indonesia",
+  "benefits.floatingLabel": "Bonus",
+  "benefits.closeFloating": "Tutup pintasan bonus"
 }

@@ -185,3 +185,54 @@
 @keyframes notice-spin { to { transform:rotate(360deg); } }
 
 .home-game-catalog-state { grid-column: 1 / -1; width: 100%; min-height: 100px; display: grid; place-items: center; }
+
+.floating-benefits {
+  position: fixed;
+  right: 12px;
+  bottom: calc(82px + var(--lobby-safe-bottom, 0px));
+  z-index: 20;
+  width: 84px;
+}
+.floating-benefits-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0 0 5px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  filter: drop-shadow(0 3px 6px #0006);
+}
+.floating-benefits-entry img { display: block; width: 80px; height: 80px; object-fit: contain; }
+.floating-benefits-entry span {
+  position: relative;
+  margin-top: -12px;
+  padding: 0 2px;
+  color: #fff4ca;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 22px;
+  letter-spacing: -.4px;
+  -webkit-text-stroke: 3px #b93917;
+  paint-order: stroke fill;
+  text-shadow: 0 2px 0 #8c240d, 0 3px 4px #0008;
+  white-space: nowrap;
+}
+.floating-benefits-close {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid #ffffffb3;
+  border-radius: 50%;
+  background: #25272de6;
+  color: #fff;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}

@@ -4,18 +4,24 @@ import {ClaimBadge} from '../features/rewards/ClaimBadge';
 import {useClaimIndicators} from '../features/rewards/useClaimIndicators';
 import { t } from '../i18n';
 import { Icon } from './Icon';
+type BottomView = 'home' | 'deposit' | 'earn' | 'my';
 const items = () => ([
-  { label: t('copy.home'), icon: 'home' }, { label: t('copy.offers'), icon: 'gift' },
-  { label: t('copy.deposit'), icon: 'wallet' }, { label: t('copy.earn'), icon: 'growth' }, { label: t('copy.myAccount'), icon: 'user' },
+  { view: 'home', label: t('copy.home'), icon: 'home' },
+  { view: 'deposit', label: t('copy.deposit'), icon: 'wallet' },
+  { view: 'earn', label: t('copy.earn'), icon: 'growth' },
+  { view: 'my', label: t('copy.myAccount'), icon: 'user' },
 ] as const);
 
-export function BottomNavigation({ view, onNavigate }: { view: 'home' | 'my' | 'deposit' | 'earn' | 'offers'; onNavigate: (view: 'home' | 'my' | 'deposit' | 'earn' | 'offers') => void }) {
+export function BottomNavigation({ view, onNavigate }: { view: BottomView; onNavigate: (view: BottomView) => void }) {
   const rewards=useClaimIndicators();
   const bonusLabel = useDepositBonusLabel(useSessionStore(state => state.session?.uid));
   return <nav className="bottom-navigation" aria-label={t('copy.bottomNavigation')}>
-    {items().map((item, index) => <button type="button" key={item.label}
-      aria-current={(index === 1 && view === 'offers') || (index === 0 && view === 'home') || (index === 4 && view === 'my') || (index === 2 && view === 'deposit') || (index === 3 && view === 'earn') ? 'page' : undefined} onClick={() => {
-        onNavigate(index === 0 ? 'home' : index === 1 ? 'offers' : index === 2 ? 'deposit' : index === 3 ? 'earn' : 'my');
-      }}><span className="bottom-navigation-icon claim-badge-anchor" aria-hidden="true"><Icon name={item.icon} size={23} /><ClaimBadge active={index===3?rewards.earn:index===4?rewards.my:false}/>{index === 2 && bonusLabel && <span className="header-deposit-bonus bottom-deposit-bonus">{bonusLabel}</span>}</span><span>{item.label}</span></button>)}
+    {items().map(item => <button type="button" key={item.view}
+      aria-current={view === item.view ? 'page' : undefined} onClick={() => onNavigate(item.view)}>
+      <span className="bottom-navigation-icon claim-badge-anchor" aria-hidden="true"><Icon name={item.icon} size={23} />
+        <ClaimBadge active={item.view==='earn'?rewards.earn:item.view==='my'?rewards.my:false}/>
+        {item.view === 'deposit' && bonusLabel && <span className="header-deposit-bonus bottom-deposit-bonus">{bonusLabel}</span>}
+      </span><span>{item.label}</span>
+    </button>)}
   </nav>;
 }

@@ -791,5 +791,7 @@
   "theme.choose": "切換主題",
   "theme.light": "淺色",
   "theme.dark": "深色",
-  "language.indonesian": "Bahasa Indonesia"
+  "language.indonesian": "Bahasa Indonesia",
+  "benefits.floatingLabel": "福利中心",
+  "benefits.closeFloating": "關閉福利中心入口"
 }

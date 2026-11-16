@@ -791,5 +791,7 @@
   "theme.choose": "Choose theme",
   "theme.light": "Light",
   "theme.dark": "Dark",
-  "language.indonesian": "Bahasa Indonesia"
+  "language.indonesian": "Bahasa Indonesia",
+  "benefits.floatingLabel": "Benefits",
+  "benefits.closeFloating": "Close benefits shortcut"
 }

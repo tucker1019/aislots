@@ -9,7 +9,7 @@ import {navigateLobby} from '../../app/useLobbyRoute';
 import {t} from '../../i18n';
 vi.mock('../../services/account',()=>({authenticateAccount:vi.fn()}));
 beforeEach(()=>{useAuthStore.getState().close();useSessionStore.setState({session:null});vi.clearAllMocks();history.replaceState({},'','/');});
-it('未登录允许优惠，其他路由保留原页并请求登录',()=>{navigateLobby('offers');expect(location.pathname).toBe('/offers');navigateLobby('game');expect(location.pathname).toBe('/offers');expect(useAuthStore.getState().open).toBe(true);expect(useSessionStore.getState().session).toBeNull();});
+it('未登录允许首页，其他路由保留原页并请求登录',()=>{navigateLobby('home');expect(location.pathname).toBe('/');navigateLobby('game');expect(location.pathname).toBe('/');expect(useAuthStore.getState().open).toBe(true);expect(useSessionStore.getState().session).toBeNull();});
 it('登录成功后继续原操作，提交只包含账号密码',async()=>{const resume=vi.fn();vi.mocked(authenticateAccount).mockResolvedValue({uid:9,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'});useAuthStore.getState().show('login',resume);render(<QueryClientProvider client={new QueryClient()}><AuthModal/></QueryClientProvider>);fireEvent.change(screen.getByLabelText(t('auth.account')),{target:{value:'alice'}});fireEvent.change(screen.getByLabelText(t('auth.password')),{target:{value:'password123'}});fireEvent.submit(document.querySelector('form')!);await waitFor(()=>expect(resume).toHaveBeenCalledTimes(1));expect(authenticateAccount).toHaveBeenCalledWith('login','alice','password123');expect(useAuthStore.getState().open).toBe(false);});
 it('身份建立后不会清除新挂载的资料查询',async()=>{
  const identity={uid:9,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'};

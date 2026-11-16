@@ -3,7 +3,7 @@ import {isRecord} from '../features/account/types';
 import {t} from '../i18n';
 import {isLocale} from '../i18n/config';
 import type {Locale} from '../i18n';
-export type ContentRoute='/'|'/earn'|'/deposit'|'/offers';
+export type ContentRoute='/'|'/earn'|'/deposit';
 export interface ContentBanner{id:string;enabled:boolean;imageZhTw:string;imageEnUs:string;altZhTw:string;altEnUs:string;route:ContentRoute}
 export interface LobbyContent{announcements:Record<'zh-TW'|'en-US',string[]>&Partial<Record<Locale,string[]>>;banners:ContentBanner[]}
 function image(v:unknown):v is string{
@@ -20,7 +20,7 @@ export function parseLobbyContent(value:unknown):LobbyContent{
  const ids=new Set<string>();const routes:readonly string[]=['/','/earn','/deposit','/offers'];
  const banners=value.banners.map((b:unknown):ContentBanner=>{
   if(!isRecord(b)||typeof b.id!=='string'||!b.id||b.id.length>64||ids.has(b.id)||typeof b.enabled!=='boolean'||!image(b.imageZhTw)||!image(b.imageEnUs)||typeof b.altZhTw!=='string'||!b.altZhTw.trim()||b.altZhTw.length>400||typeof b.altEnUs!=='string'||!b.altEnUs.trim()||b.altEnUs.length>400||typeof b.route!=='string'||!routes.includes(b.route))throw bad();ids.add(b.id);
-  return{id:b.id,enabled:b.enabled,imageZhTw:b.imageZhTw,imageEnUs:b.imageEnUs,altZhTw:b.altZhTw,altEnUs:b.altEnUs,route:b.route as ContentRoute};
+  return{id:b.id,enabled:b.enabled,imageZhTw:b.imageZhTw,imageEnUs:b.imageEnUs,altZhTw:b.altZhTw,altEnUs:b.altEnUs,route:b.route==='/offers'?'/':b.route as ContentRoute};
  });
  return{announcements,banners};
 }

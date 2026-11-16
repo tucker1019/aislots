@@ -18,7 +18,7 @@
   transform: translateX(-50%);
   width: min(100%, var(--content));
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   padding: 7px 8px calc(7px + var(--lobby-safe-bottom, 0px));
   background: var(--theme-surface,#fff);
   border-top: 1px solid var(--line);

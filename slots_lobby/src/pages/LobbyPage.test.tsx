@@ -20,7 +20,8 @@ it('保留資料頂欄，按通知、Banner、廠商、遊戲順序排布，首�
   setup();
   expect(await screen.findByLabelText('金幣餘額 Rp123')).toBeInTheDocument();
   const main = screen.getByRole('main');
-  const regions = Array.from(main.children).map(element => element.getAttribute('aria-label'));
+  expect(within(main).getByRole('button', { name: '福利中心' })).toBeInTheDocument();
+  const regions = Array.from(main.children).filter(element => element.tagName !== 'ASIDE').map(element => element.getAttribute('aria-label'));
   expect(regions).toEqual(['通知', '輪播', '遊戲廠商', '遊戲列表']);
   const providers = within(screen.getByRole('navigation', { name: '遊戲廠商' }));
   expect(providers.getAllByRole('button').map(button => button.textContent)).toHaveLength(2);
@@ -39,14 +40,13 @@ it('AG與熱門切換顯示現有遊戲，隱藏未接入廠商', async () => {
   expect(screen.getByRole('button', { name: '熱門' })).toHaveAttribute('aria-pressed', 'true');
 });
 
-it('底欄提供五個入口，優惠進入海報頁', async () => {
-  const user = setup();
+it('底欄僅保留首頁、存款、賺錢、我的', () => {
+  setup();
   const navigation = within(screen.getByRole('navigation', { name: '底部導航' }));
-  expect(navigation.getAllByRole('button')).toHaveLength(5);
+  expect(navigation.getAllByRole('button')).toHaveLength(4);
+  expect(navigation.queryByRole('button', { name: '優惠' })).not.toBeInTheDocument();
   expect(navigation.getByRole('button', { name: '首頁' })).toHaveAttribute('aria-current', 'page');
-  await user.click(navigation.getByRole('button', { name: '優惠' }));
-  expect(window.location.pathname).toBe('/offers');
-  expect(screen.getAllByRole('img')).toHaveLength(7);
+  for (const name of ['存款', '賺錢', '我的']) expect(navigation.getByRole('button', { name })).toBeInTheDocument();
 });
 
 it('我的顯示真實資料和功能分組，可返回首頁', async () => {

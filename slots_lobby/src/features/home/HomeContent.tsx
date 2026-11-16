@@ -1,6 +1,7 @@
 import { t } from '../../i18n';
 import { useEffect, useRef, useState } from 'react';
 import { Spin } from 'antd';
+import { FloatingBenefits } from './FloatingBenefits';
 import { NoticeBar } from './NoticeBar';
 import { PromotionBanner } from './PromotionBanner';
 import { ProviderTabs } from './ProviderTabs';
@@ -66,6 +67,7 @@ export function HomeContent({ onComingSoon }: { onComingSoon: () => void }) {
   const visibleGames = games.slice(0, visibleCount);
 
   return <>
+    <FloatingBenefits />
     <NoticeBar />
     <PromotionBanner />
     <ProviderTabs selected={selected} onSelect={provider => { if (provider !== selected) { setSelected(provider); setVisibleCount(GAMES_PER_BATCH); setLoadingMore(false); } }} />

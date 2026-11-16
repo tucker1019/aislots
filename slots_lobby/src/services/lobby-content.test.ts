@@ -10,3 +10,5 @@ it('accepts optional Indonesian announcements without losing required legacy loc
  expect(()=>parseLobbyContent({...data,announcements:[{locale:'id-ID',items:[]},{locale:'en-US',items:[]}]})).toThrow();
  expect(()=>parseLobbyContent({...data,announcements:[...data.announcements,{locale:'id-ID',items:[]},{locale:'id-ID',items:[]}]})).toThrow();
 });
+
+it('旧优惠Banner链接回退首页',()=>{expect(parseLobbyContent({...data,banners:[{...banner,route:'/offers'}]}).banners[0].route).toBe('/');});
