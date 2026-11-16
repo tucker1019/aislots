@@ -281,17 +281,6 @@
       "visible": true,
       "provider": "AG"
     },
-    "G1021": {
-      "url": "",
-      "name": "Fortune Leopard",
-      "sort": 350,
-      "cover": "/assets/lobby/games/1021.png",
-      "apiUrl": "",
-      "nameEn": "Fortune Leopard",
-      "enabled": false,
-      "visible": true,
-      "provider": "AG"
-    },
     "G1022": {
       "url": "",
       "name": "Fortune Chinchilla",
@@ -905,6 +894,17 @@
       "apiUrl": "",
       "nameEn": "Ultimate Texas Hold’em",
       "enabled": false,
+      "visible": true,
+      "provider": "AG"
+    },
+    "AG9": {
+      "url": "http://127.0.0.1:5191/",
+      "name": "Fortune Leopard",
+      "sort": 350,
+      "cover": "/assets/lobby/games/1021.png",
+      "apiUrl": "http://127.0.0.1:8080",
+      "nameEn": "Fortune Leopard",
+      "enabled": true,
       "visible": true,
       "provider": "AG"
     }
