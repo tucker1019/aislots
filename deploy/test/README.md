@@ -34,6 +34,8 @@ sudo docker compose up -d --build --wait --wait-timeout 180
 sudo docker compose ps
 ```
 
+如果通过整体替换 `payload` 目录发布，必须重建 `web` 容器（`docker compose up -d --force-recreate --no-deps web`），让静态目录绑定到新目录；只 reload Nginx 不会切换旧的 bind mount。
+
 容器重建后执行 `sudo docker compose exec -T web nginx -t` 和 `sudo docker compose exec -T web nginx -s reload`，刷新反向代理缓存的容器地址，再验证公网 API；容器自身 healthy 不能代替代理检查。
 
 测试环境发布默认不执行数据库备份。保留上一版本的包和现有数据库卷；不运行 `down -v`、不删除数据卷。迁移由服务启动执行，回滚前检查数据库迁移是否向后兼容。需要数据库备份时，单独运行 `sudo ./backup.sh`。
@@ -68,3 +70,7 @@ HTTP公网IP不属于浏览器安全上下文，`crypto.randomUUID`、剪贴板�
 发布包同时包含八款游戏客户端、独立配置和盘面库。升级已有环境时，保留服务器 `.env`、数据库卷及已发布运营参数；使用新编译的 `app/apis/lobby/api/tools/import-game-catalog` 工具补齐游戏目录，按草稿/发布记录生成审计。该工具默认仅检查，传 `-apply` 才发布，存在未发布草稿时拒绝覆盖。全量发布 AG1–AG8 时传 `-enable-ag1-through-ag8`，按发布包设置这八款入口与开关并隐藏同名旧占位卡片。`payload/lobby-etc/games.json` 已由打包器写入公网入口和容器 API 地址，不使用本地地址迁移。
 
 体验账号的启用状态、时间间隔及已发布权重沿用测试环境配置；新增停止参数缺省兼容旧策略。两个服务各自执行兼容迁移，历史游戏配置和盘面库一并保留。
+
+## 同步后台运营配置
+
+已发布配置保存在数据库，覆盖 `etc/*.json` 或重启服务不会更新它。需要同步本地后台参数时，先读取并留存两边的已发布文档及版本，确认目标分区没有未发布草稿，再通过后台校验、保存草稿和发布接口逐项同步，最后读回核对。使用目标环境的邀请地址、游戏公网入口和容器 API 地址；不复制管理员、会话、玩家或密钥。签到、代理等分区的版本由目标环境发布流程生成，不强行沿用本地版本号。
