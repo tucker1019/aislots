@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { DocumentFields } from './DocumentFields';
 import { arrayTemplate, validImagePath, validMapKey } from './configTemplates';
 import type { Json } from '../services/schema';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 beforeAll(() => { globalThis.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} }; Object.defineProperty(window, 'matchMedia', { writable: true, value: vi.fn().mockImplementation(() => ({ matches: false, addListener: vi.fn(), removeListener: vi.fn(), addEventListener: vi.fn(), removeEventListener: vi.fn() })) }); });
 afterEach(cleanup);
 function Fixture({ initial, path }: { initial: Json; path: string }) {
@@ -74,4 +75,16 @@ it('edits per-game display metrics with a fixed volatility selector',()=>{
  expect(JSON.parse(screen.getByTestId('document').textContent??'{}')).toMatchObject({AG2:{theoreticalRtp:96.5,volatility:'extreme',maxWin:5000}});
  fireEvent.change(screen.getByLabelText('games.games.AG2.maxWin'),{target:{value:'-1'}});
  expect(JSON.parse(screen.getByTestId('document').textContent??'{}')).toMatchObject({AG2:{maxWin:-1}});
+});
+
+it('exposes legacy experience funding defaults and preserves other fields on edit', () => {
+ const client = new QueryClient({defaultOptions:{queries:{retry:false,staleTime:Infinity,gcTime:0}}});
+ client.setQueryData(['config','games'],{published:{games:{}}});
+ render(<QueryClientProvider client={client}><Fixture initial={{enabled:false,gameWeights:{AG2:3},createMinSeconds:30,createMaxSeconds:120,playMinSeconds:10,playMaxSeconds:30}} path="experience" /></QueryClientProvider>);
+ expect(screen.getByLabelText('experience.initialCoinsMin').getAttribute('value')).toBe('10000');
+ expect(screen.getByLabelText('experience.initialCoinsMax').getAttribute('value')).toBe('1000000');
+ expect(screen.getByLabelText('experience.initialCoinsStep').getAttribute('value')).toBe('10000');
+ expect(screen.getByLabelText('experience.betDivisorMin').getAttribute('value')).toBe('100');
+ fireEvent.change(screen.getByLabelText('experience.initialCoinsMax'), {target:{value:'5000000'}});
+ expect(JSON.parse(screen.getByTestId('document').textContent??'{}')).toMatchObject({enabled:false,gameWeights:{AG2:3},initialCoinsMin:10000,initialCoinsMax:5000000,initialCoinsStep:10000,betDivisorMin:100,betDivisorMax:300,createMinSeconds:30});
 });
