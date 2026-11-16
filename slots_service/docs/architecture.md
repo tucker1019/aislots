@@ -1,6 +1,6 @@
 # 第三方游戏服务架构
 
-> 分游戏模块整理与 AG4 接入见 [实施计划](../../docs/superpowers/plans/2026-11-13-go-game-modules-ag4.md)。公共运行契约、AG1～AG3 模块适配和 AG4 普通/锁定重转已落地，已接入本地 Go 测试配置；AG4 Cocos 尚未适配。
+> 分游戏模块整理与 AG4 接入见 [实施计划](../../docs/superpowers/plans/2026-11-13-go-game-modules-ag4.md)。公共运行契约、AG1～AG3 Ways 适配和 AG4～AG9 独立模块已落地。AG1～AG8 客户端已发布测试环境，AG9 尚未开放；实际发布状态见[部署记录](../../deploy/test/DEPLOYMENT.md)。
 
 
 **当前客户端联调以 [逐轮接口协议](client-api.md) 为准。** 已落地 PostgreSQL 和固定测试钱包；下文整局平台订单部分是保留的适配用例，尚未接入当前客户端逐轮路由。真实平台仍不维护本地余额。
@@ -36,7 +36,7 @@ flowchart LR
 
 使用结构化 `identity.Subject{AppName, AppKey, UID}`，不拼接可能冲突的字符串。相同 uid 在不同平台、应用下完全隔离。
 
-`login.Service.Verify` 根据 appname/appkey 找到平台适配器，验证平台提供的凭据，核对返回身份，再取得可信国家和币种。未来 HTTP/会话层只将验证后的 `identity.Context` 交给下注服务；客户端不能直接指定可信身份、国家或币种。当前尚未实现会话令牌的签发、存储和 HTTP 登录路由。
+`login.Service.Verify` 根据 appname/appkey 找到平台适配器，验证平台提供的凭据，核对返回身份，再取得可信国家和币种。未来 HTTP/会话层只将验证后的 `identity.Context` 交给下注服务；客户端不能直接指定可信身份、国家或币种。当前客户端登录、会话和大厅票据兑换已由 `application/play` 与 HTTP 路由实现；这里的 `login.Service` 保留为平台适配边界。
 
 记录范围：
 
@@ -71,7 +71,7 @@ internal/
     gamedata/                 游戏 JSON、盘面库、投注方案文件读取
     memory/                   开发用订单和游戏状态存储；无用户表及余额
     platform/                 平台适配器注册表；具体协议适配器后续添加
-  transport/httpapi/          HTTP 协议转换，目前只开放健康检查
+  transport/httpapi/          HTTP 协议转换，包括登录、投注列表、spin/state 与回放
   bootstrap/                  配置和游戏版本装配
 ```
 
@@ -85,7 +85,7 @@ internal/
 {"ruleType": "ways_cascade_v1"}
 ```
 
-`ruleType` 标识规则及其算法版本。当前内置 `ways_cascade_v1` 和 `paylines_v1`；`cluster_cascade_v1` 仍为预留名称。规则与游戏模块分别注册，其他连线游戏不会自动继承 AG4 重转。
+`ruleType` 标识规则及其算法版本。当前内置 `ways_cascade_v1`、`paylines_v1` 以及 AG5～AG9 的 `fortune_rabbit_v1`、`fortune_mouse_v1`、`fortune_ox_v1`、`fortune_dragon_v1`、`fortune_leopard_v1`；`cluster_cascade_v1` 仍为预留名称。规则与游戏模块分别注册，其他连线游戏不会自动继承 AG4 重转。
 
 启动流程为 `ruleType → Factory → 游戏模块注册 → game.Runtime`（`bet.Spinner` 为其兼容名称）。Factory 负责自己的配置校验和数据加载。Runtime 的 `Draw` 返回完整结果、下一状态和明确的逐帧派奖计划，`ValidateStoredResult` 校验已存结果，`Present` 提供模块客户端展示数据。Catalog 存接口而非固定的消除引擎，不需要为每一种玩法修改减币、加币或订单状态机。通用配置解析只检查公共字段，消除专用的金底、免费图标和骨架参数由 Ways Factory 检查。
 
@@ -107,7 +107,7 @@ internal/
 - 普通空奖按列从左到右、列内从上到下生成，第二列限制同线双 Wild，第三列排除能成线的图标。重转空奖逐格禁止凑齐中奖线，合法位置按 fillProbability 填入；有新增继续，无新增结束，最多六轮新增加一轮无新增。两者实时生成、不读取零桶、不整盘或整条重试。
 - 一次补全依赖 AG4 固定的三横两斜五线，以及正权重普通图标数大于单格最多参与的线数（当前六种、最多三条），启动时检查这些条件。权重为零的图标不会成为补空候选。原 baseSpreadWeights 保留在配置中，当前受约束生成不执行生成后的向上复制；MaxFillAttempts 对 AG4 不再生效。运行版本指纹加入 single-pass-v1 标识，存档和派奖结构保持兼容。
 - 本地不可变快照为 `testdata/deployments/2026-11-13-ag4-modules/AG4`，包含四份配置、两份库及清单。`cmd/ag4-publish` 独立校验哈希和普通135/135、重转26/26正倍率，拒绝覆盖旧发布。原始配置、候选库和旧零桶均保留。
-- 已保存 AG4 结果包含完整帧计划；重启、幂等重试、历史、排行榜与分享沿用已结算展示，不重新补盘。专属数据位于可选 `gameData`。尚未适配 AG4 Cocos，未远程部署。
+- 已保存 AG4 结果包含完整帧计划；重启、幂等重试、历史、排行榜与分享沿用已结算展示，不重新补盘。专属数据位于可选 `gameData`。AG4 Cocos 已接入实玩与回放，并发布测试环境。
 
 增加平台时，实现 `platform.Client` 并按 `(appname, appkey)` 注册；认证签名、平台错误码与请求格式在该适配器中转换，不散落到开奖算法中。
 

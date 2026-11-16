@@ -4,7 +4,7 @@
 
 本轮联调的启动方式、接口与测试数据限制见 [客户端联调协议](docs/client-api.md)。
 
-一次 `Engine.Spin` 对应一次旋转及其完整消除链；免费游戏通过后续调用继续，每次消耗一次免费次数。
+统一使用 `game.Runtime.Draw` 生成模块结果及逐帧派奖计划。AG1～AG3 内部仍使用 Ways `Engine.Spin`；免费、重转、特殊转和封顶由各游戏模块分别定义。
 
 ## 工程结构与开发入口
 
@@ -59,7 +59,7 @@ make run CONFIG=configs/server.local.json
 }
 ```
 
-`ruleType` 是必填的玩法规则实现标识，当前只注册 `ways_cascade_v1`（Ways 中奖 + 连续消除）。它选择对应的配置加载、结果生成/重放及验证实现，不由客户端提交。未来 `paylines_v1` 等类型需要注册自己的 Factory，尚未实现时启动会报错，绝不回退到现有消除引擎。该字段保存在 `game_configs/<gameId>/config.json` 顶层，由数值工具编辑和保存。服务端先读取它再选择 Factory，部署配置不再重复填写。历史盘面库格式保持不变。
+`ruleType` 是必填的玩法规则实现标识，当前注册 `ways_cascade_v1`（AG1～AG3）、`paylines_v1`（AG4）及 AG5～AG9 的 `fortune_rabbit_v1`、`fortune_mouse_v1`、`fortune_ox_v1`、`fortune_dragon_v1`、`fortune_leopard_v1`。它选择对应的配置加载、结果生成/重放及验证实现，不由客户端提交。新增玩法类型需要注册自己的 Factory，尚未实现时启动会报错，绝不回退到现有消除引擎。该字段保存在 `game_configs/<gameId>/config.json` 顶层，由数值工具编辑和保存。服务端先读取它再选择 Factory，部署配置不再重复填写。历史盘面库格式保持不变。
 
 路径相对于服务配置文件所在目录解析。一个游戏可加载多个版本，恰好一个标记为 `current`；逐轮开奖流程中新付费凭据使用当前版本，已申请凭据、正在进行的投注及免费链仍按原版本执行。发布新版本时须保留这些旧版本；在下一笔付费投注开始时切换版本，余额和累计状态保留。
 
@@ -75,7 +75,7 @@ make run CONFIG=configs/server.local.json
 
 AG1 uses `"freeAwardSymbolCounts": {"8": 3, "10": 4, "12": 5}` in its server game entry. The existing award weights choose free spins first; the selected award then determines the scatter count for both base triggers and free retriggers. Every positive-weight award must have a mapping to 3, 4 or 5 symbols. Legacy entries without this mapping retain their explicit `triggerSymbolCount`.
 
-## 开奖顺序
+## Ways 开奖顺序（AG1～AG3）
 
 1. 读取调用方传入的连续输赢、未触发免费局数、免费剩余次数等状态。
 2. 按配置计算中奖概率、连续未中奖 RTP 补偿和免费触发概率。
@@ -196,3 +196,9 @@ configs/server.test.json和configs/bets.test.json引用testdata/deployments/2026
 ## AG8 本地模块
 
 AG8金龙使用独立 `fortune_dragon_v1` 模块及 `testdata/deployments/2026-11-15-ag8/AG8` 不可变快照，已接入本地测试配置。普通/免费库各580条、覆盖194/194档；实时空奖及一次补空。公共spin支持普通/五倍投注，免费逐帧派奖，八次全空完整保留；达到实际扣款2500倍时截断并结束。已接入幂等、恢复、版本固定、历史回放与普通投注自动整局。详见[AG8模块](internal/games/ag8/README.md)、[接口](docs/client-api.md#ag8-本地接口)和[固定样例](testdata/ag8-client-examples.json)。
+
+## 当前接入与发布范围
+
+AG1～AG9 的 Go 模块均已注册。AG1～AG3 保留旧 Ways 算法与存档兼容，AG4～AG9 独立实现各自玩法。各游戏发布器校验配置、骨架与倍率覆盖后创建不可变快照；空奖实时生成，骨架桶数量不决定开奖概率。
+
+测试环境开放 AG1～AG8，AG9 仅接入本地测试配置，尚未开放客户端。上文 AG7/AG8“本地模块”描述开发配置，不代表公网未发布。具体发布版本与验收限制见[发布记录](../deploy/test/DEPLOYMENT.md)。AG5～AG9 详细规则及发布命令见对应 `internal/games/agN/README.md`。
