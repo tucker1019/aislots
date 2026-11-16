@@ -7,12 +7,12 @@ import (
 	"testing"
 )
 
-func TestVIPPictureConfiguration(t *testing.T) {
+func TestVIPIndonesianConfiguration(t *testing.T) {
 	c, err := LoadVIP("../../../../../../etc/vip.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(c.Levels) != 31 || c.Levels[1].UpgradeBet != 100 || c.Levels[2].UpgradeBet != 300000 || c.Levels[24].MonthlyReward != 277600 || c.Levels[30].UpgradeBet != 100000000000 || c.Levels[30].KeepBet != 3000000000 || c.Levels[30].MonthlyBet != 12000000 {
+	if len(c.Levels) != 31 || c.Levels[1].UpgradeBet != 100000 || c.Levels[2].UpgradeBet != 300000000 || c.Levels[24].MonthlyReward != 277600000 || c.Levels[30].UpgradeBet != 100000000000000 || c.Levels[30].KeepBet != 3000000000000 || c.Levels[30].MonthlyBet != 12000000000 {
 		t.Fatal(c)
 	}
 	for _, mutate := range []func(*VIPConfig){
