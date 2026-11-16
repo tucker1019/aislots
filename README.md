@@ -1,6 +1,6 @@
 # AISlots
 
-游戏大厅、机台服务、Cocos 游戏客户端及数值工具的单仓库项目。当前接入 AG1「麻将胡了」，包含用户、统一钱包、测试充值、活动、邀请奖励、报表、游戏统计和排行榜回放。
+游戏大厅、机台服务、Cocos 游戏客户端及数值工具的单仓库项目。当前测试环境开放 AG1～AG8，AG9 已接入数值工具与 Go 本地模块、尚未开放。包含用户、统一钱包、测试充值、活动、邀请奖励、报表、游戏统计和排行榜回放。
 
 大厅和机台是独立 Go 服务，使用独立数据库，只通过 HTTP 接口交互。大厅持有真实钱包；机台负责权威开奖、逐轮进度、游戏记录和回放。
 
@@ -11,9 +11,11 @@
 | `slots_lobby/` | React + TypeScript 大厅 | [前端说明](slots_lobby/README.md) |
 | `lobby_service/` | 大厅 Go 服务、用户和统一钱包 | [服务说明](lobby_service/README.md) |
 | `slots_service/` | Go 机台服务、开奖与恢复 | [服务说明](slots_service/README.md) |
-| `client/mahjongway/` | Cocos Creator 麻将客户端 | [客户端说明](client/mahjongway/README.md) |
+| `client/` | AG1～AG8 Cocos 游戏客户端 | [客户端规范](client/README.md) |
+| `slots_lobby_admin/` | React + TypeScript 运营后台 | 会员、运营配置与审核管理 |
+| `deploy/test/` | 公网测试环境部署 | [部署说明](deploy/test/README.md)、[发布记录](deploy/test/DEPLOYMENT.md) |
 | `slot_math/` | 数值编辑、模拟及盘面库生成 | [数值工具说明](slot_math/README.md) |
-| `game_configs/` | 按游戏管理规则、倍率与权重 JSON | AG1 的 config/board/base/free 配置 |
+| `game_configs/` | 按游戏管理规则、倍率与权重 JSON | 各游戏独立配置与规则 |
 | `game_libraries/` | 普通及免费模式的版本化盘面库 | 与游戏配置版本配套使用 |
 
 新增或复制 Cocos 游戏时，按 [Cocos 机台迁移规范](client/README.md) 执行。
@@ -23,17 +25,17 @@
 - 用户：游客创建、会话续期、自定义账号注册/登录/绑定、昵称和15种头像。默认会话60天，续期从当前时间重新计算；新 UID 从10000001开始。
 - 钱包与充值：整数分记账、source流水、配置充值档位、手续费或赠送、订单查询和历史。当前支付为测试模式，创建订单后约3秒模拟成功。
 - 活动：循环签到、日周月反水、昨日亏损返还、新手累计充值多档奖励、VIP升级奖励/周月工资/保级，以及直属邀请奖励、宝箱和好友达标详情。
-- 记录与报表：充值记录、整局投注记录、逐笔资金明细及个人报表。取款、代理等未实现项目按接口标记或页面提示展示。
-- 游戏入口：大厅签发短期票据，机台兑换身份；iframe 内进入 AG1，刷新恢复已结算盘面，返回大厅刷新余额。
+- 记录与报表：充值记录、整局投注记录、逐笔资金明细及个人报表。取款支持档位、测试审核与流水要求；代理支持团队及业绩报表。
+- 游戏入口：大厅签发短期票据，机台兑换身份；iframe 内进入对应游戏，刷新恢复已结算盘面，返回大厅刷新余额。
 - 游戏统计：整局完成事件通过机台持久化 Outbox 同步大厅，生成 RTP、派彩/倍数/连胜排行榜；派彩及倍数榜支持只读回放。
-- 大厅界面：手机竖版布局，中英文切换，账户、充值、福利、赚钱及记录页面。当前仅 AG1 可玩，其他厂商入口提示敬请期待。
+- 大厅界面：手机竖版布局，繁体中文、英文、印尼语切换，账户、充值、福利、赚钱及记录页面。测试环境开放 AG1～AG8，未开放入口提示敬请期待。
 
 ## 数据流与服务边界
 
 ```mermaid
 flowchart LR
     A[React 大厅] --> B[大厅服务 / 用户与钱包]
-    A --> C[Cocos AG1 客户端]
+    A --> C[Cocos 游戏客户端]
     C --> D[机台服务 / 开奖与恢复]
     D -->|票据兑换、逐轮结算| B
     D -->|Outbox 整局完成通知| B
@@ -63,6 +65,8 @@ flowchart LR
 - 盘面生成、保存、验收和启用流程使用 gameId 参数。单款游戏的列高、图标数量、赔率和资源路径来自该游戏配置，不能成为其他游戏的默认规则。
 
 ### 生成、调参和接入顺序
+
+以下消除、金底及免费配置步骤以 AG1～AG3 Ways 为例；其他游戏使用各自的模式组合、特殊规则与发布器。具体约定见 [slot_math 开发规范](.agents/skills/slot-math-development/SKILL.md)。
 
 1. **配置游戏规则**。在数值工具中选择目标游戏，配置图标 ID、图标赔率、列高、金底及普通／免费消除倍率，保存到 `game_configs/<gameId>/board.json`。
 2. **模拟生成盘面库**。使用该游戏已保存的规则，分别生成普通和免费中奖消除链，按原始倍率分桶保存中奖骨架。保存后得到 `game_libraries/<gameId>/<base|free>/<batch>/library.json` 及 `manifest.json`。此环节决定可用的中奖组合，包括新增图标参与的中奖组合。
@@ -146,6 +150,12 @@ flowchart LR
 - 大厅前端：`npm run lint`、`npm run typecheck`、`npm test`、`npm run build`。
 - 机台服务：`make check`；数据库集成测试配置 `AISLOTS_TEST_DATABASE_URL` 后运行 `make integration`。
 
-开发规范见各模块 `AGENTS.md`。提交按模块拆分，使用仓库 skill 规定的中文前缀。真实支付渠道、Google/Telegram绑定、取款及完整代理系统仍待接入。
+开发规范见各模块 `AGENTS.md`。提交按模块拆分，使用仓库 skill 规定的中文前缀。真实支付渠道及 Google/Telegram 绑定仍待接入；取款和代理已有业务实现，接口与测试开关以各模块文档为准。
 
-AG8金龙已接入数值工具、中奖骨架生成及Go本地模块。支持普通/五倍投注、独立八次免费和2500倍封顶；两库均覆盖194/194正权重倍率。详见[AG8规则](slot_math/docs/ag8-rules.md)及[服务端说明](slots_service/internal/games/ag8/README.md)。
+## 游戏模块与发布状态
+
+AG1～AG3 通过独立模块适配共用 Ways 引擎；AG4～AG9 分别实现开奖、状态、补空和展示帧。公共 `game.Runtime` 契约承载统一订单、钱包与逐帧派奖，各游戏自行定义免费、重转及其他特殊玩法。
+
+AG1～AG8 客户端已发布测试环境。AG9 幸运豹已接入数值工具、骨架及 Go 本地测试配置，尚无客户端和公网入口。实际发布版本及浏览器验收限制见[发布记录](deploy/test/DEPLOYMENT.md)。
+
+AG8金龙已接入数值工具、中奖骨架生成及Go模块，并已发布测试环境。支持普通/五倍投注、独立八次免费和2500倍封顶；两库均覆盖194/194正权重倍率。详见[AG8规则](slot_math/docs/ag8-rules.md)及[服务端说明](slots_service/internal/games/ag8/README.md)。
