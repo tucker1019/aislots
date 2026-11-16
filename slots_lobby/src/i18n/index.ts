@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import zh from './locales/zh-TW.json';
-import { getLanguage, isLocale, resolveLocale } from './config';
+import { defaultLocale, getLanguage, isLocale, resolveLocale } from './config';
 import type { Locale, MessageKey } from './config';
 export type { Locale, MessageKey } from './config';
 const storageKey='aislots-language';
-function initialLocale():Locale { try { const saved=localStorage.getItem(storageKey);const locale=resolveLocale(saved);if(saved==='zh-CN')localStorage.setItem(storageKey,locale);return locale; } catch { return 'zh-TW'; } }
+function initialLocale():Locale { try { const saved=localStorage.getItem(storageKey);const locale=resolveLocale(saved);if(saved==='zh-CN')localStorage.setItem(storageKey,locale);return locale; } catch { return defaultLocale; } }
 export const useLanguageStore=create<{locale:Locale;setLocale:(locale:Locale)=>void}>(set=>({locale:initialLocale(),setLocale:locale=>{
   if (!isLocale(locale)) return;
   try {localStorage.setItem(storageKey,locale);}catch{/* Language switching remains available when storage is blocked. */}

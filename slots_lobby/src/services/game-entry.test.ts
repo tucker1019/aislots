@@ -10,6 +10,8 @@ it('入口地址校驗拒絕危險協議、內嵌身份及缺失生產地址', (
 
 it('從大廳身份申請臨時入口，拒絕缺少票據的返回地址', async () => {
   vi.resetModules();
+  const {useLanguageStore}=await import('../i18n');
+  useLanguageStore.setState({locale:'zh-TW'});
   vi.doMock('./account', () => ({
     ensureSession: vi.fn().mockResolvedValue({ uid: 7, sid: 'session' }),
     request: vi.fn().mockResolvedValue({ launchUrl: 'https://game.example/AG1/?launchTicket=' + 'T'.repeat(52), expiresAt: new Date(Date.now() + 60000).toISOString() }),

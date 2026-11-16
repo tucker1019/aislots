@@ -33,3 +33,12 @@ it('registered languages are selectable; previous Simplified preference migrates
  const fresh=await import('./index');
  expect(fresh.getLocale()).toBe('zh-TW');expect(localStorage.getItem('aislots-language')).toBe('zh-TW');
 });
+
+it('defaults to Indonesian without a saved preference and preserves supported choices', async()=>{
+ localStorage.removeItem('aislots-language');vi.resetModules();
+ const fresh=await import('./index');
+ expect(fresh.getLocale()).toBe('id-ID');
+ expect(fresh.t('copy.home')).toBe('Beranda');
+ expect(resolveLocale(null)).toBe('id-ID');expect(resolveLocale('unknown')).toBe('id-ID');
+ for(const locale of ['zh-TW','en-US','id-ID'] as const)expect(resolveLocale(locale)).toBe(locale);
+});

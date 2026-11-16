@@ -1,6 +1,7 @@
 import {ensureSession,request} from './account';
 import {isRecord} from '../features/account/types';
-import {t,getLocale} from '../i18n';
+import {t} from '../i18n';
+import { coinsLabel } from '../features/account/formatCoins';
 export type RtpWindow='5m'|'1h'|'24h';
 export type RankBoard='wins'|'multiplier'|'streak';
 export type RankPeriod='today'|'week'|'all';
@@ -24,7 +25,7 @@ export function parseLeaderboard(data:unknown):GameLeaderboard{
 async function load(path:string,fields:Record<string,string>,signal?:AbortSignal,gameId='AG1'){const identity=await ensureSession();return request(path,{method:'POST',signal,body:JSON.stringify({uid:identity.uid,sid:identity.sid,gameId,...fields})},t('statistics.failed'));}
 export async function fetchGameRtp(window:RtpWindow,signal?:AbortSignal,gameId='AG1'){return parseGameRtp(await load('/api/game/rtp',{window},signal,gameId));}
 export async function fetchLeaderboard(board:RankBoard,period:RankPeriod,signal?:AbortSignal,gameId='AG1'){return parseLeaderboard(await load('/api/game/leaderboard',{board,period},signal,gameId));}
-export function statisticsMoney(value:string){const number=BigInt(value),absolute=number<0n?-number:number;const formatter=new Intl.NumberFormat(getLocale());const decimal=formatter.formatToParts(1.1).find(part=>part.type==='decimal')?.value??'.';return (number<0n?'-':'')+formatter.format(absolute/100n)+decimal+String(absolute%100n).padStart(2,'0');}
+export function statisticsMoney(value:string){return coinsLabel(value);}
 
 export async function fetchRankReplay(platformOrderId:string,board:RankBoard,period:RankPeriod,gameId='AG1'){
  const data=await load('/api/game/rank-replay',{platformOrderId,board,period},undefined,gameId);

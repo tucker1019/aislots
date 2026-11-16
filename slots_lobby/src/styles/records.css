@@ -27,10 +27,16 @@
 }
 
 .deposit-page .records-page-header, .withdrawal-page .records-page-header {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 146px) minmax(0, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 50px;
+  height: auto;
+  gap: 8px;
+  padding-block: 8px;
   padding-inline: 12px;
 }
-.payment-wallet-bar :is(.header-account, .header-wallet, .header-balance-value) { min-width: 0; }
-.payment-wallet-bar .header-wallet { max-width: 100%; }
-.payment-wallet-bar .header-balance-value { flex-shrink: 1; }
-.payment-wallet-bar output { overflow: hidden; text-overflow: ellipsis; }
+.deposit-page .records-page-header > button, .withdrawal-page .records-page-header > button { flex: 0 0 32px; }
+.deposit-page .records-page-header > h1, .withdrawal-page .records-page-header > h1 { flex: 1 0 auto; }
+.payment-wallet-bar { flex: 0 0 auto; margin-inline-start: auto; }
+.payment-wallet-bar .header-balance-value { flex-shrink: 0; }
+.payment-wallet-bar output { overflow: visible; text-overflow: clip; }

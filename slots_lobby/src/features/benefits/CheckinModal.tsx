@@ -30,7 +30,7 @@ export function CheckinModal({ onClose, open = true, afterClose, checkedOnEntry 
   <section className="checkin-panel" aria-label={t('copy.dailyCheckInRewards')}>
    <header><h2>{t('copy.dailyCheckInRewards')}</h2><span className="checkin-header-icon" aria-hidden="true"><Icon name="calendar" size={26} /></span></header>
    {info.isPending ? <LoadingState compact label={t('copy.loadingCheckInRewards')}/> : !data ? <NetworkError disabled={info.isFetching} onRetry={()=>void info.refetch()}/> : <>
-    <div className="checkin-rewards"><div className="checkin-stats"><div><span>{t('copy.consecutiveCheckIns')}</span><strong>{claimedDays} {t('copy.days')}</strong></div><div><span>{t('copy.todaySReward')}</span><strong>Rp {betMoney(data.current.reward)}</strong></div></div>
+    <div className="checkin-rewards"><div className="checkin-stats"><div><span>{t('copy.consecutiveCheckIns')}</span><strong>{claimedDays} {t('copy.days')}</strong></div><div><span>{t('copy.todaySReward')}</span><strong>{betMoney(data.current.reward)}</strong></div></div>
      <div className={`checkin-days${data.days.length === 7 ? ' checkin-seven' : ''}`}>
       {data.days.map(row => { const done=row.day<=claimedDays; const current=row.day===data.currentDay; return <div key={row.day} className={`checkin-day${current ? ' current' : ''}${done ? ' claimed' : ''}`} aria-label={t('copy.dayValueRewardValueValue', {p0: row.day, p1: betMoney(row.reward), p2: done ? t('copy.claimed') : current ? t('copy.current') : ''})}>
        <span>{t('checkin.dayLabel',{day:row.day})}</span><Icon name={done?'shield':'rupiah'} size={done ? 24 : 28} /><strong>{betMoney(current ? data.current.reward : row.reward)}</strong>

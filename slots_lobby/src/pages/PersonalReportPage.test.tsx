@@ -10,14 +10,14 @@ beforeEach(()=>vi.mocked(fetchPersonalReport).mockReset());
 function setup(){render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false,gcTime:0}}})}><PersonalReportPage onBack={vi.fn()} /></QueryClientProvider>);}
 it('本金和贈送獨立展示，未實現項目留空，篩選使用服務端週期',async()=>{
  vi.mocked(fetchPersonalReport).mockResolvedValue(fixture);setup();
- expect(await screen.findByText('100.00')).toBeInTheDocument();expect(screen.getByText('2.00')).toBeInTheDocument();expect(screen.getByText('—')).toBeInTheDocument();expect(screen.getByText('-5.00')).toBeInTheDocument();
+ expect(await screen.findByText('Rp100')).toBeInTheDocument();expect(screen.getByText('Rp2')).toBeInTheDocument();expect(screen.getByText('—')).toBeInTheDocument();expect(screen.getByText('-Rp5')).toBeInTheDocument();
  expect(screen.getByRole('heading',{name:'個人報表'}).closest('.records-page-top')).toContainElement(screen.getByRole('navigation',{name:'報表時間'}));
- for(const label of ['昨天','本週','上周']){fireEvent.click(screen.getByRole('button',{name:label}));await screen.findByText('100.00');}
+ for(const label of ['昨天','本週','上周']){fireEvent.click(screen.getByRole('button',{name:label}));await screen.findByText('Rp100');}
  expect(vi.mocked(fetchPersonalReport).mock.calls.map(row=>row[0])).toEqual(['today','yesterday','this_week','last_week']);
 });
 it('加載失敗可以重試，不展示偽造的零金額',async()=>{
  vi.mocked(fetchPersonalReport).mockRejectedValueOnce(new Error('network')).mockResolvedValue(fixture);setup();
- const alert=await screen.findByRole('alert');expect(within(alert).getByText('網絡異常，請重試')).toBeInTheDocument();expect(screen.queryByText('0.00')).not.toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'重試'}));expect(await screen.findByText('100.00')).toBeInTheDocument();
+ const alert=await screen.findByRole('alert');expect(within(alert).getByText('網絡異常，請重試')).toBeInTheDocument();expect(screen.queryByText('Rp0')).not.toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:'重試'}));expect(await screen.findByText('Rp100')).toBeInTheDocument();
 });
 it('響應拒絕不安全金額、重復指標及反向日期',()=>{
  expect(parsePersonalReport(fixture).items[0].amount).toBe(10000);

@@ -17,7 +17,7 @@ it('響應丟失重試復用同一請求號，到賬明細正確',async()=>{
  vi.mocked(createRecharge).mockRejectedValueOnce(new Error('連接中斷')).mockResolvedValueOnce({orderId:'order-1',status:'pending',paymentUrl:'https://example.com'});
  vi.mocked(fetchRechargeOrder).mockResolvedValue(order);
  const user=setup();
- expect(screen.getByText('9.80')).toBeInTheDocument();
+ expect(screen.getByText('Rp9')).toBeInTheDocument();
  await user.click(screen.getByRole('button',{name:'確認創建訂單'}));
  expect(await screen.findByRole('alert')).toHaveTextContent('連接中斷');
  const saved=readIntent(7);

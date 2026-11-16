@@ -8,7 +8,7 @@
 .deposit-tiers button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: 1px solid var(--line); background: var(--theme-surface,white); position: relative; min-height: 74px; padding: 19px 3px 7px; border-radius: 9px; color: var(--ink); }
 .deposit-tiers strong { font-size: 13px; }
 .deposit-tiers span { font-size: 9px; color: var(--muted); }
-.deposit-tiers button[aria-pressed="true"] { border-color: var(--theme-active); background: var(--theme-active-tint); color: var(--theme-active); }
+.deposit-tiers button[aria-pressed="true"] { border-color: transparent; background: var(--theme-action); color: var(--theme-on-action); }
 .deposit-tiers button:disabled { opacity: .65; }
 .deposit-card dl { margin: 0; }
 .deposit-card dl > div { display: flex; justify-content: space-between; gap: 12px; margin: 10px 0; font-size: 13px; font-variant-numeric: tabular-nums; }

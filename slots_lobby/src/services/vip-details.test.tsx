@@ -26,14 +26,14 @@ function setup(tables=false) {
 }
 it('顯示真實等級和升級差額，切換等級僅查看對應權益', async () => {
  vi.mocked(loadVipDetails).mockResolvedValue(parseVipDetails(fixture));const {onTables}=setup();
- expect(await screen.findByText('小明')).toBeInTheDocument();expect(screen.getByText(/還需存款 0.00，有效流水 2,797.00/)).toBeInTheDocument();
+ expect(await screen.findByText('小明')).toBeInTheDocument();expect(screen.getByText(/還需存款 Rp0，有效流水 Rp2.797/)).toBeInTheDocument();
  fireEvent.click(screen.getByRole('button',{name:'VIP2'}));expect(screen.getByRole('heading',{name:'VIP2 尊享特權'})).toBeInTheDocument();expect(screen.getByText('待解鎖')).toBeInTheDocument();
  fireEvent.click(screen.getByRole('button',{name:'VIP詳情'}));expect(onTables).toHaveBeenCalledOnce();
 });
 it('三張表逐等級展示服務端配置並高亮當前等級', async () => {
  vi.mocked(loadVipDetails).mockResolvedValue(parseVipDetails(fixture));setup(true);
  const region=await screen.findByRole('region',{name:'VIP福利'});
- expect(within(region).getAllByRole('row')).toHaveLength(4);expect(within(region).getByText('2.00')).toBeInTheDocument();
+ expect(within(region).getAllByRole('row')).toHaveLength(4);expect(within(region).getByText('Rp2')).toBeInTheDocument();
  expect(screen.getAllByRole('table')).toHaveLength(3);
 });
 it('接口失敗顯示重試，不展示偽造權益', async () => {
@@ -48,7 +48,7 @@ it('真實待領獎勵可領，成功刷新為已領取，未解鎖等級不可�
  fireEvent.click(await screen.findByRole('button',{name:'晉級獎勵領取'}));
  expect(await screen.findByRole('button',{name:'晉級獎勵已領取'})).toBeDisabled();
  expect(claimVipReward).toHaveBeenCalledWith('upgrade','2026-11-03',expect.any(String),'upgrade-1');
- expect(screen.queryByText('已領取 3.00', {exact:true})).not.toBeInTheDocument();
+ expect(screen.queryByText('已領取 Rp3', {exact:true})).not.toBeInTheDocument();
  expect(await screen.findByText('領取成功',{exact:true})).toBeInTheDocument();
  fireEvent.click(screen.getByRole('button',{name:'VIP2'}));expect(screen.getByRole('button',{name:'晉級獎勵等級權益'})).toBeDisabled();
 });

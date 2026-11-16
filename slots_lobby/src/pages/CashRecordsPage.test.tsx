@@ -56,7 +56,7 @@ it('詳情展示真實費用到賬與測試支付，可複製訂單號；失敗�
   vi.mocked(fetchCashRecords).mockResolvedValue({ items: [], nextCursor: '' });
   vi.mocked(fetchRechargeOrder).mockResolvedValue({ ...row, fee: 20, creditAmount: 9980 });
   const { user } = setup('order-a');
-  expect(await screen.findByText('99.80')).toBeInTheDocument();
+  expect(await screen.findByText('Rp99')).toBeInTheDocument();
   expect(screen.getByText('測試支付')).toBeInTheDocument();
   const write = vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue();
   await user.click(screen.getByRole('button', { name: '複製' }));
@@ -75,8 +75,8 @@ it('失敗訂單顯示實際到賬0，不將配置中的預計到賬當作已入
   vi.mocked(fetchRechargeOrder).mockResolvedValue({ ...row, status: 'failed', fee: 20, creditAmount: 9980 });
   setup('order-a');
   expect(await screen.findByText('交易失敗')).toBeInTheDocument();
-  expect(screen.getByText('實際到賬').parentElement).toHaveTextContent('0.00');
-  expect(screen.queryByText('99.80')).not.toBeInTheDocument();
+  expect(screen.getByText('實際到賬').parentElement).toHaveTextContent('0');
+  expect(screen.queryByText('Rp99')).not.toBeInTheDocument();
 });
 
 authenticatedFixture(()=>useSessionStore.setState({session:{uid:7,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'}}));

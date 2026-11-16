@@ -11,7 +11,7 @@ it('顯示真實待領傭金及AG最高比例，領取失敗重試沿用同一�
   vi.mocked(claimAgent).mockRejectedValueOnce(new Error('network')).mockResolvedValueOnce({ claimId: 'test', amount: 12300, coins: 12300 });
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
   render(<QueryClientProvider client={client}><AgentCommission /></QueryClientProvider>);
-  expect(await screen.findByText('123.00')).toBeInTheDocument();
+  expect(await screen.findByText('Rp123')).toBeInTheDocument();
   expect(screen.getByText('AG')).toBeInTheDocument();
   expect(screen.getByText('3%')).toBeInTheDocument();
   expect(screen.queryByText('PG')).not.toBeInTheDocument();

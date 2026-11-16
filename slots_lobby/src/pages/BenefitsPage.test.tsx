@@ -11,7 +11,7 @@ it('五張卡片用真實數據，中心頁不請求籤到，詳情暫不領取'
  vi.mocked(loadVipOverview).mockResolvedValue({level:6,upgradeReward:8800,weeklyReward:1200,monthlyReward:2800,upgradeBet:25300,upgradeRecharge:100,nextBet:10000000,nextRecharge:200,protecting:false});
  const onAction=setup(); expect(await screen.findByText('VIP6')).toBeInTheDocument();
  for(const title of ['每日簽到','每周禮金','每月禮金','晉級獎勵','VIP中心'])expect(screen.getByRole('heading',{name:title})).toBeInTheDocument();
- expect(screen.getByText('12.00')).toBeInTheDocument();expect(screen.getByRole('button',{name:'簽到'})).toBeEnabled(); expect(loadCheckinOverview).not.toHaveBeenCalled();
+ expect(screen.getByText('Rp12')).toBeInTheDocument();expect(screen.getByRole('button',{name:'簽到'})).toBeEnabled(); expect(loadCheckinOverview).not.toHaveBeenCalled();
  fireEvent.click(screen.getByRole('button',{name:'查看詳情'}));expect(onAction).toHaveBeenCalledTimes(1);
 });
 it('一個接口失敗不遮擋另一個接口結果，可單獨重試',async()=>{

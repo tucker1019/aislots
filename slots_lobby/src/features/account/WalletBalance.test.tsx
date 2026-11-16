@@ -9,7 +9,7 @@ it('接口快速完成也至少鎖定0.5秒，連續點擊只發一個請求',as
  expect(document.querySelectorAll('.wallet-loading-dots > span')).toHaveLength(3);
  expect(refresh).toHaveBeenCalledTimes(1);expect(button).toBeDisabled();expect(screen.getByLabelText('正在刷新錢包餘額')).toBeInTheDocument();
  await act(()=>vi.advanceTimersByTimeAsync(499));expect(button).toBeDisabled();
- await act(()=>vi.advanceTimersByTimeAsync(1));expect(button).toBeEnabled();expect(screen.getByLabelText('錢包餘額 1,234.00')).toBeInTheDocument();
+ await act(()=>vi.advanceTimersByTimeAsync(1));expect(button).toBeEnabled();expect(screen.getByLabelText('錢包餘額 Rp1.234')).toBeInTheDocument();
 });
 it('接口超過0.5秒仍鎖定，回來後才恢復金額和按鈕',async()=>{
  vi.useFakeTimers();let finish:()=>void=()=>{};const refresh=vi.fn(()=>new Promise<void>(resolve=>{finish=resolve;}));render(<WalletBalance coins={100} isFetching={false} onRefresh={refresh}/>);

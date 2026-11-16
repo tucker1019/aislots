@@ -18,7 +18,7 @@ function setup() {
 }
 it('保留資料頂欄，按通知、Banner、廠商、遊戲順序排布，首批顯示六行遊戲卡片', async () => {
   setup();
-  expect(await screen.findByLabelText('金幣餘額 123.45')).toBeInTheDocument();
+  expect(await screen.findByLabelText('金幣餘額 Rp123')).toBeInTheDocument();
   const main = screen.getByRole('main');
   const regions = Array.from(main.children).map(element => element.getAttribute('aria-label'));
   expect(regions).toEqual(['通知', '輪播', '遊戲廠商', '遊戲列表']);
@@ -80,7 +80,7 @@ it('存款底欄打開獨立路由並加載檔位與到賬明細', async () => {
  await user.click(within(screen.getByRole('navigation',{name:'底部導航'})).getByRole('button',{name:'存款'}));
  expect(window.location.pathname).toBe('/deposit');
  expect(await screen.findByRole('heading',{name:'選擇存款金額'})).toBeInTheDocument();
- expect(screen.getByText('9.80')).toBeInTheDocument();
+ expect(screen.getByText('Rp9')).toBeInTheDocument();
  expect(screen.queryByRole('banner')).not.toBeInTheDocument();
 });
 

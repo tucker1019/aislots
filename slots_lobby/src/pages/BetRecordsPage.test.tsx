@@ -10,7 +10,7 @@ beforeEach(() => {vi.mocked(loadBetRecords).mockReset();});
 function setup() {return render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false,gcTime:0}}})}><BetRecordsPage onBack={vi.fn()} /></QueryClientProvider>);}
 it('加載更多保留舊記錄，匯總來自服務端，時間篩選重查第一頁', async () => {
  vi.mocked(loadBetRecords).mockResolvedValueOnce(page).mockResolvedValueOnce({...page,hasMore:false,items:[{...row,betId:'next'}]}).mockResolvedValueOnce({...page,items:[],count:0,hasMore:false});
- setup(); expect(await screen.findByText('動態廠商')).toBeInTheDocument(); expect(screen.getByText('22')).toBeInTheDocument();
+ setup(); expect(await screen.findByText('動態廠商')).toBeInTheDocument(); expect(document.querySelector('.bet-records-summary > div:first-child strong')).toHaveTextContent('22');
  fireEvent.click(screen.getByText('加載更多')); expect(await screen.findByText('next')).toBeInTheDocument(); expect(screen.getByText('original')).toBeInTheDocument();
  fireEvent.click(screen.getByRole('button',{name:/今天/})); fireEvent.click(screen.getByRole('button',{name:'昨天'}));
  expect(await screen.findByText('暫無投注記錄')).toBeInTheDocument();

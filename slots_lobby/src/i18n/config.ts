@@ -15,4 +15,5 @@ export type MessageKey=keyof typeof zh;
 export const getLanguage=(locale:Locale)=>languages.find(item=>item.id===locale)??languages[0];
 export function isLocale(value:unknown):value is Locale{return languages.some(item=>item.id===value);}
 
-export function resolveLocale(value:unknown):Locale{return isLocale(value)?value:'zh-TW';}
+export const defaultLocale: Locale = 'id-ID';
+export function resolveLocale(value:unknown):Locale{return value==='zh-CN'?'zh-TW':isLocale(value)?value:defaultLocale;}

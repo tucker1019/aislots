@@ -10,7 +10,7 @@ const page={items:[item],categories:[{id:'bet:AG',name:'AG 投注'},{id:'checkin
 beforeEach(()=>{useLanguageStore.getState().setLocale('zh-TW');vi.mocked(fetchLedger).mockReset();vi.mocked(fetchLedgerDetail).mockReset();window.history.replaceState(null,'','/wallet-ledger');});
 function setup(id?:string){render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false,gcTime:0}}})}><WalletLedgerPage id={id} onBack={vi.fn()}/></QueryClientProvider>);}
 it('分類來自服務端，按類型篩選，列表顯示餘額和廠商',async()=>{
- vi.mocked(fetchLedger).mockResolvedValue(page);setup();expect(await screen.findByText('AG 投注')).toBeInTheDocument();expect(screen.getByText('賬戶餘額 5.00')).toBeInTheDocument();
+ vi.mocked(fetchLedger).mockResolvedValue(page);setup();expect(await screen.findByText('AG 投注')).toBeInTheDocument();expect(screen.getByText('賬戶餘額 Rp5')).toBeInTheDocument();
  fireEvent.click(screen.getByRole('button',{name:'全部'}));fireEvent.click(screen.getByRole('button',{name:'簽到獎勵'}));
  await waitFor(()=>expect(vi.mocked(fetchLedger).mock.calls.some(call=>call[2]==='checkin')).toBe(true));
 });

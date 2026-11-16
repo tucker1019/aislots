@@ -17,8 +17,8 @@ it('印尼語可選且覆盖主要業務與插值',()=>{
 });
 it('金額使用印尼分隔符且排行榜保留超大整數精度',()=>{
  useLanguageStore.getState().setLocale('id-ID');
- expect(coinsLabel(100050)).toBe('1.000,50');
- expect(statisticsMoney('100050')).toBe('1.000,50');
- expect(statisticsMoney('-50')).toBe('-0,50');
- expect(statisticsMoney('900719925474099199')).toBe('9.007.199.254.740.991,99');
+ expect(coinsLabel(100050)).toBe('Rp1.000');
+ expect(statisticsMoney('100050')).toBe('Rp1.000');
+ expect(statisticsMoney('-50')).toBe('Rp0');
+ expect(statisticsMoney('900719925474099199')).toBe('Rp9.007.199.254.740.991');
 });
