@@ -7,13 +7,12 @@
     "lineCount": 5,
     "betLevel": 10,
     "amounts": [
-      10,
-      50,
-      100,
-      500,
-      1000
+      2000,
+      20000,
+      200000,
+      1000000
     ],
-    "default": 10
+    "default": 2000
   },
   {
     "gameId": "AG8",
@@ -23,13 +22,12 @@
     "lineCount": 5,
     "betLevel": 10,
     "amounts": [
-      10,
-      50,
-      100,
-      500,
-      1000
+      2000,
+      20000,
+      200000,
+      1000000
     ],
-    "default": 10
+    "default": 2000
   },
   {
     "gameId": "AG7",
@@ -39,13 +37,12 @@
     "lineCount": 10,
     "betLevel": 10,
     "amounts": [
-      10,
-      50,
-      100,
-      500,
-      1000
+      1000,
+      10000,
+      100000,
+      500000
     ],
-    "default": 10
+    "default": 1000
   },
   {
     "gameId": "AG6",
@@ -55,13 +52,12 @@
     "lineCount": 5,
     "betLevel": 10,
     "amounts": [
-      10,
-      50,
-      100,
-      500,
-      1000
+      2000,
+      20000,
+      200000,
+      1000000
     ],
-    "default": 10
+    "default": 2000
   },
   {
     "gameId": "AG5",
@@ -71,13 +67,12 @@
     "lineCount": 10,
     "betLevel": 10,
     "amounts": [
-      10,
-      50,
-      100,
-      500,
-      1000
+      1000,
+      10000,
+      100000,
+      500000
     ],
-    "default": 10
+    "default": 1000
   },
   {
     "gameId": "AG1",
@@ -87,13 +82,12 @@
     "lineCount": 20,
     "betLevel": 10,
     "amounts": [
-      10,
-      50,
-      100,
       500,
-      1000
+      5000,
+      10000,
+      50000
     ],
-    "default": 10
+    "default": 500
   },
   {
     "gameId": "AG2",
@@ -103,13 +97,12 @@
     "lineCount": 20,
     "betLevel": 10,
     "amounts": [
-      10,
-      50,
-      100,
       500,
-      1000
+      5000,
+      10000,
+      50000
     ],
-    "default": 10
+    "default": 500
   },
   {
     "gameId": "AG3",
@@ -119,13 +112,12 @@
     "lineCount": 20,
     "betLevel": 10,
     "amounts": [
-      10,
-      50,
-      100,
       500,
-      1000
+      5000,
+      10000,
+      50000
     ],
-    "default": 10
+    "default": 500
   },
   {
     "gameId": "AG4",
@@ -135,12 +127,11 @@
     "lineCount": 5,
     "betLevel": 10,
     "amounts": [
-      10,
-      50,
-      100,
-      500,
-      1000
+      2000,
+      20000,
+      200000,
+      1000000
     ],
-    "default": 10
+    "default": 2000
   }
 ]
