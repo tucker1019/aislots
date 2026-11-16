@@ -42,7 +42,7 @@ func TestVerifiedAG3BatchAndBetPolicyAreEnabled(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if policy.AmountScale != 2 || policy.LineCount != 20 || policy.BetLevel != 10 || policy.Default != 10 || !reflect.DeepEqual(policy.Amounts, []int64{10, 50, 100, 500, 1000}) {
+			if policy.AmountScale != 2 || policy.LineCount != 20 || policy.BetLevel != 10 || policy.Default != 500 || !reflect.DeepEqual(policy.Amounts, []int64{500, 5000, 10000, 50000}) {
 				t.Fatalf("wrong AG3 policy: %+v", policy)
 			}
 			rules, _ := catalog.Resolve("AG3", "")
