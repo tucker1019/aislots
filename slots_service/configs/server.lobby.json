@@ -41,7 +41,9 @@
     "http://localhost:5187",
     "http://127.0.0.1:5190",
     "http://localhost:5190",
-    "http://localhost:5189"
+    "http://localhost:5189",
+    "http://127.0.0.1:5191",
+    "http://localhost:5191"
   ],
   "games": [
     {
@@ -181,6 +183,12 @@
       "baseLibraryDir": "../testdata/deployments/2026-11-15-ag8/AG8/base-library",
       "freeLibraryDir": "../testdata/deployments/2026-11-15-ag8/AG8/free-library",
       "current": true
+    },
+    {
+      "configDir": "../testdata/deployments/2026-11-15-ag9/AG9",
+      "baseLibraryDir": "../testdata/deployments/2026-11-15-ag9/AG9/base-library",
+      "freeLibraryDir": "../testdata/deployments/2026-11-15-ag9/AG9/free-library",
+      "current": true
     }
   ],
   "lobby": {
@@ -198,7 +206,8 @@
       "AG5",
       "AG6",
       "AG7",
-      "AG8"
+      "AG8",
+      "AG9"
     ]
   }
 }
