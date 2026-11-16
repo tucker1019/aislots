@@ -1,5 +1,5 @@
 import {spawnSync} from 'node:child_process';import fs from 'node:fs';
-const creator=process.env.COCOS_CREATOR || '/Applications/Cocos/Creator/3.8.8/CocosCreator.app/Contents/MacOS/CocosCreator';
+const creator=process.env.COCOS_CREATOR || '/Applications/Cocos/Creator/3.8.5/CocosCreator.app/Contents/MacOS/CocosCreator';
 const root=new URL('../',import.meta.url).pathname;
 const result=spawnSync(creator,['--project',root,'--build',`configPath=${root}buildConfig_web-mobile.json;platform=web-mobile;debug=true;md5Cache=true`],{encoding:'utf8',maxBuffer:32*1024*1024});
 const output=(result.stdout||'')+(result.stderr||'');fs.writeFileSync(new URL('../.build.log',import.meta.url),output);

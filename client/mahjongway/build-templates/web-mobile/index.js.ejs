@@ -30,11 +30,24 @@ setLoadingProgress(8);
 window.addEventListener('aislots-board-ready', () => setLoadingProgress(100), { once: true });
 window.addEventListener('aislots-loading-progress', event => setLoadingProgress(event.detail?.progress || 0));
 
+// effect.bin has a fixed filename although its format depends on the engine.
+// Couple its cache key to the hashed settings file to prevent mixed builds.
+function versionPipelineCache(engine, settingsPath) {
+    engine.game.onPostBaseInitDelegate.add(() => {
+        const effectPath = engine.settings.querySettings('rendering', 'effectSettingsPath');
+        if (typeof effectPath !== 'string' || !effectPath) return;
+        const separator = effectPath.includes('?') ? '&' : '?';
+        engine.settings.overrideSettings('rendering', 'effectSettingsPath',
+            `${effectPath}${separator}build=${encodeURIComponent(settingsPath)}`);
+    });
+}
+
 topLevelImport('cc')
 .then((engine) => {
     cocosEngine = engine;
     setLoadingProgress(22);
     engine.macro.ENABLE_TRANSPARENT_CANVAS = true;
+    versionPipelineCache(engine, application.settingsPath);
     return application.init(engine);
 }).then(() => {
     setLoadingProgress(38);
