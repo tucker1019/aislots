@@ -1,0 +1,42 @@
+export let FTGameEvent = {
+
+    LOAD_PROGRESS: "LOAD_PROGRESS",
+    LOAD_RES_END: "LOAD_RES_END",
+
+    LOGIN: "LOGIN",
+    ENTER_GAME: "ENTER_GAME",
+    GAME_BIT: "GAME_BIT",
+    // GAME_RESULT: "GAME_RESULT",
+    SELECT_ROOM: "SELECT_ROOM",
+    GAME_CUR_INFO: "GAME_CUR_INFO", // 房间可以开始了
+    ONE_ROUND_PLAY_END: "ONE_ROUND_PLAY_END", // 一轮结束
+
+    STOP_CELL_ROLL: "STOP_CELL_ROLL",//手动停止滚动
+    CHANGE_ROLL_SPEED: "CHANGE_ROLL_SPEED",//改变滚动速度
+
+    HIDE_LOAD_UI: "HIDE_LOAD_UI",
+
+
+  
+    // ONE_ROUND_OPT_BTN : "ONE_ROUND_OPT_BTN", // 一轮结束后按钮的转态
+
+    GET_ROOM_LIST: "GET_ROOM_LIST", // 获取游戏房间
+    UPDATE_PLAYER_GOLD: "UPDATE_PLAYER_GOLD", // 更新玩家金币数量
+
+    EXPAND_USER_LIST: "EXPAND_USER_LIST", // 展现用户列表框 
+    UPDATE_TOP_USER: "UPDATE_TOP_USER", // 更新上面的用户信息
+    UPDATE_PLOT_NUM: "UPDATE_PLOT_NUM", // 更新奖池
+    GET_NEW_PLOT_USER: "GET_NEW_PLOT_USER", // 新增一个金币池子用户
+    LEAVE_ROOM: "LEAVE_ROOM", // 离开房间消息
+    LEVE_ROOM_TO_HALL: "LEVE_ROOM_TO_HALL", // 踢出到大厅
+
+    SET_AWARD_NUM: "SET_AWARD_NUM",
+
+    // 
+    USER_GOLD_TO_TARGET: "USER_GOLD_TO_TARGET", // 玩家金币滚动更新 
+
+    // 
+    ALL_STOP_TWEEN: "ALL_STOP_TWEEN",
+
+}
+
