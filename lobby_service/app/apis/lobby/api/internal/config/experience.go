@@ -8,6 +8,11 @@ import (
 )
 
 type ExperienceConfig struct {
+	InitialCoinsMin   *int64           `json:"initialCoinsMin,omitempty"`
+	InitialCoinsMax   *int64           `json:"initialCoinsMax,omitempty"`
+	InitialCoinsStep  *int64           `json:"initialCoinsStep,omitempty"`
+	BetDivisorMin     *int             `json:"betDivisorMin,omitempty"`
+	BetDivisorMax     *int             `json:"betDivisorMax,omitempty"`
 	GameWeights       map[string]int64 `json:"gameWeights,omitempty"`
 	StopEveryRounds   *int             `json:"stopEveryRounds,omitempty"`
 	StopChancePercent *int             `json:"stopChancePercent,omitempty"`
@@ -40,6 +45,14 @@ func LoadExperience(path string) (ExperienceConfig, error) {
 	if c.CreateMinSeconds < 1 || c.CreateMaxSeconds < c.CreateMinSeconds || c.PlayMinSeconds < 1 || c.PlayMaxSeconds < c.PlayMinSeconds || c.CreateMaxSeconds > 86400 || c.PlayMaxSeconds > 86400 {
 		return c, fmt.Errorf("invalid experience timing")
 	}
+	min, max, step, divisorMin, divisorMax := c.FundingPolicy()
+	const maxSafeAmount int64 = 9007199254740991
+	if min < 1 || max < min || max > maxSafeAmount || step < 1 || step > maxSafeAmount || (max-min)%step != 0 {
+		return c, fmt.Errorf("initial coins require 0 < min <= max <= %d and a positive step dividing max-min", maxSafeAmount)
+	}
+	if divisorMin < 1 || divisorMax < divisorMin || divisorMax > 1000000 {
+		return c, fmt.Errorf("bet divisors require 1 <= min <= max <= 1000000")
+	}
 
 	if c.StopEveryRounds != nil && (*c.StopEveryRounds < 1 || *c.StopEveryRounds > 1000000) {
 		return c, fmt.Errorf("stopEveryRounds must be between 1 and 1000000")
@@ -56,6 +69,28 @@ func LoadExperience(path string) (ExperienceConfig, error) {
 		}
 	}
 	return c, nil
+}
+
+// FundingPolicy preserves the previous behavior for already-published documents
+// that do not yet include the optional funding fields. All amounts are minor units.
+func (c ExperienceConfig) FundingPolicy() (min, max, step int64, divisorMin, divisorMax int) {
+	min, max, step, divisorMin, divisorMax = 10000, 1000000, 10000, 100, 300
+	if c.InitialCoinsMin != nil {
+		min = *c.InitialCoinsMin
+	}
+	if c.InitialCoinsMax != nil {
+		max = *c.InitialCoinsMax
+	}
+	if c.InitialCoinsStep != nil {
+		step = *c.InitialCoinsStep
+	}
+	if c.BetDivisorMin != nil {
+		divisorMin = *c.BetDivisorMin
+	}
+	if c.BetDivisorMax != nil {
+		divisorMax = *c.BetDivisorMax
+	}
+	return
 }
 
 func (c ExperienceConfig) Weights() map[string]int64 {

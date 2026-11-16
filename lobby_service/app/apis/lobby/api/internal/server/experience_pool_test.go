@@ -50,3 +50,28 @@ func TestExperienceGameSelectionAndStopPolicy(t *testing.T) {
 		}
 	}
 }
+
+func TestExperienceFundingUsesConfiguredRangeAndLegalStake(t *testing.T) {
+	min, max, step := int64(5000000), int64(10000000), int64(1000000)
+	low, high := 20, 50
+	cfg := config.ExperienceConfig{InitialCoinsMin: &min, InitialCoinsMax: &max, InitialCoinsStep: &step, BetDivisorMin: &low, BetDivisorMax: &high}
+	policy := experiencePolicy{Amounts: []int64{1000, 5000}, LineCount: 20, BetLevel: 10}
+	for _, upper := range []bool{false, true} {
+		calls := 0
+		initial, bet, level := experienceFunding(cfg, policy, func(a, b int) int {
+			calls++
+			if upper {
+				return b
+			}
+			return a
+		})
+		expected, divisor := min, low
+		if upper {
+			expected, divisor = max, high
+		}
+		wantBet, wantLevel := nearestExperienceBet(policy.Amounts, policy.LineCount, policy.BetLevel, expected/int64(divisor))
+		if initial != expected || bet != wantBet || level != wantLevel || calls != 2 {
+			t.Fatalf("unexpected funding: %d %d %d calls=%d", initial, bet, level, calls)
+		}
+	}
+}

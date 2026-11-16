@@ -173,11 +173,17 @@ func createExperienceAccount(ctx context.Context, c config.Config, cfg config.Ex
 	if err != nil {
 		return err
 	}
-	initial := int64(secureRange(1, 100)) * 10000
-	target := initial / int64(secureRange(100, 300))
-	bet, level := nearestExperienceBet(policy.Amounts, policy.LineCount, policy.BetLevel, target)
+	initial, bet, level := experienceFunding(cfg, policy, secureRange)
 	if bet < 1 {
 		return fmt.Errorf("no legal experience stake for %s", gameID)
 	}
 	return m.CreateScheduled(ctx, time.Now().UTC(), initial, bet, level, gameID, c.Game.Country, c.Game.Currency, time.Duration(secureRange(cfg.CreateMinSeconds, cfg.CreateMaxSeconds))*time.Second)
+}
+
+func experienceFunding(cfg config.ExperienceConfig, policy experiencePolicy, draw func(int, int) int) (initial, bet int64, level int) {
+	min, max, step, divisorMin, divisorMax := cfg.FundingPolicy()
+	initial = min + int64(draw(0, int((max-min)/step)))*step
+	target := initial / int64(draw(divisorMin, divisorMax))
+	bet, level = nearestExperienceBet(policy.Amounts, policy.LineCount, policy.BetLevel, target)
+	return
 }

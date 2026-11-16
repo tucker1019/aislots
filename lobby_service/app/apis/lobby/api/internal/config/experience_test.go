@@ -59,3 +59,39 @@ func TestExperienceWeightsAndStopSettings(t *testing.T) {
 		t.Fatal(cfg)
 	}
 }
+
+func TestExperienceFundingConfiguration(t *testing.T) {
+	p := filepath.Join(t.TempDir(), "experience.json")
+	base := `{"enabled":false,"createMinSeconds":30,"createMaxSeconds":120,"playMinSeconds":10,"playMaxSeconds":30`
+	for _, tc := range []struct {
+		name, suffix string
+		valid        bool
+	}{
+		{"legacy", `}`, true},
+		{"custom", `,"initialCoinsMin":5000000,"initialCoinsMax":10000000,"initialCoinsStep":1000000,"betDivisorMin":20,"betDivisorMax":50}`, true},
+		{"fixed", `,"initialCoinsMin":50000,"initialCoinsMax":50000,"initialCoinsStep":100,"betDivisorMin":20,"betDivisorMax":20}`, true},
+		{"zero balance", `,"initialCoinsMin":0}`, false},
+		{"reversed balance", `,"initialCoinsMin":2000000}`, false},
+		{"zero step", `,"initialCoinsStep":0}`, false},
+		{"unaligned range", `,"initialCoinsStep":9999}`, false},
+		{"unsafe amount", `,"initialCoinsMax":9007199254740992}`, false},
+		{"zero divisor", `,"betDivisorMin":0}`, false},
+		{"reversed divisor", `,"betDivisorMin":301}`, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := os.WriteFile(p, []byte(base+tc.suffix), 0600); err != nil {
+				t.Fatal(err)
+			}
+			cfg, err := LoadExperience(p)
+			if (err == nil) != tc.valid {
+				t.Fatalf("valid=%v err=%v", tc.valid, err)
+			}
+			if err == nil && tc.name == "legacy" {
+				min, max, step, dmin, dmax := cfg.FundingPolicy()
+				if min != 10000 || max != 1000000 || step != 10000 || dmin != 100 || dmax != 300 {
+					t.Fatal("legacy funding changed")
+				}
+			}
+		})
+	}
+}

@@ -1,62 +1,62 @@
 [
   {
     "id": "withdrawal_50",
-    "amount": 5000,
-    "fee": 150,
-    "bonus": 0
+    "fee": 250000,
+    "bonus": 0,
+    "amount": 5000000
   },
   {
     "id": "withdrawal_100",
-    "amount": 10000,
-    "fee": 0,
-    "bonus": 0
+    "fee": 200000,
+    "bonus": 0,
+    "amount": 10000000
   },
   {
     "id": "withdrawal_200",
-    "amount": 20000,
     "fee": 0,
-    "bonus": 200
+    "bonus": 200000,
+    "amount": 20000000
   },
   {
     "id": "withdrawal_300",
-    "amount": 30000,
     "fee": 0,
-    "bonus": 300
+    "bonus": 300000,
+    "amount": 30000000
   },
   {
     "id": "withdrawal_500",
-    "amount": 50000,
     "fee": 0,
-    "bonus": 500
+    "bonus": 500000,
+    "amount": 50000000
   },
   {
     "id": "withdrawal_1000",
-    "amount": 100000,
     "fee": 0,
-    "bonus": 1000
+    "bonus": 1000000,
+    "amount": 100000000
   },
   {
     "id": "withdrawal_2000",
-    "amount": 200000,
     "fee": 0,
-    "bonus": 6000
+    "bonus": 6000000,
+    "amount": 200000000
   },
   {
     "id": "withdrawal_3000",
-    "amount": 300000,
     "fee": 0,
-    "bonus": 9000
+    "bonus": 9000000,
+    "amount": 300000000
   },
   {
     "id": "withdrawal_5000",
-    "amount": 500000,
     "fee": 0,
-    "bonus": 15000
+    "bonus": 15000000,
+    "amount": 500000000
   },
   {
     "id": "withdrawal_10000",
-    "amount": 1000000,
     "fee": 0,
-    "bonus": 30000
+    "bonus": 30000000,
+    "amount": 1000000000
   }
 ]

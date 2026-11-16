@@ -1,13 +1,19 @@
 {
   "enabled": true,
-  "createMinSeconds": 30,
-  "createMaxSeconds": 120,
-  "playMinSeconds": 10,
-  "playMaxSeconds": 30,
   "gameWeights": {
     "AG1": 1,
-    "AG2": 1
+    "AG2": 1,
+    "AG3": 1
   },
-  "stopEveryRounds": 50,
+  "betDivisorMax": 1000,
+  "betDivisorMin": 500,
+  "playMaxSeconds": 100,
+  "playMinSeconds": 50,
+  "initialCoinsMax": 10000000000,
+  "initialCoinsMin": 20000000,
+  "stopEveryRounds": 25,
+  "createMaxSeconds": 400,
+  "createMinSeconds": 300,
+  "initialCoinsStep": 10000000,
   "stopChancePercent": 20
 }
