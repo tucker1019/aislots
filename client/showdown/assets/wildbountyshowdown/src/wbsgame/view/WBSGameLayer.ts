@@ -180,7 +180,7 @@ export class WBSGameLayer extends WBSBaseLayer {
         if (WBSSTATE.READY == wbsgame.gameMgr.getState() && this.isGameEnd) {
             wbsgame.sendMgr.sendRequestExitRoom();
         } else {
-            void wbsgame.loadMgr.showAlert('游戏尚未结束', undefined, '请等待本局结束后再退出。');
+            void wbsgame.loadMgr.showAlert("Game Belum Selesai", undefined, "Tunggu putaran ini selesai sebelum keluar.");
         }
 
     }
@@ -318,7 +318,7 @@ export class WBSGameLayer extends WBSBaseLayer {
         this.isGameEnd = true;
         this.optCtrl.updateBtnState(false);
         this.myGoldBottom.string = '******';
-        this.replayControls?.done(wbsgame.sendMgr.replaySession.data.bet.status === 'complete' ? '回放结束' : '已播放全部已结算盘面');
+        this.replayControls?.done(wbsgame.sendMgr.replaySession.data.bet.status === 'complete' ? "Rekaman selesai" : "Seluruh hasil yang telah diselesaikan sudah diputar.");
     }
 
     openRules() {

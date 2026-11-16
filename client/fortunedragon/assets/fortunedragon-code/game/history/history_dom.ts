@@ -17,13 +17,13 @@ export function button(text: string, action: () => void, className = '') {
 export function notice(host: HTMLElement, message: string, retry?: () => void) {
     const box = el('div', 'history-notice');
     box.append(el('p', '', message));
-    if (retry) box.append(button('重试', retry, 'history-pill'));
+    if (retry) box.append(button("Coba lagi", retry, 'history-pill'));
     host.append(box);
 }
 export function errorText(error: unknown) {
     if (error && typeof error === 'object' && 'status' in error && error.status === 401)
-        return '登录已失效，请关闭记录页后重新进入游戏';
-    return error instanceof Error ? error.message : '加载失败，请重试';
+        return "Sesi berakhir. Tutup riwayat dan masuk kembali ke game.";
+    return error instanceof Error ? error.message : "Gagal memuat. Silakan coba lagi.";
 }
 
 /** 将键盘焦点保留在记录弹层内。 */

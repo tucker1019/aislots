@@ -11,24 +11,24 @@ export async function loadReplay(
     let cursor: string;
     const cursors = new Set<string>();
     do {
-        if (!isCurrent()) throw new Error('回放已取消');
+        if (!isCurrent()) throw new Error("Rekaman dibatalkan.");
         const page = await api.historyReplay(betId, cursor);
-        if (!isCurrent()) throw new Error('回放已取消');
+        if (!isCurrent()) throw new Error("Rekaman dibatalkan.");
         if (page.bet.betId !== betId || page.frames.some(frame => frame.betId !== betId))
-            throw new Error('回放交易不一致');
+            throw new Error("Transaksi rekaman tidak cocok.");
         if (!result) result = { ...page, frames: [] };
         for (const frame of page.frames) {
             const previous = result.frames[result.frames.length - 1];
             if (previous && (frame.spinIndex < previous.spinIndex ||
                 (frame.spinIndex === previous.spinIndex && frame.stepIndex <= previous.stepIndex)))
-                throw new Error('回放盘面顺序无效');
+                throw new Error("Urutan hasil rekaman tidak valid.");
             result.frames.push(frame);
         }
         cursor = page.nextCursor;
-        if (cursor && cursors.has(cursor)) throw new Error('回放分页游标重复');
+        if (cursor && cursors.has(cursor)) throw new Error("Halaman rekaman berulang.");
         if (cursor) cursors.add(cursor);
     } while (cursor);
-    if (!result.frames.length) throw new Error('暂无已结算盘面');
+    if (!result.frames.length) throw new Error("Belum ada hasil yang diselesaikan.");
     return { ...result, nextCursor: undefined };
 }
 

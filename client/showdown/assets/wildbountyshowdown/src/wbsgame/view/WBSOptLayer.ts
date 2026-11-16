@@ -139,7 +139,7 @@ export class WBSOptLayer extends Component {
         if (wbsgame.gameMgr.getState() == WBSSTATE.READY && this.gameCtrl.isGameEnd) {
             wbsgame.sendMgr.sendRequestExitRoom();
         } else {
-            void wbsgame.loadMgr.showAlert('游戏尚未结束', undefined, '请等待本局结束后再退出。');
+            void wbsgame.loadMgr.showAlert("Game Belum Selesai", undefined, "Tunggu putaran ini selesai sebelum keluar.");
         }
     }
     onSoundBtnClick() {
@@ -294,7 +294,7 @@ export class WBSOptLayer extends Component {
                 this.playStopShow();
             }
         } else {
-            void wbsgame.loadMgr.showAlert('余额不足', undefined, '请充值后再试。');
+            void wbsgame.loadMgr.showAlert("Saldo Tidak Cukup", undefined, "Silakan deposit lalu coba lagi.");
             wbsgame.gameMgr.setAudoNum(0);
             this.updateBtnState(true)
         }

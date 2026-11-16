@@ -13,9 +13,17 @@ export function money(raw: string, scale = 0, _currency = 'IDR') {
     const negative = value < 0n;
     if (negative) value = -value;
     const unit = decimalUnit(Math.max(0, Math.min(9, scale)));
-    const integer = (value / unit).toLocaleString('en-US');
-    const decimals = scale ? '.' + (value % unit).toString().padStart(scale, '0') : '';
-    return (negative ? '−' : '') + integer + decimals;
+    const whole = value / unit;
+    return (negative && whole !== 0n ? '−' : '') + whole.toLocaleString('id-ID');
+}
+/** Currency fractions are truncated only for display; multiplier fractions stay precise. */
+export function moneyFraction(raw: string, scale = 0) {
+    try {
+        const [numerator, denominator = '1'] = raw.split('/');
+        const divisor = BigInt(denominator) * decimalUnit(scale);
+        if (divisor === 0n) return '—';
+        return (BigInt(numerator) / divisor).toLocaleString('id-ID');
+    } catch { return '—'; }
 }
 export function fraction(raw: string, decimals = 4, scale = 0) {
     const [a, b = '1'] = raw.split('/');
@@ -51,7 +59,7 @@ export function dateRange(start: string, end: string) {
         endDay < from ||
         +endDay - +from > 6 * 86400000
     )
-        throw new Error('请选择连续1至7天，结束日期不能早于开始日期');
+        throw new Error("Pilih 1–7 hari berturut-turut. Tanggal akhir tidak boleh sebelum tanggal mulai.");
     return { from: from.toISOString(), to: new Date(+endDay + 86400000).toISOString() };
 }
 export function recentDates(days: number, now = Date.now()) {
@@ -83,15 +91,15 @@ export function gameBounds(
     };
 }
 export const symbolNames: Record<number, string> = {
-    1: '三饼',
-    2: '二条',
-    3: '二饼',
-    4: '五条',
-    5: '五饼',
-    6: '八万',
-    7: '白板',
-    8: '中',
-    9: '发',
-    10: '百搭',
-    11: '胡',
+    1: "Tiga lingkaran",
+    2: "Dua bambu",
+    3: "Dua lingkaran",
+    4: "Lima bambu",
+    5: "Lima lingkaran",
+    6: "Delapan karakter",
+    7: "Naga putih",
+    8: "Naga merah",
+    9: "Naga hijau",
+    10: "Wild",
+    11: "Scatter",
 };

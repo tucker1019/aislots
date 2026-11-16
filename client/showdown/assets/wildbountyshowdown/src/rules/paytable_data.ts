@@ -1,49 +1,49 @@
 // 仅展示用户提供的赔率与规则，不修改游戏配置或结算。
 export const PAYOUTS = [
-    {id:1,name:'蒙面牛仔',values:[10,20,30,50]},
-    {id:2,name:'左轮手枪',values:[8,15,20,30]},
-    {id:3,name:'牛仔帽',values:[5,10,15,20]},
-    {id:4,name:'威士忌',values:[5,10,15,20]},
+    {id:1,name:"Bandit Bertopeng",values:[10,20,30,50]},
+    {id:2,name:"Revolver",values:[8,15,20,30]},
+    {id:3,name:"Topi Koboi",values:[5,10,15,20]},
+    {id:4,name:"Wiski",values:[5,10,15,20]},
     {id:5,name:'A',values:[2,4,6,10]},
     {id:6,name:'K',values:[2,4,6,10]},
     {id:7,name:'Q',values:[1,2,3,5]},
     {id:8,name:'J',values:[1,2,3,5]},
 ];
-export const SYMBOL_NOTES = ['Wild（百搭）可替代除 Scatter（免费图标）之外的所有符号。','金框符号只会出现在第3轴和第4轴。'];
+export const SYMBOL_NOTES = ["Wild menggantikan semua simbol kecuali Scatter.","Simbol berbingkai emas hanya muncul pada gulungan 3 dan 4."];
 export const SECTIONS = [
-    {id:'gold',title:'金框符号',items:[
-        '任意旋转中，第3轴和／或第4轴的部分符号可能带有金框，Wild 和 Scatter 除外。',
-        '新符号下落后，每个新一轮中，上一轮参与中奖的金框符号都会转换为 Wild。',
+    {id:'gold',title:"Simbol Berbingkai Emas",items:[
+        "Pada putaran apa pun, beberapa simbol pada gulungan 3 dan/atau 4 dapat berbingkai emas, kecuali Wild dan Scatter.",
+        "Setelah simbol baru jatuh, simbol berbingkai emas yang menang pada putaran sebelumnya berubah menjadi Wild.",
     ]},
-    {id:'multiplier',title:'中奖倍数',items:[
-        '主游戏的每次旋转均从 ×1 开始。',
-        '任意旋转中，只要出现一个或多个中奖符号，在支付奖金并落下新符号后，中奖倍数就会翻倍。',
-        '中奖倍数最高为 ×1,024。',
+    {id:'multiplier',title:"Pengali Kemenangan",items:[
+        "Setiap putaran game utama dimulai dari ×1.",
+        "Jika ada simbol menang, pengali kemenangan berlipat dua setelah pembayaran dan simbol baru jatuh.",
+        "Pengali kemenangan maksimum adalah ×1.024.",
     ]},
-    {id:'free',title:'免费旋转',items:[
-        '任意位置出现3个 Scatter 即可触发10次免费旋转；每多出现1个 Scatter，再增加2次免费旋转。',
-        '每次免费旋转均从 ×8 开始。',
-        '免费旋转中，只要出现一个或多个中奖符号，在支付奖金并落下新符号后，中奖倍数就会翻倍。',
-        '免费旋转可以再次触发。',
+    {id:'free',title:"Putaran Gratis",items:[
+        "3 Scatter di posisi mana pun memicu 10 putaran gratis. Setiap Scatter tambahan memberikan 2 putaran gratis lagi.",
+        "Setiap putaran gratis dimulai dari ×8.",
+        "Dalam putaran gratis, pengali berlipat dua setelah simbol menang dibayar dan simbol baru jatuh.",
+        "Putaran gratis dapat dipicu ulang.",
     ]},
-    {id:'maximum',title:'最高赢奖',items:[
-        '最高赢奖为总投注金额的5,000倍。',
-        '主游戏或免费旋转功能中的累计奖金达到总投注金额的5,000倍时，该次旋转结束。',
+    {id:'maximum',title:"Kemenangan Maksimum",items:[
+        "Kemenangan maksimum adalah 5.000× total taruhan.",
+        "Putaran berakhir ketika total kemenangan game utama atau putaran gratis mencapai 5.000× total taruhan.",
     ]},
-    {id:'buy',title:'购买功能',items:[
-        '点击“购买功能”按钮，打开购买功能菜单。',
-        '点击“开始”按钮，按菜单显示的价格购买免费旋转功能。',
+    {id:'buy',title:"Beli Fitur",items:[
+        "Ketuk Beli Fitur untuk membuka menu pembelian.",
+        "Ketuk Mulai untuk membeli putaran gratis dengan harga yang ditampilkan.",
     ]},
-    {id:'ways',title:'3,600 Ways 中奖方式',items:[
-        '中奖符号从最左轴起，向右在相邻转轴连续出现，即可形成中奖方式。',
-        '每种符号的中奖方式总数，等于从左向右各相邻轴上该中奖符号数量的乘积。',
-        '上图示例：2 × 2 × 2 = 8 种中奖方式。',
-        '该符号的赔付值乘以中奖方式数量，即为该组合的赔付。',
-        '示例中，3轴蒙面牛仔赔付为10，因此 10 × 8 = 80。',
+    {id:'ways',title:"3.600 Cara Menang",items:[
+        "Simbol menang harus muncul pada gulungan berurutan dari paling kiri ke kanan.",
+        "Jumlah cara menang adalah hasil perkalian jumlah simbol tersebut pada setiap gulungan berurutan dari kiri ke kanan.",
+        "Contoh di atas: 2 × 2 × 2 = 8 cara menang.",
+        "Pembayaran simbol dikalikan jumlah cara menang untuk menentukan kemenangan kombinasi tersebut.",
+        "Dalam contoh ini, Bandit Bertopeng pada 3 gulungan membayar 10, sehingga 10 × 8 = 80.",
     ]},
-    {id:'cascade',title:'连续消除与结算',items:[
-        '每一轮支付奖金后，所有中奖符号会消除，让上方符号落下并开始新一轮。',
-        '每轮继续计算新的中奖组合，直到没有新的中奖组合为止。',
-        '所有中奖结果均以现金金额显示。',
+    {id:'cascade',title:"Runtuhan dan Pembayaran",items:[
+        "Setelah pembayaran, semua simbol menang dihapus agar simbol di atas jatuh dan memulai runtuhan baru.",
+        "Kombinasi menang baru dihitung hingga tidak ada lagi kemenangan.",
+        "Semua kemenangan ditampilkan dalam nilai uang.",
     ]},
 ] as const;

@@ -22,10 +22,10 @@ const CSS = `
 #ag3-paytable .pay-column .pay-symbol.match{border:1px solid #c79b52;background:#56422b}
 #ag3-paytable .buy-illustration{border:1px solid #bd9151;background:linear-gradient(#74552c,#483324);border-radius:.6em;padding:1em;text-align:center;color:#efcd8f;margin:1em 0}
 `;
-const names: Record<number,string>={1:'蒙面牛仔',2:'左轮手枪',3:'牛仔帽',4:'威士忌',5:'A',6:'K',7:'Q',8:'J',9:'Wild 百搭',10:'Scatter 免费图标'};
+const names: Record<number,string>={1:"Bandit Bertopeng",2:"Revolver",3:"Topi Koboi",4:"Wiski",5:'A',6:'K',7:'Q',8:'J',9:"Wild",10:"Scatter"};
 export class Ag3PaytablePage extends RulesPage {
     constructor(canvas:HTMLCanvasElement,image:(symbol:number)=>string) {
-        super(canvas,{title:'赔率表',id:'ag3-paytable',css:CSS,build:parent=>buildPaytable(parent,image)});
+        super(canvas,{title:"Tabel Pembayaran",id:'ag3-paytable',css:CSS,build:parent=>buildPaytable(parent,image)});
     }
 }
 function buildPaytable(parent:HTMLElement,image:(symbol:number)=>string) {
@@ -34,7 +34,7 @@ function buildPaytable(parent:HTMLElement,image:(symbol:number)=>string) {
         const wrap=el('span','pay-symbol'+(id>=1000?' gold':''));
         const img=el('img');img.alt=names[id%1000]||String(id);const src=image(id);if(src)img.src=src;wrap.append(img);return wrap;
     };
-    const intro=section('符号赔率'),specials=el('div','pay-visual');
+    const intro=section("Pembayaran Simbol"),specials=el('div','pay-visual');
     for(const id of [9,10]){const item=el('div','pay-caption');item.append(symbol(id),el('div','',names[id]));specials.append(item);}intro.append(specials);
     const grid=el('div','pay-grid');
     for(const payout of PAYOUTS){const card=el('div','pay-card'),values=el('div','pay-values');
@@ -48,7 +48,7 @@ function buildPaytable(parent:HTMLElement,image:(symbol:number)=>string) {
         if(rule.id==='multiplier'||rule.id==='free'){
             const bar=el('div','pay-factors');for(const text of (rule.id==='free'?['×8','→','×16','→','×32','…','×1,024']:['×1','→','×2','→','×4','…','×1,024']))bar.append(el(text.startsWith('×')?'b':'span','',text));block.append(bar);
         }
-        if(rule.id==='buy')block.append(el('div','buy-illustration','购买免费旋转'));
+        if(rule.id==='buy')block.append(el('div','buy-illustration',"Beli Putaran Gratis"));
         if(rule.id==='ways'){
             const visual=el('div','pay-ways');
             [3,4,5,5,4,3].forEach((height,c)=>{const column=el('div','pay-column');for(let r=0;r<height;r++){const match=c<3&&r<2,cell=symbol(match?1:((r+c)%7+2));if(match)cell.classList.add('match');column.append(cell);}visual.append(column);});

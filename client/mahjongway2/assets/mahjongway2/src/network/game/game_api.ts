@@ -81,7 +81,7 @@ export class GameApi {
                 const res = body
                     ? await client.post<any>(path, body, requestConfig)
                     : await client.get<any>(path, requestConfig);
-                if (res.data?.code !== 'OK') throw new Error(res.data?.message || '服务端响应无效');
+                if (res.data?.code !== 'OK') throw new Error(res.data?.message || "Respons server tidak valid.");
                 return res.data.data as T;
             });
     }
@@ -89,17 +89,17 @@ export class GameApi {
         const launch = this.launch.request();
         if (launch) {
             const data = await this.request<{ accessToken: string; balance: string }>('/login', { ...launch, gameId: this.identity.gameId });
-            if (typeof data.accessToken !== 'string' || !data.accessToken) throw new Error('游戏登录响应无效');
+            if (typeof data.accessToken !== 'string' || !data.accessToken) throw new Error("Respons login game tidak valid.");
             this.token = data.accessToken; this.launch.save(this.token); return data;
         }
         const saved = this.launch.read();
         if (saved.live) {
-            if (!saved.token || typeof saved.token !== 'string') throw new Error('游戏会话已失效，请从大厅重新进入');
+            if (!saved.token || typeof saved.token !== 'string') throw new Error("Sesi game berakhir. Silakan masuk kembali dari lobi.");
             this.token = saved.token;
             try { const state = await this.state(); this.launch.clearTicketURL(); return { accessToken: this.token, balance: state.balance }; }
             catch (error) {
                 if ((error as { status?: number }).status === 401) {
-                    this.token = ''; this.launch.expire(); throw new Error('游戏会话已失效，请从大厅重新进入');
+                    this.token = ''; this.launch.expire(); throw new Error("Sesi game berakhir. Silakan masuk kembali dari lobi.");
                 }
                 throw error;
             }
@@ -164,7 +164,7 @@ export class GameApi {
             if ((error as any)?.status === 409) {
                 this.pending = null;
                 const progress = await this.state();
-                throw Object.assign(new Error('游戏状态已在其他窗口更新，已同步，请重新点击旋转'), {
+                throw Object.assign(new Error("Status game diperbarui di jendela lain dan telah disinkronkan. Ketuk putar kembali."), {
                     progress,
                 });
             }
@@ -173,7 +173,7 @@ export class GameApi {
                 frame = await this.request<Frame>(this.route + '/spin', this.pending, this.token);
             } else throw error;
         }
-        if (!frame.nextRequestId) throw new Error('服务端未返回下次请求标识');
+        if (!frame.nextRequestId) throw new Error("Server tidak mengirim identitas permintaan berikutnya.");
         this.next = frame.nextRequestId;
         this.pending = null;
         return frame;

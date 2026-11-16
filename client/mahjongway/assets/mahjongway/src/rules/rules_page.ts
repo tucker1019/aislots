@@ -25,8 +25,7 @@ function formatRuleAmount(raw: string) {
     try {
         const value = BigInt(raw);
         const whole = value / 100n;
-        const fraction = (value % 100n).toString().padStart(2, '0');
-        return whole.toLocaleString('en-US') + '.' + fraction;
+        return whole.toLocaleString('id-ID');
     } catch { return raw; }
 }
 export interface RulePageContent {
@@ -79,17 +78,17 @@ export class RulesPage {
         const root = this.root = el('section', 'slot-history slot-rules' + (this.content ? ' slot-paytable' : ''));
         root.id = this.content?.id || 'slot-rules'; root.tabIndex = -1;
         root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true');
-        root.setAttribute('aria-label', this.content?.title || '游戏规则');
-        header(root, this.content?.title || '游戏规则', () => this.close(), {});
+        root.setAttribute('aria-label', this.content?.title || "Aturan Game");
+        header(root, this.content?.title || "Aturan Game", () => this.close(), {});
         const scroll = el('div', 'history-scroll'), copy = el('article', 'rules-copy');
         if (this.content) this.content.build(copy);
         else {
             RULE_SECTIONS.forEach(value => section(copy, value, 'h2'));
             const controls = el('section', 'rules-section');
-            controls.append(el('h2', '', '主游戏与按钮说明'));
+            controls.append(el('h2', '', "Game Utama dan Kontrol"));
             CONTROL_SECTIONS.forEach(value => {
                 const block = section(controls, value, 'h3');
-                if (value.title === '总投注') {
+                if (value.title === "Total Taruhan") {
                     const config = this.betConfig?.();
                     if (config?.bets.length && config.levels.length) {
                         const low = Math.min(...config.bets.map(Number));
@@ -97,14 +96,14 @@ export class RulesPage {
                         const lowText = formatRuleAmount(String(low));
                         const highText = formatRuleAmount(String(high));
                         block.querySelector('ul')?.append(el('li', '',
-                            `当前可选投注额：${lowText} 至 ${highText}；投注级别：${Math.min(...config.levels)} 至 ${Math.max(...config.levels)}；线路：${config.lineCount}。`,
+                            `Pilihan taruhan: ${lowText} hingga ${highText}; level taruhan: ${Math.min(...config.levels)} hingga ${Math.max(...config.levels)}; garis: ${config.lineCount}。`,
                         ));
                     }
                 }
             });
             copy.append(controls);
             const extra = el('section', 'rules-section');
-            extra.append(el('h2', '', '补充说明'));
+            extra.append(el('h2', '', "Informasi Tambahan"));
             ADDITIONAL_RULES.forEach(text => extra.append(el('p', '', text)));
             copy.append(extra);
         }

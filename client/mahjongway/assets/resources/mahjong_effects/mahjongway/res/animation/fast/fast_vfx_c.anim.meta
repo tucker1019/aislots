@@ -1,10 +1,10 @@
 {
-  "ver": "2.0.3",
+  "ver": "2.0.4",
   "importer": "animation-clip",
   "imported": true,
   "uuid": "4a0bb6b8-2a4a-4de0-aa2f-e86e9eb47244",
   "files": [
-    ".cconb"
+    ".bin"
   ],
   "subMetas": {},
   "userData": {

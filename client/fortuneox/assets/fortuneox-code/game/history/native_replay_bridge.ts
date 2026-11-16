@@ -2,9 +2,9 @@ import { historyReplayResponse } from './history_response';
 import type { HistoryReplay } from './history_types';
 import { replayMessage } from './replay_message';
 export function receiveNativeReplay(channel: string): Promise<HistoryReplay> {
-    if (window.parent === window || !channel) return Promise.reject(Error('回放入口无效'));
+    if (window.parent === window || !channel) return Promise.reject(Error("Tautan rekaman tidak valid."));
     return new Promise((resolve,reject)=>{
-        const timeout=window.setTimeout(()=>{window.removeEventListener('message',message);reject(Error('回放加载超时，请重新打开'));},20000);
+        const timeout=window.setTimeout(()=>{window.removeEventListener('message',message);reject(Error("Waktu pemuatan rekaman habis. Silakan buka kembali."));},20000);
         const message=(event:MessageEvent)=>{
             if(!replayMessage(event,window.parent,location.origin,channel,'ag7-replay-data'))return;
             clearTimeout(timeout);window.removeEventListener('message',message);
@@ -17,11 +17,11 @@ export function receiveNativeReplay(channel: string): Promise<HistoryReplay> {
 export function shareFromParent(channel: string): Promise<string> {
     return new Promise((resolve,reject)=>{
         const id=Array.from(crypto.getRandomValues(new Uint8Array(16)), n => n.toString(16).padStart(2,'0')).join('');
-        const timeout=window.setTimeout(()=>{window.removeEventListener('message',message);reject(Error('分享超时，请重试'));},15000);
+        const timeout=window.setTimeout(()=>{window.removeEventListener('message',message);reject(Error("Waktu berbagi habis. Silakan coba lagi."));},15000);
         const message=(event:MessageEvent)=>{
             if(!replayMessage(event,window.parent,location.origin,channel,'ag7-replay-share-result')||event.data.id!==id)return;
             clearTimeout(timeout);window.removeEventListener('message',message);
-            if(typeof event.data.url==='string')resolve(event.data.url);else reject(Error('分享失败，请重试'));
+            if(typeof event.data.url==='string')resolve(event.data.url);else reject(Error("Gagal berbagi. Silakan coba lagi."));
         };
         window.addEventListener('message',message);window.parent.postMessage({type:'ag7-replay-share',channel,id},location.origin);
     });

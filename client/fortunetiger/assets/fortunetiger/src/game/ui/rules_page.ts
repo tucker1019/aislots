@@ -86,8 +86,8 @@ export class RulesPage {
         root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true');
         root.setAttribute('aria-labelledby', 'ag4-paytable-title');
         const header = el('header', 'history-header');
-        const title = el('h1', '', '赔率表'); title.id = 'ag4-paytable-title';
-        header.append(button('返回', () => this.close(), 'history-back'), title);
+        const title = el('h1', '', "Tabel Pembayaran"); title.id = 'ag4-paytable-title';
+        header.append(button("Kembali", () => this.close(), 'history-back'), title);
         const scroll = el('div', 'history-scroll'), copy = el('article', 'rules-copy');
         copy.lang = 'id';
         RULE_SECTIONS.forEach(({ title, items }, index) => {

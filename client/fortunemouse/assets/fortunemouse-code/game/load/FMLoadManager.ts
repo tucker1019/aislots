@@ -59,7 +59,7 @@ export default class FMLoadManager {
     public loadScene(sceneName: string) {
         this.bundle.loadScene(sceneName, (err: Error, scene: SceneAsset) => {
             if (err) {
-                fmframe.log.logError(sceneName, "加载失败")
+                fmframe.log.logError(sceneName, "Gagal Memuat")
             }
             director.runScene(scene);
         })

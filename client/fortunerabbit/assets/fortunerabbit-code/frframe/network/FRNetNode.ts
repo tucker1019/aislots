@@ -225,7 +225,7 @@ export class FRNetNode {
         if (this.isAutoReconnect()) {
             this.updateNetTips(NetTipsType.ReConnecting, true);
             this._reconnectTimer = setTimeout(() => {
-                console.log("重新连接", JSON.stringify(this._connectOptions))
+                console.log("Hubungkan lagi", JSON.stringify(this._connectOptions))
                 this._socket && this._socket.close();
                 this._state = NetNodeState.Closed;
                 this.connect(this._connectOptions);
@@ -413,7 +413,7 @@ export class FRNetNode {
 
         this._receiveMsgTimer = setTimeout(() => {
             this._noHeartNum++;
-            console.log(this._noHeartNum + "次未收到心跳")
+            console.log(this._noHeartNum + " kali koneksi tidak merespons")
             if (this._noHeartNum >= 2) {
                 if (this._socket) this._socket.close();
                 FRLoadManager.ins?.showLoading();

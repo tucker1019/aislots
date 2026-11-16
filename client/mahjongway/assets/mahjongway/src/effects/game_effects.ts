@@ -108,7 +108,7 @@ export class GameEffects extends Component {
         board?.emit('flow-changed');
         // 倍率条由场景配置，直接绑定现有节点，保持编辑器设置的位置和层级。
         const multipliers = this.find(this.node, 'multipliers');
-        if (!multipliers) throw new Error('场景缺少 multipliers 倍率条节点');
+        if (!multipliers) throw new Error("Node multipliers tidak tersedia.");
         this.multipliers = new NativeEffect(multipliers);
     }
     /** 只替换按钮内部美术，保留场景已有点击绑定和可视化布局。 */
@@ -156,7 +156,7 @@ export class GameEffects extends Component {
                 if (visuals.status === 'fulfilled') visuals.value.forEach(({ asset }) => asset.decRef());
                 if (generation !== this.freeGeneration) return;
                 this.freeLoad = null;
-                throw new Error('免费资源加载失败');
+                throw new Error("Gagal memuat aset putaran gratis.");
             }
             this.freeAssets = visuals.value;
             for (const { name, asset } of this.freeAssets) EffectLibrary.prefabs.set(name, asset);
@@ -546,7 +546,7 @@ export class GameEffects extends Component {
         }
     }
     private popup(name: string, setup: (effect: NativeEffect) => void, seconds: number) {
-        if (this.popupFinish) throw new Error('演出重叠');
+        if (this.popupFinish) throw new Error("Animasi masih berlangsung.");
         this.overlay.active = true;
         this.overlay.setSiblingIndex(this.node.children.length - 1);
         let effect = this.popups.get(name);
@@ -702,7 +702,7 @@ export class GameEffects extends Component {
                     }).catch(() => {
                         if (this.popupFinish !== finish) return;
                         spinner.active = false;
-                        label.string = '加载失败，点击重试';
+                        label.string = "Gagal memuat. Ketuk untuk mencoba lagi.";
                         this.retryFreeLoad = load;
                     });
                 };
@@ -855,6 +855,6 @@ export function rollMoney(amount: string, progress: number) {
     );
     const negative = minor < 0n;
     const value = negative ? -minor : minor;
-    return (negative ? '-' : '') + (Number(value) / 100).toFixed(2);
+    return (minor / 100n).toLocaleString('id-ID');
 }
 export { bigWinType } from './big_win_progression';

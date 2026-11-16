@@ -152,16 +152,16 @@ export class FMGameLayerCtrl extends FMBaseNode {
             this.restoreFrame(this.current);
             if (this.replay) { this.handleAnimationError(error); return; }
             const expired = error.status === 401;
-            const message = expired ? '登录已过期，请从大厅重新进入。' : error.definitive ? error.message : '网络异常，请重试。';
+            const message = expired ? "Sesi berakhir. Silakan masuk kembali dari lobi." : error.definitive ? error.message : "Koneksi bermasalah. Silakan coba lagi.";
             if (special || expired || error.status === 409) {
-                const actions = [{label:'返回大厅', run: exitGame}];
-                if (!expired && error.status !== 409) actions.unshift({label:'重试', run: () => {
+                const actions = [{label:"Kembali ke lobi", run: exitGame}];
+                if (!expired && error.status !== 409) actions.unshift({label:"Coba lagi", run: () => {
                     this.centerRollCtrl.restoreSpecial();
                     this.centerRollCtrl.startSpecialRotation();
                     void this.receive(true);
                 }});
-                if (error.status === 409) actions.unshift({label:'重新连接', run: () => location.reload()});
-                promptGame('游戏暂停', message, actions);
+                if (error.status === 409) actions.unshift({label:"Hubungkan lagi", run: () => location.reload()});
+                promptGame("Game Dijeda", message, actions);
             } else {
                 toast(message);
                 FMGameManager.visualStake = undefined;
@@ -175,12 +175,12 @@ export class FMGameLayerCtrl extends FMBaseNode {
     handleAnimationError(error: unknown) {
         console.error('[AG6] animation', error);
         if (this.replay) {
-            toast('回放播放失败，请重试。');
-            this.replayControls?.done('回放失败');
+            toast("Gagal memutar rekaman. Silakan coba lagi.");
+            this.replayControls?.done("Rekaman Gagal");
             return;
         }
-        promptGame('游戏暂停', '游戏画面恢复失败，请重新连接。', [
-            {label:'重新连接', run: () => location.reload()}, {label:'返回大厅', run: exitGame},
+        promptGame("Game Dijeda", "Gagal memulihkan tampilan game. Silakan hubungkan kembali.", [
+            {label:"Hubungkan lagi", run: () => location.reload()}, {label:"Kembali ke lobi", run: exitGame},
         ]);
     }
 
@@ -251,9 +251,9 @@ export class FMGameLayerCtrl extends FMBaseNode {
     }
 
     onBtnMenu() { this.optCtrl.onMenuClick(); }
-    onBtnShop() { toast('请返回大厅充值。'); }
+    onBtnShop() { toast("Silakan kembali ke lobi untuk deposit."); }
     onBtnExit() {
         if (FMGameManager.getState() === FMSTATE.READY || this.replay) exitGame();
-        else toast('游戏尚未结束，请稍候。');
+        else toast("Game belum selesai. Mohon tunggu.");
     }
 }

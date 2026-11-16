@@ -13,7 +13,7 @@ export function loadHistoryArt() {
                 const value: unknown = asset.json;
                 if (!value || typeof value !== 'object' || Array.isArray(value)) {
                     pending = null;
-                    reject(new Error('记录页美术资源无效'));
+                    reject(new Error("Aset riwayat tidak tersedia."));
                     return;
                 }
                 const art: HistoryArt = {};

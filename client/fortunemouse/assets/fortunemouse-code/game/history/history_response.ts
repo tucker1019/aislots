@@ -1,7 +1,7 @@
 import { boardToIcons, toOriginalSpin, type Frame } from '../net/FMResultAdapter';
 import type { HistoryList, HistoryReplay } from './history_types';
 
-const incompatible = () => new Error('记录接口数据不完整，请重启当前连接的 Go 服务后重试');
+const incompatible = () => new Error("Data riwayat tidak lengkap. Silakan coba lagi nanti.");
 const object = (value: unknown): value is Record<string, unknown> =>
     value !== null && typeof value === 'object';
 const amount = (value: unknown): value is string =>

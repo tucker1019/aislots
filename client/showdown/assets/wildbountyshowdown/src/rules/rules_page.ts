@@ -57,8 +57,8 @@ export class RulesPage {
         const root = this.root = el('section', 'slot-history slot-rules' + (this.content ? ' slot-paytable' : ''));
         root.id = this.content?.id || 'slot-rules'; root.tabIndex = -1;
         root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true');
-        root.setAttribute('aria-label', this.content?.title || '游戏规则');
-        header(root, this.content?.title || '游戏规则', () => this.close(), {});
+        root.setAttribute('aria-label', this.content?.title || "Aturan Game");
+        header(root, this.content?.title || "Aturan Game", () => this.close(), {});
         const scroll = el('div', 'history-scroll'), copy = el('article', 'rules-copy');
         this.content.build(copy);
         scroll.append(copy); root.append(floatingScroll(scroll));

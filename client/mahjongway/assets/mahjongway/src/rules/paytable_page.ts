@@ -35,7 +35,7 @@ function paragraphs(parent: HTMLElement, items: readonly string[]) {
 /** HTML 赔率表沿用规则页的弹层生命周期，图片使用现有游戏资源。 */
 export class PaytablePage extends RulesPage {
     constructor(canvas: HTMLCanvasElement) {
-        super(canvas, { title: '赔率表', id: 'slot-paytable', css: CSS, build: buildPaytable });
+        super(canvas, { title: "Tabel Pembayaran", id: 'slot-paytable', css: CSS, build: buildPaytable });
     }
 }
 function buildPaytable(parent: HTMLElement) {
@@ -53,12 +53,12 @@ function buildPaytable(parent: HTMLElement) {
         if (id === 11) {
             const glow = image('scatter_background', ''); glow.className = 'pay-glow'; node.append(glow);
         }
-        node.append(image(String(id), symbolNames[id > 1000 ? id - 1000 : id] || '图标'));
+        node.append(image(String(id), symbolNames[id > 1000 ? id - 1000 : id] || "Simbol"));
         return node;
     };
-    const intro = section(parent, '图标赔率');
+    const intro = section(parent, "Pembayaran simbol");
     const specials = el('div', 'pay-visual');
-    for (const [id, label] of [[10, '百搭图标'], [11, '免费图标（胡）']] as const) {
+    for (const [id, label] of [[10, "Simbol Wild"], [11, "Simbol Scatter"]] as const) {
         const item = el('div', 'pay-caption'); item.append(symbol(id), el('div', '', label)); specials.append(item);
     }
     intro.append(specials);
@@ -71,32 +71,32 @@ function buildPaytable(parent: HTMLElement) {
         card.append(symbol(payout.symbol), values); grid.append(card);
     }
     intro.append(grid);
-    paragraphs(intro, ['百搭图标可替代除免费图标（胡）之外的所有图标。', '金底图标只会出现在第2、3、4轴。']);
+    paragraphs(intro, ["Wild menggantikan semua simbol kecuali Scatter.", "Simbol berlapis emas hanya muncul pada gulungan 2, 3, dan 4."]);
     for (const rule of RULE_SECTIONS.slice(1)) {
         const block = section(parent, rule.title);
-        if (rule.title === '金底图标') {
+        if (rule.title === "Simbol Berlapis Emas") {
             const visual = el('div', 'pay-visual'); visual.append(symbol(1009), el('span', '', '→'), symbol(10)); block.append(visual);
         }
-        if (rule.title === '免费旋转') {
+        if (rule.title === "Putaran Gratis") {
             const visual = el('div', 'pay-visual'); visual.append(symbol(11), symbol(11), symbol(11)); block.append(visual);
         }
-        if (rule.title === '消除倍率' || rule.title === '免费旋转') {
+        if (rule.title === "Pengali Runtuhan" || rule.title === "Putaran Gratis") {
             const bar = el('div', 'pay-bar'); backgrounds.push({ element: bar, key: 'multiplier_background' });
-            const factors = rule.title === '消除倍率' ? [1, 2, 3, 5] : [2, 4, 6, 10];
+            const factors = rule.title === "Pengali Runtuhan" ? [1, 2, 3, 5] : [2, 4, 6, 10];
             factors.forEach(factor => bar.append(image('multiplier_light_' + factor, '×' + factor))); block.append(bar);
         }
         paragraphs(block, rule.items);
     }
-    const ways = section(parent, '1,024种获胜方式');
-    paragraphs(ways, ['中奖图标从最左轴开始向右连续出现，即可形成中奖方式。', '每种图标的中奖方式总数，按从左至右各相邻轴上该中奖图标的数量相乘计算。']);
+    const ways = section(parent, "1.024 Cara Menang");
+    paragraphs(ways, ["Simbol menang harus muncul berurutan dari gulungan paling kiri ke kanan.", "Jumlah cara menang setiap simbol dihitung dengan mengalikan jumlah simbol tersebut pada gulungan berurutan dari kiri ke kanan."]);
     const example = el('div', 'pay-example');
-    for (const [column, count] of [[1, 1], [2, 3], [3, 2]]) example.append(el('div', '', `第${column}轴：${count}个`));
-    ways.append(example, el('div', 'pay-equation', '1 × 3 × 2 = 6 种中奖方式'));
-    paragraphs(ways, ['中奖图标的赔付乘以中奖方式总数，即为对应的中奖金额。', '示例赔率：5个为500，4个为100，3个为10。']);
-    ways.append(el('div', 'pay-equation', '本例总赢分：10 × 6 = 60'));
-    paragraphs(ways, ['每轮派彩后，所有中奖图标将被消除，上方图标向下掉落，进入下一轮。', '每次旋转都会继续计算新的中奖组合，直到不再出现中奖组合为止。', '所有赢分均以现金金额显示。']);
+    for (const [column, count] of [[1, 1], [2, 3], [3, 2]]) example.append(el('div', '', `Ke-${column}Gulungan: ${count} simbol`));
+    ways.append(example, el('div', 'pay-equation', "1 × 3 × 2 = 6 cara menang"));
+    paragraphs(ways, ["Pembayaran simbol dikalikan jumlah cara menang untuk mendapatkan kemenangan.", "Contoh pembayaran: 5 simbol = 500, 4 simbol = 100, 3 simbol = 10."]);
+    ways.append(el('div', 'pay-equation', "Total kemenangan contoh ini: 10 × 6 = 60"));
+    paragraphs(ways, ["Setelah pembayaran, simbol menang dihapus dan simbol di atas jatuh untuk memulai putaran berikutnya.", "Kombinasi menang baru dihitung hingga tidak ada lagi kemenangan.", "Semua kemenangan ditampilkan dalam nilai uang."]);
     void loadHistoryArt().then(art => {
         images.forEach(({ image: node, key }) => { if (art[key]) node.src = art[key]; });
         backgrounds.forEach(({ element, key }) => { if (art[key]) element.style.backgroundImage = `url("${art[key]}")`; });
-    }).catch(() => parent.prepend(el('p', '', '图标资源加载失败，请关闭后重新打开。')));
+    }).catch(() => parent.prepend(el('p', '', "Gagal memuat simbol. Silakan tutup dan buka kembali.")));
 }

@@ -351,7 +351,7 @@ export class FOXOptCtrl extends FOXBaseNode {
                 }, 0)
             } else {
                 FOXGameManager.setAudoNum(0);
-                alertGame("余额不足，请充值后再试。");
+                alertGame("Saldo tidak cukup. Silakan deposit lalu coba lagi.");
                 this.updateBtnState(true)
             }
         } else {
@@ -618,7 +618,7 @@ export class FOXOptCtrl extends FOXBaseNode {
         if (!this.layerCtrl.canAffordSpin()) {
             FOXGameManager.setAudoNum(0);
             this.updateBtnState(true);
-            alertGame('余额不足，请充值后再试。');
+            alertGame("Saldo tidak cukup. Silakan deposit lalu coba lagi.");
             return;
         }
         this.canSendSpin = false;
@@ -880,7 +880,7 @@ export class FOXOptCtrl extends FOXBaseNode {
     }
 
     onALLMoneyClick() {
-        if (!this.layerCtrl.isReplay && FOXGameManager.getState() === FOXSTATE.READY) alertGame('余额：' + showMoney(FOXGlobal.USER.gold));
+        if (!this.layerCtrl.isReplay && FOXGameManager.getState() === FOXSTATE.READY) alertGame("Saldo: " + showMoney(FOXGlobal.USER.gold));
     }
 
     onBetClick() {

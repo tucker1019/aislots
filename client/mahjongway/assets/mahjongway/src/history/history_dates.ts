@@ -8,15 +8,15 @@ export function datePicker(
     cancel: () => void,
 ) {
     const body = el('div', 'history-dates');
-    const first = group('开始', start),
-        second = group('结束', end);
+    const first = group("Mulai", start),
+        second = group("Selesai", end);
     const error = el('div', 'history-date-error');
     error.setAttribute('role', 'alert');
     const actions = el('div', 'history-date-actions');
     actions.append(
-        button('取消', cancel),
+        button("Batal", cancel),
         button(
-            '确认',
+            "Konfirmasi",
             () => {
                 try {
                     const a = first.value(),
@@ -24,7 +24,7 @@ export function datePicker(
                     dateRange(a, b);
                     confirm(a, b);
                 } catch (reason) {
-                    error.textContent = reason instanceof Error ? reason.message : '日期无效';
+                    error.textContent = reason instanceof Error ? reason.message : "Tanggal tidak valid";
                 }
             },
             'confirm',
@@ -37,14 +37,14 @@ function group(label: string, date: string) {
     const node = el('div', 'history-date-group');
     node.append(el('div', 'history-date-caption', label));
     const labels = el('div', 'history-date-labels');
-    for (const title of ['年', '月', '日']) labels.append(el('span', '', title));
+    for (const title of ["Tahun", "Bulan", "Hari"]) labels.append(el('span', '', title));
     const fields = el('div', 'history-date-fields');
     const [year, month, day] = date.split('-').map(Number);
     const select = (name: string, values: number[], value: number) => {
         const control = el('select');
         control.setAttribute('aria-label', label + name);
         for (const n of values) {
-            const option = el('option', '', String(n).padStart(name === '年' ? 4 : 2, '0'));
+            const option = el('option', '', String(n).padStart(name === "Tahun" ? 4 : 2, '0'));
             option.value = String(n);
             option.selected = n === value;
             control.append(option);
@@ -54,15 +54,15 @@ function group(label: string, date: string) {
     };
     const years = Array.from({ length: 8 }, (_, i) => new Date().getFullYear() - 6 + i);
     if (!years.includes(year)) years.push(year);
-    const y = select('年', years.sort(), year),
+    const y = select("Tahun", years.sort(), year),
         m = select(
-            '月',
+            "Bulan",
             Array.from({ length: 12 }, (_, i) => i + 1),
             month,
         );
     const days = () => new Date(Number(y.value), Number(m.value), 0).getDate();
     const d = select(
-        '日',
+        "Hari",
         Array.from({ length: days() }, (_, i) => i + 1),
         day,
     );

@@ -305,7 +305,7 @@ export class FDOptCtrl extends FDBaseNode {
                 }, 0)
             } else {
                 FDGameManager.setAudoNum(0);
-                alertGame("余额不足，请充值后再试。")
+                alertGame("Saldo tidak cukup. Silakan deposit lalu coba lagi.")
                 this.updateBtnState(true)
             }
         } else {
@@ -413,7 +413,7 @@ export class FDOptCtrl extends FDBaseNode {
         if (!this.canConfigure) return;
         (this.autoPage ??= new AutoSpinPage(this.canvas, count => {
             if (!this.canConfigure) return;
-            if (!this.layerCtrl.canAffordSpin()) { alertGame('余额不足，请充值后再试。'); return; }
+            if (!this.layerCtrl.canAffordSpin()) { alertGame("Saldo tidak cukup. Silakan deposit lalu coba lagi."); return; }
             FDGameManager.setAudoNum(count);
             void this.onGoBtnClick();
         }, () => ({balance:showMoney(FDGlobal.USER.gold),bet:showMoney(FDGameManager.getTotalBitNum())}),
@@ -552,7 +552,7 @@ export class FDOptCtrl extends FDBaseNode {
 
     async onGoBtnClick(clicked = false) {
         if (!this.canConfigure) return;
-        if (!this.layerCtrl.canAffordSpin()) { alertGame('余额不足，请充值后再试。'); return; }
+        if (!this.layerCtrl.canAffordSpin()) { alertGame("Saldo tidak cukup. Silakan deposit lalu coba lagi."); return; }
         const stake = this.layerCtrl.stake;
         this.canSendSpin = false;
         if (clicked) FDAudioMgr.Instance.playSound('spinBtn');
@@ -745,7 +745,7 @@ export class FDOptCtrl extends FDBaseNode {
   
     onALLMoneyClick() {
         if (!this.canConfigure) return;
-        alertGame('钱包余额：' + showMoney(FDGlobal.USER.gold));
+        alertGame("Saldo dompet: " + showMoney(FDGlobal.USER.gold));
     }
 
     onBetClick() {

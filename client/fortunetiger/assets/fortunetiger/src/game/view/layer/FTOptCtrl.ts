@@ -369,7 +369,7 @@ export class FTOptCtrl extends FTBaseNode {
                 }, 0)
             } else {
                 FTGameManager.setAudoNum(0);
-                FTLoadManager.ins.showAlertWithInit('余额不足，请充值后再试。', () => {});
+                FTLoadManager.ins.showAlertWithInit("Saldo tidak cukup. Silakan deposit lalu coba lagi.", () => {});
                 this.updateBtnState(true)
             }
         } else {
@@ -682,7 +682,7 @@ export class FTOptCtrl extends FTBaseNode {
             }
             // await this.layerCtrl.centerRollCtrl.initLight();
         } else {
-            FTLoadManager.ins.showAlertWithInit("余额不足，请充值后再试。", () => {});
+            FTLoadManager.ins.showAlertWithInit("Saldo tidak cukup. Silakan deposit lalu coba lagi.", () => {});
         }
     }
 

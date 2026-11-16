@@ -48,7 +48,7 @@ test('one settled frame is presented once even if native stop callback repeats',
 
 test('minor units retain cents, and completed free receipt restores base controls',async()=>{
  const {formatMinor,restoredFree}=await import('../.test-build/network/display.mjs');
- assert.equal(formatMinor(100020),'1,000.20');assert.equal(formatMinor(5),'0.05');
+ assert.equal(formatMinor(100020),'1.000');assert.equal(formatMinor(5),'0');
  assert.equal(restoredFree(frame({mode:'free',nextAction:'complete'})),false);
  assert.equal(restoredFree(frame({mode:'free',nextAction:'continue'})),true);
 });

@@ -1,7 +1,7 @@
 import { replayShareButton } from './replay_share';
 import { floatingScroll } from './history_scroll';
 import { button, el, notice } from './history_dom';
-import { dateText, fraction, money, symbolNames } from './history_model';
+import { dateText, fraction, money, moneyFraction, symbolNames } from './history_model';
 import type { HistoryArt, HistoryList, HistoryRecord, HistoryReplay } from './history_types';
 
 export function header(
@@ -12,8 +12,8 @@ export function header(
     subtitle = '',
 ) {
     const bar = el('header', 'history-header');
-    const control = button('返回', back, 'history-back');
-    control.setAttribute('aria-label', '返回');
+    const control = button("Kembali", back, 'history-back');
+    control.setAttribute('aria-label', "Kembali");
     bar.append(control, el('h1', '', title));
     if (subtitle) bar.append(el('div', 'history-subtitle', subtitle));
     host.append(bar);
@@ -30,16 +30,16 @@ export function listRows(
     share?: (record: HistoryRecord) => Promise<string>,
 ) {
     const headings = el('div', 'history-columns' + (replay ? ' has-replay' : '') + (share ? ' has-share' : ''));
-    for (const text of ['时间\n(GMT+8)', '交易', '投注', '盈亏', ''])
+    for (const text of ["Waktu\n(GMT+8)", "Transaksi", "Taruhan", "Untung/rugi", ''])
         headings.append(el('span', '', text));
     if (!append) host.append(headings);
     for (const record of data.items) {
         const row = button('', () => select(record), 'history-record');
-        row.setAttribute('aria-label', '查看下注 ' + record.betId);
+        row.setAttribute('aria-label', "Lihat taruhan " + record.betId);
         const id = el('div', 'history-id', record.betId);
         if (record.winningRoundCount)
-            id.append(el('span', 'history-mark', '中奖 ' + record.winningRoundCount));
-        if (record.status === 'active') id.append(el('span', 'history-progress', '进行中'));
+            id.append(el('span', 'history-mark', "Menang " + record.winningRoundCount));
+        if (record.status === 'active') id.append(el('span', 'history-progress', "Berlangsung"));
         const profit = el(
             'span',
             'history-amount' + (record.profitAmount.startsWith('-') ? ' history-loss' : ''),
@@ -60,24 +60,24 @@ export function listRows(
         );
         if (replay) {
             const wrapper = el('div', 'history-record-wrap');
-            const play = button('回放', () => replay(record), 'history-replay');
-            play.setAttribute('aria-label', '回放交易 ' + record.betId);
+            const play = button("Putar ulang", () => replay(record), 'history-replay');
+            play.setAttribute('aria-label', "Putar ulang transaksi " + record.betId);
             row.classList.add('has-replay');
             const actions = el('div', 'history-record-actions');
             if (share) {
                 row.classList.add('has-share');
                 const control = replayShareButton(() => share(record),
                     () => host.closest<HTMLElement>('.slot-history') || host, 'history-share');
-                control.setAttribute('aria-label', '分享交易 ' + record.betId);
+                control.setAttribute('aria-label', "Bagikan transaksi " + record.betId);
                 actions.append(control);
             }
             actions.append(play);
             wrapper.append(row, actions); host.append(wrapper);
         } else host.append(row);
     }
-    if (!append && !data.items.length) notice(host, '这个时间段暂无游戏记录');
+    if (!append && !data.items.length) notice(host, "Tidak ada riwayat dalam periode ini.");
     if (data.nextCursor) {
-        const load = button(loading ? '加载中…' : '加载更多', more, 'history-more');
+        const load = button(loading ? "Memuat…" : "Muat lagi", more, 'history-more');
         load.disabled = loading;
         host.append(load);
     }
@@ -85,7 +85,7 @@ export function listRows(
 export function listFooter(host: HTMLElement, data: HistoryList, currency: string) {
     const footer = el('footer', 'history-footer');
     footer.append(
-        el('span', '', '共 ' + data.summary.recordCount + ' 条记录'),
+        el('span', '', "Total " + data.summary.recordCount + " transaksi"),
         el('span', 'history-amount', money(data.summary.betAmount, data.amountScale, currency)),
         el('span', 'history-amount', money(data.summary.profitAmount, data.amountScale, currency)),
     );
@@ -105,10 +105,10 @@ export function detailBody(
         record = detail.bet;
     const strip = el('div', 'history-detail-strip');
     for (const [label, value] of [
-        ['交易', record.betId],
-        ['投注', money(round.chargeAmount, detail.amountScale, record.currency)],
-        ['盈亏', money(round.profitAmount, detail.amountScale, record.currency)],
-        ['余额', money(String(round.balance), detail.amountScale, record.currency)],
+        ["Transaksi", record.betId],
+        ["Taruhan", money(round.chargeAmount, detail.amountScale, record.currency)],
+        ["Untung/rugi", money(round.profitAmount, detail.amountScale, record.currency)],
+        ["Saldo", money(String(round.balance), detail.amountScale, record.currency)],
     ]) {
         const item = el('div');
         item.append(el('strong', '', label), el('span', '', value));
@@ -118,9 +118,9 @@ export function detailBody(
     const scroll = el('div', 'history-scroll history-detail-scroll');
     const facts = el('div', 'history-facts');
     for (const [title, value] of [
-        ['轮次', index + 1 + '/' + record.totalRoundCount],
-        ['单线投注额', round.payoutUnit ? fraction(round.payoutUnit, 4, detail.amountScale) : '—'],
-        ['线数', String(round.lineCount || '—')],
+        ["Putaran", index + 1 + '/' + record.totalRoundCount],
+        ["Taruhan per garis", round.payoutUnit ? moneyFraction(round.payoutUnit, detail.amountScale) : '—'],
+        ["Garis", String(round.lineCount || '—')],
     ]) {
         const fact = el('div', '', title);
         fact.append(el('strong', '', value));
@@ -130,7 +130,7 @@ export function detailBody(
     const boardWrap = el('div', 'history-board-wrap');
     const board = el('div', 'history-board');
     board.style.gridTemplateColumns = `repeat(${round.board.length}, minmax(0, 1fr))`;
-    board.setAttribute('aria-label', '第' + (index + 1) + '轮盘面');
+    board.setAttribute('aria-label', "Ke-" + (index + 1) + "Hasil putaran");
     for (const column of round.board) {
         const col = el('div', 'history-board-column');
         for (const cell of column.slice(round.previewRows ?? 0)) {
@@ -138,7 +138,7 @@ export function detailBody(
             image.src = art[String(cell.symbolId)];
             const symbol = cell.symbolId > 1000 ? cell.symbolId - 1000 : cell.symbolId;
             image.alt =
-                (cell.symbolId > 1000 ? '金底' : '') + (symbolNames[symbol] || String(symbol));
+                (cell.symbolId > 1000 ? "Berlapis emas" : '') + (symbolNames[symbol] || String(symbol));
             if (cell.symbolId >= 1000 && art.gold_frame) {
                 const tile = el('div', 'history-gold-tile');
                 const frame = el('img', 'history-gold-frame');
@@ -156,19 +156,19 @@ export function detailBody(
         board.append(col);
     }
     boardWrap.append(board);
-    const left = arrowButton('上一轮', previous, true);
+    const left = arrowButton("Sebelumnya", previous, true);
     left.disabled = index === 0 || loading;
-    const right = arrowButton('下一轮', next, false);
+    const right = arrowButton("Berikutnya", next, false);
     right.disabled = loading || (index === detail.frames.length - 1 && !detail.nextCursor);
-    scroll.append(facts, boardWrap, el('div', 'history-payment-title', '赔付明细'));
-    if (fullScreenWin) scroll.append(el('div', 'history-payment-caption', '全屏中奖倍率 ×10'));
+    scroll.append(facts, boardWrap, el('div', 'history-payment-title', "Rincian Pembayaran"));
+    if (fullScreenWin) scroll.append(el('div', 'history-payment-caption', "Pengali kemenangan layar penuh ×10"));
     const payouts = el('div', 'history-payouts');
     if (!round.payouts.length)
         payouts.append(
             el(
                 'p',
                 'history-empty-win',
-                round.wins.length ? '本轮已中奖，历史计算明细暂缺' : '无中奖组合',
+                round.wins.length ? "Putaran ini menang, tetapi rincian perhitungan belum tersedia." : "Tidak ada kombinasi menang.",
             ),
         );
     for (const [index, payout] of round.payouts.entries()) {
@@ -178,8 +178,8 @@ export function detailBody(
         icon.src = art[String(payout.symbolId)];
         icon.alt = symbolNames[payout.symbolId] || '';
         const line = round.gameData?.lineWins?.[index];
-        const label = el('div', '', line ? '第 ' + (line.lineIndex + 1) + ' 条线' : '中奖线');
-        label.append(el('div', 'ways', payout.columns + ' 个符号相连'));
+        const label = el('div', '', line ? "Garis " + (line.lineIndex + 1) + "" : "Garis menang");
+        label.append(el('div', 'ways', payout.columns + " simbol terhubung"));
         const amount = el(
             'div',
             'amount',
@@ -191,16 +191,16 @@ export function detailBody(
         const formula = el(
             'div',
             'history-formula',
-            '单线投注额 × 符号赔率' + (line && fullScreenWin ? ' × 全屏中奖倍率' : '') + ' = 中奖金额',
+            "Taruhan per garis × pembayaran simbol" + (line && fullScreenWin ? " × pengali layar penuh" : '') + " = kemenangan",
         );
         const expression =
             line
                 ? [
-                      fraction(round.payoutUnit || '0', 4, detail.amountScale),
+                      moneyFraction(round.payoutUnit || '0', detail.amountScale),
                       fraction(line.payout),
                       ...(fullScreenWin ? ['10'] : []),
                   ].join(' × ')
-                : fraction(round.payoutUnit || '0', 4, detail.amountScale) + ' × ' + fraction(payout.rawPayout);
+                : moneyFraction(round.payoutUnit || '0', detail.amountScale) + ' × ' + fraction(payout.rawPayout);
         formula.append(
             el(
                 'strong',

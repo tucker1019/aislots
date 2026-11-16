@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const ts=require('../../../slot_math/node_modules/typescript');
 require.extensions['.ts']=(module,file)=>module._compile(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,file);
-const {AutoSpinRunner}=require('../assets/mahjongway/src/slots/auto_spin_runner.ts');
+const {AutoSpinRunner}=require('../assets/mahjongway2/src/slots/auto_spin_runner.ts');
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 function deferred(){let resolve;const promise=new Promise(r=>resolve=r);return {promise,resolve};}
 test('each complete paid/free/cascade chain consumes one count and stops at zero',async()=>{

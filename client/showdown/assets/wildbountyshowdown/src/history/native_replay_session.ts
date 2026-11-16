@@ -4,7 +4,7 @@ import type { Frame } from '../network/game_types';
 export class NativeReplaySession {
     index = -1;
     private cycle = 1;
-    constructor(readonly data: HistoryReplay) { if (!data.frames.length) throw Error('暂无已结算盘面'); }
+    constructor(readonly data: HistoryReplay) { if (!data.frames.length) throw Error("Belum ada hasil yang diselesaikan."); }
     get length() { return this.data.frames.length; }
     restart() { this.index = -1; this.cycle++; }
     next(): Frame | undefined {

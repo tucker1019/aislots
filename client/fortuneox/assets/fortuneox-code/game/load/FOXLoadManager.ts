@@ -64,7 +64,7 @@ export default class FOXLoadManager {
     public loadScene(sceneName: string) {
         this.bundle.loadScene(sceneName, (err: Error, scene: SceneAsset) => {
             if (err) {
-                foxframe.log.logError(sceneName, "加载失败")
+                foxframe.log.logError(sceneName, "Gagal Memuat")
             }
             director.runScene(scene);
         })

@@ -19,7 +19,7 @@ export class LaunchSession {
         const params = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
         const ticket = params.get('launchTicket');
         if (!params.has('launchTicket')) return null;
-        if (!ticket || ticket.length !== 52) { this.expire(); throw new Error('游戏进入凭据无效，请从大厅重新进入'); }
+        if (!ticket || ticket.length !== 52) { this.expire(); throw new Error("Akses game tidak valid. Silakan masuk kembali dari lobi."); }
         const previous = this.read();
         if (previous.ticket === ticket && previous.token) return null;
         const exchangeId = previous.ticket === ticket && typeof previous.exchangeId === 'string'

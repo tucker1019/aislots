@@ -5,8 +5,8 @@ const ts = require('../../../slot_math/node_modules/typescript');
 require.extensions['.ts'] = (module, file) => module._compile(ts.transpileModule(fs.readFileSync(file, 'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,file);
 const { money, fraction, dateRange, recentDates, gameBounds } = require('../assets/mahjongway/src/history/history_model.ts');
 test('history money keeps integer precision and scales fractional per-line values', () => {
-    assert.equal(money('900719925474099301',2,'USD'), '$9,007,199,254,740,993.01');
-    assert.equal(money('-101',2,'USD'), '−$1.01');
+    assert.equal(money('900719925474099301',2,'USD'), '9.007.199.254.740.993');
+    assert.equal(money('-101',2,'USD'), '−1');
     assert.equal(fraction('1/8'), '0.125');
     assert.equal(fraction('25',4,2), '0.25');
 });
@@ -40,7 +40,7 @@ test('history requests are read-only and preserve next spin nonce', async () => 
     assert.equal(calls[1][1],undefined);
     assert.equal(calls[2][1],undefined);
     await api.spin('200');
-    assert.deepEqual(calls[3][1],{requestId:'unchanged',betAmount:'200'});
+    assert.deepEqual(calls[3][1],{requestId:'unchanged',bet:'200',betLevel:undefined});
 });
 test('history money survives exponent downleveling used by web builds', () => {
     const vm = require('node:vm');
@@ -48,17 +48,17 @@ test('history money survives exponent downleveling used by web builds', () => {
     const output = ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2015}}).outputText;
     const sandbox = { exports: {} };
     vm.runInNewContext(output,sandbox);
-    assert.equal(sandbox.exports.money('123456',2,'USD'),'$1,234.56');
+    assert.equal(sandbox.exports.money('123456',2,'USD'),'1.234');
     assert.equal(sandbox.exports.fraction('25',4,2),'0.25');
     assert.equal(sandbox.exports.fraction('1/8'),'0.125');
 });
 
 const {historyListResponse,historyReplayResponse} = require('../assets/mahjongway/src/history/history_response.ts');
 test('old history server is rejected before rendering missing profit or summary', async () => {
-    assert.throws(()=>historyListResponse({items:[{betId:'old',betAmount:'200',totalWinAmount:'300'}]}),/重启/);
-    assert.throws(()=>historyListResponse({items:[],amountScale:0}),/重启/);
+    assert.throws(()=>historyListResponse({items:[{betId:'old',betAmount:'200',totalWinAmount:'300'}]}),/Data riwayat tidak lengkap/);
+    assert.throws(()=>historyListResponse({items:[],amountScale:0}),/Data riwayat tidak lengkap/);
     const api = new GameApi('',undefined,async()=>({items:[]}));
-    await assert.rejects(api.historyRecords({from:'a',to:'b'}),/重启/);
-    assert.throws(()=>historyReplayResponse({bet:historyRecord,amountScale:0,frames:[{board:[],wins:[]}]}),/重启/);
+    await assert.rejects(api.historyRecords({from:'a',to:'b'}),/Data riwayat tidak lengkap/);
+    assert.throws(()=>historyReplayResponse({bet:historyRecord,amountScale:0,frames:[{board:[],wins:[]}]}),/Data riwayat tidak lengkap/);
     assert.doesNotThrow(()=>historyListResponse({items:[historyRecord],amountScale:0,summary:historySummary}));
 });

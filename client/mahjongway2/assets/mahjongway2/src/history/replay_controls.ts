@@ -22,18 +22,18 @@ export class ReplayControls {
         for (const type of ['pointerdown','pointerup','mousedown','mouseup','touchstart','touchmove','touchend','click'])
             this.root.addEventListener(type, event => event.stopPropagation());
         this.root.setAttribute('role', 'dialog');
-        this.root.setAttribute('aria-label', '游戏回放');
+        this.root.setAttribute('aria-label', "Rekaman Game");
         this.root.setAttribute('aria-modal', 'true');
         const bar = el('div');
         bar.style.cssText = 'pointer-events:auto;display:flex;align-items:center;gap:.7em;background:rgba(30,29,39,.94);padding:.7em;';
         const text = el('div'); text.style.cssText = 'flex:1;min-width:0;overflow-wrap:anywhere;font-size:.8em;';
-        text.append(el('div', '', '回放 · ' + betId), this.status);
+        text.append(el('div', '', "Rekaman · " + betId), this.status);
         this.status.setAttribute('role','status');
-        const close = button(options.exitLabel || '退出回放', exit);
+        const close = button(options.exitLabel || "Keluar rekaman", exit);
         close.style.cssText = 'flex:none;border:1px solid #bb7c4b;border-radius:1.5em;background:#30303e;color:#e4c29d;padding:.6em .8em;font:inherit;font-size:.8em;cursor:pointer;';
         if (options.share) {
             const share = replayShareButton(options.share, () => this.root);
-            share.setAttribute('aria-label', '分享回放');
+            share.setAttribute('aria-label', "Bagikan rekaman");
             share.style.cssText = close.style.cssText + 'box-sizing:border-box;width:4.6em;min-width:4.6em;max-width:4.6em;flex:0 0 4.6em;white-space:nowrap;padding:.6em .3em;';
             bar.append(share);
         }
@@ -46,9 +46,9 @@ export class ReplayControls {
         }
     }
     progress(index: number, count: number, free: boolean) {
-        this.status.textContent = `${free ? '免费旋转' : '普通旋转'} · 第 ${index + 1}/${count} 轮`;
+        this.status.textContent = `${free ? "Putaran Gratis" : "Putaran Biasa"} · Putaran ${index + 1}/${count}`;
     }
-    done(message = '回放结束') { this.status.textContent = message; }
+    done(message = "Rekaman selesai") { this.status.textContent = message; }
     destroy() {
         this.root.remove();this.observer?.disconnect();
         window.removeEventListener('resize',this.resize);

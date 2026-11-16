@@ -33,7 +33,7 @@ export class RetryBubble {
         const end = Date.now() + seconds * 1000;
         const tick = () => {
             const left = Math.max(0, Math.ceil((end - Date.now()) / 1000));
-            text.textContent = left ? `第 ${attempt} 次重试：${left} 秒后重试` : `第 ${attempt} 次重试中`;
+            text.textContent = left ? `Garis ${attempt} kali percobaan: ${left} dtk sebelum mencoba lagi` : `Garis ${attempt} kali percobaan berlangsung`;
         };
         tick();
         this.timer = window.setInterval(tick, 250);

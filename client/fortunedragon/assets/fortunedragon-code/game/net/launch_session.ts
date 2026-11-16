@@ -45,7 +45,7 @@ export class LaunchSession {
             return null;
         if (!ticket || ticket.length !== 52) {
             this.expire();
-            throw new Error('游戏进入凭据无效，请从大厅重新进入');
+            throw new Error("Akses game tidak valid. Silakan masuk kembali dari lobi.");
         }
         const previous = this.read();
         if (previous.ticket === ticket && previous.token)

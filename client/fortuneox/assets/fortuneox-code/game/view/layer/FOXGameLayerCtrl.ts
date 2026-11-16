@@ -165,12 +165,12 @@ export class FOXGameLayerCtrl extends FOXBaseNode {
             FOXGameManager.setAudoNum(0);
             if (this.replay) { this.handleAnimationError(error); return; }
             const expired = error.status === 401;
-            const message = expired ? '登录已过期，请从大厅重新进入。' : error.definitive ? error.message : '网络异常，请重试。';
-            const actions = [{label:'返回大厅', run: exitGame}];
-            if (!expired && error.status !== 409 && !error.definitive) actions.unshift({label:'重试', run: () => {
+            const message = expired ? "Sesi berakhir. Silakan masuk kembali dari lobi." : error.definitive ? error.message : "Koneksi bermasalah. Silakan coba lagi.";
+            const actions = [{label:"Kembali ke lobi", run: exitGame}];
+            if (!expired && error.status !== 409 && !error.definitive) actions.unshift({label:"Coba lagi", run: () => {
                 void this.receive(special, stake);
             }});
-            if (error.status === 409) actions.unshift({label:'重新连接', run: () => location.reload()});
+            if (error.status === 409) actions.unshift({label:"Hubungkan lagi", run: () => location.reload()});
             if (error.definitive && !special && !expired && error.status !== 409) {
                 this.centerRollCtrl.cancelRoll(boardToIcons(this.current?.board || defaultBoard).icons);
                 this.restoreFrame(this.current);
@@ -178,19 +178,19 @@ export class FOXGameLayerCtrl extends FOXBaseNode {
                 FOXGameManager.setState(FOXSTATE.READY);
                 this.optCtrl.updateBtnState(true);
             }
-            promptGame('请求失败', message, actions, 'failure');
+            promptGame("Permintaan Gagal", message, actions, 'failure');
         } finally { this.inGameRequest = false; }
     }
 
     handleAnimationError(error: unknown) {
         console.error('[AG7] animation', error);
         if (this.replay) {
-            toast('回放播放失败，请重试。');
-            this.replayControls?.done('回放失败');
+            toast("Gagal memutar rekaman. Silakan coba lagi.");
+            this.replayControls?.done("Rekaman Gagal");
             return;
         }
-        promptGame('游戏暂停', '游戏画面恢复失败，请重新连接。', [
-            {label:'重新连接', run: () => location.reload()}, {label:'返回大厅', run: exitGame},
+        promptGame("Game Dijeda", "Gagal memulihkan tampilan game. Silakan hubungkan kembali.", [
+            {label:"Hubungkan lagi", run: () => location.reload()}, {label:"Kembali ke lobi", run: exitGame},
         ]);
     }
 
@@ -263,9 +263,9 @@ export class FOXGameLayerCtrl extends FOXBaseNode {
     }
 
     onBtnMenu() { this.optCtrl.onMenuClick(); }
-    onBtnShop() { toast('请返回大厅充值。'); }
+    onBtnShop() { toast("Silakan kembali ke lobi untuk deposit."); }
     onBtnExit() {
         if (FOXGameManager.getState() === FOXSTATE.READY || this.replay) exitGame();
-        else toast('游戏尚未结束，请稍候。');
+        else toast("Game belum selesai. Mohon tunggu.");
     }
 }

@@ -52,11 +52,12 @@ export function reset_all() {
 export function recordTime() {
     return new Date().getTime()
 }
-export function showMoney(value: number, grouped = true) {
-    return (value / 100).toLocaleString('en-US', {useGrouping:grouped, minimumFractionDigits:2, maximumFractionDigits:2});
+export function showMoney(value: number, _grouped = true) {
+    const whole = Math.trunc(value / 100);
+    return (Object.is(whole, -0) ? 0 : whole).toLocaleString('id-ID', { maximumFractionDigits: 0 });
 }
 export function recovMoney(value: string) {
-    return Number(value.replace(/,/g, '')) * FDGlobal.GameTax;
+    return Number(value.replace(/\./g, '')) * FDGlobal.GameTax;
 }
 
 export function cloneArray(list: Array<any>): Array<any> {

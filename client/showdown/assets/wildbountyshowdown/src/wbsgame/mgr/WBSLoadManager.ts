@@ -117,7 +117,7 @@ export class WBSLoadManager extends Component {
     }
 
 
-    showAlert(title: string, confirm?: () => void, message = '', confirmLabel = '确定'): Promise<void> {
+    showAlert(title: string, confirm?: () => void, message = '', confirmLabel = "OK"): Promise<void> {
         return new Promise(resolve => {
             showGameDialog({title,message,actions:[{label:confirmLabel,run:()=>{confirm?.();resolve();}}]});
         });

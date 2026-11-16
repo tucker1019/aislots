@@ -106,7 +106,7 @@ export default class FTLoadManager {
         const config = FTConfigCtrl.Instance;
         const actions = [{ label: config.getLanguageText(FTLanguage.BTN_OK), run: confirm }];
         if (cancel) actions.push({ label: config.getLanguageText(FTLanguage.BTN_CANCEL), run: cancel });
-        showGameDialog({ title: '提示', message, actions });
+        showGameDialog({ title: "Pemberitahuan", message, actions });
     }
 
 }

@@ -1,0 +1,22 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const ts=require('../../slots_lobby/node_modules/typescript');
+const root=path.resolve(__dirname,'..');
+const games=[['AG1','mahjongway','mahjongway/src'],['AG2','mahjongway2','mahjongway2/src'],['AG3','showdown','wildbountyshowdown/src'],['AG4','fortunetiger','fortunetiger/src/game'],['AG5','fortunerabbit','fortunerabbit-code/game'],['AG6','fortunemouse','fortunemouse-code/game'],['AG7','fortuneox','fortuneox-code/game'],['AG8','fortunedragon','fortunedragon-code/game']];
+function load(p){const source=fs.readFileSync(p,'utf8');const code=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText;const box={exports:{}};vm.runInNewContext(code,box);return box.exports;}
+for(const [id,project,src] of games){const base=path.join(root,project,'assets',src);
+ test(`${id}: history truncates currency without Rp and preserves multiplier precision`,()=>{const m=load(path.join(base,'history/history_model.ts'));assert.equal(m.money('1803002',2),'18.030');assert.equal(m.money('-199',2),'−1');assert.equal(m.money('-50',2),'0');assert.equal(m.money('900719925474099301',2),'9.007.199.254.740.993');assert.equal(m.fraction('1/8'),'0.125');assert.equal(m.fraction('25',4,2),'0.25');});
+ test(`${id}: HTML controls and history use Indonesian`,()=>{const ui=path.join(base,id==='AG1'||id==='AG2'?'slots':'ui');const auto=fs.readFileSync(path.join(ui,'auto_spin_page.ts'),'utf8');assert.match(auto,/Putar Otomatis/);assert.match(auto,/Jumlah putaran otomatis/);const history=fs.readFileSync(path.join(base,'history/history_views.ts'),'utf8');assert.match(history,/Taruhan/);assert.match(history,/Putar ulang/);});
+}
+for(const [id,project,src,file,fn] of [
+ ['AG1','mahjongway','mahjongway/src','slots/slots_base.ts','formatMoney'],
+ ['AG2','mahjongway2','mahjongway2/src','slots/slots_base.ts','formatMoney'],
+ ['AG3','showdown','wildbountyshowdown/src','network/display.ts','formatMinor'],
+ ['AG4','fortunetiger','fortunetiger/src/game','common/FTUtils.ts','showMoney'],
+ ['AG5','fortunerabbit','fortunerabbit-code/game','common/FRUtils.ts','showMoney'],
+ ['AG6','fortunemouse','fortunemouse-code/game','common/FMUtils.ts','showMoney'],
+ ['AG7','fortuneox','fortuneox-code/game','common/FOXUtils.ts','showMoney'],
+ ['AG8','fortunedragon','fortunedragon-code/game','common/FDUtils.ts','showMoney'],
+])test(`${id}: live amount formatter uses whole Indonesian currency`,()=>{const p=path.join(root,project,'assets',src,file),text=fs.readFileSync(p,'utf8'),tree=ts.createSourceFile(p,text,ts.ScriptTarget.Latest,true);const node=tree.statements.find(n=>ts.isFunctionDeclaration(n)&&n.name?.text===fn);assert.ok(node);const source=node.getText(tree).replace(/^export\s+/,'')+`;exports.format=${fn};`;const code=ts.transpileModule(source,{compilerOptions:{target:ts.ScriptTarget.ES2020}}).outputText;const box={exports:{}};vm.runInNewContext(code,box);for(const [v,want]of [['1803002','18.030'],['199','1'],['-199','-1'],['-50','0']])assert.equal(box.exports.format(id==='AG1'||id==='AG2'?v:Number(v)),want);});
+for(const [id,project,src] of games)test(`${id}: fractional currency hides decimals without changing payout multipliers`,()=>{const m=load(path.join(root,project,'assets',src,'history/history_model.ts'));assert.equal(m.moneyFraction('1234567/2',2),'6.172');assert.equal(m.moneyFraction('-1/2',2),'0');assert.equal(m.moneyFraction('123',0),'123');assert.equal(m.fraction('123/100'),'1.23');});
+for(const [id,project]of games)test(`${id}: HTML cover has Indonesian controls and language metadata`,()=>{for(const file of ['build-templates/web-mobile/index.ejs','preview-template/index.ejs']){const source=fs.readFileSync(path.join(root,project,file),'utf8');assert.match(source,/<html[^>]*lang="id"/);assert.match(source,/>MULAI</);assert.doesNotMatch(source,/aria-label="[^"]*[\u3400-\u9fff]|>START</);}});
+for(const [id,project,src]of games)test(`${id}: Indonesian history actions have wider buttons and a reserved action column`,()=>{const css=fs.readFileSync(path.join(root,project,'assets',src,'history/history_styles.ts'),'utf8');assert.match(css,/width:5\.8em;min-width:5\.8em;max-width:5\.8em/);assert.match(css,/grid-template-columns:15% 20% 14% 17% 34%/);assert.doesNotMatch(css,/width:3\.7em/);});

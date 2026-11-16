@@ -20,7 +20,7 @@ export async function appendHistoryPage(options: {
     if (!scroll || !content || !button) return null;
     content.querySelector('.history-more-error')?.remove();
     button.disabled = true;
-    button.textContent = '加载中…';
+    button.textContent = "Memuat…";
     try {
         const page = await options.fetch(options.current.nextCursor);
         if (!options.isCurrent()) return null;
@@ -42,7 +42,7 @@ export async function appendHistoryPage(options: {
     } finally {
         if (button.isConnected && options.isCurrent()) {
             button.disabled = false;
-            button.textContent = '加载更多';
+            button.textContent = "Muat lagi";
         }
     }
 }

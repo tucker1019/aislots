@@ -328,7 +328,7 @@ export class FMOptCtrl extends FMBaseNode {
                 }, 0)
             } else {
                 FMGameManager.setAudoNum(0);
-                alertGame("余额不足，请充值后再试。");
+                alertGame("Saldo tidak cukup. Silakan deposit lalu coba lagi.");
                 this.updateBtnState(true)
             }
         } else {
@@ -603,7 +603,7 @@ export class FMOptCtrl extends FMBaseNode {
         if (!this.layerCtrl.canAffordSpin()) {
             FMGameManager.setAudoNum(0);
             this.updateBtnState(true);
-            alertGame('余额不足，请充值后再试。');
+            alertGame("Saldo tidak cukup. Silakan deposit lalu coba lagi.");
             return;
         }
         this.canSendSpin = false;
@@ -880,7 +880,7 @@ export class FMOptCtrl extends FMBaseNode {
     }
 
     onALLMoneyClick() {
-        if (!this.layerCtrl.isReplay && FMGameManager.getState() === FMSTATE.READY) alertGame('余额：' + showMoney(FMGlobal.USER.gold));
+        if (!this.layerCtrl.isReplay && FMGameManager.getState() === FMSTATE.READY) alertGame("Saldo: " + showMoney(FMGlobal.USER.gold));
     }
 
     onBetClick() {

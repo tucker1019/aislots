@@ -23,7 +23,7 @@ export function promptGame(title: string, message: string, actions: GameDialogOp
 }
 
 export function alertGame(message: string, confirm?: () => void, cancel?: () => void) {
-    const actions = [{label: '确认', run: confirm}];
-    if (cancel) actions.push({label: '取消', run: cancel});
-    return promptGame('提示', message, actions);
+    const actions = [{label: "Konfirmasi", run: confirm}];
+    if (cancel) actions.push({label: "Batal", run: cancel});
+    return promptGame("Pemberitahuan", message, actions);
 }

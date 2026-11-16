@@ -98,7 +98,7 @@ export class HistoryPage {
         if (scroll) scroll.scrollTop = this.scrollTop;
         // 隐藏时会废弃在途分页；保留原行和滚动位置，同时恢复加载更多按钮。
         const more = this.content.querySelector<HTMLButtonElement>('.history-more');
-        if (more && this.data?.nextCursor) { more.disabled = false; more.textContent = '加载更多'; }
+        if (more && this.data?.nextCursor) { more.disabled = false; more.textContent = "Muat lagi"; }
     }
     private hide(clear: boolean) {
         if (!this.isOpen) return;
@@ -134,7 +134,7 @@ export class HistoryPage {
         this.root.hidden = true;
         this.root.setAttribute('role', 'dialog');
         this.root.setAttribute('aria-modal', 'true');
-        this.root.setAttribute('aria-label', '游戏记录');
+        this.root.setAttribute('aria-label', "Riwayat Game");
         this.root.tabIndex = -1;
         this.content = el('div', 'history-main');
         this.root.append(this.content);
@@ -148,13 +148,13 @@ export class HistoryPage {
     }
     private listScreen() {
         this.clearContent();
-        header(this.content, '游戏记录', () => this.close(), this.art);
+        header(this.content, "Riwayat Game", () => this.close(), this.art);
         const tabs = el('div', 'history-tabs');
         tabs.setAttribute('role', 'tablist');
         for (const [id, text] of [
-            ['today', '今天'],
-            ['week', '最近7天'],
-            ['custom', '自定义'],
+            ['today', "Hari ini"],
+            ['week', "7 hari terakhir"],
+            ['custom', "Kustom"],
         ] as const) {
             const tab = button(text, () => {
                 if (id === 'custom') {
@@ -187,7 +187,7 @@ export class HistoryPage {
                 this.share,
             );
             listFooter(this.content, this.data, this.data.items[0]?.currency || this.currency);
-        } else notice(scroll, this.loading ? '加载中…' : '暂无记录');
+        } else notice(scroll, this.loading ? "Memuat…" : "Belum ada riwayat");
         const next = scroll.nextSibling;
         this.content.insertBefore(floatingScroll(scroll), next);
         scroll.scrollTop = this.scrollTop;
@@ -241,7 +241,7 @@ export class HistoryPage {
         this.epoch++;
         this.loading = false;
         this.clearContent();
-        header(this.content, '游戏记录', () => this.listScreen(), this.art, '请选择最多7天');
+        header(this.content, "Riwayat Game", () => this.listScreen(), this.art, "Pilih maksimal 7 hari");
         datePicker(
             this.content,
             this.dates.start,
@@ -262,8 +262,8 @@ export class HistoryPage {
         this.root.setAttribute('aria-busy','true');
         const controls = Array.from(this.root.querySelectorAll<HTMLButtonElement>('.history-replay'));
         controls.forEach(control => { control.disabled = true; });
-        const selected = controls.find(control => control.getAttribute('aria-label') === '回放交易 ' + record.betId);
-        if (selected) selected.textContent = '加载…';
+        const selected = controls.find(control => control.getAttribute('aria-label') === "Putar ulang transaksi " + record.betId);
+        if (selected) selected.textContent = "Memuat…";
         try { await this.replay(record); }
         catch (reason) {
             if (this.isOpen) {
@@ -275,7 +275,7 @@ export class HistoryPage {
         } finally {
             this.replayLoading = false;
             this.root?.removeAttribute('aria-busy');
-            controls.forEach(control => { control.disabled = false; control.textContent = '回放'; });
+            controls.forEach(control => { control.disabled = false; control.textContent = "Putar ulang"; });
         }
     }
 
@@ -284,19 +284,19 @@ export class HistoryPage {
         this.loading = false;
         this.detail = null;
         this.clearContent();
-        header(this.content, '记录详情', () => this.backToList(), this.art);
-        notice(this.content, '加载中…');
+        header(this.content, "Detail Transaksi", () => this.backToList(), this.art);
+        notice(this.content, "Memuat…");
         try {
             const detail = await this.api.historyReplay(record.betId);
             if (epoch !== this.epoch || !this.isOpen) return;
-            if (!detail.frames.length) throw new Error('暂无已结算盘面');
+            if (!detail.frames.length) throw new Error("Belum ada hasil yang diselesaikan.");
             this.detail = detail;
             this.index = 0;
             this.detailScreen();
         } catch (reason) {
             if (epoch !== this.epoch || !this.isOpen) return;
             this.clearContent();
-            header(this.content, '记录详情', () => this.backToList(), this.art);
+            header(this.content, "Detail Transaksi", () => this.backToList(), this.art);
             notice(this.content, errorText(reason), () => void this.showDetail(record));
         }
     }
@@ -312,7 +312,7 @@ export class HistoryPage {
         this.clearContent();
         header(
             this.content,
-            round.mode === 'free' ? '免费旋转' : '普通旋转',
+            round.mode === 'free' ? "Putaran Gratis" : "Putaran Biasa",
             () => this.backToList(),
             this.art,
         );

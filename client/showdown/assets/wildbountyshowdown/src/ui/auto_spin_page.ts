@@ -19,7 +19,7 @@ export class AutoSpinPage {
         window.addEventListener('keydown', escape);
         const watch = new MutationObserver(() => { if (!root.isConnected) { window.removeEventListener('keydown', escape); watch.disconnect(); } });
         watch.observe(document.documentElement, { childList: true, subtree: true });
-        root.innerHTML = `<div class="auto-spin-dim"></div><section class="auto-spin-panel" role="dialog" aria-modal="true" aria-label="自动旋转"><header><h2>自动旋转</h2><button class="auto-spin-close" aria-label="关闭">×</button></header><div class="auto-spin-content"><div class="auto-spin-caption">选择自动旋转次数</div><div class="auto-spin-counts"></div></div><footer><button class="auto-spin-start">开始</button></footer><div class="auto-spin-footer"><span>钱包余额</span><b>${info.balance}</b><span>投注额</span><b>${info.bet}</b></div></section>`;
+        root.innerHTML = `<div class="auto-spin-dim"></div><section class="auto-spin-panel" role="dialog" aria-modal="true" aria-label="Putar Otomatis"><header><h2>Putar Otomatis</h2><button class="auto-spin-close" aria-label="Tutup">×</button></header><div class="auto-spin-content"><div class="auto-spin-caption">Jumlah putaran otomatis</div><div class="auto-spin-counts"></div></div><footer><button class="auto-spin-start">Mulai</button></footer><div class="auto-spin-footer"><span>Saldo dompet</span><b>${info.balance}</b><span>Taruhan</span><b>${info.bet}</b></div></section>`;
 
         const counts = root.querySelector('.auto-spin-counts');
         for (const count of [10, 30, 50, 80, 1000]) {

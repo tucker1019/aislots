@@ -19,19 +19,19 @@ export class NativeReplayFrame {
         else if (replayMessage(event,source,origin,this.channel,'ag6-replay-share')) {
             const id = event.data.id;
             if (typeof id !== 'string') return;
-            void this.share().then(url=>{if(!this.disposed)source.postMessage({type:'ag6-replay-share-result',channel:this.channel,id,url},origin);}).catch(()=>{if(!this.disposed)source.postMessage({type:'ag6-replay-share-result',channel:this.channel,id,error:'分享失败，请重试'},origin);});
+            void this.share().then(url=>{if(!this.disposed)source.postMessage({type:'ag6-replay-share-result',channel:this.channel,id,url},origin);}).catch(()=>{if(!this.disposed)source.postMessage({type:'ag6-replay-share-result',channel:this.channel,id,error:"Gagal berbagi. Silakan coba lagi."},origin);});
         }
     };
     constructor(private data: HistoryReplay, private onClose: () => void, private share: () => Promise<string>) {
-        this.root.setAttribute('role','dialog');this.root.setAttribute('aria-label','AG6 动画回放');this.root.setAttribute('aria-modal','true');
+        this.root.setAttribute('role','dialog');this.root.setAttribute('aria-label',"Rekaman AG6");this.root.setAttribute('aria-modal','true');
         this.root.style.cssText='position:fixed;z-index:14000;background:#000;overflow:hidden';
         const url = new URL(location.pathname,location.origin);url.searchParams.set('nativeReplay',this.channel);
         if (['localhost','127.0.0.1'].includes(location.hostname) && new URL(location.href).searchParams.has('api')) url.searchParams.set('api',new URL(location.href).searchParams.get('api'));
         const scene = new URLSearchParams(location.search).get('scene');
         if (scene) url.searchParams.set('scene', scene);
-        this.frame.src=url.href;this.frame.title='AG6 动画回放';this.frame.allow='autoplay; clipboard-write';this.frame.style.cssText='display:block;width:100%;height:100%;border:0';
+        this.frame.src=url.href;this.frame.title="Rekaman AG6";this.frame.allow='autoplay; clipboard-write';this.frame.style.cssText='display:block;width:100%;height:100%;border:0';
         window.addEventListener('message',this.message);
-        this.loadingClose.textContent='关闭回放';this.loadingClose.style.cssText='position:absolute;right:12px;top:12px;z-index:1;width:130px;height:54px;font:20px Arial;border:1px solid #bb7c4b;border-radius:27px;background:#30303e;color:#e4c29d';this.loadingClose.onclick=()=>this.close();
+        this.loadingClose.textContent="Tutup rekaman";this.loadingClose.style.cssText='position:absolute;right:12px;top:12px;z-index:1;width:130px;height:54px;font:20px Arial;border:1px solid #bb7c4b;border-radius:27px;background:#30303e;color:#e4c29d';this.loadingClose.onclick=()=>this.close();
         this.root.append(this.frame,this.loadingClose);document.body.append(this.root);
         this.fit=fitGameOverlay(this.root,document.getElementById('GameCanvas') as HTMLCanvasElement,750);
     }

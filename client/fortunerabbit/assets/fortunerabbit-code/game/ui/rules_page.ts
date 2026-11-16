@@ -8,8 +8,8 @@ import { visibleGameBounds } from './game_overlay';
 
 // Values and ordering from the supplied Fortune Rabbit paytable and AG5 paylines.
 const PAYOUTS = [
-    [7, 'Wild', 200], [6, '金元宝', 100], [5, '福袋', 50], [4, '红包', 10],
-    [3, '金币', 5], [2, '鞭炮', 3], [1, '胡萝卜', 2],
+    [7, 'Wild', 200], [6, "Emas", 100], [5, "Kantong keberuntungan", 50], [4, "Angpau", 10],
+    [3, "Koin", 5], [2, "Petasan", 3], [1, "Wortel", 2],
 ] as const;
 
 // The supplied AG5 rules use Indonesian, as does the AG4 rules body.
@@ -99,8 +99,8 @@ export class RulesPage {
         root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true');
         root.setAttribute('aria-labelledby', 'ag5-paytable-title');
         const header = el('header', 'history-header');
-        const title = el('h1', '', '赔率表'); title.id = 'ag5-paytable-title';
-        header.append(button('返回', () => this.close(), 'history-back'), title);
+        const title = el('h1', '', "Tabel Pembayaran"); title.id = 'ag5-paytable-title';
+        header.append(button("Kembali", () => this.close(), 'history-back'), title);
         const scroll = el('div', 'history-scroll'), copy = el('article', 'rules-copy');
         copy.lang = 'id';
         let symbols: HTMLElement;
@@ -137,7 +137,7 @@ export class RulesPage {
             const art = await loadHistoryArt();
             if (this.root === root) symbols.replaceWith(payoutCards(art));
         } catch {
-            if (this.root === root) { this.close(); toast('规则加载失败，请重试。'); }
+            if (this.root === root) { this.close(); toast("Gagal memuat aturan. Silakan coba lagi."); }
         }
     }
 

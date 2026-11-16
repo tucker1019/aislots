@@ -114,7 +114,7 @@ export class slots_base extends Component {
         this.node.on(Node.EventType.MOUSE_UP, this.onBoardStop, this, true);
         this.reels = this.node.children.map((n) => n.getComponent(slots_r)).filter(Boolean);
         if (this.reels.length !== 5) {
-            throw new Error('场景必须配置5个转轴');
+            throw new Error("Scene harus memiliki 5 gulungan.");
         }
         this.reels.forEach((reel, c) => {
             reel.index = c;
@@ -298,7 +298,7 @@ export class slots_base extends Component {
     /** 临时借用场景播放历史；退出前等待所有旧异步演出停止，再恢复实时状态。 */
     private async playHistory(betId: string) {
         if (!this.alive || !this.ready || this.replayActive || this.state !== 0 || this.activeBet || this.autoSpinRunning)
-            throw new Error('请先等待当前游戏结束，再回放记录');
+            throw new Error("Tunggu game saat ini selesai sebelum membuka rekaman.");
         const canvas = document.getElementById('GameCanvas') as HTMLCanvasElement;
         this.replayLoading = true;
         this.notifyFlowChanged();
@@ -330,7 +330,7 @@ export class slots_base extends Component {
     private async connectSharedReplay(betId: string, token: string) {
         this.replayLoading = true;
         try {
-            if (!betId || !token) throw new Error('分享链接不完整');
+            if (!betId || !token) throw new Error("Tautan berbagi tidak lengkap.");
             const data = await loadReplay({ historyReplay: (id, cursor) =>
                 this.api.sharedReplay(id, token, cursor) }, betId, () => this.alive);
             if (!this.alive) return;
@@ -351,8 +351,8 @@ export class slots_base extends Component {
                 this.replayControls?.destroy();
                 this.replayControls = null;
                 void this.connectSharedReplay(betId, token);
-            }, { exitLabel: '重试' });
-            this.replayControls.done('分享链接无效或暂时无法加载，请重试');
+            }, { exitLabel: "Coba lagi" });
+            this.replayControls.done("Tautan berbagi tidak valid atau belum dapat dimuat. Silakan coba lagi.");
         } finally { this.replayLoading = false; this.notifyFlowChanged(); }
     }
 
@@ -425,7 +425,7 @@ export class slots_base extends Component {
             };
             this.replayControls = new ReplayControls(canvas, betId,
                 this.sharedReplay ? () => void restart() : this.replayExit,
-                { share: () => this.replayShareLink(betId), exitLabel: this.sharedReplay ? '重新播放' : '退出回放' });
+                { share: () => this.replayShareLink(betId), exitLabel: this.sharedReplay ? "Putar lagi" : "Keluar rekaman" });
             const run = async () => {
                 const playing = session;
                 if (data.startBoard) await Promise.race([new Promise<void>(resolve => setTimeout(resolve, 350)), exited]);
@@ -433,13 +433,13 @@ export class slots_base extends Component {
                 await this.play(playing.current, false, playing)
                     .then(() => {
                         if (playing.active) this.replayControls?.done(data.bet.status === 'complete'
-                            ? '回放结束' : '已播放当前已结算部分');
+                            ? "Rekaman selesai" : "Seluruh hasil yang telah diselesaikan sudah diputar.");
                     })
                     .catch(reason => {
                         this.effects?.cancelPresentation();
                         this.reels.forEach(reel => reel.cancelPresentation());
                         if (playing.active) {
-                            this.replayControls?.done('回放失败：' + (reason instanceof Error ? reason.message : String(reason)));
+                            this.replayControls?.done("Gagal memutar rekaman: " + (reason instanceof Error ? reason.message : String(reason)));
                             playing.cancel();
                         }
                     });
@@ -654,7 +654,7 @@ export class slots_base extends Component {
         const bounds = canvas.getBoundingClientRect();
         const root = document.createElement('div');
         root.className = 'aislot-bet-options';
-        root.innerHTML = `<div class="bet-options-panel"><div class="bet-options-header"><h2>投注选项</h2><button class="bet-options-close" aria-label="关闭">×</button></div><div class="bet-options-content"><div class="bet-options-head"><span>投注额</span><i>×</i><span>投注级别</span><i>×</i><span>线路</span><i>=</i><strong>投注总额</strong></div><div class="bet-selector-bg"></div><div class="bet-wheel"><div class="bet-wheel-column bet-wheel-bet"></div><i>×</i><div class="bet-wheel-column bet-wheel-level"></div><i>×</i><div class="bet-wheel-column bet-wheel-lines"><span>${this.lineCount}</span></div><i>=</i><strong class="bet-wheel-total"></strong></div><div class="bet-gradient top"></div><div class="bet-gradient bottom"></div></div><div class="bet-options-actions"><button class="bet-max">最大投注</button><button class="bet-confirm">确认</button></div><div class="bet-options-footer"><span>钱包余额</span><b>${formatMoney(this.balance)}</b><span>投注额</span><b class="bet-footer-amount">${formatMoney(this.betAmount)}</b></div></div>`;
+        root.innerHTML = `<div class="bet-options-panel"><div class="bet-options-header"><h2>Opsi Taruhan</h2><button class="bet-options-close" aria-label="Tutup">×</button></div><div class="bet-options-content"><div class="bet-options-head"><span>Taruhan</span><i>×</i><span>Level taruhan</span><i>×</i><span>Garis</span><i>=</i><strong>Total taruhan</strong></div><div class="bet-selector-bg"></div><div class="bet-wheel"><div class="bet-wheel-column bet-wheel-bet"></div><i>×</i><div class="bet-wheel-column bet-wheel-level"></div><i>×</i><div class="bet-wheel-column bet-wheel-lines"><span>${this.lineCount}</span></div><i>=</i><strong class="bet-wheel-total"></strong></div><div class="bet-gradient top"></div><div class="bet-gradient bottom"></div></div><div class="bet-options-actions"><button class="bet-max">Taruhan maks.</button><button class="bet-confirm">Konfirmasi</button></div><div class="bet-options-footer"><span>Saldo dompet</span><b>${formatMoney(this.balance)}</b><span>Taruhan</span><b class="bet-footer-amount">${formatMoney(this.betAmount)}</b></div></div>`;
         const panel = root.firstElementChild as HTMLDivElement;
         const choices = this.betChoices.length ? this.betChoices : [{ bet: this.bet, level: this.betLevel, display: this.betAmount }];
         const values = Array.from(new Set(choices.map(item => item.bet)));
@@ -1052,12 +1052,12 @@ export class slots_base extends Component {
         root.style.cssText = 'position:absolute;inset:0;z-index:10000;container-type:size;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;color:#202124;';
         const content = document.createElement('div');
         content.style.cssText = 'width:84%;background:#fff;border:1px solid #d9dce1;border-radius:1%;box-shadow:0 2% 6% rgba(0,0,0,.24);padding:0;text-align:center;overflow:hidden;';
-        content.innerHTML = '<div style="padding:4% 4% 2%;font-size:clamp(14px,4.8cqw,24px);font-weight:700;color:#202124;">请求失败</div>' +
-            '<div style="padding:0 6% 4%;line-height:1.6;font-size:clamp(11px,3.2cqw,16px);color:#5f6368;">暂时无法连接游戏服务，请检查网络后重试。</div>' +
+        content.innerHTML = "<div style=\"padding:4% 4% 2%;font-size:clamp(14px,4.8cqw,24px);font-weight:700;color:#202124;\">Permintaan Gagal</div>" +
+            "<div style=\"padding:0 6% 4%;line-height:1.6;font-size:clamp(11px,3.2cqw,16px);color:#5f6368;\">Tidak dapat terhubung ke game. Periksa koneksi lalu coba lagi.</div>" +
             '<div style="height:1px;background:#e5e7eb;"></div>';
         const button = document.createElement('button');
         button.type = 'button';
-        button.textContent = '重试';
+        button.textContent = "Coba lagi";
         button.style.cssText = 'display:block;width:100%;border:0;background:#fff;color:#c88719;padding:4%;font-size:clamp(12px,3.6cqw,18px);font-weight:600;cursor:pointer;';
         button.addEventListener('click', () => {
             root.remove();
@@ -1083,11 +1083,11 @@ export class slots_base extends Component {
         root.style.cssText = 'position:absolute;inset:0;z-index:10000;container-type:size;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;color:#fff;';
         const content = document.createElement('div');
         content.style.cssText = 'box-sizing:border-box;width:70%;background:rgba(40,40,52,.96);border-radius:1em;padding:5% 5% 4%;text-align:center;overflow:hidden;';
-        content.innerHTML = '<div style="font-size:clamp(16px,4.8cqw,24px);font-weight:500;margin-bottom:5%;">余额不足</div>' +
-            '<div style="line-height:1.55;font-size:clamp(12px,3.4cqw,17px);color:#bdbbc3;">请充值后再试。</div>';
+        content.innerHTML = "<div style=\"font-size:clamp(16px,4.8cqw,24px);font-weight:500;margin-bottom:5%;\">Saldo Tidak Cukup</div>" +
+            "<div style=\"line-height:1.55;font-size:clamp(12px,3.4cqw,17px);color:#bdbbc3;\">Silakan deposit lalu coba lagi.</div>";
         const button = document.createElement('button');
         button.type = 'button';
-        button.textContent = '确定';
+        button.textContent = "OK";
         button.style.cssText = 'display:block;width:70%;margin:6% auto 0;border:0;border-radius:2em;background:#c8874f;color:#202124;padding:3%;font-size:clamp(13px,3.6cqw,18px);cursor:pointer;';
         button.addEventListener('click', () => { root.remove(); this.failureDialog = null; });
         content.appendChild(button);
@@ -1116,7 +1116,7 @@ export class slots_base extends Component {
         }
         let remaining = Math.ceil(Number(detail.delay || 0) / 1000);
         const attempt = Number(detail.attempt || 1);
-        this.retryBanner.innerHTML = `第 ${attempt} 次重试中，${remaining} 秒后重试 <span class="retry-dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>`;
+        this.retryBanner.innerHTML = `Garis ${attempt} kali percobaan, ${remaining} dtk sebelum mencoba lagi <span class="retry-dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>`;
         window.clearInterval(this.retryTimer);
         this.retryTimer = window.setInterval(() => {
             remaining -= 1;
@@ -1125,7 +1125,7 @@ export class slots_base extends Component {
                 this.retryTimer = 0;
                 return;
             }
-            if (this.retryBanner) this.retryBanner.innerHTML = `第 ${attempt} 次重试中，${remaining} 秒后重试 <span class="retry-dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>`;
+            if (this.retryBanner) this.retryBanner.innerHTML = `Garis ${attempt} kali percobaan, ${remaining} dtk sebelum mencoba lagi <span class="retry-dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>`;
         }, 1000);
     };
 
@@ -1215,7 +1215,7 @@ function formatMoney(raw: string): string {
         const value = BigInt(raw);
         const negative = value < 0n;
         const absolute = negative ? -value : value;
-        return (negative ? '-' : '') + (Number(absolute) / 100).toFixed(2);
+        return (value / 100n).toLocaleString('id-ID');
     } catch { return '—'; }
 }
 

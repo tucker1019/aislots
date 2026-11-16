@@ -13,9 +13,17 @@ export function money(raw: string | number, scale = 0, _currency = 'IDR') {
     const negative = value < 0n;
     if (negative) value = -value;
     const unit = decimalUnit(Math.max(0, Math.min(9, scale)));
-    const integer = (value / unit).toLocaleString('en-US');
-    const decimals = scale ? '.' + (value % unit).toString().padStart(scale, '0') : '';
-    return (negative ? '−' : '') + integer + decimals;
+    const whole = value / unit;
+    return (negative && whole !== 0n ? '−' : '') + whole.toLocaleString('id-ID');
+}
+/** Currency fractions are truncated only for display; multiplier fractions stay precise. */
+export function moneyFraction(raw: string, scale = 0) {
+    try {
+        const [numerator, denominator = '1'] = raw.split('/');
+        const divisor = BigInt(denominator) * decimalUnit(scale);
+        if (divisor === 0n) return '—';
+        return (BigInt(numerator) / divisor).toLocaleString('id-ID');
+    } catch { return '—'; }
 }
 export function fraction(raw: string, decimals = 4, scale = 0) {
     const [a, b = '1'] = raw.split('/');
@@ -51,7 +59,7 @@ export function dateRange(start: string, end: string) {
         endDay < from ||
         +endDay - +from > 6 * 86400000
     )
-        throw new Error('请选择连续1至7天，结束日期不能早于开始日期');
+        throw new Error("Pilih 1–7 hari berturut-turut. Tanggal akhir tidak boleh sebelum tanggal mulai.");
     return { from: from.toISOString(), to: new Date(+endDay + 86400000).toISOString() };
 }
 export function recentDates(days: number, now = Date.now()) {
@@ -83,6 +91,6 @@ export function gameBounds(
     };
 }
 export const symbolNames: Record<number, string> = {
-    1: '蒙面牛仔', 2: '左轮手枪', 3: '牛仔帽', 4: '威士忌',
+    1: "Bandit Bertopeng", 2: "Revolver", 3: "Topi Koboi", 4: "Wiski",
     5: 'A', 6: 'K', 7: 'Q', 8: 'J', 9: 'Wild', 10: 'Scatter',
 };

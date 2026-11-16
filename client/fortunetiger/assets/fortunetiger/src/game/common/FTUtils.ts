@@ -68,35 +68,12 @@ export function longToNumber(value): number {
     if (!value) return 0
     return value.high * 0x100000000 + (value.low >>> 0);
 }
-export function showMoney(value: number, is: boolean = true) {
-    value = Math.floor(value)
-    let s = String(value);
-    while (s.length < 3) {
-        s = s.slice(0, 0) + "0" + s.slice(0);
-    }
-    let str: string;
-    if (FTGlobal.isPoint == 1) {
-        // 分转元，固定两位小数：100 -> 1.00, 1050 -> 10.50, 5 -> 0.05
-        str = s.slice(0, s.length - 2) + "." + s.slice(s.length - 2);
-        if (str[0] == ".") {
-            str = str.slice(0, 0) + "0" + str.slice(0);
-        }
-    } else {
-        // 只显示整元，字符串丢掉后两位：100 -> 1, 1050 -> 10, 5 -> 0
-        str = s.slice(0, s.length - 2);
-        while (str.length > 1 && str[0] == "0") {
-            str = str.slice(1);
-        }
-        if (str.length == 0) {
-            str = "0";
-        }
-    }
-    if (is)
-        return (str).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    else return str + ""
+export function showMoney(value: number, _grouped = true) {
+    const whole = Math.trunc(value / 100);
+    return (Object.is(whole, -0) ? 0 : whole).toLocaleString('id-ID', { maximumFractionDigits: 0 });
 }
 export function recovMoney(value: string) {
-    return Number(value.replace(/,/g, '')) * 100;
+    return Number(value.replace(/\./g, '')) * 100;
 }
 
 export function cloneArray(list: Array<any>): Array<any> {

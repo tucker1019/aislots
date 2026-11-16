@@ -4,8 +4,8 @@ const url=s=>'data:text/javascript;base64,'+Buffer.from(s).toString('base64');
 const compile=s=>ts.transpile(s,{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022});
 test('errors distinguish reconnect, insufficient funds and expired sessions without exposing raw errors',async()=>{
  const {gameErrorMessage}=await import(url(compile(read('ui/dialog_message.ts'))));
- assert.equal(gameErrorMessage(new TypeError('Failed to fetch')).title,'请求失败');
- assert.equal(gameErrorMessage({status:402,message:'insufficient balance'}).title,'余额不足');
+ assert.equal(gameErrorMessage(new TypeError('Failed to fetch')).title,'Permintaan Gagal');
+ assert.equal(gameErrorMessage({status:402,message:'insufficient balance'}).title,'Saldo Tidak Cukup');
  assert.equal(gameErrorMessage({status:401,message:'secret session'}).expired,true);
  assert.doesNotMatch(JSON.stringify(gameErrorMessage(Error('private stack trace'))),/private/);
 });
@@ -22,6 +22,6 @@ test('HTML dialogs dispatch once, clean up and never insert message HTML',async(
 });
 test('game warnings use HTML rather than missing prefabs',()=>{
  const mgr=read('wbsgame/mgr/WBSLoadManager.ts');assert.match(mgr,/showGameDialog/);assert.doesNotMatch(mgr,/AlertLayer|prefab\/com\/Toast/);
- assert.match(read('wbsgame/view/WBSOptLayer.ts'),/showAlert\('余额不足'/);
+ assert.match(read('wbsgame/view/WBSOptLayer.ts'),/showAlert\("Saldo Tidak Cukup"/);
  assert.match(read('network/error_overlay.ts'),/showGameDialog/);
 });
