@@ -25,6 +25,6 @@ export const RULES_CSS = `
 #ag4-paytable .pay-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9em .7em;margin:1.5em 0}
 #ag4-paytable .pay-card{display:flex;flex-direction:column;align-items:center;gap:.35em;min-width:0;background:#30303e;border-radius:.5em;padding:.7em .45em;color:var(--accent)}
 #ag4-paytable .pay-wild{grid-column:1/-1;justify-self:center;width:calc((100% - 1.4em)/3)}
-#ag4-paytable .pay-symbol{display:block;width:100%;height:5em;overflow:hidden}
+#ag4-paytable .pay-symbol{display:block;width:100%;height:5em;object-fit:contain;overflow:hidden}
 #ag4-paytable .pay-illustration{display:block;max-width:100%;width:80%;height:auto;margin:1em auto}
 `;

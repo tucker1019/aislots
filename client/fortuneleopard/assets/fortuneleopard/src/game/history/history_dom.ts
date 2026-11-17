@@ -23,7 +23,8 @@ export function notice(host: HTMLElement, message: string, retry?: () => void) {
 export function errorText(error: unknown) {
     if (error && typeof error === 'object' && 'status' in error && error.status === 401)
         return "Sesi berakhir. Tutup riwayat dan masuk kembali ke game.";
-    return error instanceof Error ? error.message : "Gagal memuat. Silakan coba lagi.";
+    console.error("[AG9] history failed", error);
+    return "Gagal memuat. Silakan coba lagi.";
 }
 
 /** 将键盘焦点保留在记录弹层内。 */

@@ -1,3 +1,4 @@
+import { FLSpriteCtrl } from './FLSpriteCtrl';
 import { RulesPage } from '../../ui/rules_page';
 import { BetOptionsPage } from '../../ui/bet_options_page';
 import { AutoSpinPage } from '../../ui/auto_spin_page';
@@ -37,7 +38,6 @@ export enum OPT_STATE {
 export class FLOptCtrl extends FLBaseNode {
 
     ib_bar: Node = null;    // 跑马灯滚动条
-    ui_footer: Node = null; // 底下老虎须装饰图
     node_win_big: Node = null;  // 玩家赢钱-大横条
 
     lab_all_money: Label = null;    // 玩家总钱
@@ -54,13 +54,14 @@ export class FLOptCtrl extends FLBaseNode {
     addBtnNode: Node = null;    // 加注
     btn_auto: Node = null;      // 自动
     btn_menu: Node = null;      // 菜单
-    btn_go: Node = null;        // 旋转 
+    btn_go: Node = null;        // 旋转
+    sp_spin: sp.Skeleton = null;
     btn_stop: Node = null;      // 停止
     btn_autostop: Node = null;  // 停止自动
 
     btn_exit: Node = null;      // 退出按钮
     btn_sound: Node = null;     // 音量
-    btn_rule: Node = null;      // 规则 
+    btn_rule: Node = null;      // 规则
     btn_close: Node = null;     // 关闭panel2
 
     tip_panel: Node = null;  // 提示条&&赢分条
@@ -116,12 +117,11 @@ export class FLOptCtrl extends FLBaseNode {
         this.canSendSpin = true;
 
         this.ib_bar = xNodeFL.find("ib_bar", this.node);
-        this.ui_footer = xNodeFL.find("ui_footer", this.node);
         this.node_win_big = xNodeFL.find("node_win_big", this.node);
         this.lab_all_money = xNodeFL.findComponent("fenzhikuang/node_all/lab", this.node, Label);
         this.lab_bit_bottom = xNodeFL.findComponent("fenzhikuang/node_bet/lab", this.node, Label);
         this.lab_award_num = xNodeFL.findComponent("fenzhikuang/node_win/lab", this.node, Label);
-        this.btn_bet = xNodeFL.find("node_bet", this.node);
+        this.btn_bet = xNodeFL.find("fenzhikuang/node_bet", this.node);
 
         this.panel1 = xNodeFL.find("panel1", this.node);
         this.panel2 = xNodeFL.find("panel2", this.node);
@@ -140,6 +140,7 @@ export class FLOptCtrl extends FLBaseNode {
         this.btn_rule = xNodeFL.find("panel2/btn_rule", this.node);
         this.btn_close = xNodeFL.find("panel2/btn_close", this.node);
 
+        this.sp_spin = xNodeFL.findComponent("panel1/buttonSp", this.node, sp.Skeleton);
         this.tip_panel = xNodeFL.find("tip_panel", this.node);
         if (this.tip_panel) this.tip_panel.active = false;
 
@@ -182,7 +183,7 @@ export class FLOptCtrl extends FLBaseNode {
     }
 
     initLanguageView() {
-        // let path = FLConstant.languagePath;        
+        // let path = FLConstant.languagePath;
         // xNodeFL.setSpriteFrame("btn_go/spr_spin", this.node, FLLoadManager.ins.getSpriteFrame(path + "img_spin/spriteFrame"))
         // xNodeFL.setSpriteFrame("btn_stop/img_stop", this.node, FLLoadManager.ins.getSpriteFrame(path + "img_stop/spriteFrame"))
         // xNodeFL.setSpriteFrame("btn_autostop/img_stop", this.node, FLLoadManager.ins.getSpriteFrame(path + "img_stop/spriteFrame"))
@@ -196,23 +197,70 @@ export class FLOptCtrl extends FLBaseNode {
     }
 
     showNorTitle(bShow, state?) {
-        // Fortune Leopard uses ib_bar/mask/info_main and info_respin. The
-        // old Tiger-only info_bns/layout paths are not present in this scene.
-        if (!this.ib_bar) return;
+
         this.ib_bar.active = true;
-        const mask = this.ib_bar.getChildByName("mask");
-        const normal = mask?.getChildByName("info_main");
-        const respin = mask?.getChildByName("info_respin");
-        if (!normal || !respin) return;
-        if (!bShow) {
-            normal.active = false;
-            respin.active = false;
-            return;
+        if (bShow) {
+            let info_main = xNodeFL.find("mask/info_main", this.ib_bar);
+            let info_respin = xNodeFL.find("mask/info_respin", this.ib_bar);
+
+            let playInfoAnim = (showInfo) => {
+                Tween.stopAllByTarget(info_main);
+                let maskW = xNodeFL.find("mask", this.ib_bar).getComponent(UITransform).contentSize.width;
+                let infoW = showInfo.getComponent(UITransform).contentSize.width;
+                if (infoW > maskW) {
+                    showInfo.position = new Vec3((infoW - maskW) / 2 + 30, showInfo.position.y);
+                    tween(showInfo)
+                        .delay(0.5)
+                        .to(4.4, { position: new Vec3(-(maskW + infoW) / 2 - 5, showInfo.position.y, 0) })
+                        .start()
+                } else {
+                    showInfo.position = new Vec3(0, showInfo.position.y, 0);
+                }
+            }
+
+            if (state == "triFree") {
+                Tween.stopAllByTarget(this.ib_bar);
+                info_respin.active = false;
+                info_main.active = true;
+                info_main.getComponent(FLSpriteCtrl).setSpriteIndex(3);
+                playInfoAnim(info_main);
+            } else if (state > 0) {
+                Tween.stopAllByTarget(this.ib_bar);
+                info_respin.active = true;
+                info_main.active = false;
+
+                let cell = info_respin.getChildByName("cell");
+                cell.active = true;
+                cell.children.forEach((node => {
+                    node.active = false;
+                }))
+                cell.getChildByName(FLConstant.PRAFAB_LIST[state].node).active = true;
+                playInfoAnim(info_respin);
+            } else {
+                if (state == "init" || this.node_win_big.active) {
+                    Tween.stopAllByTarget(this.ib_bar);
+                    info_respin.active = false;
+                    info_main.active = true;
+                    let showIdx = Math.floor(Math.random() * 3);
+                    tween(this.ib_bar)
+                        .repeatForever(
+                            tween().call(() => {
+                                Tween.stopAllByTarget(info_main);
+                                info_main.getComponent(FLSpriteCtrl).setSpriteIndex(showIdx);
+                                showIdx = showIdx + 1;
+                                if (showIdx == 3) {
+                                    showIdx = 0;
+                                }
+                                playInfoAnim(info_main);
+                            }).delay(5)
+                        )
+                        .start()
+                }
+            }
+
+            this.node_win_big.active = false;
+        } else {
         }
-        const isRespin = state === "triFree" || (typeof state === "number" && state > 0);
-        normal.active = !isRespin;
-        respin.active = isRespin;
-        if (this.node_win_big) this.node_win_big.active = false;
     }
 
 
@@ -244,13 +292,18 @@ export class FLOptCtrl extends FLBaseNode {
         this.initLanguageView()
         this.onTouch()
         this.updateGoBtnAnim();
-        this.showNorTitle(true);
+        this.showNorTitle(true, "init");
         this.initTurboBtn();
         this.initSoundBtn();
+        this.playSpinSpAnim("idle");
     }
 
     updateBitView(index: number = FLGameManager.getTotalBitIndex(), bClick = false) {
 
+        if (this.layerCtrl.isReplay) {
+            this.lab_bit_bottom.string = showMoney(goSession.entry.replay.betAmount);
+            return;
+        }
         let mMultiples: number[] = FLGameManager.getTotalBitList();
         let max = mMultiples.length - 1;
         let min = 0;
@@ -359,6 +412,10 @@ export class FLOptCtrl extends FLBaseNode {
         // xNodeFL.setBtnInteractable("", this.btn_bet, isshow)
         this.btn_bet.getComponent(Button).interactable = isshow
 
+        if (isshow) {
+            this.playSpinSpAnim("idle");
+        }
+
         // xNodeFL.setBtnInteractable("", this.btn_turbo, isshow)
         // xNodeFL.setBtnInteractable("", this.btn_turbo, isshow)
         // xNodeFL.setBtnInteractable("", xNodeFL.find("btn_line", this.node), isshow)
@@ -393,16 +450,12 @@ export class FLOptCtrl extends FLBaseNode {
     }
 
     touchCallBack(event: Event) {
-        let guangAnim: Animation = xNodeFL.findComponent("mh_vfx_a", this.btn_go, Animation);
-        // The leopard scene does not contain the old tiger-only glow node.
-        // Keep the input path independent from that optional effect: a missing
-        // animation must never prevent the spin request from being sent.
+        // let guangAnim: Animation = xNodeFL.findComponent("mh_vfx_a", this.btn_go, Animation);
         switch (event.type) {
             case "touch-start":
-                if (guangAnim) {
-                    guangAnim.node.active = true;
-                    guangAnim.play();
-                }
+                // guangAnim.node.active = true;
+                // guangAnim.play();
+                this.playSpinSpAnim("touchStart");
                 // this.isAutoShow = true;
                 // this.scheduleOnce(this.showSetAudo, 1)
                 this.isTouchGo = true;
@@ -413,7 +466,8 @@ export class FLOptCtrl extends FLBaseNode {
             case "touch-end":
                 // this.isAutoShow = false;
                 // this.unschedule(this.showSetAudo);
-                if (guangAnim) guangAnim.node.active = false;
+                // guangAnim.node.active = false;
+                this.playSpinSpAnim("click");
                 // if (!this.layout_auto.active) {
                 this.onGoBtnClick(true)
                 // }
@@ -422,7 +476,8 @@ export class FLOptCtrl extends FLBaseNode {
             case "touch-cancel":
                 // this.isAutoShow = false;
                 // this.unschedule(this.showSetAudo);
-                if (guangAnim) guangAnim.node.active = false;
+                // guangAnim.node.active = false;
+                this.playSpinSpAnim("idle");
                 this.isTouchGo = false;
                 break;
         }
@@ -496,6 +551,7 @@ export class FLOptCtrl extends FLBaseNode {
             let showBg;
             if (winType == 1) {
                 showBg = xNodeFL.find("ib_bar_a", this.node_win_big);
+                showBg.active = true;
                 // xNodeFL.find("ib_vfx_b_screen_00", this.node_win_big).active = true;
 
 
@@ -503,11 +559,16 @@ export class FLOptCtrl extends FLBaseNode {
                 anim1.node.active = true;
                 anim1.play();
 
-                let anim2: Animation = xNodeFL.findComponent("ib_vfx_c_add_00", showBg, Animation);
-                anim2.node.active = true;
-                anim2.play();
+                // let anim2: Animation = xNodeFL.findComponent("ib_vfx_c_add_00", showBg, Animation);
+                // anim2.node.active = true;
+                // anim2.play();
+
+                let sp2: sp.Skeleton = xNodeFL.findComponent("ib_vfx_c_add_00", showBg, sp.Skeleton);
+                sp2.node.active = true;
+                sp2.setAnimation(0, "animation", false);
             } else if (winType == 2) {
                 showBg = xNodeFL.find("ib_bar_b", this.node_win_big);
+                showBg.active = true;
                 // xNodeFL.find("ib_vfx_a_screen_00", this.node_win_big).active = true;
 
                 let anim1: Animation = xNodeFL.findComponent("ib_vfx_a_add_00", this.node_win_big, Animation);
@@ -519,6 +580,7 @@ export class FLOptCtrl extends FLBaseNode {
                 anim2.play();
             } else if (winType == 3) {
                 showBg = xNodeFL.find("ib_bar_c", this.node_win_big);
+                showBg.active = true;
                 // xNodeFL.find("ib_vfx_e_screen_00", this.node_win_big).active = true;
 
                 // let anim1: Animation = xNodeFL.findComponent("ib_vfx_e_add_00", this.node_win_big, Animation);
@@ -585,7 +647,7 @@ export class FLOptCtrl extends FLBaseNode {
 
         // let spr_fast = this.btn_turbo.getChildByName("spr_fast");
         // spr_fast.active = !spr_fast.active;
-        // // xNodeFL.findComponent("Label", this.btn_turbo, Label).Color = 
+        // // xNodeFL.findComponent("Label", this.btn_turbo, Label).Color =
         // let lab = this.btn_turbo.getChildByName("Label");
         // lab.getComponent(Label).color = spr_fast.active ? new Color(255, 255, 255, 255) : new Color(94, 94, 94, 255)
 
@@ -645,7 +707,7 @@ export class FLOptCtrl extends FLBaseNode {
 
             // 手动点击spin按钮
             if (bCLick) {
-                this.playStopShow();
+                this.updateGoBtnAnim();
             }
             // await this.layerCtrl.centerRollCtrl.initLight();
         } else {
@@ -687,25 +749,12 @@ export class FLOptCtrl extends FLBaseNode {
         if (FLGameManager.getStop()) return
         FLAudioMgr.Instance.playSound("games/stop");
         FLGameManager.setStop(true);
-        xNodeFL.find("sb_arrow_blur", this.btn_stop).active = false;
-        xNodeFL.find("sb_arrow_grey", this.btn_stop).active = true;
+        // xNodeFL.find("sb_arrow_blur", this.btn_stop).active = false;
+        // xNodeFL.find("sb_arrow_grey", this.btn_stop).active = true;
+        this.playSpinSpAnim("stop");
     }
     // 播放apin按钮按下后，stop按钮动画
-    playStopShow() {
-        tween(this.btn_stop)
-            .to(0.3, { scale: new Vec3(0.9, 0.9, 1) })
-            .to(0.3, { scale: new Vec3(1, 1, 1) })
-            .start()
 
-        xNodeFL.find("sb_arrow_blur", this.btn_stop).active = true;
-        xNodeFL.find("sb_arrow_grey", this.btn_stop).active = false;
-
-        let starAnim: Animation = xNodeFL.findComponent("spin_click_star", this.btn_stop, Animation);
-        starAnim.node.active = true;
-        starAnim.play();
-
-        this.playSpinFooterAnim();
-    }
     onLineBtnClick() {
         // FLAudioMgr.Instance.playSound("button/InfoButton");
         // if (this.showLineBool) FLLoadManager.ins.hideLineLayer();
@@ -761,6 +810,32 @@ export class FLOptCtrl extends FLBaseNode {
         return this.lab_award_num.node.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(0, 0, 0));
     }
 
+async playSpinSpAnim(type) {
+        Tween.stopAllByTarget(this.sp_spin);
+        if (type == "idle") { // 待机-可以点击旋转
+            this.sp_spin.node.active = true;
+            this.sp_spin.setAnimation(0, "idle1", true);
+        } else if (type == "touchStart") {    // 长按
+            this.sp_spin.node.active = true;
+            this.sp_spin.setAnimation(0, "idle2", true);
+        } else if (type == "click") { // 点击旋转
+            this.sp_spin.node.active = true;
+            this.sp_spin.setAnimation(0, "click", false);
+            tween(this.sp_spin)
+                .delay(1)
+                .call(() => {
+                    this.sp_spin.setAnimation(0, "idle4", true);
+                })
+                .start()
+
+        } else if (type == "stop") {    // 点击停止
+            this.sp_spin.node.active = true;
+            this.sp_spin.setAnimation(0, "idle3", true);
+        } else if (type == "auto") {    // 自动
+            this.sp_spin.node.active = false;
+        }
+    }
+
     updateGoBtnAnim() {
         // let spr_spin = this.btn_go.getChildByName("spr_spin");
         // Tween.stopAllByTarget(spr_spin);
@@ -798,6 +873,7 @@ export class FLOptCtrl extends FLBaseNode {
         Tween.stopAllByTarget(this.lab_all_money.node);
         if (this.layerCtrl.isReplay) {
             this.lab_all_money.string = '******';
+            this.lab_bit_bottom.string = showMoney(goSession.entry.replay.betAmount);
             return;
         }
         let num = nums;
@@ -822,9 +898,7 @@ export class FLOptCtrl extends FLBaseNode {
     }
 
 
-    playSpinFooterAnim() {
-        this.ui_footer.getComponent(Animation).play();
-    }
+
 
     showTipPanel(type) {
         Tween.stopAllByTarget(this.tip_panel);
@@ -846,11 +920,11 @@ export class FLOptCtrl extends FLBaseNode {
 
         let changeT = 0.08;
         if (id == 1) {
-            let footerOpa = this.ui_footer.getComponent(UIOpacity);
-            this.ui_footer.active = true;
-            footerOpa.opacity = 0;
-            tween(footerOpa)
-                .to(changeT, { opacity: 255 }).start()
+            // let footerOpa = this.ui_footer.getComponent(UIOpacity);
+            // this.ui_footer.active = true;
+            // footerOpa.opacity = 0;
+            // tween(footerOpa)
+            //     .to(changeT, { opacity: 255 }).start()
             tween(this.panel2)
                 .to(changeT, { position: new Vec3(0, -320, 0) })   //  todo
                 .call(() => {
@@ -858,22 +932,24 @@ export class FLOptCtrl extends FLBaseNode {
                 })
                 .start()
 
-            this.panel1.position = new Vec3(0, -320, 0);
-            this.panel1.active = true;
             tween(this.panel1)
                 .delay(changeT)
-                .to(changeT, { position: new Vec3(0, -111, 0) })   //  todo
+                .call(() => {
+                    this.panel1.active = true;
+                    this.panel1.position = new Vec3(0, -320, 0)
+                })
+                .to(changeT, { position: new Vec3(0, -33, 0) })   //  todo
                 .start()
 
         } else {
-            let footerOpa = this.ui_footer.getComponent(UIOpacity);
-            footerOpa.opacity = 255;
-            tween(footerOpa)
-                .to(changeT, { opacity: 255 })
-                .call(() => {
-                    this.ui_footer.active = false;
-                })
-                .start()
+            // let footerOpa = this.ui_footer.getComponent(UIOpacity);
+            // footerOpa.opacity = 255;
+            // tween(footerOpa)
+            //     .to(changeT, { opacity: 255 })
+            //     .call(() => {
+            //         this.ui_footer.active = false;
+            //     })
+            //     .start()
             tween(this.panel1)
                 .to(changeT, { position: new Vec3(0, -320, 0) })   //  todo
                 .call(() => {
@@ -881,11 +957,13 @@ export class FLOptCtrl extends FLBaseNode {
                 })
                 .start()
 
-            this.panel2.position = new Vec3(0, -320, 0);
-            this.panel2.active = true;
             tween(this.panel2)
                 .delay(changeT)
-                .to(changeT, { position: new Vec3(0, -111, 0) })   //  todo
+                .call(() => {
+                    this.panel2.active = true;
+                    this.panel2.position = new Vec3(0, -320, 0)
+                })
+                .to(changeT, { position: new Vec3(0, -33, 0) })   //  todo
                 .start()
         }
     }

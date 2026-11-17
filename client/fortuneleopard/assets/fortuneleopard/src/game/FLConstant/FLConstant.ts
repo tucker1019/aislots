@@ -21,7 +21,7 @@ export const FLConstant = {
 
         0: { node: "c0", win_node: "c0" },  // 空
     },
-    CELL_SIZE: { weight: 200, height: 203 }, // 单个cell宽高
+    CELL_SIZE: { weight: 210, height: 206 }, // 单个cell宽高
     WILD_TYPE: 7,   // wild
     CELLTYPE_ALL: [1, 2, 3, 4, 5, 6, 7], // 全部
 

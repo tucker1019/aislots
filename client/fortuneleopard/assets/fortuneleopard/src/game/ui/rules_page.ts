@@ -3,16 +3,14 @@ import { disposeFloatingScroll, floatingScroll } from './history_scroll';
 import { RULE_SECTIONS } from './rules_content';
 import { RULES_CSS } from './rules_styles';
 
-const SVG = 'http://www.w3.org/2000/svg';
-// Crop the existing AG9 atlases using the unrotated frames in their plists.
 const PAYOUTS = [
-    { name: 'Wild', value: 250, frame: [1, 1, 304, 330] },
-    { name: 'Emas', value: 100, frame: [1, 1, 318, 292] },
-    { name: 'Ruyi', value: 25, frame: [1, 295, 300, 310] },
-    { name: 'Kantong', value: 10, frame: [1, 1141, 256, 274] },
-    { name: 'Angpau', value: 8, frame: [1, 865, 256, 274] },
-    { name: 'Petasan', value: 5, frame: [1, 607, 268, 256] },
-    { name: 'Jeruk', value: 3, frame: [259, 931, 232, 254] },
+    { name: 'Wild', value: 250, image: 'wild.png' },
+    { name: 'Emas', value: 100, image: 'yuanbao.png' },
+    { name: 'Ruyi', value: 25, image: 'ruyi.png' },
+    { name: 'Kantong', value: 10, image: 'fudai.png' },
+    { name: 'Angpau', value: 8, image: 'hongbao.png' },
+    { name: 'Petasan', value: 5, image: 'pao.png' },
+    { name: 'Jeruk', value: 3, image: 'juzi.png' },
 ];
 const ILLUSTRATIONS = [
     '',
@@ -23,25 +21,11 @@ const ILLUSTRATIONS = [
 
 function payoutCards() {
     const grid = el('div', 'pay-grid');
-    PAYOUTS.forEach(({ name, value, frame }, index) => {
-        const wild = index === 0;
-        const card = el('div', 'pay-card' + (wild ? ' pay-wild' : ''));
-        const symbol = document.createElementNS(SVG, 'svg');
-        symbol.setAttribute('class', 'pay-symbol');
-        symbol.setAttribute('viewBox', frame.join(' '));
-        symbol.setAttribute('role', 'img');
-        symbol.setAttribute('aria-label', name);
-        const image = document.createElementNS(SVG, 'image');
-        image.setAttribute('href', new URL(wild ? 'rules/wild_symbol.png' : 'rules/normal_symbol.png', document.baseURI).href);
-        image.setAttribute('width', wild ? '463' : '492');
-        image.setAttribute('height', wild ? '332' : '1416');
-        const clip = document.createElementNS(SVG, 'clipPath');
-        clip.id = 'ag4-rule-symbol-' + index;
-        const crop = document.createElementNS(SVG, 'rect');
-        ['x', 'y', 'width', 'height'].forEach((key, i) => crop.setAttribute(key, String(frame[i])));
-        clip.append(crop);
-        image.setAttribute('clip-path', 'url(#' + clip.id + ')');
-        symbol.append(clip, image);
+    PAYOUTS.forEach(({ name, value, image }, index) => {
+        const card = el('div', 'pay-card' + (index === 0 ? ' pay-wild' : ''));
+        const symbol = el('img', 'pay-symbol');
+        symbol.src = new URL('rules/' + image, document.baseURI).href;
+        symbol.alt = name;
         card.append(symbol, el('span', '', String(value)));
         grid.append(card);
     });

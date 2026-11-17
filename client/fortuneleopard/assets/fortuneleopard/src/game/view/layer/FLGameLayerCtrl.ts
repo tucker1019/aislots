@@ -1,7 +1,7 @@
 import { FLBetHistory } from '../../history/FLBetHistory';
 import { shareFromParent } from '../../history/native_replay_bridge';
 import { closeGameDialogs } from '../../ui/game_dialogs';
-import { _decorator, Node, Vec3, tween, Tween, TweenAction, TweenSystem, Label, Color, UITransform, sys, find } from 'cc';
+import { _decorator, Director, director, Node, Vec3, tween, Tween, TweenAction, TweenSystem, Label, Color, UITransform, sys, find } from 'cc';
 import { flframe } from '../../../flframe/flframe';
 
 import { xNodeFL } from '../../../xtools/xNodeFL';
@@ -116,6 +116,7 @@ export class FLGameLayerCtrl extends FLBaseNode {
         const replay = goSession.entry?.replay;
         if (!replay) return;
         this.centerRollCtrl.setIdleBoard(replay.startBoard ? originalBoard(replay.startBoard) : undefined);
+        this.optCtrl.setAllNum();
         this.optCtrl.setAwardNum(0);
         this.optCtrl.updateBtnState(false);
         this.centerRollCtrl.startRotation();
@@ -170,6 +171,9 @@ export class FLGameLayerCtrl extends FLBaseNode {
                     }
                 }
             }
+            director.once(Director.EVENT_AFTER_DRAW, () => {
+                if (this.isValid) window.dispatchEvent(new Event('aislots-scene-rendered'));
+            });
         } catch (error) {
             this.goFailure(error);
         }
@@ -197,10 +201,11 @@ export class FLGameLayerCtrl extends FLBaseNode {
     }
 
     goFailure(error: Error) {
+        console.error("[AG9] game flow failed", error);
         this.optCtrl.canSendSpin = false;
         this.centerRollCtrl._canStop = false;
         this.centerRollCtrl.stopForConnectionError();
-        FLLoadManager.ins.showAlertWithInit(error.message, () => location.reload());
+        // Technical failures belong in the console with their original stack, not a player alert.
     }
 
     private presentAward(data: OriginalAward, balance?: number, resume?: {symbols: number[]}) {

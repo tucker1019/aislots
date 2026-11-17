@@ -39,21 +39,13 @@ export class FLCellItem extends Component {
     setTypeView(type: number, bBlur = false) {
         this.type = type;
 
-        const config = this._cfg?.[type];
-        if (!config) {
-            console.error(`[AG9] missing symbol config for type ${type}`);
-            this.showNode = null;
-            this.node.active = false;
-            return;
-        }
-
         if (this.showNode) {
             this.showNode.active = false;
         }
         if(bBlur){
-            this.showNode = xNodeFL.find(config.blur_node || config.node, this.node);
+            this.showNode = xNodeFL.find(this._cfg[this.type].blur_node, this.node);
         } else {
-            this.showNode = xNodeFL.find(config.node, this.node);
+            this.showNode = xNodeFL.find(this._cfg[this.type].node, this.node);
         }   
         
         // console.log(this.type,  this.showNode, this.node)

@@ -37,114 +37,66 @@ export class FLBigWinCtrl extends FLBaseNode {
         this.playOneAnim(0)
     }
 
-
-    // 播放一个bigwin的时间
     playOneAnim(index, stop?) {
-        let panel = xNodeFL.find("panel", this.node);
-
         let triT = 0.5;
         let rollT = this._oneRollT;
-        let xiangYunOpa: UIOpacity = xNodeFL.findComponent("xiangYun", panel, UIOpacity);
-        xiangYunOpa.node.getComponent(FLSpriteCtrl).setSpriteIndex(index)
-        xiangYunOpa.opacity = 0;
-        tween(xiangYunOpa)
-            .tag(1)
-            .to(triT, { opacity: 255 })
-            .start();
-        xiangYunOpa.node.scale = new Vec3(1.5, 1.5, 0);
-        tween(xiangYunOpa.node)
-            .tag(1)
-            .delay(triT)
-            .to(0.8, { scale: new Vec3(1.4, 1.4, 0) })
-            .start()
 
-        let guang1 = xNodeFL.find("guang1", panel);
-        guang1.getComponent(FLSpriteCtrl).setSpriteIndex(index)
-        guang1.scale = new Vec3(0, 0, 0);
-        tween(guang1)
-            .tag(1)
-            .to(triT, { scale: new Vec3(5, 5, 0) })
-            .to(triT, { scale: new Vec3(3, 3, 0) })
-            .start()
 
-        let yuanQuan = xNodeFL.find("yuanQuan", panel);
-        tween(yuanQuan)
-            .tag(1)
-            .repeatForever(
-                tween()
-                    .call(() => {
-                        yuanQuan.eulerAngles = new Vec3(0, 0, 0)
-                    }))
-            .to(15, { eulerAngles: new Vec3(0, 0, -360) })
-            .start()
+        let panel = xNodeFL.find("panel", this.node);
+        panel.children.forEach((node) => {
+            if (node.getComponent(sp.Skeleton)) {
+                node.active = false
+            }
+        })
 
-        let daHua = xNodeFL.find("daHua", panel);
-        daHua.scale = new Vec3(1.8, 1.8, 0);
-        tween(daHua)
-            .tag(1)
-            .to(rollT, { scale: new Vec3(2, 2, 0) })
-            .start()
-
-        let daYuanBao = xNodeFL.find("daYuanBao", panel);
-        daYuanBao.scale = new Vec3(1.8, 1.8, 0);
-        tween(daYuanBao)
-            .tag(1)
-            .to(rollT, { scale: new Vec3(2, 2, 0) })
-            .start()
-
-        let frame_guang = xNodeFL.find("frame_guang", panel);
-        frame_guang.getComponent(FLSpriteCtrl).setSpriteIndex(index)
-        frame_guang.active = false;
-
-        let frameT = xNodeFL.find("frameT", panel);
-        frameT.getComponent(FLSpriteCtrl).setSpriteIndex(index)
-        frameT.position = new Vec3(0, -22, 0);
-        tween(frameT)
-            .tag(1)
-            .to(triT, { position: new Vec3(0, [200, 233, 299][index], 0) }, { easing: "backOut" })
-            .call(() => {
-                frame_guang.active = true;
-            })
-            .start()
-
-        let frameB = xNodeFL.find("frameB", panel);
-        frameB.getComponent(FLSpriteCtrl).setSpriteIndex(index)
-        frameB.position = new Vec3(0, -99, 0);
-        tween(frameB)
-            .tag(1)
-            .to(triT, { position: new Vec3(0, [-238, -262, -266][index], 0) }, { easing: "backOut" })
-            .start()
-
-        let character_sp: sp.Skeleton = xNodeFL.findComponent("ui_winscreens", panel, sp.Skeleton);
-        character_sp.setAnimation(0, `${["bw", "mw", "smw"][index]}_spawn`, false);
-        character_sp.addAnimation(0, `${["bw", "mw", "smw"][index]}_idle`, true);
-        character_sp.node.position = new Vec3(0, [195, 227, 296][index], 0);
+        FLAudioMgr.Instance.playLongEffect("games/bgm_bigwin_firework");
 
         let title = xNodeFL.find("title", panel);
-        title.getComponent(FLSpriteCtrl).setSpriteIndex(index)
-        title.position = new Vec3(0, -25, 0);
-        title.scale = new Vec3(0, 0, 0)
-        tween(title)
-            .tag(1)
-            .to(triT, { position: new Vec3(0, [104, 136, 152][index], 0), scale: new Vec3(1, 1, 1) }, { easing: "backOut" })
-            .start()
+        title.active = true;
+        title.getComponent(FLSpriteCtrl).setSpriteIndex(index);
+        title.scale = new Vec3(0, 0, 0);
+        title.position = new Vec3(0, 0, 0);
+        tween(title).to(triT, { scale: new Vec3(1, 1, 1), position: new Vec3(0, [80, 123, 155][index], 0) }, { easing: "backOut" }).start();
 
-        let num = xNodeFL.find("num", panel);
+        let sp_8: sp.Skeleton = xNodeFL.findComponent("8c1dj", panel, sp.Skeleton);
+        this.playSpAnim(sp_8);
+        let sp_1: sp.Skeleton = xNodeFL.findComponent("1c1dj", panel, sp.Skeleton);
+        this.playSpAnim(sp_1, "animation_blue", "animation2_blue");
+        let sp_6: sp.Skeleton = xNodeFL.findComponent("6c1dj", panel, sp.Skeleton);
+        this.playSpAnim(sp_6);
+        let sp_5: sp.Skeleton = xNodeFL.findComponent("5c1dj", panel, sp.Skeleton);
+        this.playSpAnim(sp_5);
+        let sp_7: sp.Skeleton = xNodeFL.findComponent("7c1dj", panel, sp.Skeleton);
+        this.playSpAnim(sp_7);
         if (index == 0) {
+            let sp_4: sp.Skeleton = xNodeFL.findComponent("4c1dj", panel, sp.Skeleton);
+            this.playSpAnim(sp_4);
+            let sp_3: sp.Skeleton = xNodeFL.findComponent("3c1dj", panel, sp.Skeleton);
+            this.playSpAnim(sp_3);
+            let sp_2: sp.Skeleton = xNodeFL.findComponent("2c1dj", panel, sp.Skeleton);
+            this.playSpAnim(sp_2);
+            let num = xNodeFL.find("panel/num", this.node);
             num.scale = new Vec3(0, 0, 0);
             tween(num)
-                .tag(1)
                 .to(triT, { scale: new Vec3(1, 1, 1) }, { easing: "backOut" })
                 .start()
+
+        } else if (index == 1) {
+            let sp_4: sp.Skeleton = xNodeFL.findComponent("4c1dj", panel, sp.Skeleton);
+            this.playSpAnim(sp_4);
+            let sp_3: sp.Skeleton = xNodeFL.findComponent("3c2dj", panel, sp.Skeleton);
+            this.playSpAnim(sp_3);
+            let sp_2: sp.Skeleton = xNodeFL.findComponent("2c2dj", panel, sp.Skeleton);
+            this.playSpAnim(sp_2);
+        } else if (index == 2) {
+            let sp_4: sp.Skeleton = xNodeFL.findComponent("4c3dj", panel, sp.Skeleton);
+            this.playSpAnim(sp_4);
+            let sp_3: sp.Skeleton = xNodeFL.findComponent("3c3dj", panel, sp.Skeleton);
+            this.playSpAnim(sp_3);
+            let sp_2: sp.Skeleton = xNodeFL.findComponent("2c3dj", panel, sp.Skeleton);
+            this.playSpAnim(sp_2);
         }
 
-        let xiaoYanHua1: Animation = xNodeFL.findComponent("xiaoYanHua1", panel, Animation);
-        xiaoYanHua1.play("xiaoYanHua");
-        let xiaoYanHua2: Animation = xNodeFL.findComponent("xiaoYanHua2", panel, Animation);
-        xiaoYanHua2.play("xiaoYanHua");
-        let daYanHua: Animation = xNodeFL.findComponent("daYanHua", panel, Animation);
-        daYanHua.play("xiaoYanHua");
-        FLAudioMgr.Instance.playLongEffect("games/bgm_bigwin_firework");
 
         let self = this;
         let clickFunc = async (bStop) => {
@@ -162,7 +114,7 @@ export class FLBigWinCtrl extends FLBaseNode {
                     xNodeFL.setLabel("", award_num.node, showMoney(this._winCoin));
 
                     if (index < this._winType - 1) {
-                        this.playOneAnim(index + 1, 0.5);
+                        this.playOneAnim(this._winType - 1, 0.5);
                     } else {
                         this.close();
                     }
@@ -193,8 +145,15 @@ export class FLBigWinCtrl extends FLBaseNode {
                 this.scheduleOnce(clickFunc.bind(this, false), rollT);
             }
         }
+
+
     }
 
+    playSpAnim(nSp: sp.Skeleton, anim1 = "animation", anim2 = "animation2") {
+        nSp.node.active = true;
+        nSp.setAnimation(0, anim1, false);
+        nSp.addAnimation(0, anim2, true);
+    }
 
     async close() {
 

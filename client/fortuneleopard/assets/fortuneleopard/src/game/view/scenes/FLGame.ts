@@ -49,7 +49,6 @@ export class FLGame extends FLBaseScene {
                 if (this.isValid) emit('aislots-game-revealed');
             });
         };
-        requestAnimationFrame(() => emit('aislots-scene-rendered'));
         try {
             const preload = (async () => {
                 // FLGameScene is the build entry. Its assets are part of the main
@@ -65,6 +64,7 @@ export class FLGame extends FLBaseScene {
                 emit('aislots-board-ready');
             } else enable();
         } catch (error) {
+            console.error("[AG9] initialization failed", error);
             const status = typeof error === 'object' && error !== null && 'status' in error
                 ? Number((error as { status?: unknown }).status) : 0;
             if (status === 401) {
@@ -75,8 +75,8 @@ export class FLGame extends FLBaseScene {
             const button = document.getElementById('AG9StartButton') as HTMLButtonElement;
             if (!button) { console.error(error); return; }
             button.textContent = 'RETRY';
-            button.title = error.message;
-            button.setAttribute('aria-label', '重试：' + error.message);
+            button.removeAttribute('title');
+            button.setAttribute('aria-label', 'Coba lagi');
             button.onclick = () => location.reload();
             button.hidden = false;
         }

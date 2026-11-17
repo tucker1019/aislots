@@ -61,7 +61,7 @@ export class FLCellLayer extends Component {
             node.setPosition(new Vec3(0, this.bottomY + i * FLConstant.CELL_SIZE.height, 0));
             node.getComponent(FLCellItem).initTypeView(type, this.slotsCtrl);
             this.allCellList.push(node);
-            node.active = i > 0;
+            node.active = i > 0 && i < FLConstant.ROW_COUNT + 1;
             if (i > 0) {
                 this.resultCell[i - 1] = node;
             }
@@ -81,7 +81,7 @@ export class FLCellLayer extends Component {
         this.resultData.push(FLGameManager.getRandomType());    // 最上面额外多一个
         this._tempResultData = this.getTempResultData();
         // this._tempResultData = this.resultData.slice(0);
-        console.log("========this.resultData:", this.resultData)
+
     }
 
     getTempResultData() {
@@ -213,7 +213,7 @@ export class FLCellLayer extends Component {
                                     if (this._tempResultData.length == this.resultData.length) {
                                         this.slotsCtrl.playReadyToStop(this.index);
                                     }
-                                    let delay2 = (this.resultData.length - this._tempResultData.length) * 0.01 * 2 + 0.005;
+                                    let delay2 = (this.resultData.length - this._tempResultData.length) * 0.01 * 2 + 0.01;
                                     this.oneRoll(true, FLGameManager.getRollTime() + delay2)
                                 }
                             } else {

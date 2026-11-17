@@ -119,26 +119,28 @@ export default class FLCenterRollCtrl extends FLBaseNode {
         this.resData();
         this.initLight();
         this.showFreeKuangBgIdleAnim(false);
+        this.playStartKuangGuangAnim();
 
         this._startMove = true;
         this.cellLayerCtrlList.forEach(layerCtrl => {
             layerCtrl.setStartMove();
         })
-
-        let guang1: Animation = xNodeFL.findComponent("start_spin_guang_kuang", this.node, Animation);
-        // The effect is optional in the migrated single scene. A missing
-        // decorative animation must not stop the reel motion or spin request.
-        if (guang1) guang1.play();
     }
 
     // 开始旋转--回弹结束
+playStartKuangGuangAnim() {
+        let guang1: sp.Skeleton = xNodeFL.findComponent("sb_vfx_e_add", this.node, sp.Skeleton);
+        guang1.node.active = true;
+        guang1.setAnimation(0, "animation", false);
+    }
+
     playStartRoll(index) {
         this._startLayerCnt += 1;
 
         if (!FLGameManager.getFast()) {
-            this._minIdleT += 0.25;
+            this._minIdleT += 0.3;
         } else {
-            this._minIdleT += 0.1;
+            this._minIdleT += 0.13;
         }
     }
 
@@ -217,7 +219,8 @@ export default class FLCenterRollCtrl extends FLBaseNode {
     stopForConnectionError() {
         this._startMove = false;
         for (const reel of this.cellLayerCtrlList) {
-            reel.resultData = [0, 0, 0];
+            // Include the offscreen top symbol required by resumeSpecial().
+            reel.setResultData([0, 0, 0]);
             reel.resumeSpecial();
             reel._startMove = false;
         }
@@ -489,9 +492,9 @@ export default class FLCenterRollCtrl extends FLBaseNode {
                 resolve();
             }
             await this.delayTime(0.5);
-            let node = xNodeFL.find("node_ani/big_win", this.layerCtrl.node);
+            let node = xNodeFL.find("node_ani/big_win_2", this.layerCtrl.node);
             if (!node) {
-                let prefab = FLLoadManager.ins.getPrefab("res/load/prefab/games/big_win");
+                let prefab = FLLoadManager.ins.getPrefab("res/load/prefab/games/big_win_2");
                 node = instantiate(prefab);
                 node.parent = xNodeFL.find("node_ani", this.layerCtrl.node);
             }
@@ -642,11 +645,10 @@ export default class FLCenterRollCtrl extends FLBaseNode {
             }
             line.active = true;
         }
-        let num_line = xNodeFL.find("bg/win", this.node);
-        if (num_line) {
-            num_line.getChildByName("bg_payline" + (flag_id + 1) + "_0").active = true;
-            num_line.getChildByName("bg_payline" + (flag_id + 1) + "_1").active = true;
-        }
+        xNodeFL.find("bg/num_red_" + (flag_id + 1) + "_0", this.node).active = false;
+        xNodeFL.find("bg/num_red_" + (flag_id + 1) + "_1", this.node).active = false;
+        xNodeFL.find("bg/num_yellow_" + (flag_id + 1) + "_0", this.node).active = true;
+        xNodeFL.find("bg/num_yellow_" + (flag_id + 1) + "_1", this.node).active = true;
     }
     hideAllLine() {
         let node_line = this.node.getChildByName("node_line");
@@ -655,12 +657,15 @@ export default class FLCenterRollCtrl extends FLBaseNode {
                 node.active = false;
             })
         }
-        let num_line = xNodeFL.find("bg/win", this.node);
-        if (num_line) {
-            num_line.children.forEach(node => {
+        let num_line = xNodeFL.find("bg", this.node);
+        num_line.children.forEach(node => {
+            if (node.name.startsWith("num_red")) {
+                node.active = true;
+            }
+            if (node.name.startsWith("num_yellow")) {
                 node.active = false;
-            })
-        }
+            }
+        })
     }
 
     //中线赢分 flag_id--0开始
@@ -691,7 +696,9 @@ export default class FLCenterRollCtrl extends FLBaseNode {
             }
             kuang.active = true;
 
-            kuang.getComponent(Animation).play();
+            const frame = kuang.getChildByName("wh_vfx_c_screen").getComponent(sp.Skeleton);
+            frame.setAnimation(0, "animation", false);
+            frame.addAnimation(0, "animation", false);
         }
     }
     hideAllKuang() {
@@ -747,32 +754,29 @@ export default class FLCenterRollCtrl extends FLBaseNode {
         let clickPos = node.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(wPos.x, wPos.y, 0));
         let col, row;
         let posX, posY;
-        if (clickPos.x < -117.5) {
+        if (clickPos.x < -115) {
             col = 0;
-            posX = -150;
-        } else if (clickPos.x < 117.5) {
+        } else if (clickPos.x < 115) {
             col = 1;
-            posX = 70;
         } else {
             col = 2;
-            posX = 150;
         }
-        if (clickPos.y < -101.5) {
+        if (clickPos.y < -103) {
             row = 0;
-            posY = -203;
-        } else if (clickPos.y < 101.5) {
+        } else if (clickPos.y < 103) {
             row = 1;
-            posY = 0;
         } else {
             row = 2;
-            posY = 203;
         }
 
         let cellIdx = row * 3 + col;
         let cell = this.getCellByIdx(cellIdx);
-        let type = cell?.getComponent(FLCellItem)?.type;
+        let type = cell.getComponent(FLCellItem).type;
+        let refPos = node.getComponent(UITransform).convertToNodeSpaceAR(cell.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(0, 0, 0)));
+        posX = col > 1 ? refPos.x - 80 : refPos.x + 80;
+        posY = refPos.y;
 
-        if (!type) {
+        if (type == 0) {
             return
         }
 
@@ -802,11 +806,11 @@ export default class FLCenterRollCtrl extends FLBaseNode {
 
         if (col < 2) {
             num_red.position = new Vec3(43, 0, 0);
-            num_yellow.position = new Vec3(126, 0, 0);
+            num_yellow.position = new Vec3(117, 0, 0);
             cell_win.position = new Vec3(-85, -3, 0);
         } else {
-            num_red.position = new Vec3(-160, 0, 0);
-            num_yellow.position = new Vec3(-77, 0, 0);
+            num_red.position = new Vec3(-145, 0, 0);
+            num_yellow.position = new Vec3(-74, 0, 0);
             cell_win.position = new Vec3(85, -3, 0);
         }
 
@@ -863,6 +867,11 @@ export default class FLCenterRollCtrl extends FLBaseNode {
         tween(bg)
             .to(0.5, { scale: new Vec3(1, 1, 1) })
             .start()
+
+        let ui_02e_opa: UIOpacity = xNodeFL.findComponent("ui_02e", this.node, UIOpacity);
+        ui_02e_opa.node.active = false;
+        let ui_03e_opa: UIOpacity = xNodeFL.findComponent("ui_03e", this.node, UIOpacity);
+        ui_03e_opa.node.active = false;
     }
 
     // 免费游戏触发动画--卷轴收缩--红包动画--免费图标
@@ -879,13 +888,17 @@ export default class FLCenterRollCtrl extends FLBaseNode {
             this.layerCtrl.optCtrl.showNorTitle(true, "triFree");
 
             tween(this.node)
-                .to(0.3, { scale: new Vec3(0.9, 0.9, 1) })
+                .to(0.5, { scale: new Vec3(0.94, 0.94, 1) })
                 .start()
 
-            let bg = find("Canvas/GameLayer/bg");
-            tween(bg)
-                .to(0.5, { scale: new Vec3(0.9, 0.9, 1) })
-                .start()
+            let ui_02e_opa: UIOpacity = xNodeFL.findComponent("ui_02e", this.node, UIOpacity);
+            ui_02e_opa.node.active = true;
+            ui_02e_opa.opacity = 0;
+            tween(ui_02e_opa).to(0.5, { opacity: 255 }).start()
+            let ui_03e_opa: UIOpacity = xNodeFL.findComponent("ui_03e", this.node, UIOpacity);
+            ui_03e_opa.node.active = true;
+            ui_03e_opa.opacity = 0;
+            tween(ui_03e_opa).to(0.5, { opacity: 255 }).start()
 
             let hongbao = xNodeFL.find("hongbao", this.node);
             hongbao.active = true;
@@ -893,15 +906,12 @@ export default class FLCenterRollCtrl extends FLBaseNode {
                 node.active = false;
             })
 
-            let hongbao_guan = hongbao.getChildByName("hongbao")
-            hongbao_guan.active = true;
-            hongbao_guan.position = hongbao.getComponent(UITransform).convertToNodeSpaceAR(this.getHBWPos())
-            hongbao_guan.scale = new Vec3(0.3, 0.3, 0);
-            hongbao_guan.eulerAngles = new Vec3(0, 0, 22);
+            let hbSp: sp.Skeleton = xNodeFL.findComponent("rs_start_hongbao", hongbao, sp.Skeleton);
+            hbSp.node.active = true;
+            hbSp.setAnimation(0, "rs_start_hb", false);
 
-
-            tween(hongbao_guan)
-                .to(0.5, { position: new Vec3(0, 0, 0), eulerAngles: new Vec3(0, 0, 0), scale: new Vec3(1, 1, 1) })
+            tween(hbSp.node)
+                .delay(0.4)
                 .parallel(
                     tween().by(0.05, { position: new Vec3(10, 0, 0) })
                         .by(0.05, { position: new Vec3(-20, 0, 0) })
@@ -913,28 +923,17 @@ export default class FLCenterRollCtrl extends FLBaseNode {
                         .by(0.05, { position: new Vec3(-20, 0, 0) }),
                     tween().to(0.4, { scale: new Vec3(1, 1.2, 1) })
                 )
-
-                .start()
-
-            await this.delayTime(0.95)
-            hongbao_guan.active = false;
-
-            let hongbao_open = hongbao.getChildByName("hongbao_open");
-            hongbao_open.active = true;
-            hongbao_open.scale = new Vec3(1, 1.3, 1);
-            tween(hongbao_open)
-                .to(0.4, { scale: new Vec3(0.7, 0.9, 0) })
-                .start()
-            let hongbao_open_opa = hongbao.getChildByName("hongbao_open").getComponent(UIOpacity);
-            hongbao_open_opa.opacity = 255;
-            tween(hongbao_open_opa)
-                .to(0.4, { opacity: 110 })
+                .to(0.4, { scale: new Vec3(0.7, 0.9, 1) })
+                .start();
+            let hbOpa: UIOpacity = xNodeFL.findComponent("rs_start_hongbao", hongbao, UIOpacity);
+            hbOpa.opacity = 255;
+            tween(hbOpa)
+                .delay(0.8)
+                .to(0.4, { opacity: 60 })
                 .to(0.1, { opacity: 0 })
-                .call(() => {
-                    hongbao_open.active = false;
-                })
                 .start()
 
+            await this.delayTime(1.1);
 
             FLAudioMgr.Instance.playSound("games/respin3");
             let cell_win = hongbao.getChildByName("cell_win");
@@ -974,13 +973,13 @@ export default class FLCenterRollCtrl extends FLBaseNode {
 
             let mult = this._avatarSp.node.getChildByName("mult");
             mult.active = true;
-            mult.position = new Vec3(30, 216, 0);
+            mult.position = new Vec3(0, 480, 0);
             mult.getComponent(UITransform).anchorPoint = new Vec2(0.5, 0.8);
             mult.getChildByName("mult_vfx_a_screen").active = true;
             mult.getChildByName("mult_vfx_b_add").active = true;
             mult.scale = new Vec3(0.5, 0.5, 1)
             tween(mult)
-                .to(0.3, { scale: new Vec3(0.9, 0.9, 1) })
+                .to(0.3, { scale: new Vec3(1.8, 1.8, 1) })
                 .call(() => {
                     mult.getChildByName("mult_vfx_a_screen").active = false;
                     mult.getChildByName("mult_vfx_b_add").active = false;
@@ -1002,32 +1001,43 @@ export default class FLCenterRollCtrl extends FLBaseNode {
 
     triFreeGameFailAnim() {
         FLAudioMgr.Instance.playSound("games/respin2");
-        tween(this.node)
-            .delay(0.3)
-            .to(0.5, { scale: new Vec3(0.95, 0.95, 1) })
-            .delay(0.5)
-            .to(0.5, { scale: new Vec3(1, 1, 1) })
-            .start()
+        let ui_02e_opa: UIOpacity = xNodeFL.findComponent("ui_02e", this.node, UIOpacity);
+        ui_02e_opa.node.active = true;
+        ui_02e_opa.opacity = 0;
+        tween(ui_02e_opa).delay(0.3).to(0.5, { opacity: 255 }).delay(0.5).to(0.5, { opacity: 0 }).start()
+        let ui_03e_opa: UIOpacity = xNodeFL.findComponent("ui_03e", this.node, UIOpacity);
+        ui_03e_opa.node.active = true;
+        ui_03e_opa.opacity = 0;
+        tween(ui_03e_opa).delay(0.3).to(0.5, { opacity: 255 }).delay(0.5).to(0.5, { opacity: 0 }).start()
 
-        let bg = find("Canvas/GameLayer/bg");
-        tween(bg)
+        tween(this.node)
             .delay(0.3)
             .to(0.5, { scale: new Vec3(0.95, 0.95, 1) })
             .delay(0.5)
             .call(() => {
                 FLAudioMgr.Instance.playSound("games/return");
-                this.playAvatarAnim("triSpecialFailBack")
+                this.playAvatarAnim("triSpecialFailBack");
             })
             .to(0.5, { scale: new Vec3(1, 1, 1) })
             .call(() => {
                 this._canStop = true;
             })
             .start()
+
+
+
+        // let bg = find("Canvas/GameLayer/bg");
+        // tween(bg)
+        //     .delay(0.3)
+        //     .to(0.5, { scale: new Vec3(0.95, 0.95, 1) })
+        //     .delay(0.5)
+        //     .to(0.5, { scale: new Vec3(1, 1, 1) })
+        //     .start()
     }
 
 
     playRespinFlyAnim() {
-        let respin_bg = find("Canvas/GameLayer/bg/respin_bg");
+        let respin_bg = find("Canvas/GameLayer/layout_center/respin_bg");
         respin_bg.active = true;
 
         let guang1Opa: UIOpacity = xNodeFL.findComponent("respin_vfx_b_add", respin_bg, UIOpacity);
@@ -1051,8 +1061,8 @@ export default class FLCenterRollCtrl extends FLBaseNode {
             let fly = FLLoadManager.ins.showGetPrefab("res/load/prefab/games/respin_fly", node_fly);
             fly.active = true;
 
-            let sPos = fly.getComponent(UITransform).convertToNodeSpaceAR(this._avatarSp.node.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(0, 0, 0)));
-            let ePos = new Vec3([-226, 0, 226][i], 304.5, 0);
+            let sPos = fly.getComponent(UITransform).convertToNodeSpaceAR(this._avatarSp.node.getChildByName("pos_avatar").getComponent(UITransform).convertToWorldSpaceAR(new Vec3(0, 0, 0)));
+            let ePos = new Vec3([-230, 0, 230][i], 309, 0);
 
             let flyAni = tween().to(0.5, { position: ePos }, {
                 "onUpdate": (target: Node, radio: number) => {
@@ -1075,7 +1085,7 @@ export default class FLCenterRollCtrl extends FLBaseNode {
         }
     }
     hideRespinFlyAnim() {
-        let respin_bg = find("Canvas/GameLayer/bg/respin_bg");
+        let respin_bg = find("Canvas/GameLayer/layout_center/respin_bg");
         respin_bg.active = false;
         respin_bg.children.forEach((node) => { node.active = false; })
     }
@@ -1083,12 +1093,24 @@ export default class FLCenterRollCtrl extends FLBaseNode {
 
     showTriFreeGuang() {
         let node_guang = xNodeFL.find("node_anti/guang", this.node);
+        let node = node_guang.getChildByName("respin_line_guang");
+        if (!node) {
+            node = FLLoadManager.ins.showGetPrefab("res/load/prefab/games/respin_line_guang", node_guang);
+        }
+        node.active = true;
+        let nodeSp = node.children[0].getComponent(sp.Skeleton);
+        let entry = nodeSp.setAnimation(0, "animation", false);
+        nodeSp.setTrackCompleteListener(entry, () => {
+            node.active = false;
+        })
+
+
         if (node_guang.children.length > 0) {
             node_guang.children.forEach((node) => { node.active = true })
         } else {
             for (let i = 0; i < 3; i++) {
                 let guang = FLLoadManager.ins.showGetPrefab("res/load/prefab/games/respin_line_guang", node_guang);
-                guang.position = new Vec3([-226, 0, 226][i], 0, 0);
+                guang.getChildByName
             }
         }
     }
@@ -1123,7 +1145,8 @@ export default class FLCenterRollCtrl extends FLBaseNode {
                 FLAudioMgr.Instance.playSound("games/x10sound1");
                 let win_kuang = node_qp_mult.getChildByName("win_kuang");
                 win_kuang.active = true;
-                win_kuang.getComponent(Animation).play("win_kuang_bg_big");
+                // win_kuang.getComponent(Animation).play("win_kuang_bg_big");
+                win_kuang.getChildByName("wh_vfx_c_screen").getComponent(sp.Skeleton).setAnimation(0, "animation", false);
 
                 let cell_win = node_qp_mult.getChildByName("cell_win");
                 cell_win.active = true;
@@ -1143,7 +1166,7 @@ export default class FLCenterRollCtrl extends FLBaseNode {
             mult.getComponent(UITransform).anchorPoint = new Vec2(0.5, 0.5);
 
             tween(mult)
-                .to(0.3, { scale: new Vec3(0.7, 0.7, 0.7) })
+                .to(0.3, { scale: new Vec3(1.8, 1.8, 1) })
                 .delay(0.2)
                 .call(() => {
                     mult.getChildByName("mult_vfx_a_screen").active = false;
@@ -1196,7 +1219,9 @@ export default class FLCenterRollCtrl extends FLBaseNode {
                 // this.showSlotsGray(true);
                 let win_kuang = node_qp_mult.getChildByName("win_kuang");
                 win_kuang.active = true;
-                win_kuang.getComponent(Animation).play("win_kuang_bg_big");
+                // win_kuang.getComponent(Animation).play("win_kuang_bg_big");
+                win_kuang.getChildByName("wh_vfx_c_screen").getComponent(sp.Skeleton).setAnimation(0, "animation", false);
+
 
                 let cell_win = node_qp_mult.getChildByName("cell_win");
                 cell_win.active = true;
@@ -1210,12 +1235,12 @@ export default class FLCenterRollCtrl extends FLBaseNode {
             FLAudioMgr.Instance.playSound("games/x10sound2");
             let mult = this._avatarSp.node.getChildByName("mult");
             mult.active = true;
-            mult.position = new Vec3(30, 216, 0);
-            mult.scale = new Vec3(0.9, 0.9, 1);
+            // mult.position = new Vec3(30, 216, 0);
+            // mult.scale = new Vec3(0.9, 0.9, 1);
             mult.getComponent(UITransform).anchorPoint = new Vec2(0.5, 0.8);
 
             tween(mult)
-                .to(0.3, { scale: new Vec3(1.1, 1.1, 1), position: new Vec3(30, 284, 0) })
+                .to(0.3, { scale: new Vec3(2.3, 2.3, 1), position: new Vec3(0, 550, 0) })
                 .start()
 
             await this.delayTime(0.5);
@@ -1245,7 +1270,10 @@ export default class FLCenterRollCtrl extends FLBaseNode {
     }
 
 
+    private avatarAnimationVersion = 0;
+
     playAvatarAnim(type) {
+        const version = ++this.avatarAnimationVersion;
 
         if (type == "triSpecial") { // 触发特殊
             Tween.stopAllByTarget(this._avatarSp);
@@ -1259,23 +1287,29 @@ export default class FLCenterRollCtrl extends FLBaseNode {
             Tween.stopAllByTarget(this._avatarSp);
             FLAudioMgr.Instance.playSound("games/COOL");
             let entry = this._avatarSp.setAnimation(0, "zo_exit", false);
+            this._avatarSp.addAnimation(0, "idle", true);
             this._avatarSp.setTrackCompleteListener(entry, () => {
-                this._avatarSp.setTrackCompleteListener(entry, null);
-                this.playAvatarIdleAnim();
+                this.scheduleOnce(() => {
+                    if (this.avatarAnimationVersion === version) this.playAvatarIdleAnim();
+                }, 0);
             })
         } else if (type == "zw") {  // 东张西望
             Tween.stopAllByTarget(this._avatarSp);
             let entry = this._avatarSp.setAnimation(0, "idle5", false);
+            this._avatarSp.addAnimation(0, "idle", true);
             this._avatarSp.setTrackCompleteListener(entry, () => {
-                this._avatarSp.setTrackCompleteListener(entry, null);
-                this.playAvatarIdleAnim();
+                this.scheduleOnce(() => {
+                    if (this.avatarAnimationVersion === version) this.playAvatarIdleAnim();
+                }, 0);
             })
         } else if (type == "wildCollect") { // wild图标收集
             Tween.stopAllByTarget(this._avatarSp);
             let entry = this._avatarSp.setAnimation(0, "wild_collect", false);
+            this._avatarSp.addAnimation(0, "idle", true);
             this._avatarSp.setTrackCompleteListener(entry, () => {
-                this._avatarSp.setTrackCompleteListener(entry, null);
-                this.playAvatarIdleAnim();
+                this.scheduleOnce(() => {
+                    if (this.avatarAnimationVersion === version) this.playAvatarIdleAnim();
+                }, 0);
             })
         } else if (type == "winSmall") {    // 小赢
             let effName = ["NICE", "YEAH"][Math.floor(Math.random() * 2)];
@@ -1284,18 +1318,22 @@ export default class FLCenterRollCtrl extends FLBaseNode {
             FLAudioMgr.Instance.playLongEffect("games/" + effName);
             Tween.stopAllByTarget(this._avatarSp);
             let entry = this._avatarSp.setAnimation(0, "win", false);
+            this._avatarSp.addAnimation(0, "idle", true);
             this._avatarSp.setTrackCompleteListener(entry, () => {
-                this._avatarSp.setTrackCompleteListener(entry, null);
-                this.playAvatarIdleAnim();
+                this.scheduleOnce(() => {
+                    if (this.avatarAnimationVersion === version) this.playAvatarIdleAnim();
+                }, 0);
             })
         } else if (type == "winBig") {  // 大赢
             // let effL = ["NICE", "YEAH"];
             // FLAudioMgr.Instance.playSound("games/" + effL[Math.floor(Math.random() * effL.length)]);
             Tween.stopAllByTarget(this._avatarSp);
             let entry = this._avatarSp.setAnimation(0, "win2", false);
+            this._avatarSp.addAnimation(0, "idle", true);
             this._avatarSp.setTrackCompleteListener(entry, () => {
-                this._avatarSp.setTrackCompleteListener(entry, null);
-                this.playAvatarIdleAnim();
+                this.scheduleOnce(() => {
+                    if (this.avatarAnimationVersion === version) this.playAvatarIdleAnim();
+                }, 0);
             })
 
         }
@@ -1303,6 +1341,7 @@ export default class FLCenterRollCtrl extends FLBaseNode {
     }
 
     playAvatarIdleAnim() {
+        ++this.avatarAnimationVersion;
         Tween.stopAllByTarget(this._avatarSp)
         this._avatarSp.setAnimation(0, "idle", true);
         let delayTime = 10 + Math.random() * 15;
@@ -1313,7 +1352,8 @@ export default class FLCenterRollCtrl extends FLBaseNode {
                     .call(() => {
                         delayTime = 10 + Math.random() * 15
 
-                        let animType = Math.floor(Math.random() * 3) + 2;
+                        const idleVariants = [2, 4, 5];
+                        const animType = idleVariants[Math.floor(Math.random() * idleVariants.length)];
                         this._avatarSp.setAnimation(0, "idle" + animType, false);
                         this._avatarSp.addAnimation(0, "idle", true);
 
