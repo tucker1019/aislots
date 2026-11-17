@@ -16,7 +16,7 @@
     },
     "AG2": {
       "url": "http://127.0.0.1:5181/",
-      "name": "麻将胡了2",
+      "name": "麻將胡了2",
       "sort": 20,
       "cover": "/assets/lobby/games/1024.png",
       "apiUrl": "http://127.0.0.1:8080",
@@ -26,7 +26,7 @@
       "visible": true,
       "provider": "AG",
       "volatility": "medium_high",
-      "theoreticalRtp": 97.09
+      "theoreticalRtp": 97.06
     },
     "AG3": {
       "url": "http://127.0.0.1:5182/",
@@ -37,7 +37,9 @@
       "nameEn": "Wild Bounty Showdown",
       "enabled": true,
       "visible": true,
-      "provider": "AG"
+      "provider": "AG",
+      "theoreticalRtp": 97.12,
+      "volatility": "high"
     },
     "AG4": {
       "url": "http://127.0.0.1:5184/",
@@ -48,7 +50,9 @@
       "nameEn": "Fortune Tiger",
       "enabled": true,
       "visible": true,
-      "provider": "AG"
+      "provider": "AG",
+      "theoreticalRtp": 97.0,
+      "volatility": "medium"
     },
     "AG5": {
       "url": "http://127.0.0.1:5185/",
@@ -59,7 +63,9 @@
       "nameEn": "Fortune Rabbit",
       "enabled": true,
       "visible": true,
-      "provider": "AG"
+      "provider": "AG",
+      "theoreticalRtp": 97.0,
+      "volatility": "medium"
     },
     "AG6": {
       "url": "http://127.0.0.1:5187/",
@@ -70,29 +76,37 @@
       "nameEn": "Fortune Mouse",
       "enabled": true,
       "visible": true,
-      "provider": "AG"
+      "provider": "AG",
+      "theoreticalRtp": 97.0,
+      "volatility": "medium"
     },
     "AG7": {
       "url": "http://127.0.0.1:5189/",
-      "name": "Fortune Ox",
+      "name": "金牛",
       "sort": 70,
       "cover": "/assets/lobby/games/1023.png",
       "apiUrl": "http://127.0.0.1:8080",
       "nameEn": "Fortune Ox",
       "enabled": true,
       "visible": true,
-      "provider": "AG"
+      "provider": "AG",
+      "maxWin": 2000,
+      "theoreticalRtp": 97.0,
+      "volatility": "medium"
     },
     "AG8": {
       "url": "http://127.0.0.1:5190/",
-      "name": "Fortune Dragon",
+      "name": "福运金龙",
       "sort": 150,
       "cover": "/assets/lobby/games/1048.png",
       "apiUrl": "http://127.0.0.1:8080",
       "nameEn": "Fortune Dragon",
       "enabled": true,
       "visible": true,
-      "provider": "AG"
+      "provider": "AG",
+      "maxWin": 2500,
+      "theoreticalRtp": 97.0,
+      "volatility": "medium"
     },
     "G1001": {
       "url": "",
@@ -102,7 +116,7 @@
       "apiUrl": "",
       "nameEn": "Foot Ball",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1002": {
@@ -113,7 +127,7 @@
       "apiUrl": "",
       "nameEn": "Olimpo",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1003": {
@@ -124,7 +138,7 @@
       "apiUrl": "",
       "nameEn": "Cash Machine",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1004": {
@@ -135,7 +149,7 @@
       "apiUrl": "",
       "nameEn": "Happy Duck",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1005": {
@@ -146,7 +160,7 @@
       "apiUrl": "",
       "nameEn": "Retroreels",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1006": {
@@ -157,7 +171,7 @@
       "apiUrl": "",
       "nameEn": "Classic 777",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1007": {
@@ -168,7 +182,7 @@
       "apiUrl": "",
       "nameEn": "Fortune Gods",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1008": {
@@ -179,7 +193,7 @@
       "apiUrl": "",
       "nameEn": "Rich Ninja",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1009": {
@@ -190,7 +204,7 @@
       "apiUrl": "",
       "nameEn": "Bumper Harvest",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1010": {
@@ -201,7 +215,7 @@
       "apiUrl": "",
       "nameEn": "Sweet Bonanza Xmas",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1011": {
@@ -212,7 +226,7 @@
       "apiUrl": "",
       "nameEn": "Juicy Fruits",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1012": {
@@ -223,7 +237,7 @@
       "apiUrl": "",
       "nameEn": "Eye of Cleopatra",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1013": {
@@ -234,7 +248,7 @@
       "apiUrl": "",
       "nameEn": "Hot Chilli",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1014": {
@@ -245,7 +259,7 @@
       "apiUrl": "",
       "nameEn": "Buffalo 777",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1015": {
@@ -256,7 +270,7 @@
       "apiUrl": "",
       "nameEn": "Hot Safari",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1016": {
@@ -267,7 +281,7 @@
       "apiUrl": "",
       "nameEn": "Fire Strike",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1020": {
@@ -278,7 +292,7 @@
       "apiUrl": "",
       "nameEn": "Ganesha Gold",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1022": {
@@ -289,7 +303,7 @@
       "apiUrl": "",
       "nameEn": "Fortune Chinchilla",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1026": {
@@ -300,7 +314,7 @@
       "apiUrl": "",
       "nameEn": "Olympus Gate 1000",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1027": {
@@ -311,7 +325,7 @@
       "apiUrl": "",
       "nameEn": "Buffalo 777 II",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1028": {
@@ -322,7 +336,7 @@
       "apiUrl": "",
       "nameEn": "Treasure of Aztec 2",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1029": {
@@ -333,7 +347,7 @@
       "apiUrl": "",
       "nameEn": "WIXX",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1030": {
@@ -344,7 +358,7 @@
       "apiUrl": "",
       "nameEn": "Sweet Bonanza Xmas",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1031": {
@@ -355,7 +369,7 @@
       "apiUrl": "",
       "nameEn": "Wild Bandito",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1032": {
@@ -366,7 +380,7 @@
       "apiUrl": "",
       "nameEn": "Luck Neko",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1033": {
@@ -377,7 +391,7 @@
       "apiUrl": "",
       "nameEn": "Starlight Princess",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1034": {
@@ -388,7 +402,7 @@
       "apiUrl": "",
       "nameEn": "Cash Machine",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1035": {
@@ -399,7 +413,7 @@
       "apiUrl": "",
       "nameEn": "Fortune Gods 2",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1036": {
@@ -410,7 +424,7 @@
       "apiUrl": "",
       "nameEn": "Super Ace",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1037": {
@@ -421,7 +435,7 @@
       "apiUrl": "",
       "nameEn": "Aztec Gems",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1038": {
@@ -432,7 +446,7 @@
       "apiUrl": "",
       "nameEn": "Double Fortune",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1039": {
@@ -443,7 +457,7 @@
       "apiUrl": "",
       "nameEn": "Gates of Gatotkaca",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1040": {
@@ -454,7 +468,7 @@
       "apiUrl": "",
       "nameEn": "Sugar Rush",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1041": {
@@ -465,7 +479,7 @@
       "apiUrl": "",
       "nameEn": "The Dog House",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1042": {
@@ -476,7 +490,7 @@
       "apiUrl": "",
       "nameEn": "Dragon Kingdom",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1043": {
@@ -487,7 +501,7 @@
       "apiUrl": "",
       "nameEn": "The Great Icecape",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1044": {
@@ -498,7 +512,7 @@
       "apiUrl": "",
       "nameEn": "Leprechaun Riches 2",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1045": {
@@ -509,7 +523,7 @@
       "apiUrl": "",
       "nameEn": "Dreams of Macau",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1046": {
@@ -520,7 +534,7 @@
       "apiUrl": "",
       "nameEn": "Ways of Qilin",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1047": {
@@ -531,7 +545,7 @@
       "apiUrl": "",
       "nameEn": "Jurassic Kingdom",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1049": {
@@ -542,7 +556,7 @@
       "apiUrl": "",
       "nameEn": "Zeus vs Hades",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1050": {
@@ -553,7 +567,7 @@
       "apiUrl": "",
       "nameEn": "Aztec Gems Deluxe",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1051": {
@@ -564,7 +578,7 @@
       "apiUrl": "",
       "nameEn": "5 Lions Megaways",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1052": {
@@ -575,7 +589,7 @@
       "apiUrl": "",
       "nameEn": "Fortune Gems",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1053": {
@@ -586,7 +600,7 @@
       "apiUrl": "",
       "nameEn": "Fortune Gems 2",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1054": {
@@ -597,7 +611,7 @@
       "apiUrl": "",
       "nameEn": "Fortune Gems 3",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1055": {
@@ -608,7 +622,7 @@
       "apiUrl": "",
       "nameEn": "Money Coming",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1056": {
@@ -619,7 +633,7 @@
       "apiUrl": "",
       "nameEn": "Crazy 777",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1057": {
@@ -630,7 +644,7 @@
       "apiUrl": "",
       "nameEn": "Wild Ace",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1058": {
@@ -641,7 +655,7 @@
       "apiUrl": "",
       "nameEn": "Mega Ace",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1059": {
@@ -652,7 +666,7 @@
       "apiUrl": "",
       "nameEn": "Lucky Coming",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1060": {
@@ -663,7 +677,7 @@
       "apiUrl": "",
       "nameEn": "Mayan Empire",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1061": {
@@ -674,7 +688,7 @@
       "apiUrl": "",
       "nameEn": "Devil Fire",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1062": {
@@ -685,7 +699,7 @@
       "apiUrl": "",
       "nameEn": "Devil Fire 2",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1066": {
@@ -696,7 +710,7 @@
       "apiUrl": "",
       "nameEn": "Buffalo 777 2",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1068": {
@@ -718,7 +732,7 @@
       "apiUrl": "",
       "nameEn": "Crazy Fishing",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G1070": {
@@ -729,7 +743,7 @@
       "apiUrl": "",
       "nameEn": "Sizzling 7s",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G2001": {
@@ -740,7 +754,7 @@
       "apiUrl": "",
       "nameEn": "Super Keno",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G2002": {
@@ -751,7 +765,7 @@
       "apiUrl": "",
       "nameEn": "Show Ball 3 Vibra Gaming",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G2003": {
@@ -762,7 +776,7 @@
       "apiUrl": "",
       "nameEn": "Win Go",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G3001": {
@@ -773,7 +787,7 @@
       "apiUrl": "",
       "nameEn": "Royal Poker",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G3002": {
@@ -784,7 +798,7 @@
       "apiUrl": "",
       "nameEn": "Aviator Spribe",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G3003": {
@@ -795,7 +809,7 @@
       "apiUrl": "",
       "nameEn": "Dragon Tiger",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G5001": {
@@ -806,7 +820,7 @@
       "apiUrl": "",
       "nameEn": "Diamond Strike Scratchcard",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G5002": {
@@ -817,7 +831,7 @@
       "apiUrl": "",
       "nameEn": "Hot Safari Scratchcard",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G6001": {
@@ -828,7 +842,7 @@
       "apiUrl": "",
       "nameEn": "Big Wheel",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G6002": {
@@ -839,7 +853,7 @@
       "apiUrl": "",
       "nameEn": "Fortune Spin",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G6003": {
@@ -850,7 +864,7 @@
       "apiUrl": "",
       "nameEn": "Spin Up",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G6004": {
@@ -861,7 +875,7 @@
       "apiUrl": "",
       "nameEn": "Fortune Wheel",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "G7001": {
@@ -872,7 +886,7 @@
       "apiUrl": "",
       "nameEn": "Crazy Fishing",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "fortune-king-jackpot": {
@@ -883,7 +897,7 @@
       "apiUrl": "",
       "nameEn": "Fortune King Jackpot",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "ultimate-texas-holdem": {
@@ -894,7 +908,7 @@
       "apiUrl": "",
       "nameEn": "Ultimate Texas Hold’em",
       "enabled": false,
-      "visible": true,
+      "visible": false,
       "provider": "AG"
     },
     "AG9": {
@@ -906,7 +920,10 @@
       "nameEn": "Fortune Leopard",
       "enabled": true,
       "visible": true,
-      "provider": "AG"
+      "provider": "AG",
+      "theoreticalRtp": 97.0,
+      "volatility": "medium",
+      "maxWin": -1
     }
   },
   "appkey": "web",
