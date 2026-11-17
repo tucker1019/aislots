@@ -25,7 +25,7 @@ shutil.copytree(repo / 'lobby_service/etc', payload / 'lobby-etc')
 games_path = payload / 'lobby-etc/games.json'
 games = json.loads(games_path.read_text())
 projects = ('mahjongway', 'mahjongway2', 'showdown', 'fortunetiger',
-            'fortunerabbit', 'fortunemouse', 'fortuneox', 'fortunedragon')
+            'fortunerabbit', 'fortunemouse', 'fortuneox', 'fortunedragon', 'fortuneleopard')
 game_paths = {f'AG{i}': project for i, project in enumerate(projects, start=1)}
 for name in game_paths:
     path = name.lower()
