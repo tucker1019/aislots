@@ -1,4 +1,3 @@
-import {ClaimBadge} from '../features/rewards/ClaimBadge';
 import {AsyncButton} from '../components/buttons/AsyncButton';
 import { LossReturn } from '../features/earn/LossReturn';
 import { AgentCommission } from '../features/earn/AgentCommission';
@@ -23,7 +22,7 @@ export function EarnPage(){
  const info=query.data;
  return <>{holder}<RecordsLayout className="earn-page" title={t('copy.earn')}><InviteChests/><AgentCommission/><article className="rebate-card"><header><h2>{t('copy.rebateAmount')}</h2><button type="button" disabled={!info} onClick={()=>navigateLobby('earn-rules')}>{t('copy.viewRules')}</button></header>
  {query.isPending?<LoadingState compact label={t('copy.loadingRebateInformation')}/>:!info?<NetworkError disabled={query.isFetching} onRetry={()=>void query.refetch()}/>:<>
- <div className="rebate-claim-row"><span>{t('copy.claimableRebate')} <strong>{betMoney(info.claimableTotal)}</strong></span><AsyncButton loading={claim.isPending} type="button" disabled={claim.isPending||query.isFetching||info.claimableTotal===0} onClick={()=>claim.mutate(info.activityDate)}>{t('copy.claim')}<ClaimBadge active={info.claimableTotal>0}/></AsyncButton></div>
+ <div className="rebate-claim-row"><span>{t('copy.claimableRebate')} <strong>{betMoney(info.claimableTotal)}</strong></span><AsyncButton loading={claim.isPending} type="button" disabled={claim.isPending||query.isFetching||info.claimableTotal===0} onClick={()=>claim.mutate(info.activityDate)}>{t('copy.claim')}</AsyncButton></div>
  <RebateForecast items={([{key:'daily',label:t('copy.availableTomorrow')},{key:'weekly',label:t('copy.availableNextMonday')},{key:'monthly',label:t('copy.availableOnThe1StOfNextMonth')}] as const).map(item=>({id:item.key,label:item.label,amount:info[item.key].reward}))}/>
  <div className="rebate-platforms" aria-label={t('copy.providerRebateRates')}>{info.platforms.length?info.platforms.map(p=><div key={p.name}><span>{p.name}</span><strong>{(p.dailyRateBps+p.weeklyRateBps+p.monthlyRateBps)/100}%</strong></div>):<p>{t('copy.noProvidersAvailable')}</p>}</div>
  {claim.isError&&<p className="rebate-error" role="alert">{claim.error.message}</p>}

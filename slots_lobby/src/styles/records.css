@@ -20,7 +20,7 @@
   background: #282b2e;
   border-bottom-color: #51565a;
 }
-:root[data-theme="dark"] .records-page-header > button { color: var(--theme-active); }
+:root[data-theme="dark"] .records-page-header > button { color: var(--ink); }
 :root[data-theme="dark"] .records-page-header .header-balance-refresh {
   background: var(--theme-active-tint);
   color: var(--theme-active);

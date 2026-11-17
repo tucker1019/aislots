@@ -152,3 +152,15 @@ it('關閉恢復條會銷毀iframe並清除入口，重新進入不復用舊遊�
   expect(original?.isConnected).toBe(false);
   expect(document.querySelector('iframe')?.getAttribute('src')).not.toBe(src);
 });
+
+it('四个主路由切换保持同一底栏和按钮节点，不重播整栏挂载动效', () => {
+  setup();
+  const nav=screen.getByRole('navigation',{name:'底部導航'});
+  const buttons=within(nav).getAllByRole('button');
+  for(const index of [1,2,3,0,2,1,0]) {
+    fireEvent.click(buttons[index]);
+    expect(screen.getByRole('navigation',{name:'底部導航'})).toBe(nav);
+    expect(within(nav).getAllByRole('button')).toEqual(buttons);
+    expect(buttons[index]).toHaveAttribute('aria-current','page');
+  }
+});

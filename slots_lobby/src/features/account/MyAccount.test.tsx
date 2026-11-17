@@ -16,7 +16,7 @@ it('资料请求未返回时静态入口立即显示并可操作，不展示虚�
  vi.mocked(loadAccountProfile).mockImplementation(()=>new Promise(()=>{}));const records=setup();
  expect(screen.getByRole('heading',{name:'福利中心'})).toBeVisible();expect(screen.getByRole('heading',{name:'賬戶服務'})).toBeVisible();
  fireEvent.click(screen.getByRole('button',{name:'存取記錄'}));expect(records).toHaveBeenCalledOnce();
- expect(screen.getByRole('button',{name:'安全中心'})).toBeVisible();expect(screen.getByRole('button',{name:'切換主題'})).toBeVisible();expect(screen.queryByRole('button',{name:'關於我們'})).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'常見問題'})).not.toBeInTheDocument();expect(screen.queryByText('Rp0')).not.toBeInTheDocument();
+ expect(screen.getByRole('button',{name:'安全中心'})).toBeVisible();expect(screen.queryByRole('button',{name:'切換主題'})).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'關於我們'})).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'常見問題'})).not.toBeInTheDocument();expect(screen.queryByText('Rp0')).not.toBeInTheDocument();
 });
 it('资料加载失败仍可使用入口，局部重试成功后填入资料',async()=>{
  vi.mocked(loadAccountProfile).mockRejectedValueOnce(new Error('offline')).mockResolvedValue({uid:7,nickname:'Tester',avatarId:3,coins:12345});

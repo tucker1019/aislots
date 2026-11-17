@@ -1,4 +1,3 @@
-import {ClaimBadge} from '../rewards/ClaimBadge';
 import {AsyncButton} from '../../components/buttons/AsyncButton';
 import { navigateLobby } from '../../app/useLobbyRoute';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -25,7 +24,7 @@ export function LossReturn() {
   {holder}<header><h2>{t('loss.title')}</h2><button type="button" onClick={()=>navigateLobby('loss-return-rules')}>{t('copy.viewRules')}</button></header>
   {query.isError&&<NetworkError disabled={query.isFetching} onRetry={()=>void query.refetch()}/>}
   {query.isPending?<LoadingState compact label={t('copy.loading')}/>:info&&<>
-   <div className="rebate-claim-row"><span>{t('loss.claimable')} <strong>{betMoney(info.claimable)}</strong></span><AsyncButton loading={claim.isPending} type="button" aria-busy={claim.isPending} disabled={claim.isPending||query.isFetching||query.isError||info.claimable===0} onClick={()=>claim.mutate(info.activityDate)}>{t('copy.claim')}<ClaimBadge active={info.claimable>0}/></AsyncButton></div>
+   <div className="rebate-claim-row"><span>{t('loss.claimable')} <strong>{betMoney(info.claimable)}</strong></span><AsyncButton loading={claim.isPending} type="button" aria-busy={claim.isPending} disabled={claim.isPending||query.isFetching||query.isError||info.claimable===0} onClick={()=>claim.mutate(info.activityDate)}>{t('copy.claim')}</AsyncButton></div>
    <RebateForecast items={[{id:'loss',label:t('loss.today'),amount:info.loss},{id:'reward',label:t('copy.availableTomorrow'),amount:info.reward}]}/>
    <div className="rebate-platforms"><div><span>{t('loss.rate')}</span><strong>{info.rateBps/100}%</strong></div></div>
    {claim.isError&&<p role="alert" className="rebate-error">{claim.error.message}</p>}

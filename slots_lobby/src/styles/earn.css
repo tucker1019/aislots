@@ -32,3 +32,44 @@
 :root[data-theme="dark"] .rebate-rate-table thead th { font-size: 12px; font-weight: 500; }
 :root[data-theme="dark"] .rebate-platforms span { color: var(--muted); font-size: 13px; }
 :root[data-theme="dark"] .rebate-rule-description ol { font-size: 13px; }
+
+/* Earn cards share a quiet hierarchy: title, available amount, then supporting figures. */
+.earn-page .rebate-card { background: var(--theme-surface); border-color: var(--line); padding: 0 12px 12px; margin-bottom: 14px; }
+.earn-page .rebate-card > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 46px; margin: 0 -12px; padding: 12px; border-bottom: 1px solid var(--line); background: transparent; text-align: left; }
+.earn-page .rebate-card h2 { color: var(--ink); line-height: 1.45; }
+.earn-page .rebate-card header button { position: static; flex-shrink: 0; color: var(--blue); font-size: 12px; padding: 4px 0 4px 8px; }
+.earn-page .rebate-claim-row { gap: 16px; padding: 16px 0; align-items: center; }
+.earn-page .rebate-claim-row > span { display: flex; flex-direction: column; flex: 1; min-width: 0; gap: 7px; color: var(--muted); font-size: 12px; font-weight: 400; line-height: 1.5; overflow-wrap: anywhere; }
+.earn-page .rebate-claim-row > span > strong { margin: 0; color: var(--theme-gold-text,#b98117); font-size: 23px; font-weight: 700; line-height: 1.25; overflow-wrap: normal; }
+.earn-page .rebate-claim-row > button { width: 86px; min-width: 86px; padding: 10px 8px; }
+.earn-page .rebate-preview { border: 1px solid var(--line); }
+.earn-page .rebate-preview th { background: var(--theme-panel); color: var(--muted); font-size: 12px; font-weight: 400; padding: 10px 6px; line-height: 1.5; }
+.earn-page .rebate-preview td { padding: 12px 5px; }
+.earn-page .rebate-preview th,.earn-page .rebate-preview td { border-color: var(--line); }
+.earn-page .rebate-platforms { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.earn-page .rebate-platforms > div { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 7px; background: var(--theme-panel); text-align: left; }
+.earn-page .rebate-platforms span { font-size: 12px; line-height: 1.5; }
+.earn-page .rebate-platforms strong { margin: 0; font-size: 13px; line-height: 1.5; }
+
+/* Separate sections from the canvas without introducing more accent colors. */
+:root[data-theme="dark"] .earn-page .rebate-card {
+  background: #20242a;
+  border: 1px solid #4d5967;
+  box-shadow: 0 6px 18px #0002;
+  margin-bottom: 16px;
+}
+:root[data-theme="dark"] .earn-page .rebate-card > header {
+  background: transparent;
+  border-bottom-color: #36404b;
+}
+
+.earn-page .rebate-card { border-radius: 16px; padding: 0 16px 14px; }
+.earn-page .rebate-card > header { margin: 0; padding: 16px 0 0; border-bottom: 0; min-height: 40px; }
+.earn-page .rebate-card header button { font-size: 11px; }
+.earn-page .rebate-claim-row { padding: 14px 0 16px; }
+.earn-page .rebate-claim-row > span { gap: 5px; }
+:root[data-theme="dark"] .earn-page .rebate-claim-row > button:disabled { box-shadow: none; border: 1px solid #4d5967; background: #30363f; color: #c4ccd6; }
+.earn-page .rebate-platforms > div { background: #ffffff06; border: 1px solid #ffffff0c; }
+.earn-page .rebate-preview { border-color: #3c4652; border-radius: 10px; }
+.earn-page .rebate-preview th { background: #ffffff03; font-size: 11px; padding: 9px 4px; }
+.earn-page .rebate-preview td { background: #171b20; padding: 11px 4px; }
