@@ -40,7 +40,7 @@ GoLand：运行种类 Package；包路径 `apps/app/apis/lobby/api`；工作目�
 
 | 路径（前缀 `/api/user/account/`） | JSON 请求体 | 行为 |
 | --- | --- | --- |
-| `visitor/login` | `{}` | 每次创建新游客；客户端无缓存时调用 |
+| `visitor/login` | `{}` | 每次创建新游客；当前大厅前端使用账号登录/注册，不自动调用 |
 | `session/renewal` | `{"uid":1,"sid":"..."}` | 恢复登录并续期 |
 | `uniquecode/register` | `{"account":"alice","password":"password123"}` | 创建独立账号 |
 | `uniquecode/login` | `{"uid":1,"sid":"...","account":"alice","password":"password123"}` | 校验当前身份后登录目标账号 |
@@ -143,7 +143,7 @@ source统一维护：[script/coin_sources.py](script/coin_sources.py)，执行 `
 
 取款流水要求配置 [etc/turnover.json](etc/turnover.json)，`LOBBY_TURNOVER_CONFIG` 可覆盖。默认各类加币1倍、派彩和取款退回本金0倍；历史不追溯。有效投注同步抵扣，取款前服务端校验剩余要求，详见[规则及接口](docs/turnover.md)。
 
-平台体验账号：见 [运行配置与数据隔离](docs/experience-accounts.md)。默认关闭；最小版由大厅调度一名账号，通过游戏服 `/internal/auto-round` 自动完成整局，公开榜单明确标注身份，活动与真实用户统计分离。
+平台体验账号：见 [运行配置与数据隔离](docs/experience-accounts.md)。默认关闭；启用后大厅按已发布配置持续创建账号，按游戏权重分配机台并固定合法投注档位，通过游戏服 `/internal/auto-bets` 查询档位、`/internal/auto-round` 自动完成整局。原请求跨重启恢复，余额不足或命中停止策略后永久停玩。公开榜单明确标注身份，活动事件独立保存；页面RTP按文档口径合并真实用户与体验账号数据。
 
 ### 后台游戏目录
 
