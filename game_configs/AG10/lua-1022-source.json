@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "source": "game_lua/game/service/qd/1022/{1022.lua,room.lua}",
+  "sha256": {
+    "1022.lua": "a11cead42892c11ac031334577b04eeacd011f0c2df2c0f2d2bd4396dd3bac88",
+    "room.lua": "dd60607cde6e0a25154089aa864e1faf0fe78018365d73883ec126b9a1b1d334"
+  },
+  "normalRows": 1441,
+  "sourceTotalWeight": 10000000.00000066,
+  "sourceZeroWeight": 7100000.000000054,
+  "baseMeaning": "单次普通中奖总原始倍率；Lua 零奖权重单独转为普通中奖率。",
+  "specialMeaning": "八次特殊转，每次十个位置独立以 40% 生成奖励；每转至少五个奖励才支付该转全部奖励值。",
+  "specialCellProbability": 0.4,
+  "specialSpins": 8,
+  "specialTriggerProbability": 0.006,
+  "specialHitProbability": 0.3668967424,
+  "rewardValues": [
+    5,
+    10,
+    20,
+    50,
+    100,
+    200,
+    500,
+    1000,
+    2000,
+    5000
+  ],
+  "sourceRewardWeights": [
+    101548.19175,
+    35489.50974,
+    12403.03033,
+    3090.09758,
+    1079.94093,
+    377.42252,
+    94.03125,
+    32.86245,
+    11.48492
+  ],
+  "unusedReward": {
+    "payout": 5000,
+    "weight": 0
+  },
+  "differences": [
+    "按 AG5 已确认流程，普通奖金结算后再独立触发八次特殊转；两者均结算。",
+    "截图赔付数字不采用，普通图标和百搭赔付取 Lua 1022。",
+    "空奖由后端实时生成，骨架数量不改变倍率权重。"
+  ]
+}

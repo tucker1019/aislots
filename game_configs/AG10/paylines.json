@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "ruleType": "fortune_rabbit_v1",
+  "columnHeights": [
+    3,
+    4,
+    3
+  ],
+  "lines": [
+    [
+      1,
+      4,
+      8
+    ],
+    [
+      1,
+      5,
+      8
+    ],
+    [
+      1,
+      5,
+      9
+    ],
+    [
+      2,
+      5,
+      8
+    ],
+    [
+      2,
+      5,
+      9
+    ],
+    [
+      2,
+      6,
+      9
+    ],
+    [
+      2,
+      6,
+      10
+    ],
+    [
+      3,
+      6,
+      9
+    ],
+    [
+      3,
+      6,
+      10
+    ],
+    [
+      3,
+      7,
+      10
+    ]
+  ],
+  "symbols": [
+    {
+      "id": 1,
+      "name": "橘子",
+      "role": "normal",
+      "payout": 2,
+      "weight": 1000
+    },
+    {
+      "id": 2,
+      "name": "鞭炮",
+      "role": "normal",
+      "payout": 3,
+      "weight": 1000
+    },
+    {
+      "id": 3,
+      "name": "红包",
+      "role": "normal",
+      "payout": 5,
+      "weight": 1000
+    },
+    {
+      "id": 4,
+      "name": "福袋",
+      "role": "normal",
+      "payout": 10,
+      "weight": 1000
+    },
+    {
+      "id": 5,
+      "name": "如意",
+      "role": "normal",
+      "payout": 50,
+      "weight": 1000
+    },
+    {
+      "id": 6,
+      "name": "金元宝",
+      "role": "normal",
+      "payout": 100,
+      "weight": 1000
+    },
+    {
+      "id": 7,
+      "name": "百搭",
+      "role": "wild",
+      "payout": 200,
+      "weight": 100
+    }
+  ],
+  "rewards": [
+    {
+      "id": 11,
+      "name": "奖励 0.5 倍",
+      "payout": 5,
+      "weight": 101548.19175
+    },
+    {
+      "id": 12,
+      "name": "奖励 1 倍",
+      "payout": 10,
+      "weight": 35489.50974
+    },
+    {
+      "id": 13,
+      "name": "奖励 2 倍",
+      "payout": 20,
+      "weight": 12403.03033
+    },
+    {
+      "id": 14,
+      "name": "奖励 5 倍",
+      "payout": 50,
+      "weight": 3090.09758
+    },
+    {
+      "id": 15,
+      "name": "奖励 10 倍",
+      "payout": 100,
+      "weight": 1079.94093
+    },
+    {
+      "id": 16,
+      "name": "奖励 20 倍",
+      "payout": 200,
+      "weight": 377.42252
+    },
+    {
+      "id": 17,
+      "name": "奖励 50 倍",
+      "payout": 500,
+      "weight": 94.03125
+    },
+    {
+      "id": 18,
+      "name": "奖励 100 倍",
+      "payout": 1000,
+      "weight": 32.86245
+    },
+    {
+      "id": 19,
+      "name": "奖励 200 倍",
+      "payout": 2000,
+      "weight": 10.913450000000829
+    }
+  ],
+  "generation": {
+    "rewardProbability": 0.4
+  }
+}
