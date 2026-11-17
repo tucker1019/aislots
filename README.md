@@ -11,7 +11,7 @@
 | `slots_lobby/` | React + TypeScript 大厅 | [前端说明](slots_lobby/README.md) |
 | `lobby_service/` | 大厅 Go 服务、用户和统一钱包 | [服务说明](lobby_service/README.md) |
 | `slots_service/` | Go 机台服务、开奖与恢复 | [服务说明](slots_service/README.md) |
-| `client/` | AG1～AG8 Cocos 游戏客户端 | [客户端规范](client/README.md) |
+| `client/` | AG1～AG9 Cocos 游戏客户端 | [客户端规范](client/README.md) |
 | `slots_lobby_admin/` | React + TypeScript 运营后台 | 会员、运营配置与审核管理 |
 | `deploy/test/` | 公网测试环境部署 | [部署说明](deploy/test/README.md)、[发布记录](deploy/test/DEPLOYMENT.md) |
 | `slot_math/` | 数值编辑、模拟及盘面库生成 | [数值工具说明](slot_math/README.md) |
@@ -28,7 +28,7 @@
 - 记录与报表：充值记录、整局投注记录、逐笔资金明细及个人报表。取款支持档位、测试审核与流水要求；代理支持团队及业绩报表。
 - 游戏入口：大厅签发短期票据，机台兑换身份；iframe 内进入对应游戏，刷新恢复已结算盘面，返回大厅刷新余额。
 - 游戏统计：整局完成事件通过机台持久化 Outbox 同步大厅，生成 RTP、派彩/倍数/连胜排行榜；派彩及倍数榜支持只读回放。
-- 大厅界面：手机竖版布局，繁体中文、英文、印尼语切换，账户、充值、福利、赚钱及记录页面。测试环境开放 AG1～AG8，未开放入口提示敬请期待。
+- 大厅界面：420px 设计宽度，小屏整体等比缩放、大屏居中；支持繁体中文、英文、印尼语，账户、充值、福利、赚钱及记录页面。当前大厅接入配置开放 AG1～AG9，游戏列表、显示顺序及可用状态来自服务端目录，未开放入口提示敬请期待。
 
 ## 数据流与服务边界
 
@@ -154,8 +154,10 @@ flowchart LR
 
 ## 游戏模块与发布状态
 
-AG1～AG3 通过独立模块适配共用 Ways 引擎；AG4～AG9 分别实现开奖、状态、补空和展示帧。公共 `game.Runtime` 契约承载统一订单、钱包与逐帧派奖，各游戏自行定义免费、重转及其他特殊玩法。
+AG1～AG3 通过独立模块适配共用 Ways 引擎；AG4～AG10 分别实现开奖、状态、补空和展示帧。公共 `game.Runtime` 契约承载统一订单、钱包与逐帧派奖，各游戏自行定义免费、重转及其他特殊玩法。
 
-AG1～AG9 客户端已发布测试环境。AG9 幸运豹已接入数值工具、骨架、Go 游戏模块及真实场景回放。实际发布版本及浏览器验收限制见[发布记录](deploy/test/DEPLOYMENT.md)。
+AG1～AG9 客户端已发布测试环境。AG9 幸运豹已接入数值工具、骨架、Go 游戏模块及真实场景回放。实际发布版本及浏览器验收限制见[发布记录](deploy/test/DEPLOYMENT.md)。大厅实际可用游戏以已发布目录为准；`lobby_service/etc/games.json` 仅在数据库缺少对应配置分区时初始化，重启不覆盖后台已发布内容。
+
+AG10 金兔已接入数值工具和独立 Go 模块，并在 `slots_service/configs/server.test.json` 启用。当前大厅接入配置及测试部署脚本仍覆盖 AG1～AG9，不能将 AG10 本地测试接入视为已上架或已远程发布。详见 [AG10 模块说明](slots_service/internal/games/ag10/README.md)。
 
 AG8金龙已接入数值工具、中奖骨架生成及Go模块，并已发布测试环境。支持普通/五倍投注、独立八次免费和2500倍封顶；两库均覆盖194/194正权重倍率。详见[AG8规则](slot_math/docs/ag8-rules.md)及[服务端说明](slots_service/internal/games/ag8/README.md)。
