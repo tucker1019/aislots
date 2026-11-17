@@ -793,5 +793,8 @@
   "theme.dark": "Gelap",
   "language.indonesian": "Bahasa Indonesia",
   "benefits.floatingLabel": "Bonus",
-  "benefits.closeFloating": "Tutup pintasan bonus"
+  "benefits.closeFloating": "Tutup pintasan bonus",
+  "gamePreview.minimize": "Minimalkan game",
+  "gamePreview.resume": "Lanjutkan game",
+  "gamePreview.closeMinimized": "Tutup game"
 }

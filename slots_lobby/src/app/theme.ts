@@ -23,9 +23,9 @@ const darkTheme: ThemeConfig = {
   token: {
     ...theme.token, colorPrimary: '#00b24b', colorInfo: '#81b8ff', colorLink: '#81b8ff',
     colorSuccess: '#79e0ab', colorWarning: '#f2c477', colorError: '#ff9da8',
-    colorText: '#f0f2f5', colorTextSecondary: '#a7aebb',
+    colorText: '#f5f7fa', colorTextSecondary: '#dce1e8',
     colorBgLayout: '#141415', colorBgContainer: '#232428', colorBgElevated: '#2e3035',
-    colorBorder: '#3a3c42', colorTextPlaceholder: '#a7aebb', colorTextDisabled: '#9a9eaa',
+    colorBorder: '#3a3c42', colorTextPlaceholder: '#dce1e8', colorTextDisabled: '#9a9eaa',
   },
   components: {
     ...theme.components,

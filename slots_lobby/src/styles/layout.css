@@ -38,7 +38,7 @@
   font-size: 11px;
 }
 
-.bottom-navigation button[aria-current="page"] { color: var(--theme-active,var(--blue)); font-weight: 700; }
+.bottom-navigation button[aria-current="page"] { color: var(--theme-active,var(--blue)); }
 .bottom-navigation-icon { font-size: 25px; height: 28px; line-height: 28px; }
 
 .header-inner {
@@ -138,7 +138,7 @@
   background: var(--theme-active-tint);
   color: var(--theme-active,var(--blue));
 }
-.bottom-navigation button[aria-current="page"] svg { stroke-width: 2.25; }
+
 
 
 .embedded-game {
@@ -180,20 +180,25 @@
 }
 
 .bottom-navigation button {
-  transition: color 150ms ease, transform 100ms ease;
+  font-weight: 600;
+  transition: color 180ms ease;
   -webkit-tap-highlight-color: transparent;
 }
-
-.bottom-navigation button:active { transform: scale(.94); }
-.bottom-navigation-icon { transition: background-color 150ms ease, transform 150ms ease; }
-.bottom-navigation button[aria-current="page"] .bottom-navigation-icon { transform: translateY(-1px); }
+.bottom-navigation button .bottom-navigation-label {
+  display: block;
+  width: 100%;
+  height: 17px;
+  line-height: 17px;
+  text-align: center;
+}
+.bottom-navigation-icon { flex-shrink: 0; transition: background-color 180ms ease; }
 
 @media (prefers-reduced-motion: reduce) {
   .lobby-page-transition { animation: none; }
   .bottom-navigation button,
-  .bottom-navigation-icon { transition: none; }
-  .bottom-navigation button:active,
-  .bottom-navigation button[aria-current="page"] .bottom-navigation-icon { transform: none; }
+  .bottom-navigation-icon,
+  .bottom-navigation-icon > svg { transition: none; }
+  .bottom-navigation button .bottom-navigation-icon { transform: none; }
 }
 
 button.header-wallet { border: 0; color: inherit; cursor: pointer; }

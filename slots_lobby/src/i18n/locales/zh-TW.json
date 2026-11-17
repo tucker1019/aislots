@@ -793,5 +793,8 @@
   "theme.dark": "深色",
   "language.indonesian": "Bahasa Indonesia",
   "benefits.floatingLabel": "福利中心",
-  "benefits.closeFloating": "關閉福利中心入口"
+  "benefits.closeFloating": "關閉福利中心入口",
+  "gamePreview.minimize": "收起遊戲",
+  "gamePreview.resume": "繼續遊戲",
+  "gamePreview.closeMinimized": "關閉遊戲"
 }

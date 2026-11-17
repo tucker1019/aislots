@@ -1,3 +1,6 @@
+import { readGameEntry, rememberGameEntry } from '../services/game-entry';
+import { navigateLobby } from '../app/useLobbyRoute';
+import { act } from '@testing-library/react';
 import {testGames} from '../test/game-catalog';
 import {beforeEach as authenticatedFixture} from 'vitest';
 import {useSessionStore} from '../stores/session';
@@ -108,3 +111,56 @@ it('我的設置進入個人資料，返回保留我的頁入口',async()=>{
 });
 
 authenticatedFixture(()=>useSessionStore.setState({session:{uid:7,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'}}));
+
+it('收起回到大廳，恢復同一個遊戲iframe，退出才卸載', async () => {
+  const src='https://game.example.test/?launchTicket=keep-existing-game';
+  rememberGameEntry(src,'AG1');
+  window.history.replaceState(null,'','/game/AG1');
+  setup();
+  const frame=document.querySelector('iframe');
+  expect(frame).not.toBeNull();
+  expect(frame).toHaveAttribute('src',src);
+  fireEvent.click(screen.getByRole('button',{name:'收起遊戲'}));
+  expect(window.location.pathname).toBe('/');
+  expect(frame?.closest('.game-detail-shell')).toHaveAttribute('inert');
+  expect(document.querySelector('iframe')).toBe(frame);
+  const resume=screen.getByRole('button',{name:/繼續遊戲 ·/});
+  fireEvent.click(resume);
+  expect(window.location.pathname).toBe('/game/AG1');
+  expect(document.querySelector('iframe')).toBe(frame);
+  expect(frame).toHaveAttribute('src',src);
+  expect(frame?.closest('.game-detail-shell')).not.toHaveAttribute('inert');
+  fireEvent.click(screen.getByRole('button',{name:'返回大廳'}));
+  expect(document.querySelector('iframe')).toBeNull();
+  act(()=>navigateLobby('home'));
+});
+
+it('關閉恢復條會銷毀iframe並清除入口，重新進入不復用舊遊戲', () => {
+  const src='https://game.example.test/?launchTicket=closed-game';
+  rememberGameEntry(src,'AG1');
+  window.history.replaceState(null,'','/game/AG1');
+  setup();
+  const original=document.querySelector('iframe');
+  fireEvent.click(screen.getByRole('button',{name:'收起遊戲'}));
+  expect(screen.queryByText('遊戲進行中')).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button',{name:'關閉遊戲'}));
+  expect(document.querySelector('iframe')).toBeNull();
+  expect(readGameEntry('AG1')).toBeFalsy();
+  expect(window.location.pathname).toBe('/');
+  expect(screen.queryByRole('button',{name:/繼續遊戲 ·/})).not.toBeInTheDocument();
+  act(()=>navigateLobby('game',{gameId:'AG1'}));
+  expect(original?.isConnected).toBe(false);
+  expect(document.querySelector('iframe')?.getAttribute('src')).not.toBe(src);
+});
+
+it('四个主路由切换保持同一底栏和按钮节点，不重播整栏挂载动效', () => {
+  setup();
+  const nav=screen.getByRole('navigation',{name:'底部導航'});
+  const buttons=within(nav).getAllByRole('button');
+  for(const index of [1,2,3,0,2,1,0]) {
+    fireEvent.click(buttons[index]);
+    expect(screen.getByRole('navigation',{name:'底部導航'})).toBe(nav);
+    expect(within(nav).getAllByRole('button')).toEqual(buttons);
+    expect(buttons[index]).toHaveAttribute('aria-current','page');
+  }
+});

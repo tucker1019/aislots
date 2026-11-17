@@ -1,4 +1,3 @@
-import {ThemeSelector} from './ThemeSelector';
 import {ClaimBadge} from '../rewards/ClaimBadge';
 import {useClaimIndicators} from '../rewards/useClaimIndicators';
 import type {RewardKey} from '../rewards/claimIndicators';
@@ -54,6 +53,6 @@ export function MyAccount({ onAction, onDeposit, onRecords, onBetRecords, onBene
     {isError && data && <p role="alert" className="account-refresh-error">{t('copy.balanceRefreshFailedPleaseRetry')}</p>}
     <section className="account-card account-benefits-card"><div className="account-section-heading"><h2>{t('copy.benefitsCenter')}</h2><span>{t('copy.discoverYourBenefits')}</span></div><ActionGrid items={benefits()} label={t('copy.benefitsShortcuts')} onAction={onBenefits ?? onAction} /></section>
     <section className="account-card"><div className="account-section-heading"><h2>{t('copy.accountServices')}</h2></div><ActionGrid items={management()} label={t('copy.accountManagementShortcuts')} onAction={name => { if(name === 'wallet' && onWallet) onWallet(); else if(name === 'agent' && onAgent) onAgent(); else if(name === 'invite' && onInvite) onInvite(); else if (name === 'report' && onReport) onReport(); else if (name === 'ledger' && onLedger) onLedger(); else if (name === 'bets' && onBetRecords) onBetRecords(); else if (name === 'records') onRecords(); else onAction(); }} /></section>
-    <section className="account-card account-help" aria-label={t('copy.helpAndSecurity')}><button type="button" onClick={()=>navigateLobby('security')}><span className="account-help-icon" aria-hidden="true"><Icon name="shield" size={17}/></span><span>{t('copy.securityCenter')}</span><span aria-hidden="true"><Icon name="chevron" size={16}/></span></button><LanguageSelector /><ThemeSelector /></section>
+    <section className="account-card account-help" aria-label={t('copy.helpAndSecurity')}><button type="button" onClick={()=>navigateLobby('security')}><span className="account-help-icon" aria-hidden="true"><Icon name="shield" size={17}/></span><span>{t('copy.securityCenter')}</span><span aria-hidden="true"><Icon name="chevron" size={16}/></span></button><LanguageSelector /></section>
   </section>;
 }

@@ -793,5 +793,8 @@
   "theme.dark": "Dark",
   "language.indonesian": "Bahasa Indonesia",
   "benefits.floatingLabel": "Benefits",
-  "benefits.closeFloating": "Close benefits shortcut"
+  "benefits.closeFloating": "Close benefits shortcut",
+  "gamePreview.minimize": "Minimize game",
+  "gamePreview.resume": "Resume game",
+  "gamePreview.closeMinimized": "Close game"
 }
