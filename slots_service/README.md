@@ -59,7 +59,7 @@ make run CONFIG=configs/server.local.json
 }
 ```
 
-`ruleType` 是必填的玩法规则实现标识，当前注册 `ways_cascade_v1`（AG1～AG3）、`paylines_v1`（AG4）及 AG5～AG9 的 `fortune_rabbit_v1`、`fortune_mouse_v1`、`fortune_ox_v1`、`fortune_dragon_v1`、`fortune_leopard_v1`。它选择对应的配置加载、结果生成/重放及验证实现，不由客户端提交。新增玩法类型需要注册自己的 Factory，尚未实现时启动会报错，绝不回退到现有消除引擎。该字段保存在 `game_configs/<gameId>/config.json` 顶层，由数值工具编辑和保存。服务端先读取它再选择 Factory，部署配置不再重复填写。历史盘面库格式保持不变。
+`ruleType` 是必填的玩法规则实现标识，当前注册 `ways_cascade_v1`（AG1～AG3）、`paylines_v1`（AG4）及 AG5～AG10 的 `fortune_rabbit_v1`、`fortune_mouse_v1`、`fortune_ox_v1`、`fortune_dragon_v1`、`fortune_leopard_v1`。它选择对应的配置加载、结果生成/重放及验证实现，不由客户端提交。新增玩法类型需要注册自己的 Factory，尚未实现时启动会报错，绝不回退到现有消除引擎。该字段保存在 `game_configs/<gameId>/config.json` 顶层，由数值工具编辑和保存。服务端先读取它再选择 Factory，部署配置不再重复填写。历史盘面库格式保持不变。
 
 路径相对于服务配置文件所在目录解析。一个游戏可加载多个版本，恰好一个标记为 `current`；逐轮开奖流程中新付费凭据使用当前版本，已申请凭据、正在进行的投注及免费链仍按原版本执行。发布新版本时须保留这些旧版本；在下一笔付费投注开始时切换版本，余额和累计状态保留。
 
@@ -148,6 +148,12 @@ The mapping participates in the engine version. The test server configuration ke
 
 发布命令、不可变配置校验、跨语言验奖和数据库测试见 [AG5 模块说明](internal/games/ag5/README.md)，客户端字段和样例见 [联调协议](docs/client-api.md#ag5-本地接口)。
 
+## AG10 金兔
+
+本地测试配置已注册 AG10 独立模块和十线投注策略，绑定 `testdata/deployments/2026-11-16-ag10-v2/AG10`。AG10 按 Lua 1022 使用普通中奖率 0.29、特殊单转中奖率 0.34、触发率 0.006、8 次特殊转和 5,000 倍封顶；普通与特殊奖金均逐转结算，每转清空。空奖实时生成，骨架补空只抽一次且不能新增中奖。
+
+发布命令、不可变配置校验、跨语言验奖和服务端测试见 [AG10 模块说明](internal/games/ag10/README.md)，客户端沿用金兔公共协议，登录和投注的 `gameId` 使用 `AG10`。
+
 ## 大厅接入与统一钱包
 
 工作目录为`slots_service`，设置独立机台数据库`AISLOTS_DATABASE_URL`，以及与大厅一致的`LOBBY_GAME_SERVICE_TOKEN`后运行：
@@ -199,6 +205,6 @@ AG8金龙使用独立 `fortune_dragon_v1` 模块及 `testdata/deployments/2026-1
 
 ## 当前接入与发布范围
 
-AG1～AG9 的 Go 模块均已注册。AG1～AG3 保留旧 Ways 算法与存档兼容，AG4～AG9 独立实现各自玩法。各游戏发布器校验配置、骨架与倍率覆盖后创建不可变快照；空奖实时生成，骨架桶数量不决定开奖概率。
+AG1～AG10 的 Go 模块均已注册。AG1～AG3 保留旧 Ways 算法与存档兼容，AG4～AG10 独立实现各自玩法。各游戏发布器校验配置、骨架与倍率覆盖后创建不可变快照；空奖实时生成，骨架桶数量不决定开奖概率。
 
-测试环境开放 AG1～AG8，AG9 仅接入本地测试配置，尚未开放客户端。上文 AG7/AG8“本地模块”描述开发配置，不代表公网未发布。具体发布版本与验收限制见[发布记录](../deploy/test/DEPLOYMENT.md)。AG5～AG9 详细规则及发布命令见对应 `internal/games/agN/README.md`。
+测试环境开放 AG1～AG8，AG9、AG10 仅接入本地测试配置，尚未开放客户端。上文 AG7/AG8“本地模块”描述开发配置，不代表公网未发布。具体发布版本与验收限制见[发布记录](../deploy/test/DEPLOYMENT.md)。AG5～AG10 详细规则及发布命令见对应 `internal/games/agN/README.md`。

@@ -383,4 +383,10 @@ AG9 使用原有登录、投注、state、history及replay接口，五条线，�
 
 `mode` 为 `base` 或 `respin`。盘面格号按列从左到右、每列从上到下排列，0是重转空白。`gameData.targetSymbolId`为本次重转目标，`lockedCellIds`是已锁定位置，`addedCellIds`是本轮新增，`bonusMultiplier`是1或10，`lineWins`按每线最高赔付列出中奖。`replay.payoutUnit`是总投注除以五的精确有理数，`lineCount`固定5。详细协议见[AG9协议](../protos/game_ag9.proto)。
 
+## AG10 本地接口
+
+AG10 沿用金兔公共的 `launchTicket → POST /api/v1/login` 换票流程，以及 `/api/v1/games/AG10/bets`、`state`、`spin`、`bet-records`、本人回放和公开分享回放。登录传 `gameId: "AG10"`；继续使用服务端签发的 `requestId`、`nextRequestId`。投注、逐帧特殊转、金额字段和回放结构与 [AG5 本地接口](#ag5-本地接口) 相同，十条线时总投注按 `amountScale=2` 和 bets 返回的档位计算。
+
+AG10 使用 Lua 1022 的数值配置和独立盘面快照。普通转先结算，随后可追加 8 次特殊转；特殊转每转清空，至少 5 个奖励符号才支付当转奖励，封顶时只支付剩余额度并停止后续转。客户端不要将原始倍率当作金额。
+
 普通三条横线各自中奖也会触发全盘十倍，不要求全盘同图标。最终原始倍率已经包含十倍。重转的中间帧仅展示新增及锁定，不累计支付；无新增末轮必须展示。重试和回放必须复用服务端保存的帧。

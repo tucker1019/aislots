@@ -4,6 +4,7 @@ import (
 	"aislots/slots_service/internal/application/bet"
 	"aislots/slots_service/internal/engine"
 	"aislots/slots_service/internal/games"
+	"aislots/slots_service/internal/games/ag10"
 	"aislots/slots_service/internal/games/ag4"
 	"aislots/slots_service/internal/games/ag5"
 	"aislots/slots_service/internal/games/ag6"
@@ -30,7 +31,21 @@ type LoadedGame struct {
 type Factory func(GameConfig) (LoadedGame, error)
 
 func builtInFactories() map[string]Factory {
-	return map[string]Factory{engine.RuleType: loadWaysCascade, paylines.RuleType: loadPaylines, ag5.RuleType: loadAG5, ag6.RuleType: loadAG6, ag7.RuleType: loadAG7, ag8.RuleType: loadAG8, ag9.RuleType: loadAG9}
+	return map[string]Factory{engine.RuleType: loadWaysCascade, paylines.RuleType: loadPaylines, ag5.RuleType: loadFortuneRabbit, ag6.RuleType: loadAG6, ag7.RuleType: loadAG7, ag8.RuleType: loadAG8, ag9.RuleType: loadAG9}
+}
+
+// Both AG5 and AG10 use the versioned Fortune Rabbit rules. The game directory
+// selects the concrete module so one rules type cannot accidentally load the
+// wrong game's payout table or release snapshot.
+func loadFortuneRabbit(spec GameConfig) (LoadedGame, error) {
+	switch filepath.Base(filepath.Clean(spec.ConfigDir)) {
+	case ag5.ID:
+		return loadAG5(spec)
+	case ag10.ID:
+		return loadAG10(spec)
+	default:
+		return LoadedGame{}, fmt.Errorf("unregistered fortune rabbit game %q", filepath.Base(filepath.Clean(spec.ConfigDir)))
+	}
 }
 
 func loadAG9(spec GameConfig) (LoadedGame, error) {
@@ -91,6 +106,18 @@ func loadAG5(spec GameConfig) (LoadedGame, error) {
 	}
 	slog.Info("game module validated", "gameId", ag5.ID, "version", module.Version(), "current", spec.Current)
 	return LoadedGame{GameID: ag5.ID, Engine: module}, nil
+}
+
+func loadAG10(spec GameConfig) (LoadedGame, error) {
+	if spec.RuleType != ag10.RuleType || spec.BaseLibraryDir == "" || spec.FreeLibraryDir == "" || filepath.Base(filepath.Clean(spec.ConfigDir)) != ag10.ID {
+		return LoadedGame{}, fmt.Errorf("invalid AG10 configuration")
+	}
+	module, err := ag10.Load(spec.ConfigDir, spec.BaseLibraryDir, spec.FreeLibraryDir, ag10.Options{})
+	if err != nil {
+		return LoadedGame{}, err
+	}
+	slog.Info("game module validated", "gameId", ag10.ID, "version", module.Version(), "current", spec.Current)
+	return LoadedGame{GameID: ag10.ID, Engine: module}, nil
 }
 func loadWaysCascade(spec GameConfig) (LoadedGame, error) {
 	if spec.RuleType != engine.RuleType || spec.BaseLibraryDir == "" || spec.FreeLibraryDir == "" || spec.TriggerSymbolCount < 3 || spec.TriggerSymbolCount > 5 || spec.MaxFillAttempts < 1 || spec.MaxFillAttempts > 1000 {

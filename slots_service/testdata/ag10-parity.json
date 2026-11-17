@@ -1,0 +1,5568 @@
+{
+  "source": "slot_math/src/domain/fortuneRabbit.ts",
+  "cases": [
+    {
+      "mode": "base",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7
+      ],
+      "raw": 2000,
+      "line": 2000,
+      "reward": 0,
+      "winningCellIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "wins": [
+        {
+          "line": 1,
+          "symbolId": 7,
+          "payout": 200,
+          "cellIds": [
+            1,
+            4,
+            8
+          ]
+        },
+        {
+          "line": 2,
+          "symbolId": 7,
+          "payout": 200,
+          "cellIds": [
+            1,
+            5,
+            8
+          ]
+        },
+        {
+          "line": 3,
+          "symbolId": 7,
+          "payout": 200,
+          "cellIds": [
+            1,
+            5,
+            9
+          ]
+        },
+        {
+          "line": 4,
+          "symbolId": 7,
+          "payout": 200,
+          "cellIds": [
+            2,
+            5,
+            8
+          ]
+        },
+        {
+          "line": 5,
+          "symbolId": 7,
+          "payout": 200,
+          "cellIds": [
+            2,
+            5,
+            9
+          ]
+        },
+        {
+          "line": 6,
+          "symbolId": 7,
+          "payout": 200,
+          "cellIds": [
+            2,
+            6,
+            9
+          ]
+        },
+        {
+          "line": 7,
+          "symbolId": 7,
+          "payout": 200,
+          "cellIds": [
+            2,
+            6,
+            10
+          ]
+        },
+        {
+          "line": 8,
+          "symbolId": 7,
+          "payout": 200,
+          "cellIds": [
+            3,
+            6,
+            9
+          ]
+        },
+        {
+          "line": 9,
+          "symbolId": 7,
+          "payout": 200,
+          "cellIds": [
+            3,
+            6,
+            10
+          ]
+        },
+        {
+          "line": 10,
+          "symbolId": 7,
+          "payout": 200,
+          "cellIds": [
+            3,
+            7,
+            10
+          ]
+        }
+      ],
+      "stake": 123,
+      "win": "24600"
+    },
+    {
+      "mode": "base",
+      "board": [
+        6,
+        11,
+        12,
+        6,
+        13,
+        14,
+        15,
+        6,
+        0,
+        0
+      ],
+      "raw": 285,
+      "line": 100,
+      "reward": 185,
+      "winningCellIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "wins": [
+        {
+          "line": 1,
+          "symbolId": 6,
+          "payout": 100,
+          "cellIds": [
+            1,
+            4,
+            8
+          ]
+        }
+      ],
+      "stake": 123,
+      "win": "3505"
+    },
+    {
+      "mode": "base",
+      "board": [
+        7,
+        0,
+        0,
+        7,
+        0,
+        0,
+        0,
+        6,
+        0,
+        0
+      ],
+      "raw": 100,
+      "line": 100,
+      "reward": 0,
+      "winningCellIds": [
+        1,
+        4,
+        8
+      ],
+      "wins": [
+        {
+          "line": 1,
+          "symbolId": 6,
+          "payout": 100,
+          "cellIds": [
+            1,
+            4,
+            8
+          ]
+        }
+      ],
+      "stake": 123,
+      "win": "1230"
+    },
+    {
+      "mode": "base",
+      "board": [
+        7,
+        0,
+        0,
+        7,
+        0,
+        0,
+        0,
+        7,
+        0,
+        0
+      ],
+      "raw": 200,
+      "line": 200,
+      "reward": 0,
+      "winningCellIds": [
+        1,
+        4,
+        8
+      ],
+      "wins": [
+        {
+          "line": 1,
+          "symbolId": 7,
+          "payout": 200,
+          "cellIds": [
+            1,
+            4,
+            8
+          ]
+        }
+      ],
+      "stake": 123,
+      "win": "2460"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        12,
+        13,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        14,
+        15,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 385,
+      "line": 0,
+      "reward": 385,
+      "winningCellIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "4735"
+    },
+    {
+      "mode": "free",
+      "board": [
+        19,
+        19,
+        19,
+        19,
+        19,
+        19,
+        19,
+        19,
+        19,
+        19
+      ],
+      "raw": 20000,
+      "line": 0,
+      "reward": 20000,
+      "winningCellIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "246000"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        3,
+        5,
+        11,
+        11,
+        6,
+        12,
+        7,
+        5,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        2,
+        1,
+        11,
+        4,
+        6,
+        12,
+        7,
+        6,
+        5
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        5,
+        11,
+        2,
+        12,
+        6,
+        3,
+        11,
+        11,
+        2,
+        11
+      ],
+      "raw": 30,
+      "line": 0,
+      "reward": 30,
+      "winningCellIds": [
+        2,
+        4,
+        7,
+        8,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "369"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        4,
+        3,
+        11,
+        1,
+        2,
+        4,
+        11,
+        6,
+        5
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        6,
+        5,
+        5,
+        11,
+        5,
+        12,
+        3,
+        11,
+        2,
+        6
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        3,
+        4,
+        11,
+        3,
+        5,
+        5,
+        11,
+        3,
+        3,
+        3
+      ],
+      "raw": 5,
+      "line": 5,
+      "reward": 0,
+      "winningCellIds": [
+        1,
+        4,
+        8
+      ],
+      "wins": [
+        {
+          "line": 1,
+          "symbolId": 3,
+          "payout": 5,
+          "cellIds": [
+            1,
+            4,
+            8
+          ]
+        }
+      ],
+      "stake": 123,
+      "win": "61"
+    },
+    {
+      "mode": "base",
+      "board": [
+        2,
+        1,
+        12,
+        6,
+        5,
+        3,
+        2,
+        3,
+        11,
+        5
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        6,
+        12,
+        11,
+        5,
+        11,
+        4,
+        4,
+        11,
+        11,
+        1
+      ],
+      "raw": 30,
+      "line": 0,
+      "reward": 30,
+      "winningCellIds": [
+        2,
+        3,
+        5,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "369"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        12,
+        5,
+        4,
+        3,
+        3,
+        11,
+        11,
+        13,
+        11
+      ],
+      "raw": 50,
+      "line": 0,
+      "reward": 50,
+      "winningCellIds": [
+        1,
+        2,
+        7,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "615"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        1,
+        11,
+        2,
+        12,
+        2,
+        13,
+        6,
+        11,
+        4
+      ],
+      "raw": 45,
+      "line": 0,
+      "reward": 45,
+      "winningCellIds": [
+        1,
+        3,
+        5,
+        7,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "553"
+    },
+    {
+      "mode": "base",
+      "board": [
+        3,
+        4,
+        11,
+        12,
+        4,
+        4,
+        1,
+        6,
+        4,
+        11
+      ],
+      "raw": 20,
+      "line": 20,
+      "reward": 0,
+      "winningCellIds": [
+        2,
+        5,
+        6,
+        9
+      ],
+      "wins": [
+        {
+          "line": 5,
+          "symbolId": 4,
+          "payout": 10,
+          "cellIds": [
+            2,
+            5,
+            9
+          ]
+        },
+        {
+          "line": 6,
+          "symbolId": 4,
+          "payout": 10,
+          "cellIds": [
+            2,
+            6,
+            9
+          ]
+        }
+      ],
+      "stake": 123,
+      "win": "246"
+    },
+    {
+      "mode": "base",
+      "board": [
+        3,
+        4,
+        13,
+        11,
+        6,
+        1,
+        11,
+        1,
+        5,
+        2
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        1,
+        12,
+        3,
+        11,
+        11,
+        5,
+        11,
+        13,
+        2,
+        4
+      ],
+      "raw": 45,
+      "line": 0,
+      "reward": 45,
+      "winningCellIds": [
+        2,
+        4,
+        5,
+        7,
+        8
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "553"
+    },
+    {
+      "mode": "base",
+      "board": [
+        13,
+        4,
+        11,
+        11,
+        1,
+        11,
+        1,
+        4,
+        5,
+        1
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        2,
+        11,
+        11,
+        12,
+        5,
+        1,
+        11,
+        4,
+        11,
+        11
+      ],
+      "raw": 35,
+      "line": 0,
+      "reward": 35,
+      "winningCellIds": [
+        2,
+        3,
+        4,
+        7,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "430"
+    },
+    {
+      "mode": "base",
+      "board": [
+        6,
+        2,
+        5,
+        12,
+        6,
+        11,
+        6,
+        3,
+        6,
+        12
+      ],
+      "raw": 100,
+      "line": 100,
+      "reward": 0,
+      "winningCellIds": [
+        1,
+        5,
+        9
+      ],
+      "wins": [
+        {
+          "line": 3,
+          "symbolId": 6,
+          "payout": 100,
+          "cellIds": [
+            1,
+            5,
+            9
+          ]
+        }
+      ],
+      "stake": 123,
+      "win": "1230"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        16,
+        6,
+        4,
+        11,
+        4,
+        5,
+        5,
+        6,
+        3
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        6,
+        2,
+        11,
+        3,
+        11,
+        11,
+        6,
+        11,
+        1,
+        12
+      ],
+      "raw": 30,
+      "line": 0,
+      "reward": 30,
+      "winningCellIds": [
+        3,
+        5,
+        6,
+        8,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "369"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        11,
+        1,
+        11,
+        6,
+        4,
+        4,
+        11,
+        3,
+        11
+      ],
+      "raw": 25,
+      "line": 0,
+      "reward": 25,
+      "winningCellIds": [
+        1,
+        2,
+        4,
+        8,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "307"
+    },
+    {
+      "mode": "base",
+      "board": [
+        1,
+        6,
+        12,
+        11,
+        4,
+        6,
+        11,
+        11,
+        6,
+        1
+      ],
+      "raw": 100,
+      "line": 100,
+      "reward": 0,
+      "winningCellIds": [
+        2,
+        6,
+        9
+      ],
+      "wins": [
+        {
+          "line": 6,
+          "symbolId": 6,
+          "payout": 100,
+          "cellIds": [
+            2,
+            6,
+            9
+          ]
+        }
+      ],
+      "stake": 123,
+      "win": "1230"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        7,
+        11,
+        3,
+        13,
+        11,
+        5,
+        5,
+        1,
+        5
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        12,
+        11,
+        3,
+        11,
+        11,
+        6,
+        6,
+        11,
+        11
+      ],
+      "raw": 40,
+      "line": 0,
+      "reward": 40,
+      "winningCellIds": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "492"
+    },
+    {
+      "mode": "base",
+      "board": [
+        2,
+        4,
+        5,
+        11,
+        1,
+        1,
+        11,
+        1,
+        4,
+        6
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        12,
+        2,
+        5,
+        3,
+        2,
+        1,
+        12,
+        11,
+        3,
+        5
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        11,
+        3,
+        13,
+        6,
+        11,
+        3,
+        14,
+        11,
+        2
+      ],
+      "raw": 90,
+      "line": 0,
+      "reward": 90,
+      "winningCellIds": [
+        1,
+        2,
+        4,
+        6,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "1107"
+    },
+    {
+      "mode": "base",
+      "board": [
+        12,
+        11,
+        11,
+        2,
+        11,
+        11,
+        11,
+        11,
+        5,
+        11
+      ],
+      "raw": 45,
+      "line": 0,
+      "reward": 45,
+      "winningCellIds": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "553"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        11,
+        2,
+        3,
+        11,
+        6,
+        6,
+        1,
+        11,
+        11
+      ],
+      "raw": 25,
+      "line": 0,
+      "reward": 25,
+      "winningCellIds": [
+        1,
+        2,
+        5,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "307"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        12,
+        5,
+        1,
+        1,
+        11,
+        4,
+        13,
+        1,
+        11
+      ],
+      "raw": 45,
+      "line": 0,
+      "reward": 45,
+      "winningCellIds": [
+        1,
+        2,
+        6,
+        8,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "553"
+    },
+    {
+      "mode": "base",
+      "board": [
+        6,
+        4,
+        1,
+        1,
+        2,
+        11,
+        2,
+        11,
+        11,
+        3
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        4,
+        11,
+        3,
+        3,
+        2,
+        1,
+        2,
+        11,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        3,
+        1,
+        6,
+        11,
+        11,
+        11,
+        11,
+        4,
+        3
+      ],
+      "raw": 25,
+      "line": 0,
+      "reward": 25,
+      "winningCellIds": [
+        1,
+        5,
+        6,
+        7,
+        8
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "307"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        6,
+        11,
+        3,
+        11,
+        11,
+        3,
+        3,
+        12,
+        16
+      ],
+      "raw": 225,
+      "line": 0,
+      "reward": 225,
+      "winningCellIds": [
+        3,
+        5,
+        6,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "2767"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        11,
+        5,
+        11,
+        3,
+        6,
+        1,
+        11,
+        2,
+        2
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        11,
+        11,
+        3,
+        12,
+        5,
+        4,
+        3,
+        11,
+        11
+      ],
+      "raw": 35,
+      "line": 0,
+      "reward": 35,
+      "winningCellIds": [
+        1,
+        2,
+        3,
+        5,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "430"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        11,
+        6,
+        1,
+        6,
+        6,
+        11,
+        3,
+        3,
+        3
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        13,
+        2,
+        11,
+        5,
+        13,
+        12,
+        1,
+        4,
+        1,
+        4
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        1,
+        4,
+        6,
+        4,
+        11,
+        3,
+        11,
+        6,
+        5
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        6,
+        11,
+        11,
+        2,
+        11,
+        3,
+        11,
+        1,
+        6,
+        11
+      ],
+      "raw": 25,
+      "line": 0,
+      "reward": 25,
+      "winningCellIds": [
+        2,
+        3,
+        5,
+        7,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "307"
+    },
+    {
+      "mode": "base",
+      "board": [
+        12,
+        5,
+        3,
+        6,
+        5,
+        12,
+        3,
+        2,
+        6,
+        6
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        11,
+        5,
+        1,
+        3,
+        5,
+        12,
+        5,
+        13,
+        11
+      ],
+      "raw": 45,
+      "line": 0,
+      "reward": 45,
+      "winningCellIds": [
+        1,
+        2,
+        7,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "553"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        11,
+        6,
+        2,
+        3,
+        2,
+        6,
+        11,
+        11,
+        6
+      ],
+      "raw": 100,
+      "line": 100,
+      "reward": 0,
+      "winningCellIds": [
+        3,
+        7,
+        10
+      ],
+      "wins": [
+        {
+          "line": 10,
+          "symbolId": 6,
+          "payout": 100,
+          "cellIds": [
+            3,
+            7,
+            10
+          ]
+        }
+      ],
+      "stake": 123,
+      "win": "1230"
+    },
+    {
+      "mode": "base",
+      "board": [
+        2,
+        2,
+        4,
+        3,
+        13,
+        4,
+        5,
+        3,
+        1,
+        6
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        2,
+        11,
+        7,
+        1,
+        5,
+        12,
+        5,
+        1,
+        6,
+        12
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        5,
+        11,
+        2,
+        1,
+        11,
+        6,
+        4,
+        2,
+        2,
+        6
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        3,
+        3,
+        6,
+        4,
+        6,
+        11,
+        11,
+        11,
+        2,
+        2
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        13,
+        5,
+        11,
+        11,
+        2,
+        4,
+        11,
+        2,
+        1
+      ],
+      "raw": 40,
+      "line": 0,
+      "reward": 40,
+      "winningCellIds": [
+        1,
+        2,
+        4,
+        5,
+        8
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "492"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        11,
+        11,
+        11,
+        1,
+        4,
+        6,
+        3,
+        11,
+        12
+      ],
+      "raw": 30,
+      "line": 0,
+      "reward": 30,
+      "winningCellIds": [
+        2,
+        3,
+        4,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "369"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        4,
+        6,
+        2,
+        12,
+        6,
+        3,
+        11,
+        4,
+        6
+      ],
+      "raw": 100,
+      "line": 100,
+      "reward": 0,
+      "winningCellIds": [
+        3,
+        6,
+        10
+      ],
+      "wins": [
+        {
+          "line": 9,
+          "symbolId": 6,
+          "payout": 100,
+          "cellIds": [
+            3,
+            6,
+            10
+          ]
+        }
+      ],
+      "stake": 123,
+      "win": "1230"
+    },
+    {
+      "mode": "base",
+      "board": [
+        2,
+        5,
+        4,
+        11,
+        11,
+        3,
+        5,
+        11,
+        12,
+        11
+      ],
+      "raw": 30,
+      "line": 0,
+      "reward": 30,
+      "winningCellIds": [
+        4,
+        5,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "369"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        2,
+        1,
+        12,
+        4,
+        12,
+        4,
+        11,
+        11,
+        1
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        3,
+        4,
+        4,
+        13,
+        2,
+        1,
+        2,
+        3,
+        2
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        2,
+        4,
+        11,
+        4,
+        2,
+        1,
+        11,
+        5,
+        12,
+        3
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        6,
+        1,
+        11,
+        11,
+        11,
+        13,
+        11,
+        11,
+        5,
+        11
+      ],
+      "raw": 50,
+      "line": 0,
+      "reward": 50,
+      "winningCellIds": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "615"
+    },
+    {
+      "mode": "base",
+      "board": [
+        1,
+        3,
+        12,
+        4,
+        12,
+        6,
+        5,
+        2,
+        11,
+        1
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        3,
+        1,
+        1,
+        11,
+        11,
+        4,
+        1,
+        3,
+        11,
+        4
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        14,
+        1,
+        1,
+        11,
+        11,
+        1,
+        5,
+        11,
+        13,
+        11
+      ],
+      "raw": 90,
+      "line": 0,
+      "reward": 90,
+      "winningCellIds": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "1107"
+    },
+    {
+      "mode": "base",
+      "board": [
+        5,
+        11,
+        6,
+        2,
+        4,
+        3,
+        12,
+        6,
+        14,
+        4
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        12,
+        12,
+        1,
+        11,
+        6,
+        1,
+        11,
+        11,
+        5,
+        1
+      ],
+      "raw": 37,
+      "line": 2,
+      "reward": 35,
+      "winningCellIds": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        10
+      ],
+      "wins": [
+        {
+          "line": 9,
+          "symbolId": 1,
+          "payout": 2,
+          "cellIds": [
+            3,
+            6,
+            10
+          ]
+        }
+      ],
+      "stake": 123,
+      "win": "455"
+    },
+    {
+      "mode": "base",
+      "board": [
+        12,
+        1,
+        6,
+        5,
+        11,
+        11,
+        12,
+        5,
+        3,
+        11
+      ],
+      "raw": 35,
+      "line": 0,
+      "reward": 35,
+      "winningCellIds": [
+        1,
+        5,
+        6,
+        7,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "430"
+    },
+    {
+      "mode": "base",
+      "board": [
+        6,
+        5,
+        11,
+        6,
+        6,
+        3,
+        5,
+        4,
+        3,
+        5
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        3,
+        12,
+        5,
+        11,
+        2,
+        1,
+        6,
+        11,
+        6,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        12,
+        1,
+        11,
+        11,
+        5,
+        11,
+        1,
+        5,
+        3,
+        6
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        5,
+        3,
+        11,
+        2,
+        4,
+        3,
+        12,
+        2,
+        5,
+        13
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        5,
+        1,
+        1,
+        3,
+        12,
+        12,
+        11,
+        11,
+        3,
+        3
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        11,
+        12,
+        6,
+        1,
+        14,
+        11,
+        5,
+        2,
+        3
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        11,
+        13,
+        11,
+        12,
+        3,
+        1,
+        11,
+        12,
+        11
+      ],
+      "raw": 60,
+      "line": 0,
+      "reward": 60,
+      "winningCellIds": [
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "738"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        3,
+        1,
+        11,
+        2,
+        5,
+        2,
+        11,
+        5,
+        6
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        2,
+        4,
+        6,
+        13,
+        11,
+        7,
+        11,
+        11,
+        11,
+        11
+      ],
+      "raw": 45,
+      "line": 0,
+      "reward": 45,
+      "winningCellIds": [
+        4,
+        5,
+        7,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "553"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        7,
+        3,
+        4,
+        4,
+        3,
+        12,
+        11,
+        13,
+        11
+      ],
+      "raw": 45,
+      "line": 0,
+      "reward": 45,
+      "winningCellIds": [
+        1,
+        7,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "553"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        11,
+        6,
+        5,
+        11,
+        11,
+        4,
+        5,
+        11,
+        6
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        2,
+        2,
+        1,
+        4,
+        4,
+        1,
+        11,
+        4,
+        4,
+        2
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        6,
+        12,
+        14,
+        11,
+        11,
+        11,
+        11,
+        12,
+        12,
+        11
+      ],
+      "raw": 105,
+      "line": 0,
+      "reward": 105,
+      "winningCellIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "1291"
+    },
+    {
+      "mode": "base",
+      "board": [
+        12,
+        2,
+        4,
+        1,
+        11,
+        1,
+        12,
+        3,
+        5,
+        1
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        6,
+        11,
+        5,
+        2,
+        11,
+        12,
+        11,
+        5,
+        11
+      ],
+      "raw": 35,
+      "line": 0,
+      "reward": 35,
+      "winningCellIds": [
+        1,
+        3,
+        6,
+        7,
+        8,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "430"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        1,
+        11,
+        11,
+        2,
+        11,
+        11,
+        12,
+        6,
+        5
+      ],
+      "raw": 35,
+      "line": 0,
+      "reward": 35,
+      "winningCellIds": [
+        1,
+        3,
+        4,
+        6,
+        7,
+        8
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "430"
+    },
+    {
+      "mode": "base",
+      "board": [
+        5,
+        11,
+        13,
+        11,
+        5,
+        2,
+        11,
+        11,
+        6,
+        6
+      ],
+      "raw": 40,
+      "line": 0,
+      "reward": 40,
+      "winningCellIds": [
+        2,
+        3,
+        4,
+        7,
+        8
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "492"
+    },
+    {
+      "mode": "base",
+      "board": [
+        12,
+        11,
+        1,
+        4,
+        1,
+        6,
+        2,
+        2,
+        6,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        1,
+        11,
+        11,
+        4,
+        3,
+        11,
+        1,
+        11,
+        12,
+        11
+      ],
+      "raw": 35,
+      "line": 0,
+      "reward": 35,
+      "winningCellIds": [
+        2,
+        3,
+        6,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "430"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        11,
+        11,
+        14,
+        5,
+        6,
+        3,
+        2,
+        5,
+        6
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        1,
+        11,
+        11,
+        6,
+        12,
+        3,
+        11,
+        5,
+        11,
+        11
+      ],
+      "raw": 35,
+      "line": 0,
+      "reward": 35,
+      "winningCellIds": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "430"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        2,
+        1,
+        11,
+        11,
+        3,
+        11,
+        5,
+        2,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        1,
+        12,
+        3,
+        3,
+        4,
+        11,
+        3,
+        6,
+        1,
+        4
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        5,
+        12,
+        12,
+        11,
+        11,
+        5,
+        3,
+        11,
+        11,
+        11
+      ],
+      "raw": 45,
+      "line": 0,
+      "reward": 45,
+      "winningCellIds": [
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "553"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        4,
+        11,
+        11,
+        3,
+        1,
+        11,
+        4,
+        11,
+        11
+      ],
+      "raw": 30,
+      "line": 0,
+      "reward": 30,
+      "winningCellIds": [
+        1,
+        3,
+        4,
+        7,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "369"
+    },
+    {
+      "mode": "base",
+      "board": [
+        12,
+        11,
+        4,
+        4,
+        1,
+        11,
+        2,
+        4,
+        3,
+        3
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        4,
+        11,
+        12,
+        12,
+        3,
+        1,
+        2,
+        13,
+        2
+      ],
+      "raw": 50,
+      "line": 0,
+      "reward": 50,
+      "winningCellIds": [
+        1,
+        3,
+        4,
+        5,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "615"
+    },
+    {
+      "mode": "base",
+      "board": [
+        2,
+        11,
+        1,
+        11,
+        1,
+        4,
+        12,
+        11,
+        11,
+        2
+      ],
+      "raw": 30,
+      "line": 0,
+      "reward": 30,
+      "winningCellIds": [
+        2,
+        4,
+        7,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "369"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        11,
+        3,
+        12,
+        12,
+        3,
+        6,
+        5,
+        3,
+        6
+      ],
+      "raw": 5,
+      "line": 5,
+      "reward": 0,
+      "winningCellIds": [
+        3,
+        6,
+        9
+      ],
+      "wins": [
+        {
+          "line": 8,
+          "symbolId": 3,
+          "payout": 5,
+          "cellIds": [
+            3,
+            6,
+            9
+          ]
+        }
+      ],
+      "stake": 123,
+      "win": "61"
+    },
+    {
+      "mode": "base",
+      "board": [
+        2,
+        2,
+        12,
+        11,
+        6,
+        5,
+        11,
+        4,
+        11,
+        11
+      ],
+      "raw": 30,
+      "line": 0,
+      "reward": 30,
+      "winningCellIds": [
+        3,
+        4,
+        7,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "369"
+    },
+    {
+      "mode": "base",
+      "board": [
+        3,
+        11,
+        11,
+        12,
+        13,
+        1,
+        3,
+        2,
+        4,
+        11
+      ],
+      "raw": 45,
+      "line": 0,
+      "reward": 45,
+      "winningCellIds": [
+        2,
+        3,
+        4,
+        5,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "553"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        11,
+        11,
+        5,
+        12,
+        2,
+        12,
+        14,
+        11,
+        11
+      ],
+      "raw": 90,
+      "line": 0,
+      "reward": 90,
+      "winningCellIds": [
+        2,
+        3,
+        5,
+        7,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "1107"
+    },
+    {
+      "mode": "base",
+      "board": [
+        1,
+        5,
+        2,
+        11,
+        11,
+        2,
+        13,
+        4,
+        11,
+        5
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        6,
+        6,
+        4,
+        3,
+        5,
+        2,
+        3,
+        11,
+        2,
+        2
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        12,
+        4,
+        12,
+        4,
+        2,
+        11,
+        4,
+        11,
+        11,
+        2
+      ],
+      "raw": 35,
+      "line": 0,
+      "reward": 35,
+      "winningCellIds": [
+        1,
+        3,
+        6,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "430"
+    },
+    {
+      "mode": "base",
+      "board": [
+        6,
+        6,
+        4,
+        3,
+        11,
+        11,
+        6,
+        2,
+        4,
+        5
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        6,
+        6,
+        6,
+        2,
+        6,
+        12,
+        12,
+        5,
+        1,
+        5
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        11,
+        3,
+        2,
+        11,
+        2,
+        6,
+        7,
+        11,
+        11,
+        1
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        3,
+        3,
+        3,
+        2,
+        11,
+        3,
+        3,
+        3,
+        2,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "base",
+      "board": [
+        5,
+        6,
+        2,
+        11,
+        11,
+        12,
+        5,
+        11,
+        11,
+        2
+      ],
+      "raw": 30,
+      "line": 0,
+      "reward": 30,
+      "winningCellIds": [
+        4,
+        5,
+        6,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "369"
+    },
+    {
+      "mode": "base",
+      "board": [
+        4,
+        6,
+        1,
+        11,
+        2,
+        5,
+        1,
+        1,
+        7,
+        4
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        0,
+        11,
+        12,
+        13,
+        0,
+        11,
+        0,
+        0
+      ],
+      "raw": 45,
+      "line": 0,
+      "reward": 45,
+      "winningCellIds": [
+        1,
+        4,
+        5,
+        6,
+        8
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "553"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        13,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        13
+      ],
+      "raw": 75,
+      "line": 0,
+      "reward": 75,
+      "winningCellIds": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "922"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        11,
+        0,
+        0,
+        0,
+        0,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        0,
+        13,
+        0,
+        0,
+        11,
+        0,
+        12,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        0,
+        11,
+        12,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        11,
+        11,
+        11,
+        12,
+        0,
+        12
+      ],
+      "raw": 35,
+      "line": 0,
+      "reward": 35,
+      "winningCellIds": [
+        5,
+        6,
+        7,
+        8,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "430"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        14,
+        0,
+        0,
+        0,
+        13,
+        0,
+        0,
+        0,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        11,
+        0,
+        0,
+        12,
+        11,
+        0,
+        11,
+        12,
+        12
+      ],
+      "raw": 50,
+      "line": 0,
+      "reward": 50,
+      "winningCellIds": [
+        1,
+        2,
+        5,
+        6,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "615"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        11,
+        0,
+        12,
+        13,
+        12,
+        0,
+        11,
+        0
+      ],
+      "raw": 55,
+      "line": 0,
+      "reward": 55,
+      "winningCellIds": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "676"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        12,
+        11,
+        13,
+        0,
+        0,
+        0,
+        12,
+        12,
+        0
+      ],
+      "raw": 60,
+      "line": 0,
+      "reward": 60,
+      "winningCellIds": [
+        1,
+        2,
+        3,
+        4,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "738"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        12,
+        11,
+        0,
+        0,
+        11,
+        0,
+        0,
+        12,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        13,
+        0,
+        0,
+        11,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        13,
+        0,
+        0,
+        11,
+        0,
+        0,
+        0,
+        11,
+        11,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        11,
+        12,
+        11,
+        12,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        11,
+        11,
+        11,
+        12
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        0,
+        11,
+        13,
+        0,
+        11,
+        11,
+        12,
+        0
+      ],
+      "raw": 50,
+      "line": 0,
+      "reward": 50,
+      "winningCellIds": [
+        2,
+        4,
+        5,
+        7,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "615"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        11,
+        13,
+        0,
+        0,
+        12,
+        0,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        14,
+        0,
+        0,
+        0,
+        0,
+        11,
+        12,
+        11,
+        12,
+        0
+      ],
+      "raw": 80,
+      "line": 0,
+      "reward": 80,
+      "winningCellIds": [
+        1,
+        6,
+        7,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "984"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        12,
+        0,
+        12,
+        12,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        0,
+        13,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        0,
+        12,
+        0,
+        0,
+        11,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        14,
+        0,
+        0,
+        0,
+        13,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        0,
+        11,
+        0,
+        0,
+        12,
+        0,
+        13,
+        11
+      ],
+      "raw": 45,
+      "line": 0,
+      "reward": 45,
+      "winningCellIds": [
+        1,
+        4,
+        7,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "553"
+    },
+    {
+      "mode": "free",
+      "board": [
+        13,
+        0,
+        11,
+        0,
+        11,
+        11,
+        11,
+        0,
+        0,
+        0
+      ],
+      "raw": 40,
+      "line": 0,
+      "reward": 40,
+      "winningCellIds": [
+        1,
+        3,
+        5,
+        6,
+        7
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "492"
+    },
+    {
+      "mode": "free",
+      "board": [
+        12,
+        11,
+        0,
+        0,
+        11,
+        11,
+        0,
+        0,
+        12,
+        0
+      ],
+      "raw": 35,
+      "line": 0,
+      "reward": 35,
+      "winningCellIds": [
+        1,
+        2,
+        5,
+        6,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "430"
+    },
+    {
+      "mode": "free",
+      "board": [
+        12,
+        0,
+        0,
+        12,
+        0,
+        0,
+        0,
+        0,
+        0,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        11,
+        11,
+        12,
+        11,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        0,
+        0,
+        11,
+        11,
+        0,
+        0,
+        0,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        0,
+        0,
+        11,
+        0,
+        0,
+        13,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        11,
+        0,
+        0,
+        11,
+        12,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        12,
+        0,
+        13,
+        0,
+        11,
+        12,
+        11,
+        0,
+        0,
+        0
+      ],
+      "raw": 50,
+      "line": 0,
+      "reward": 50,
+      "winningCellIds": [
+        1,
+        3,
+        5,
+        6,
+        7
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "615"
+    },
+    {
+      "mode": "free",
+      "board": [
+        12,
+        11,
+        0,
+        11,
+        0,
+        0,
+        0,
+        14,
+        12,
+        0
+      ],
+      "raw": 80,
+      "line": 0,
+      "reward": 80,
+      "winningCellIds": [
+        1,
+        2,
+        4,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "984"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        0,
+        12,
+        0,
+        0,
+        12,
+        0,
+        0,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        0,
+        0,
+        0,
+        11,
+        0,
+        0,
+        13,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        11,
+        0,
+        0,
+        11,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        11,
+        11,
+        0,
+        13,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        0,
+        0,
+        0,
+        0,
+        11,
+        11,
+        11,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        11,
+        0,
+        0,
+        0,
+        0,
+        11,
+        12,
+        0,
+        12
+      ],
+      "raw": 35,
+      "line": 0,
+      "reward": 35,
+      "winningCellIds": [
+        1,
+        2,
+        7,
+        8,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "430"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        11,
+        11,
+        0,
+        13,
+        11,
+        11,
+        0
+      ],
+      "raw": 40,
+      "line": 0,
+      "reward": 40,
+      "winningCellIds": [
+        4,
+        5,
+        7,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "492"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        11,
+        0,
+        0,
+        0,
+        11,
+        0,
+        0,
+        0,
+        13
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        13,
+        0,
+        0,
+        11,
+        0,
+        11,
+        11,
+        0,
+        12
+      ],
+      "raw": 50,
+      "line": 0,
+      "reward": 50,
+      "winningCellIds": [
+        1,
+        2,
+        5,
+        7,
+        8,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "615"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        16,
+        0,
+        11,
+        11,
+        0,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        11,
+        0,
+        11,
+        12,
+        12,
+        0,
+        0,
+        11
+      ],
+      "raw": 40,
+      "line": 0,
+      "reward": 40,
+      "winningCellIds": [
+        1,
+        3,
+        5,
+        6,
+        7,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "492"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        0,
+        0,
+        11,
+        0,
+        0,
+        12,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        12,
+        11,
+        0,
+        0,
+        11,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        14,
+        11,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        0,
+        12,
+        11,
+        15,
+        12,
+        0,
+        0,
+        11
+      ],
+      "raw": 135,
+      "line": 0,
+      "reward": 135,
+      "winningCellIds": [
+        1,
+        4,
+        5,
+        6,
+        7,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "1660"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        11,
+        11,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        11,
+        0,
+        0,
+        12,
+        0,
+        0,
+        12
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        11,
+        0,
+        0,
+        0,
+        12,
+        11,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        13,
+        0,
+        0,
+        0,
+        0,
+        0,
+        11,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        11,
+        12,
+        0,
+        0,
+        12,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        11,
+        11,
+        0,
+        11,
+        11,
+        0,
+        0,
+        13
+      ],
+      "raw": 40,
+      "line": 0,
+      "reward": 40,
+      "winningCellIds": [
+        3,
+        4,
+        6,
+        7,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "492"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        0,
+        12,
+        0,
+        0,
+        11,
+        11,
+        12,
+        12
+      ],
+      "raw": 45,
+      "line": 0,
+      "reward": 45,
+      "winningCellIds": [
+        2,
+        4,
+        7,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "553"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        11,
+        0,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        12,
+        0,
+        13,
+        11,
+        11,
+        12,
+        11,
+        11,
+        0
+      ],
+      "raw": 60,
+      "line": 0,
+      "reward": 60,
+      "winningCellIds": [
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "738"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        11,
+        0,
+        11,
+        11,
+        11,
+        0,
+        0,
+        11,
+        0
+      ],
+      "raw": 30,
+      "line": 0,
+      "reward": 30,
+      "winningCellIds": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "369"
+    },
+    {
+      "mode": "free",
+      "board": [
+        12,
+        11,
+        0,
+        11,
+        12,
+        0,
+        11,
+        0,
+        0,
+        11
+      ],
+      "raw": 40,
+      "line": 0,
+      "reward": 40,
+      "winningCellIds": [
+        1,
+        2,
+        4,
+        5,
+        7,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "492"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        0,
+        11,
+        11,
+        0,
+        13,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        12,
+        13,
+        11,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        11,
+        0,
+        0,
+        0,
+        0,
+        0,
+        11,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        12,
+        0,
+        11,
+        11,
+        0,
+        11,
+        0,
+        0,
+        11,
+        0
+      ],
+      "raw": 30,
+      "line": 0,
+      "reward": 30,
+      "winningCellIds": [
+        1,
+        3,
+        4,
+        6,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "369"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        11,
+        0,
+        12,
+        0,
+        0,
+        0,
+        0,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        12,
+        0,
+        13,
+        0,
+        13,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        17,
+        0,
+        12,
+        11,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        11,
+        0,
+        11,
+        0,
+        0,
+        13,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        11,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        12,
+        0,
+        11,
+        0,
+        0,
+        11,
+        11,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        11,
+        0,
+        0,
+        12,
+        11,
+        11,
+        13,
+        0,
+        12
+      ],
+      "raw": 60,
+      "line": 0,
+      "reward": 60,
+      "winningCellIds": [
+        1,
+        2,
+        5,
+        6,
+        7,
+        8,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "738"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        13,
+        11,
+        0,
+        11,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        11,
+        0,
+        11,
+        0,
+        12,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        11,
+        0,
+        0,
+        11,
+        11,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        12,
+        0,
+        0,
+        0,
+        0,
+        0,
+        11,
+        11,
+        11,
+        11
+      ],
+      "raw": 30,
+      "line": 0,
+      "reward": 30,
+      "winningCellIds": [
+        1,
+        7,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "369"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        13,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        11,
+        11,
+        12,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        15,
+        12,
+        0,
+        0,
+        0,
+        0,
+        0,
+        11,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        11,
+        0,
+        11,
+        11,
+        11,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        11,
+        0,
+        12,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        11,
+        0,
+        11,
+        11,
+        0,
+        0,
+        13
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        13,
+        11,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        11,
+        11,
+        14,
+        0,
+        0,
+        11,
+        12,
+        0
+      ],
+      "raw": 80,
+      "line": 0,
+      "reward": 80,
+      "winningCellIds": [
+        2,
+        3,
+        4,
+        5,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "984"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        12,
+        11,
+        0,
+        13,
+        0,
+        12,
+        0,
+        12,
+        11
+      ],
+      "raw": 60,
+      "line": 0,
+      "reward": 60,
+      "winningCellIds": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "738"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        0,
+        11,
+        13,
+        0,
+        0,
+        11,
+        12,
+        12
+      ],
+      "raw": 55,
+      "line": 0,
+      "reward": 55,
+      "winningCellIds": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "676"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        0,
+        11,
+        12,
+        0,
+        0,
+        11,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        12,
+        11,
+        0,
+        0,
+        12,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        14,
+        11,
+        11,
+        0,
+        0,
+        11,
+        0,
+        0
+      ],
+      "raw": 70,
+      "line": 0,
+      "reward": 70,
+      "winningCellIds": [
+        2,
+        3,
+        4,
+        5,
+        8
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "861"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        12,
+        0,
+        11,
+        11,
+        0,
+        11,
+        11,
+        0,
+        11
+      ],
+      "raw": 35,
+      "line": 0,
+      "reward": 35,
+      "winningCellIds": [
+        2,
+        4,
+        5,
+        7,
+        8,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "430"
+    },
+    {
+      "mode": "free",
+      "board": [
+        14,
+        0,
+        0,
+        11,
+        0,
+        13,
+        11,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        11,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        0,
+        12,
+        0,
+        0,
+        0,
+        12,
+        0,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        0,
+        0,
+        0,
+        0,
+        11,
+        0,
+        14,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        11,
+        0,
+        0,
+        11,
+        12,
+        0,
+        0,
+        11,
+        13,
+        11
+      ],
+      "raw": 50,
+      "line": 0,
+      "reward": 50,
+      "winningCellIds": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "615"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        0,
+        0,
+        0,
+        0,
+        11,
+        12,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        11,
+        0,
+        0,
+        12,
+        0,
+        11,
+        0,
+        12
+      ],
+      "raw": 35,
+      "line": 0,
+      "reward": 35,
+      "winningCellIds": [
+        2,
+        3,
+        6,
+        8,
+        10
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "430"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        15,
+        15,
+        0,
+        11,
+        11,
+        11,
+        0
+      ],
+      "raw": 215,
+      "line": 0,
+      "reward": 215,
+      "winningCellIds": [
+        4,
+        5,
+        7,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "2644"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        11,
+        0,
+        0,
+        11,
+        11,
+        0,
+        0,
+        11,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        12,
+        0,
+        0,
+        0,
+        11,
+        11
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        12,
+        13,
+        0,
+        0,
+        0,
+        11,
+        11,
+        0,
+        0,
+        0
+      ],
+      "raw": 0,
+      "line": 0,
+      "reward": 0,
+      "winningCellIds": [],
+      "wins": [],
+      "stake": 123,
+      "win": "0"
+    },
+    {
+      "mode": "free",
+      "board": [
+        12,
+        12,
+        11,
+        0,
+        11,
+        0,
+        0,
+        12,
+        11,
+        0
+      ],
+      "raw": 45,
+      "line": 0,
+      "reward": 45,
+      "winningCellIds": [
+        1,
+        2,
+        3,
+        5,
+        8,
+        9
+      ],
+      "wins": [],
+      "stake": 123,
+      "win": "553"
+    }
+  ],
+  "skeletonCases": [
+    {
+      "mode": "base",
+      "skeleton": {
+        "cells": [
+          0,
+          6,
+          3,
+          6,
+          7,
+          6
+        ]
+      },
+      "valid": true,
+      "key": "100",
+      "board": [
+        6,
+        1,
+        1,
+        6,
+        1,
+        1,
+        1,
+        6,
+        2,
+        2
+      ]
+    },
+    {
+      "mode": "base",
+      "skeleton": {
+        "cells": [
+          1,
+          7,
+          4,
+          7,
+          0,
+          6,
+          7,
+          6,
+          5,
+          6,
+          9,
+          6
+        ]
+      },
+      "valid": false
+    },
+    {
+      "mode": "base",
+      "skeleton": {
+        "cells": [
+          0,
+          6,
+          3,
+          6,
+          7,
+          6,
+          9,
+          2
+        ]
+      },
+      "valid": false
+    },
+    {
+      "mode": "base",
+      "skeleton": {
+        "cells": [
+          0,
+          6,
+          0,
+          6
+        ]
+      },
+      "valid": false
+    },
+    {
+      "mode": "free",
+      "skeleton": {
+        "cells": [
+          0,
+          11,
+          1,
+          11,
+          2,
+          11,
+          3,
+          11,
+          4,
+          11
+        ]
+      },
+      "valid": true,
+      "key": "25",
+      "board": [
+        11,
+        11,
+        11,
+        11,
+        11,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "mode": "free",
+      "skeleton": {
+        "cells": [
+          0,
+          11,
+          1,
+          11
+        ]
+      },
+      "valid": false
+    },
+    {
+      "mode": "free",
+      "skeleton": {
+        "cells": [
+          0,
+          6,
+          3,
+          6,
+          7,
+          6
+        ]
+      },
+      "valid": false
+    }
+  ]
+}

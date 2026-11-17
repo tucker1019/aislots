@@ -1,5 +1,20 @@
 [
   {
+    "gameId": "AG10",
+    "country": "ID",
+    "currency": "IDR",
+    "amountScale": 2,
+    "lineCount": 10,
+    "betLevel": 10,
+    "amounts": [
+      1000,
+      10000,
+      100000,
+      500000
+    ],
+    "default": 1000
+  },
+  {
     "gameId": "AG9",
     "country": "ID",
     "currency": "IDR",

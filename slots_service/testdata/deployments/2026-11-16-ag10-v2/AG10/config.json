@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "ruleType": "fortune_rabbit_v1",
+  "parameters": {
+    "lineCount": 10,
+    "baseSpinWinProbability": 0.29,
+    "freeSpinWinProbability": 0.34,
+    "freeSpinTriggerProbability": 0.006,
+    "featureSpins": 8,
+    "maxWinMultiplier": 5000
+  },
+  "simulationOptions": {
+    "paidSpins": 10000000,
+    "seed": 1022
+  }
+}
