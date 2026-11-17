@@ -1,3 +1,4 @@
+import { useGameCardTransition } from '../features/game/useGameCardTransition';
 import { useGameDocking } from '../features/game/useGameDocking';
 import type { RefObject } from 'react';
 import { gameDisplay, type GameId } from '../app/games';
@@ -14,6 +15,7 @@ import { useGameExpansion } from '../features/game/useGameExpansion';
 import { GameInsights } from '../features/game/GameInsights';
 export function GamePage({onBack,onMinimize,minimized=false,gameId='AG1',dockRef}:{onBack:()=>void;onMinimize?:()=>void;minimized?:boolean;gameId?:GameId;dockRef?:RefObject<HTMLElement | null>}){
  const shellRef=useGameDocking(minimized,dockRef);
+ const closeToCard=useGameCardTransition(gameId,shellRef);
  const catalog=useLobbyGames();
  const entry=catalog.data?.find(game=>game.id===gameId);
  const allowed=entry?.enabled===true;
@@ -41,11 +43,12 @@ export function GamePage({onBack,onMinimize,minimized=false,gameId='AG1',dockRef
     forgetGameEntry(gameId);setUrl(undefined);void reopen();return;
    }
    if(data.type!=='aislots:exit')return;
-   forgetGameEntry(gameId);void client.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'all'});onBack();
+   const finish=()=>{forgetGameEntry(gameId);void client.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'all'});onBack();};
+   if(minimized)finish();else closeToCard(finish);
   };
   window.addEventListener('message',receive);return()=>window.removeEventListener('message',receive);
- },[url,allowed,gameId,client,onBack,reopen]);
- function close(){forgetGameEntry(gameId);void client.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'all'});onBack();}
+ },[url,allowed,gameId,client,onBack,reopen,minimized,closeToCard]);
+ function close(){closeToCard(()=>{forgetGameEntry(gameId);void client.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'all'});onBack();});}
  const content=<section ref={shellRef} className={`game-detail-shell${expanded?' game-detail-expanded':''}${transitioning?' game-detail-transitioning':''}${minimized?' game-detail-minimized':''}`} inert={minimized} aria-hidden={minimized} role="dialog" aria-modal={!minimized} aria-label={t('gamePreview.dialog')}>
   {!expanded&&<header className="game-detail-toolbar"><button className="game-toolbar-icon" type="button" onClick={close} aria-label={t('copy.backToLobby')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><span>{t('gamePreview.details')}</span><button className="game-toolbar-icon" type="button" disabled={transitioning} onClick={onMinimize} aria-label={t('gamePreview.minimize')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 9 7 7 7-7"/></svg></button></header>}
   {expanded&&<FloatingGameMenu open={menuOpen} onToggle={()=>setMenuOpen(open=>!open)} onExit={close}

@@ -40,9 +40,11 @@ export function useLobbyRoute() {
 
 export function navigateLobby(next: LobbyRoute, options?: { orderId?: string; gameId?: GameId }) {
   if(next !== 'home'&&!useSessionStore.getState().session){useAuthStore.getState().show('login',()=>navigateLobby(next,options));return;}
+  const previousView = routeFor(window.location.pathname);
   const path = next === 'password' ? '/security/password' : next === 'security' ? '/security' : next === 'loss-return-rules' ? '/earn/loss-return/rules' : next === 'profile' ? '/profile' : next === 'withdrawal' ? '/withdrawal'+(options?.orderId?'?orderId='+encodeURIComponent(options.orderId):'') : next === 'wallet-management' ? '/wallet-management' : next === 'agent' ? '/agent' : next === 'invite-friends' ? '/invite/friends' : next === 'invite' ? '/invite' : next === 'personal-report' ? '/personal-report' : next === 'earn-rules' ? '/earn/rules' : next === 'earn' ? '/earn' : next === 'vip-details' ? '/vip/details' : next === 'vip' ? '/vip' : next === 'wallet-ledger' ? '/wallet-ledger' + (options?.orderId ? '?orderId=' + encodeURIComponent(options.orderId) : '') : next === 'benefits' ? '/benefits' : next === 'bet-records' ? '/bet-records' : next === 'records' ? '/records' + (options?.orderId ? '?orderId=' + encodeURIComponent(options.orderId) : '') : next === 'game' ? '/game/' + (options?.gameId ?? 'AG1') : next === 'my' ? '/my' : next === 'deposit' ? '/deposit' : '/';
   if (window.location.pathname + window.location.search !== path) {
     pushLobbyLocation(path, { lobbyFrom: readLocation() });
   }
-  document.getElementById('root')?.scrollTo({ top: 0 });
+  if (next !== 'game' && !(next === 'home' && previousView === 'game'))
+    document.getElementById('root')?.scrollTo({ top: 0 });
 }
