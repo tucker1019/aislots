@@ -70,3 +70,7 @@
 .agent-page .agent-pagination button{font-size:12px;padding:7px 13px;border:1px solid var(--theme-border-blue,#e3eaf4);background:var(--theme-surface,#fff)}
 .agent-page .agent-note{font-size:11px;color:var(--theme-muted,#89919e);line-height:1.7;margin:12px 2px}
 .agent-page .agent-card>p{font-size:13px;line-height:1.8;color:var(--theme-muted,#6e6e73)}
+
+:root[data-theme="dark"] .agent-note { color: var(--muted); font-size: 14px; line-height: 1.85; }
+:root[data-theme="dark"] .agent-table th { color: var(--ink); font-size: 13px; }
+:root[data-theme="dark"] .agent-table td { color: var(--ink); }

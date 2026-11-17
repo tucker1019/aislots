@@ -8,13 +8,14 @@ import { forgetGameEntry,launchGame,readGameEntry,rememberGameEntry } from '../s
 import { FloatingGameMenu } from '../features/game/FloatingGameMenu';
 import { useLobbyGames } from '../features/home/useLobbyGames';
 import { NetworkError } from '../components/feedback/NetworkError';
+import { useGameExpansion } from '../features/game/useGameExpansion';
 import { GameInsights } from '../features/game/GameInsights';
-export function GamePage({onBack,gameId='AG1'}:{onBack:()=>void;gameId?:GameId}){
+export function GamePage({onBack,onMinimize,minimized=false,gameId='AG1'}:{onBack:()=>void;onMinimize?:()=>void;minimized?:boolean;gameId?:GameId}){
  const catalog=useLobbyGames();
  const entry=catalog.data?.find(game=>game.id===gameId);
  const allowed=entry?.enabled===true;
  const game=gameDisplay(gameId,entry);
- const [url,setUrl]=useState(()=>readGameEntry(gameId));const [preparing,setPreparing]=useState(false);const [expanded,setExpanded]=useState(false);const [error,setError]=useState('');
+ const [url,setUrl]=useState(()=>readGameEntry(gameId));const [preparing,setPreparing]=useState(false);const {expanded,transitioning,surfaceRef,changeExpanded}=useGameExpansion();const [error,setError]=useState('');
  const [menuOpen,setMenuOpen]=useState(false);
  const frameRef=useRef<HTMLIFrameElement>(null);
  const busy=useRef(false);const alive=useRef(true);const started=useRef(false);const client=useQueryClient();
@@ -25,7 +26,7 @@ export function GamePage({onBack,gameId='AG1'}:{onBack:()=>void;gameId?:GameId})
   finally{busy.current=false;if(alive.current)setPreparing(false);}
  },[gameId,allowed]);
  useEffect(()=>{alive.current=true;void client.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'none'});if(allowed&&!url&&!started.current){started.current=true;void reopen();}return()=>{alive.current=false;};},[client,reopen,url,allowed]);
- useEffect(()=>{const escape=(event:KeyboardEvent)=>{if(event.key==='Escape'){if(menuOpen)setMenuOpen(false);else setExpanded(false);}};window.addEventListener('keydown',escape);return()=>window.removeEventListener('keydown',escape);},[menuOpen]);
+ useEffect(()=>{const escape=(event:KeyboardEvent)=>{if(!minimized&&event.key==='Escape'){if(menuOpen)setMenuOpen(false);else changeExpanded(false);}};window.addEventListener('keydown',escape);return()=>window.removeEventListener('keydown',escape);},[menuOpen,changeExpanded,minimized]);
  useEffect(()=>{
   if(!url||!allowed)return;
   const origin=new URL(url,window.location.href).origin;
@@ -38,19 +39,19 @@ export function GamePage({onBack,gameId='AG1'}:{onBack:()=>void;gameId?:GameId})
   window.addEventListener('message',receive);return()=>window.removeEventListener('message',receive);
  },[url,allowed,gameId,client,onBack]);
  function close(){forgetGameEntry(gameId);void client.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'all'});onBack();}
- const content=<section className={`game-detail-shell${expanded?' game-detail-expanded':''}`} role="dialog" aria-modal="true" aria-label={t('gamePreview.dialog')}>
-  {!expanded&&<header className="game-detail-toolbar"><button type="button" onClick={close}>{t('copy.backToLobby')}</button><span>{t('gamePreview.details')}</span><div><AsyncButton loading={preparing} type="button" disabled={preparing||!allowed} onClick={()=>void reopen()}>{t('copy.reEnter')}</AsyncButton></div></header>}
+ const content=<section className={`game-detail-shell${expanded?' game-detail-expanded':''}${transitioning?' game-detail-transitioning':''}${minimized?' game-detail-minimized':''}`} inert={minimized} aria-hidden={minimized} role="dialog" aria-modal={!minimized} aria-label={t('gamePreview.dialog')}>
+  {!expanded&&<header className="game-detail-toolbar"><button className="game-toolbar-icon" type="button" onClick={close} aria-label={t('copy.backToLobby')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><span>{t('gamePreview.details')}</span><button className="game-toolbar-icon" type="button" disabled={transitioning} onClick={onMinimize} aria-label={t('gamePreview.minimize')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 9 7 7 7-7"/></svg></button></header>}
   {expanded&&<FloatingGameMenu open={menuOpen} onToggle={()=>setMenuOpen(open=>!open)} onExit={close}
-   onShrink={()=>{setMenuOpen(false);setExpanded(false);}}/>}
+   onShrink={()=>{setMenuOpen(false);changeExpanded(false);}}/>}
   <div className="game-detail-content">
    <div className="game-detail-identity"><img src={game.cover} alt={t('gamePreview.cover')}/><div><h1>{game.title}</h1><span className="game-provider-label">{game.provider}</span><p>{t('gamePreview.tagline')}</p></div></div>
    {allowed&&<GameInsights part="rtp" gameId={gameId}/>}
-   <div className="game-preview"><div className="game-preview-frame">
+   <div className="game-preview"><div className="game-preview-frame" ref={surfaceRef}>
     {allowed&&url&&<iframe ref={frameRef} key={url} src={url} title={game.frameTitle} allow="autoplay; fullscreen; clipboard-write" allowFullScreen referrerPolicy="no-referrer" onError={()=>{setError(t('copy.gameFailedToLoadPleaseReEnter'));}}/>}
     {catalog.isError&&<NetworkError onRetry={()=>void catalog.refetch()} disabled={catalog.isFetching}/>}
     {catalog.isSuccess&&!allowed&&<p>{t('copy.comingSoon')}</p>}
     {error&&<div className="game-preview-error" role="alert"><p>{error}</p><AsyncButton loading={preparing} type="button" disabled={preparing||!allowed} onClick={()=>void reopen()}>{t('gamePreview.retry')}</AsyncButton></div>}
-   </div><div className="game-preview-actions"><span>{t('gamePreview.preview')}</span><button type="button" disabled={!allowed||!url||preparing} onClick={()=>setExpanded(true)}>{t('gamePreview.expand')}</button></div></div>
+   </div><div className="game-preview-actions"><span>{t('gamePreview.preview')}</span><button type="button" disabled={!allowed||!url||preparing} onClick={()=>changeExpanded(true)}>{t('gamePreview.expand')}</button></div></div>
    {allowed&&<GameInsights part="ranking" gameId={gameId}/>}
   </div>
  </section>;

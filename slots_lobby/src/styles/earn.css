@@ -27,3 +27,8 @@
 .agent-commission-card small { display: block; margin-top: 3px; font-size: 10px; color: var(--muted); }
 
 .loss-return-card { margin-top: 14px; }
+
+:root[data-theme="dark"] .rebate-preview th,
+:root[data-theme="dark"] .rebate-rate-table thead th { font-size: 12px; font-weight: 500; }
+:root[data-theme="dark"] .rebate-platforms span { color: var(--muted); font-size: 13px; }
+:root[data-theme="dark"] .rebate-rule-description ol { font-size: 13px; }

@@ -94,3 +94,8 @@
 :root[data-theme="dark"] .my-account :is(.account-actions, .account-help) button:hover {
   background: #ffffff07;
 }
+
+/* Small service labels must remain legible against dark panels. */
+:root[data-theme="dark"] .account-section-heading > span { font-size: 12px; line-height: 1.5; }
+:root[data-theme="dark"] .account-actions button { font-size: 12px; line-height: 1.5; }
+:root[data-theme="dark"] .account-caption { font-size: 13px; }

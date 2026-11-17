@@ -26,3 +26,9 @@
 .invite-chest.is-claimable:not(:disabled) .invite-chest-symbol > img { animation: invite-chest-breathe 1.8s ease-in-out infinite; }
 @keyframes invite-chest-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
 @media (prefers-reduced-motion: reduce) { .invite-chest.is-claimable:not(:disabled) .invite-chest-symbol > img { animation: none; } }
+
+:root[data-theme="dark"] .invite-chest span,
+:root[data-theme="dark"] .invite-chest strong { font-size: 12px; line-height: 1.4; }
+:root[data-theme="dark"] .invite-chest { color: var(--muted); }
+:root[data-theme="dark"] .invite-chest.is-claimable { color: var(--theme-gold-text); }
+:root[data-theme="dark"] .invite-chest.is-claimed { color: var(--theme-green-text); }
