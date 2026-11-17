@@ -17,8 +17,8 @@
 .records-page-header { background: #f7faff; border-bottom-color: #ccd8e8; }
 :root[data-theme="dark"] .records-page-top { box-shadow: 0 3px 9px #0004; }
 :root[data-theme="dark"] .records-page-header {
-  background: #282b2e;
-  border-bottom-color: #51565a;
+  background: var(--theme-surface);
+  border-bottom-color: var(--theme-border);
 }
 :root[data-theme="dark"] .records-page-header > button { color: var(--ink); }
 :root[data-theme="dark"] .records-page-header .header-balance-refresh {

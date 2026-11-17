@@ -1,3 +1,20 @@
+/* Nunito covers Latin and digits; Huninn supplies matching rounded Chinese. */
+@font-face {
+  font-family: "Nunito Lobby";
+  src: url("/fonts/nunito-variable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Huninn Lobby";
+  src: url("/fonts/huninn.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 @font-face {
   font-family: "Noto Sans TC Lobby";
   src: url("/fonts/noto-sans-tc-lobby.woff2") format("woff2");
@@ -7,13 +24,14 @@
 }
 
 :root {
-  --lobby-font: "Noto Sans TC Lobby", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --lobby-font: "Nunito Lobby", "Huninn Lobby", "Noto Sans TC Lobby", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
   --weight-strong: 700;
   --weight-key: 800;
   font-family: var(--lobby-font);
   color: var(--theme-ink,#1d1d1f);
   background: var(--theme-surface,#fff);
-  font-synthesis: none;
+  /* Huninn has one weight; synthesize emphasis while Nunito uses real weights. */
+  font-synthesis: weight;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   --ink: #1d1d1f;

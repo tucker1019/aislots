@@ -35,3 +35,5 @@ import './styles/agent.css';
 import './styles/design-viewport.css';
 
 import './styles/theme.css';
+
+import './styles/arcade.css';

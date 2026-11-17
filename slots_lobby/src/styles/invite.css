@@ -45,14 +45,14 @@
 .earn-page .invite-chest > span:not(.invite-chest-symbol) { font-size: 11px; }
 
 :root[data-theme="dark"] .earn-page .earn-invite {
-  background: #20242a;
-  border: 1px solid #4d5967;
+  background: var(--theme-panel);
+  border: 1px solid var(--theme-border);
   box-shadow: 0 6px 18px #0002;
   margin-bottom: 16px;
 }
 :root[data-theme="dark"] .earn-page .earn-invite-heading { background: transparent; }
 :root[data-theme="dark"] .earn-page .earn-invite-summary,
-:root[data-theme="dark"] .earn-page .earn-invite .invite-link { border-bottom-color: #36404b; }
+:root[data-theme="dark"] .earn-page .earn-invite .invite-link { border-bottom-color: var(--theme-border); }
 
 :root[data-theme="dark"] .earn-page .invite-chest:not(.is-claimed):not(.is-claimable) { color: var(--ink); }
 
@@ -61,9 +61,9 @@
 .earn-page .earn-invite-heading button { font-size: 11px; }
 .earn-page .earn-invite-summary { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 8px; padding: 3px 16px 12px; border-bottom: 0; font-size: 11px; line-height: 1.6; }
 .earn-page .earn-invite-summary button { padding: 4px 0; font-size: 11px; }
-.earn-page .earn-invite .invite-link { margin: 0 12px 10px; padding: 8px 10px; border: 1px solid #3c4652; border-radius: 8px; background: #171b20; }
+.earn-page .earn-invite .invite-link { margin: 0 12px 10px; padding: 8px 10px; border: 1px solid var(--theme-border, #dadde3); border-radius: 8px; background: var(--theme-surface, #fff); }
 .earn-page .invite-link label { font-size: 11px; }
 .earn-page .invite-link input { font-size: 11px; }
-.earn-page .invite-link button { padding: 5px 9px; border-color: #465364; }
+.earn-page .invite-link button { padding: 5px 9px; border-color: var(--theme-border, #dadde3); }
 .earn-page .invite-chest-scroll { padding-inline: 10px; }
 .earn-page .invite-chest-grid { row-gap: 8px; }

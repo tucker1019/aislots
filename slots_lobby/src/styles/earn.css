@@ -53,14 +53,14 @@
 
 /* Separate sections from the canvas without introducing more accent colors. */
 :root[data-theme="dark"] .earn-page .rebate-card {
-  background: #20242a;
-  border: 1px solid #4d5967;
+  background: var(--theme-panel);
+  border: 1px solid var(--theme-border);
   box-shadow: 0 6px 18px #0002;
   margin-bottom: 16px;
 }
 :root[data-theme="dark"] .earn-page .rebate-card > header {
   background: transparent;
-  border-bottom-color: #36404b;
+  border-bottom-color: var(--theme-border);
 }
 
 .earn-page .rebate-card { border-radius: 16px; padding: 0 16px 14px; }
@@ -68,8 +68,8 @@
 .earn-page .rebate-card header button { font-size: 11px; }
 .earn-page .rebate-claim-row { padding: 14px 0 16px; }
 .earn-page .rebate-claim-row > span { gap: 5px; }
-:root[data-theme="dark"] .earn-page .rebate-claim-row > button:disabled { box-shadow: none; border: 1px solid #4d5967; background: #30363f; color: #c4ccd6; }
-.earn-page .rebate-platforms > div { background: #ffffff06; border: 1px solid #ffffff0c; }
-.earn-page .rebate-preview { border-color: #3c4652; border-radius: 10px; }
-.earn-page .rebate-preview th { background: #ffffff03; font-size: 11px; padding: 9px 4px; }
-.earn-page .rebate-preview td { background: #171b20; padding: 11px 4px; }
+:root[data-theme="dark"] .earn-page .rebate-claim-row > button:disabled { box-shadow: none; border: 1px solid var(--theme-border); background: var(--theme-disabled); color: var(--theme-disabled-ink); }
+.earn-page .rebate-platforms > div { background: var(--theme-soft, #f5f5f7); border: 1px solid var(--theme-border, #dadde3); }
+.earn-page .rebate-preview { border-color: var(--theme-border, #dadde3); border-radius: 10px; }
+.earn-page .rebate-preview th { background: var(--theme-soft, #f5f5f7); font-size: 11px; padding: 9px 4px; }
+.earn-page .rebate-preview td { background: var(--theme-surface, #fff); padding: 11px 4px; }

@@ -13,45 +13,45 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
   color: var(--theme-ink);
-  background: #0e0e10;
-  --theme-canvas: #141415;
-  --theme-panel: #232428;
-  --ink: #f5f7fa;
-  --muted: #dce1e8;
-  --blue: #81b8ff;
-  --paper: #2e3035;
-  --line: #3a3c42;
-  --theme-surface: #1b1c1f;
-  --theme-soft: #2e3035;
-  --theme-disabled: #353941;
-  --theme-disabled-border: #757e8c;
-  --theme-disabled-ink: #c0c7d1;
-  --theme-border: #3a3c42;
-  --theme-border-blue: #3b506a;
-  --theme-blue-tint: #202e40;
-  --theme-violet-tint: #31263f;
-  --theme-green-tint: #19382a;
-  --theme-gold-tint: #40341f;
+  background: #160b29;
+  --theme-canvas: #21103d;
+  --theme-panel: #38205d;
+  --ink: #fff7ff;
+  --muted: #d8c8ed;
+  --blue: #c7adff;
+  --paper: #45296d;
+  --line: #624383;
+  --theme-surface: #2c174b;
+  --theme-soft: #45296d;
+  --theme-disabled: #443853;
+  --theme-disabled-border: #8d7b9f;
+  --theme-disabled-ink: #d5cbdc;
+  --theme-border: #624383;
+  --theme-border-blue: #79619c;
+  --theme-blue-tint: #342451;
+  --theme-violet-tint: #422466;
+  --theme-green-tint: #243d38;
+  --theme-gold-tint: #4c3726;
   --theme-red-tint: #42282e;
   --theme-ink: var(--ink);
   --theme-muted: var(--muted);
   --theme-blue-text: var(--blue);
-  --theme-violet-text: #cbb0f2;
+  --theme-violet-text: #dbc0ff;
   --theme-green-text: #79e0ab;
-  --theme-gold-text: #f2c477;
+  --theme-gold-text: #ffd15c;
   --theme-red-text: #ff9da8;
-  --theme-action: #00b24b;
-  --theme-action-hover: #25c565;
-  --theme-on-action: #071d10;
-  --theme-active: #69e398;
-  --theme-active-tint: #19382a;
-  --theme-accent: #69e398;
-  --theme-glass: #1b1c1f;
+  --theme-action: #9655ff;
+  --theme-action-hover: #a970ff;
+  --theme-on-action: #ffffff;
+  --theme-active: #e1c3ff;
+  --theme-active-tint: #4d2b76;
+  --theme-accent: #e1c3ff;
+  --theme-glass: #2c174b;
 }
 
-:root[data-theme="dark"] body { background: #0e0e10; }
+:root[data-theme="dark"] body { background: #160b29; }
 :root[data-theme="dark"] #root { background: var(--theme-canvas); }
-:root[data-theme="dark"] ::selection { background: #285939; color: var(--ink); }
+:root[data-theme="dark"] ::selection { background: #7545ae; color: var(--ink); }
 
 #lobby-overlays .ant-message-notice {
   max-width: calc(100% - 24px);
