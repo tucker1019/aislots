@@ -26,6 +26,7 @@ func main() {
 	}
 }
 func run() error {
+	enableAG9 := flag.Bool("enable-ag9", false, "enable AG9 using the release URL and hide G1021")
 	apply := flag.Bool("apply", false, "save and publish the merged catalog")
 	hideFortuneTigerPlaceholder := flag.Bool("hide-fortune-tiger-placeholder", false, "hide G1017 when launching AG4")
 	hideFortuneOxPlaceholder := flag.Bool("hide-fortune-ox-placeholder", false, "hide G1023 when launching AG7")
@@ -58,7 +59,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	if *enableReleaseGames || *hideFortuneTigerPlaceholder || *hideFortuneOxPlaceholder {
+	if *enableReleaseGames || *enableAG9 || *hideFortuneTigerPlaceholder || *hideFortuneOxPlaceholder {
 		var doc map[string]json.RawMessage
 		var games map[string]map[string]json.RawMessage
 		if err = json.Unmarshal(next, &doc); err != nil {
@@ -70,6 +71,29 @@ func run() error {
 		if *enableReleaseGames {
 			if err = activateReleaseGames(games, seed); err != nil {
 				return err
+			}
+		}
+		if *enableAG9 {
+			var release struct {
+				Games map[string]map[string]json.RawMessage
+			}
+			if err = json.Unmarshal(seed, &release); err != nil {
+				return err
+			}
+			entry := games["AG9"]
+			if entry == nil {
+				return fmt.Errorf("缺少发布游戏 AG9")
+			}
+			for _, field := range []string{"url", "apiUrl"} {
+				var value string
+				if err = json.Unmarshal(release.Games["AG9"][field], &value); err != nil || value == "" {
+					return fmt.Errorf("AG9 缺少发布地址 %s", field)
+				}
+				entry[field] = release.Games["AG9"][field]
+			}
+			entry["enabled"], entry["visible"] = json.RawMessage("true"), json.RawMessage("true")
+			if old := games["G1021"]; old != nil {
+				old["visible"] = json.RawMessage("false")
 			}
 		}
 		for _, migration := range []struct {
@@ -131,6 +155,9 @@ func run() error {
 	}
 	if *enableReleaseGames {
 		reason = "发布 AG1 至 AG8 并隐藏同名旧入口"
+	}
+	if *enableAG9 {
+		reason = "发布 AG9 Fortune Leopard 并隐藏旧 G1021 入口"
 	}
 	if err = store.Draft(ctx, "games", row.Version, next, actor, reason); err != nil {
 		return err
