@@ -25,7 +25,7 @@
 ## 3. 接大厅和 Go 机台
 
 - 大厅 `/api/game/launch` 签发 `launchTicket`，客户端用票据、`exchangeId` 和 `gameId` 调机台 `POST /api/v1/login`。兑换成功后把游戏 token 保存在当前标签页的 `sessionStorage`（按 API 地址和 gameId 分隔），清掉 URL 中的票据。兑换重试复用 `exchangeId`；会话过期按项目流程返回大厅。保留当前大厅嵌入的退出消息和回放通信。
-- 初始化读 `bets`、`state`。投注档位、线数、最大 `betLevel` 走配置；按 `bet × betLevel × lineCount` 计算总注。候选总注去重，重复时取最低 `betLevel`。服务端按整数分记账，界面统一按 `amountScale` 格式化（两位时除以 100）；字段类型以接口协议为准。
+- 初始化读 `bets`、`state`。投注档位、线数、最大 `betLevel` 走配置；基础总注按 `bet × betLevel × lineCount` 计算，特殊投注模式再按该游戏协议处理，例如 AG8 五倍投注。候选总注去重，重复时取最低 `betLevel`。服务端按整数分记账，展示先按 `amountScale` 换算，再遵守下文的印尼金额格式；字段类型以接口协议为准。
 - 金额不足时在客户端直接提示，转轴不启动，也不请求 `spin`。正常投注先起转，再等服务端返回当前结果才停轴。首次请求号来自 `state`，成功后使用 `nextRequestId`；超时重试复用原请求号和原下注参数，避免重复扣款、派奖或推进。
 - 每个玩法按 `nextAction` 推进，不能把消除步骤误当成新一轮旋转。**AG4 重转是具体实例**：首次 `spin` 命中重转就返回第一轮真实结果，不额外插入空盘；后续每轮先起转，再请求，收到当前盘面才停轴。首轮实际无新增也可能空盘结束。整局扣一次，末轮派奖；实玩不提前拉整局结果。
 - 服务端是盘面、中奖和结算的唯一来源。按该游戏规则展示预览格、装饰格、锁定与新增数据；AG1～AG3 的底部格子按 [帧一致性规范](../.agents/skills/game-frame-consistency/SKILL.md) 保存与恢复，不套到 AG4 的 3×3 盘面上。数值、盘面库、规则版本和大厅入口要与新 `gameId` 独立配套，详见 [机台协议](../slots_service/docs/client-api.md) 和 [大厅接入](../lobby_service/docs/game-integration.md)。
@@ -63,7 +63,7 @@
 - AG1～AG9 的客户端金额展示使用印尼千位分隔、不显示小数、不加 `Rp`，例如 `18.030`。只在展示时向零截去小数；接口仍传原始整数分，不能用显示字符串作为下注金额或结算依据。
 - 余额、投注、派彩、大奖计数、历史和回放均使用同一口径；单线投注等分数金额也显示整数。RTP、中奖倍率、符号赔率和费率保留必要精度，不按金额截断。
 - 历史大金额使用 BigInt 计算，避免先转 Number 丢失整数精度。兼容旧代码中仅读取显示金额的动画时，千位点号必须按印尼格式移除，不得当作小数点。
-- 可运行 `node --test client/tests/indonesian-display.test.cjs` 检查现有各机台展示契约。当前仓库客户端覆盖 AG1～AG8，AG9 接入客户端时必须遵守同一规则。
+- 可运行 `node --test client/tests/indonesian-display.test.cjs` 检查现有各机台展示契约。当前仓库客户端覆盖 AG1～AG9；新增客户端继续遵守同一规则。AG10 已有独立服务端与数值配置，当前尚未纳入大厅接入配置及测试部署脚本。
 
 ## Web 管线缓存
 
