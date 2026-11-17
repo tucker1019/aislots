@@ -1,7 +1,7 @@
 import { forgetGameEntry } from '../services/game-entry';
 import { useQueryClient } from '@tanstack/react-query';
 import {SecurityPage} from './SecurityPage';
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import type { GameId } from '../app/games';
 import { MinimizedGameBar } from '../features/game/MinimizedGameBar';
 import {useAuthStore} from '../stores/auth';
@@ -35,6 +35,7 @@ import { HomeContent } from '../features/home/HomeContent';
 export function LobbyPage() {
   useLanguageStore(state=>state.locale);
   const queryClient=useQueryClient();
+  const gameDockRef=useRef<HTMLElement>(null);
   const { view:requestedView, navigate, orderId, gameId } = useLobbyRoute();
   const session=useSessionStore(state=>state.session);
   const restricted=!session&&requestedView !== 'home';
@@ -55,7 +56,7 @@ export function LobbyPage() {
       {view === 'security'||view === 'password'?<SecurityPage password={view==='password'} onSignedOut={changed=>{useSessionStore.getState().clearSession();navigate('home');void toast.success(changed?t('security.changed'):t('security.loggedOut'));if(changed)useAuthStore.getState().show('login');}}/>:view === 'loss-return-rules' ? <LossReturnRulesPage onBack={() => navigate('earn')} /> : view === 'profile' ? <ProfilePage onBack={() => navigate('my')}/> : view === 'withdrawal' ? <WithdrawalPage orderId={orderId} onBack={() => navigate('my')}/> : view === 'wallet-management' ? <WalletManagementPage onBack={() => navigate('my')} /> : view === 'agent' ? <AgentPage onBack={() => navigate('my')} /> : view === 'invite-friends' ? <InviteFriendsPage onBack={() => navigate('earn')} /> : view === 'invite' ? <InvitePage onBack={() => navigate('my')} /> : view === 'personal-report' ? <PersonalReportPage onBack={() => navigate('my')} /> : view === 'earn-rules' ? <RebateRulesPage onBack={() => navigate('earn')} /> : view === 'earn' ? <EarnPage /> : view === 'vip' || view === 'vip-details' ? <VipPage tables={view === 'vip-details'} onBack={() => navigate(view === 'vip-details' ? 'vip' : 'benefits')} onTables={() => navigate('vip-details')} /> : view === 'wallet-ledger' ? <WalletLedgerPage id={orderId} onBack={() => navigate('my')} /> : view === 'benefits' ? <BenefitsPage onBack={() => navigate('my')} onComingSoon={comingSoon} onVip={() => navigate('vip')} /> : view === 'bet-records' ? <BetRecordsPage onBack={() => navigate('my')} /> : view === 'records' ? <CashRecordsPage orderId={orderId} onBack={() => navigate('my')} onComingSoon={comingSoon} /> : view === 'deposit' ? <DepositPage /> : view === 'my' ? <MyAccount onSettings={() => navigate('profile')} onWithdraw={() => navigate('withdrawal')} onWallet={() => navigate('wallet-management')} onAgent={() => navigate('agent')} onAction={comingSoon} onDeposit={() => navigate('deposit')} onRecords={() => navigate('records')} onBetRecords={() => navigate('bet-records')} onBenefits={() => navigate('benefits')} onLedger={() => navigate('wallet-ledger')} onReport={() => navigate('personal-report')} onInvite={() => navigate('invite')} /> : <HomeContent onComingSoon={comingSoon} />}
     </main>
     {view !== 'game' && view !== 'security' && view !== 'password' && view !== 'profile' && view !== 'withdrawal' && view !== 'wallet-management' && view !== 'agent' && view !== 'invite-friends' && view !== 'invite' && view !== 'personal-report' && view !== 'earn-rules' && view !== 'loss-return-rules' && view !== 'vip' && view !== 'vip-details' && view !== 'records' && view !== 'bet-records' && view !== 'benefits' && view !== 'wallet-ledger' && <BottomNavigation view={view} onNavigate={navigate} />}
-    {activeGame&&<GamePage key={activeGame} gameId={activeGame} minimized={view!=='game'} onMinimize={()=>navigate('home')} onBack={()=>{setActiveGame(undefined);navigate('home');}}/>}
-    {activeGame&&view==='home'&&<MinimizedGameBar gameId={activeGame} onRestore={()=>navigate('game',{gameId:activeGame})} onClose={()=>{forgetGameEntry(activeGame);setActiveGame(undefined);void queryClient.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'all'});}}/>}
+    {activeGame&&<GamePage dockRef={gameDockRef} key={activeGame} gameId={activeGame} minimized={view!=='game'} onMinimize={()=>navigate('home')} onBack={()=>{setActiveGame(undefined);navigate('home');}}/>}
+    {activeGame&&<MinimizedGameBar targetRef={gameDockRef} visible={view==='home'} gameId={activeGame} onRestore={()=>navigate('game',{gameId:activeGame})} onClose={()=>{forgetGameEntry(activeGame);setActiveGame(undefined);void queryClient.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'all'});}}/>}
   </>;
 }

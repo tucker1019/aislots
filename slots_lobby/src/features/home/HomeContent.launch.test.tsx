@@ -20,7 +20,7 @@ it('麻將二代卡片進入獨立遊戲路由',async()=>{
  window.history.replaceState(null,'','/');
  const comingSoon=vi.fn();
  render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><HomeContent onComingSoon={comingSoon}/></QueryClientProvider>);
- await userEvent.setup().click(await screen.findByRole('button',{name:'麻將胡了2'}));
+ await userEvent.setup().click(await screen.findByRole('button',{name:testGames.find(game=>game.id==='AG2')?.name ?? 'AG2'}));
  expect(window.location.pathname).toBe('/game/AG2');
  expect(comingSoon).not.toHaveBeenCalled();
 });
