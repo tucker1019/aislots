@@ -23,7 +23,7 @@ export function DepositPromotion({ open, onClose, afterClose }: { open: boolean;
       <p className="deposit-promotion-kicker" aria-hidden={!percent}>{t('depositPromotion.topBonus')}</p>
       <h2 className="deposit-promotion-title">{percent ? t('depositPromotion.offerHeading') : heading}</h2>
       <div className="deposit-promotion-value" aria-busy={pending} aria-live="polite">
-        {percent ? <strong className={`deposit-promotion-percent${percent.length > 5 ? ' deposit-promotion-percent-long' : ''}`}>{percent}</strong>
+        {percent ? <strong className={`deposit-promotion-percent${percent.length > 5 ? ' deposit-promotion-percent-long' : ''}`}>{percent}<span className="deposit-promotion-shine" aria-hidden="true">{percent}</span></strong>
           : pending ? <span className="deposit-promotion-placeholder" role="status" aria-label={t('copy.loading')} />
           : <Icon name="rupiah" size={70} />}
       </div>

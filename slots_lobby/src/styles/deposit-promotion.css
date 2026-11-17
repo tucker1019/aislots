@@ -71,6 +71,7 @@
 }
 
 .deposit-promotion-percent {
+  position: relative;
   display: block;
   margin-top: 2px;
   max-width: 100%;
@@ -82,6 +83,28 @@
   font-weight: 900;
   letter-spacing: -.045em;
   line-height: 1.13;
+  animation: deposit-reward-pop 650ms ease-out both;
+}
+
+.deposit-promotion-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  color: transparent;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  background: linear-gradient(110deg, transparent 42%, #fff9dccc 49%, transparent 56%) 180% 0 / 300% 100%;
+  background-clip: text;
+  animation: deposit-reward-shine 4.8s ease-in-out infinite;
+}
+@keyframes deposit-reward-pop {
+  0% { transform: scale(.88) rotate(-4deg); opacity: 0; }
+  65% { transform: scale(1.06) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+@keyframes deposit-reward-shine {
+  0%, 55% { background-position: 180% 0; }
+  85%, 100% { background-position: -80% 0; }
 }
 
 .deposit-promotion-percent-long { font-size: 55px; }
@@ -100,16 +123,24 @@
   padding: 8px 34px;
   border: 1px solid #ffe49b;
   border-radius: 16px;
-  background: #ffd15c;
+  background: linear-gradient(110deg, transparent 42%, #fff6cfb3 49%, transparent 56%) 180% 0 / 300% 100% #ffd15c;
   box-shadow: inset 0 2px 0 #fff2bc, 0 4px 0 #ad7437;
   color: #38205d;
   font-size: 16px;
   font-weight: 800;
+  animation: deposit-cta-shine 4.8s ease-in-out 1.3s infinite;
+  transition: background-color 160ms ease, transform 120ms ease, box-shadow 120ms ease;
+}
+
+@keyframes deposit-cta-shine {
+  0% { background-position: 180% 0; }
+  25%, 100% { background-position: -80% 0; }
 }
 
 .deposit-promotion-cta span {
   position: absolute;
   inset-inline-end: 15px;
+  transition: transform 160ms ease;
 }
 
 .deposit-promotion-close {
@@ -147,7 +178,8 @@
   background: var(--theme-violet-tint, #e8d7ff);
 }
 
-.deposit-promotion-cta:hover { background: #ffdc7e; }
+.deposit-promotion-cta:hover { background-color: #ffdc7e; }
+.deposit-promotion-cta:hover span { transform: translateX(3px); }
 .deposit-promotion-cta:active {
   transform: translateY(3px);
   box-shadow: inset 0 2px 0 #fff2bc, 0 1px 0 #ad7437;
@@ -159,4 +191,8 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .deposit-promotion-cta:active { transform: none; }
+  .deposit-promotion-percent, .deposit-promotion-shine, .deposit-promotion-cta { animation: none; }
+  .deposit-promotion-shine { display: none; }
+  .deposit-promotion-cta, .deposit-promotion-cta span { transition: none; }
+  .deposit-promotion-cta:hover span { transform: none; }
 }

@@ -40,6 +40,6 @@ export function WithdrawalForm({uid,coins,tiers,submissionUnavailable=false}:{ui
  {tier&&<section className="deposit-card deposit-summary"><dl><div><dt>{t('withdrawal.balance')}</dt><dd>{betMoney(coins)}</dd></div><div><dt>{t('withdrawal.debit')}</dt><dd>{betMoney(tier.amount)}</dd></div><div><dt>{t('copy.fee')}</dt><dd>{tier.fee===0?'-':betMoney(tier.fee)}</dd></div><div><dt>{t('withdrawal.bonus')}</dt><dd>{betMoney(tier.bonus)}</dd></div><div><dt>{t('withdrawal.payout')}</dt><dd>{betMoney(tier.payoutAmount)}</dd></div></dl></section>}
  {mutation.isError&&pending&&<Alert type="error" title={t('withdrawal.retrySame')}/>}
  {tier&&coins<tier.amount&&!pending&&<p role="alert" className="deposit-error">{t('withdrawal.insufficient')}</p>}
- <Button block size="large" type="primary" loading={mutation.isPending} disabled={(!tier&&!pending)||!channel||(!pending&&submissionUnavailable)||(!pending&&!!tier&&coins<tier.amount)||accounts.isPending||accounts.isError} onClick={()=>mutation.mutate()}>{pending?t('withdrawal.retry'):t('withdrawal.submit')}</Button>
+ <Button className="withdrawal-submit" block size="large" type="primary" loading={mutation.isPending} disabled={(!tier&&!pending)||!channel||(!pending&&submissionUnavailable)||(!pending&&!!tier&&coins<tier.amount)||accounts.isPending||accounts.isError} onClick={()=>mutation.mutate()}>{pending?t('withdrawal.retry'):t('withdrawal.submit')}</Button>
  </>;
 }

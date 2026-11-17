@@ -37,3 +37,4 @@ import './styles/design-viewport.css';
 import './styles/theme.css';
 
 import './styles/arcade.css';
+import './styles/arcade-actions.css';

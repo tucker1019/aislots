@@ -99,9 +99,3 @@
 :root[data-theme="dark"] .account-section-heading > span { font-size: 12px; line-height: 1.5; }
 :root[data-theme="dark"] .account-actions button { font-size: 12px; line-height: 1.5; }
 :root[data-theme="dark"] .account-caption { font-size: 13px; }
-
-:root[data-theme="dark"] .account-money-actions button + button {
-  background: var(--theme-soft);
-  border-color: var(--theme-border);
-}
-:root[data-theme="dark"] .account-money-actions button + button:hover { background: var(--theme-active-tint); }

@@ -1,4 +1,12 @@
 /* 紫晶电玩厅：保留设计坐标和业务结构，只调整深色外观。 */
+:root[data-theme="dark"] :is(.benefits-heading h1, .benefit-card h2, .vip-section-title) {
+  font-weight: var(--weight-key);
+  text-shadow: 0 2px 0 #160b29;
+}
+:root[data-theme="dark"] :is(.benefit-card header > strong, .vip-perks strong) {
+  font-weight: var(--weight-key);
+  text-shadow: 0 2px 0 #704324;
+}
 :root[data-theme="dark"] {
   --arcade-gold: #ffd15c;
   --arcade-gold-ink: #372047;
@@ -150,7 +158,74 @@
   border-radius: 9px;
 }
 
+:root[data-theme="dark"] .deposit-submit {
+  border-radius: 14px;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+:root[data-theme="dark"] .deposit-submit:enabled {
+  background: var(--arcade-gold);
+  color: var(--arcade-gold-ink);
+  box-shadow: inset 0 2px 0 #fff2bc, inset 0 0 0 1px #ffe7a0, 0 4px 0 #ad7437;
+}
+:root[data-theme="dark"] .deposit-submit:enabled:hover { background: #ffe08b; }
+:root[data-theme="dark"] .deposit-submit:enabled:active {
+  transform: translateY(3px);
+  box-shadow: inset 0 2px 0 #fff2bc, inset 0 0 0 1px #ffe7a0, 0 1px 0 #ad7437;
+}
+:root[data-theme="dark"] :is(.withdrawal-page .withdrawal-submit, .benefit-card-bottom button) {
+  border-radius: 14px;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+:root[data-theme="dark"] :is(.withdrawal-page .withdrawal-submit, .benefit-card-bottom button):enabled {
+  background: var(--theme-action);
+  border-color: #e5c8ff;
+  color: var(--theme-on-action);
+  box-shadow: inset 0 2px 0 #ffffff40, 0 4px 0 #7140b3;
+}
+:root[data-theme="dark"] :is(.withdrawal-page .withdrawal-submit, .benefit-card-bottom button):enabled:hover { background: var(--theme-action-hover); }
+:root[data-theme="dark"] :is(.withdrawal-page .withdrawal-submit, .benefit-card-bottom button):enabled:active {
+  transform: translateY(3px);
+  box-shadow: inset 0 2px 0 #ffffff40, 0 1px 0 #7140b3;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="dark"] .deposit-submit { transition: none; }
+  :root[data-theme="dark"] .deposit-submit:enabled:active { transform: none; }
+  :root[data-theme="dark"] :is(.withdrawal-page .withdrawal-submit, .benefit-card-bottom button) { transition: none; }
+  :root[data-theme="dark"] :is(.withdrawal-page .withdrawal-submit, .benefit-card-bottom button):enabled:active { transform: none; }
+}
+
 /* Wallet actions have a solid arcade base, with a short press travel. */
+/* Account shortcuts share the same raised keycap in reward and service colors. */
+:root[data-theme="dark"] .my-account .account-actions .account-action-icon {
+  --shortcut-face: #9655ff;
+  --shortcut-rim: #c9a4ff;
+  --shortcut-base: #582c94;
+  --shortcut-ink: #fff7ff;
+  border: 1px solid var(--shortcut-rim);
+  border-radius: 11px;
+  background: var(--shortcut-face);
+  color: var(--shortcut-ink);
+  box-shadow: inset 0 2px 0 #ffffff45, inset 0 -2px 0 #00000012, 0 4px 0 var(--shortcut-base), 0 6px 5px #160b294d;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+:root[data-theme="dark"] .my-account .account-benefits-card .account-action-icon {
+  --shortcut-face: #ffd15c;
+  --shortcut-rim: #ffe7a0;
+  --shortcut-base: #ad7437;
+  --shortcut-ink: #5b351b;
+}
+:root[data-theme="dark"] .account-action-icon > svg {
+  filter: drop-shadow(0 1px 0 #ffffff45);
+}
+:root[data-theme="dark"] .my-account .account-actions button:active .account-action-icon {
+  transform: translateY(3px);
+  box-shadow: inset 0 2px 0 #ffffff30, 0 1px 0 var(--shortcut-base);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="dark"] .my-account .account-actions .account-action-icon { transition: none; }
+  :root[data-theme="dark"] .my-account .account-actions button:active .account-action-icon { transform: none; }
+}
+
 :root[data-theme="dark"] .my-account .account-balance-card {
   border-radius: 18px;
   flex-wrap: wrap;
@@ -163,23 +238,30 @@
 }
 :root[data-theme="dark"] .account-money-actions button {
   --wallet-button-base: #ad7437;
+  --wallet-button-border: #ffe7a0;
+  --wallet-button-face: var(--arcade-gold);
+  --wallet-button-ink: var(--arcade-gold-ink);
+  --wallet-button-hover: #ffe08b;
   min-height: 36px;
-  border: 1px solid #ffe7a0;
+  border: 1px solid var(--wallet-button-border);
   border-radius: 12px;
-  background: var(--arcade-gold);
-  color: var(--arcade-gold-ink);
+  background: var(--wallet-button-face);
+  color: var(--wallet-button-ink);
   font-weight: var(--weight-key);
   box-shadow: inset 0 2px 0 #ffffff40, 0 4px 0 var(--wallet-button-base);
   transition: transform 120ms ease, box-shadow 120ms ease;
 }
 :root[data-theme="dark"] .account-money-actions button + button {
-  --wallet-button-base: #582c94;
-  border-color: #be92ff;
-  background: var(--theme-action);
-  color: var(--theme-on-action);
+  --wallet-button-base: #7140b3;
+  --wallet-button-border: #e5c8ff;
+  --wallet-button-face: var(--theme-action);
+  --wallet-button-ink: var(--theme-on-action);
+  --wallet-button-hover: var(--theme-action-hover);
+  border-color: var(--wallet-button-border);
+  background: var(--wallet-button-face);
+  color: var(--wallet-button-ink);
 }
-:root[data-theme="dark"] .account-money-actions button:hover { background: #ffe08b; }
-:root[data-theme="dark"] .account-money-actions button + button:hover { background: var(--theme-action-hover); }
+:root[data-theme="dark"] .account-money-actions button:hover { background: var(--wallet-button-hover); }
 :root[data-theme="dark"] .account-money-actions button:active {
   transform: translateY(3px);
   box-shadow: inset 0 2px 0 #ffffff26, 0 1px 0 var(--wallet-button-base);
