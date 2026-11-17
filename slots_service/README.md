@@ -73,7 +73,7 @@ make run CONFIG=configs/server.local.json
 
 业务接口支持独立测试配置或大厅接入配置；测试模式需 `testProfile.enabled=true`，大厅模式需共享服务密钥及大厅地址，两种身份模式不能混用。两者都需独立数据库及投注方案。详见 [联调协议](docs/client-api.md)。
 
-AG1 uses `"freeAwardSymbolCounts": {"8": 3, "10": 4, "12": 5}` in its server game entry. The existing award weights choose free spins first; the selected award then determines the scatter count for both base triggers and free retriggers. Every positive-weight award must have a mapping to 3, 4 or 5 symbols. Legacy entries without this mapping retain their explicit `triggerSymbolCount`.
+当前AG1配置使用 `"freeAwardSymbolCounts": {"12": 3, "14": 4, "16": 5}`，对应 `2026-11-05-math/AG1` 快照。先按权重选择赠送局数，再决定普通触发或免费再触发时的Scatter数量。每个正权重赠送局数都必须映射到3、4或5个符号；未配置映射的历史版本继续使用其显式 `triggerSymbolCount`。
 
 ## Ways 开奖顺序（AG1～AG3）
 
@@ -135,11 +135,11 @@ The mapping participates in the engine version. The test server configuration ke
 
 ### AG1 金底联调数据（2026-11-02）
 
-当前测试配置使用 `testdata/deployments/2026-11-02-gold/AG1` 快照。
+当时测试配置使用 `testdata/deployments/2026-11-02-gold/AG1` 快照；该段记录历史验收数据，当前版本以服务配置中 `current=true` 的条目为准。
 百搭 ID 为 `10`、权重为 `0`；第 2、3、4 轴可出金底，普通概率 8.3%，免费概率 11%。
 普通库生成 1,000,000 局、保留 66,882 条，免费库生成 100,000 局、保留 21,106 条；每个倍率最多保留 100 条。
 两套库均覆盖快照中所有正权重倍率，并通过数值工具骨架重放校验。
-当前数值配置赠送免费局数为 10/12/14，对应 3/4/5 个胡。
+该历史数值配置赠送免费局数为 10/12/14，对应 3/4/5 个胡；当前快照为12/14/16局。
 旧配置和旧库保留为非当前版本，供已开始的下注继续使用；新下注使用新的金底版本。
 
 ## AG5 金兔
@@ -189,7 +189,7 @@ go run ./cmd/library-check \
 
 ### AG3 最新已保存盘面库（2026-11-12）
 
-大厅和测试配置启用 `testdata/deployments/2026-11-12-ag3-validated/AG3` 的不可变规则快照，使用普通批次 `2026-11-12T04-01-40-317Z-38756647` 及免费批次 `2026-11-12T04-03-50-060Z-2ac6680f`。原始批次和 manifest 保持不变；服务启动依据实际快照重新检查正权重倍率和普通图标中奖覆盖，不能仅依赖生成时的旧验收报告。
+大厅和独立测试配置当前启用 `testdata/deployments/2026-11-12-ag3-free8/AG3` 的不可变规则快照，使用普通批次 `2026-11-12-ag3-free8-revalidated` 及免费批次 `2026-11-12T06-25-17-207Z-2623d165`。旧批次保留用于历史版本；服务启动依据实际快照重新检查正权重倍率和普通图标中奖覆盖，不能仅依赖生成时的旧验收报告。批次名称中的 `free8` 不代表赠送局数，具体局数以快照配置和下述映射为准。
 
 AG3 为六列，列高 3/4/5/5/4/3；逐轮响应含一行预览，免费奖励 10/12/14 局对应 3/4/5 个 Scatter。印尼盾投注列表为 10/50/100/500/1000，金额精度 2、线数 20、投注等级 1–10。AG1/AG2 的所有历史版本继续保留。
 
@@ -207,4 +207,4 @@ AG8金龙使用独立 `fortune_dragon_v1` 模块及 `testdata/deployments/2026-1
 
 AG1～AG10 的 Go 模块均已注册。AG1～AG3 保留旧 Ways 算法与存档兼容，AG4～AG10 独立实现各自玩法。各游戏发布器校验配置、骨架与倍率覆盖后创建不可变快照；空奖实时生成，骨架桶数量不决定开奖概率。
 
-测试环境开放 AG1～AG8，AG9、AG10 仅接入本地测试配置，尚未开放客户端。上文 AG7/AG8“本地模块”描述开发配置，不代表公网未发布。具体发布版本与验收限制见[发布记录](../deploy/test/DEPLOYMENT.md)。AG5～AG10 详细规则及发布命令见对应 `internal/games/agN/README.md`。
+测试环境已开放AG1～AG9，对应客户端已纳入部署脚本；AG10仅在独立本地测试配置启用，尚未纳入大厅接入配置及测试部署脚本。上文AG7/AG8“本地模块”描述开发配置，不代表公网未发布。具体发布版本与验收限制见[发布记录](../deploy/test/DEPLOYMENT.md)。AG5～AG10详细规则及发布命令见对应 `internal/games/agN/README.md`。
