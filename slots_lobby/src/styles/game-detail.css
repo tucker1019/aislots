@@ -215,6 +215,37 @@ button.game-rank-row::after {
 .game-rank-streak-summary { display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap; }
 .game-rank-streak-summary time { color: var(--muted); font-size: 10px; font-weight: 400; }
 
+/* One native scroll timeline: first the details move, then the ranking rows
+   pass below the pinned preview and ranking controls. Reversing needs no trap. */
+.game-detail-content { --game-preview-block-height: 305px; }
+.game-detail-shell:not(.game-detail-expanded) .game-preview-frame {
+  height: min(250px, calc(var(--lobby-height, 100dvh) * .34));
+}
+.game-detail-shell:not(.game-detail-expanded) .game-detail-play-area > .game-preview {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  box-shadow: 0 -16px 0 var(--theme-blue-tint, #f4f6fa);
+}
+.game-ranking-header { margin: -13px -13px 0; padding: 13px; }
+.game-detail-shell:not(.game-detail-expanded) .game-ranking-header {
+  position: sticky;
+  top: calc(var(--game-preview-block-height) + 15px);
+  z-index: 2;
+  border-radius: 11px 11px 0 0;
+  background: var(--theme-surface, #fff);
+  isolation: isolate;
+}
+.game-detail-shell:not(.game-detail-expanded) .game-ranking-header::before {
+  content: '';
+  position: absolute;
+  inset: -16px -1px 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(to bottom, var(--theme-blue-tint, #f4f6fa) 16px, var(--theme-surface, #fff) 16px);
+}
+.game-detail-expanded .game-detail-play-area { height: 100%; }
+
 /* Keep the game surface visible across both layout states during the 300ms FLIP. */
 .game-detail-transitioning .game-detail-content,
 .game-detail-transitioning .game-preview { overflow: visible; }

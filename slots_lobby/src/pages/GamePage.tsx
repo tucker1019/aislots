@@ -5,7 +5,7 @@ import { gameDisplay, type GameId } from '../app/games';
 import {AsyncButton} from '../components/buttons/AsyncButton';
 import { createPortal } from 'react-dom';
 import { t } from '../i18n';
-import { useCallback,useEffect,useRef,useState } from 'react';
+import { useCallback,useEffect,useLayoutEffect,useRef,useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { forgetGameEntry,launchGame,readGameEntry,rememberGameEntry } from '../services/game-entry';
 import { FloatingGameMenu } from '../features/game/FloatingGameMenu';
@@ -23,6 +23,14 @@ export function GamePage({onBack,onMinimize,minimized=false,gameId='AG1',dockRef
  const [url,setUrl]=useState(()=>readGameEntry(gameId));const [preparing,setPreparing]=useState(false);const {expanded,transitioning,surfaceRef,changeExpanded}=useGameExpansion();const [error,setError]=useState('');
  const [menuOpen,setMenuOpen]=useState(false);
  const frameRef=useRef<HTMLIFrameElement>(null);
+ const contentRef=useRef<HTMLDivElement>(null);const previewRef=useRef<HTMLDivElement>(null);
+ useLayoutEffect(()=>{
+  const preview=previewRef.current;const content=contentRef.current;if(!preview||!content)return;
+  // Sticky offsets use design pixels; the shared lobby zoom must not be applied twice.
+  const measure=()=>content.style.setProperty('--game-preview-block-height',`${preview.offsetHeight}px`);
+  measure();if(typeof ResizeObserver==='undefined')return;
+  const observer=new ResizeObserver(measure);observer.observe(preview);return()=>observer.disconnect();
+ },[expanded]);
  const busy=useRef(false);const alive=useRef(true);const started=useRef(false);const client=useQueryClient();
  const reopen=useCallback(async()=>{
   if(busy.current||!allowed)return;busy.current=true;setPreparing(true);setError('');
@@ -53,16 +61,18 @@ export function GamePage({onBack,onMinimize,minimized=false,gameId='AG1',dockRef
   {!expanded&&<header className="game-detail-toolbar"><button className="game-toolbar-icon" type="button" onClick={close} aria-label={t('copy.backToLobby')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><span>{t('gamePreview.details')}</span><button className="game-toolbar-icon" type="button" disabled={transitioning} onClick={onMinimize} aria-label={t('gamePreview.minimize')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 9 7 7 7-7"/></svg></button></header>}
   {expanded&&<FloatingGameMenu open={menuOpen} onToggle={()=>setMenuOpen(open=>!open)} onExit={close}
    onShrink={()=>{setMenuOpen(false);changeExpanded(false);}}/>}
-  <div className="game-detail-content">
+  <div className="game-detail-content" ref={contentRef}>
    <div className="game-detail-identity"><img src={game.cover} alt={t('gamePreview.cover')}/><div><h1>{game.title}</h1><span className="game-provider-label">{game.provider}</span><p>{t('gamePreview.tagline')}</p></div></div>
    {allowed&&<GameInsights part="rtp" gameId={gameId}/>}
-   <div className="game-preview"><div className="game-preview-frame" ref={surfaceRef}>
+   <div className="game-detail-play-area">
+   <div className="game-preview" ref={previewRef}><div className="game-preview-frame" ref={surfaceRef}>
     {allowed&&url&&<iframe ref={frameRef} key={url} src={url} title={game.frameTitle} allow="autoplay; fullscreen; clipboard-write" allowFullScreen referrerPolicy="no-referrer" onError={()=>{setError(t('copy.gameFailedToLoadPleaseReEnter'));}}/>}
     {catalog.isError&&<NetworkError onRetry={()=>void catalog.refetch()} disabled={catalog.isFetching}/>}
     {catalog.isSuccess&&!allowed&&<p>{t('copy.comingSoon')}</p>}
     {error&&<div className="game-preview-error" role="alert"><p>{error}</p><AsyncButton loading={preparing} type="button" disabled={preparing||!allowed} onClick={()=>void reopen()}>{t('gamePreview.retry')}</AsyncButton></div>}
    </div><div className="game-preview-actions"><span>{t('gamePreview.preview')}</span><button type="button" disabled={!allowed||!url||preparing} onClick={()=>changeExpanded(true)}>{t('gamePreview.expand')}</button></div></div>
    {allowed&&<GameInsights part="ranking" gameId={gameId}/>}
+   </div>
   </div>
  </section>;
  return createPortal(content,document.body);
