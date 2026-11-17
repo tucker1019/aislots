@@ -1,0 +1,20 @@
+
+3c2dj.png
+size: 675,384
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1jikuangs
+  rotate: false
+  xy: 2, 171
+  size: 671, 211
+  orig: 671, 211
+  offset: 0, 0
+  index: -1
+1jikuangx
+  rotate: false
+  xy: 2, 2
+  size: 670, 167
+  orig: 670, 167
+  offset: 0, 0
+  index: -1

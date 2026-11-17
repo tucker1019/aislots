@@ -1,0 +1,13 @@
+
+8c1dj.png
+size: 35,16
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+heihei
+  rotate: false
+  xy: 2, 2
+  size: 31, 6
+  orig: 31, 6
+  offset: 0, 0
+  index: -1

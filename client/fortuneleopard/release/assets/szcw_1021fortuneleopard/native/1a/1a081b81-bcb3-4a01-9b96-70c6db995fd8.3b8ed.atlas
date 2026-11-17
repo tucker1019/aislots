@@ -1,0 +1,41 @@
+
+2c1dj.png
+size: 876,257
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+faxing
+  rotate: false
+  xy: 388, 5
+  size: 43, 30
+  orig: 43, 30
+  offset: 0, 0
+  index: -1
+shou1
+  rotate: false
+  xy: 578, 17
+  size: 157, 238
+  orig: 157, 238
+  offset: 0, 0
+  index: -1
+shou2
+  rotate: true
+  xy: 737, 94
+  size: 161, 137
+  orig: 172, 137
+  offset: 2, 0
+  index: -1
+toou
+  rotate: true
+  xy: 2, 2
+  size: 253, 384
+  orig: 253, 384
+  offset: 0, 0
+  index: -1
+weiba
+  rotate: true
+  xy: 388, 37
+  size: 218, 188
+  orig: 218, 188
+  offset: 0, 0
+  index: -1

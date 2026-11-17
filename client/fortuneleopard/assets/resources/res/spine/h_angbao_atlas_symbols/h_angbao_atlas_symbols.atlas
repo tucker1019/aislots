@@ -1,0 +1,48 @@
+
+h_angbao_atlas_symbols.png
+size: 448,153
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+hb_1
+  rotate: false
+  xy: 146, 27
+  size: 105, 124
+  orig: 112, 125
+  offset: 7, 1
+  index: -1
+hb_1_di
+  rotate: false
+  xy: 374, 18
+  size: 72, 49
+  orig: 80, 49
+  offset: 8, 0
+  index: -1
+hb_2
+  rotate: true
+  xy: 253, 10
+  size: 72, 119
+  orig: 72, 124
+  offset: 0, 5
+  index: -1
+hb_3
+  rotate: true
+  xy: 253, 84
+  size: 67, 126
+  orig: 67, 126
+  offset: 0, 0
+  index: -1
+hb_money
+  rotate: true
+  xy: 381, 69
+  size: 82, 65
+  orig: 84, 65
+  offset: 2, 0
+  index: -1
+参考/钱包—切图
+  rotate: false
+  xy: 2, 2
+  size: 142, 149
+  orig: 192, 207
+  offset: 25, 22
+  index: -1

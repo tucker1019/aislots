@@ -1,0 +1,69 @@
+
+2c2dj.png
+size: 252,828
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+erduo1
+  rotate: false
+  xy: 171, 103
+  size: 61, 47
+  orig: 61, 48
+  offset: 0, 1
+  index: -1
+erduo2
+  rotate: true
+  xy: 175, 152
+  size: 53, 73
+  orig: 54, 74
+  offset: 0, 1
+  index: -1
+hoabao1
+  rotate: false
+  xy: 2, 48
+  size: 123, 106
+  orig: 123, 106
+  offset: 0, 0
+  index: -1
+hoabao2
+  rotate: true
+  xy: 175, 207
+  size: 116, 74
+  orig: 116, 74
+  offset: 0, 0
+  index: -1
+hoabao3
+  rotate: true
+  xy: 127, 2
+  size: 99, 115
+  orig: 99, 115
+  offset: 0, 0
+  index: -1
+shenti
+  rotate: false
+  xy: 2, 475
+  size: 247, 351
+  orig: 247, 351
+  offset: 0, 0
+  index: -1
+shoubi1
+  rotate: false
+  xy: 2, 325
+  size: 248, 148
+  orig: 248, 148
+  offset: 0, 0
+  index: -1
+toufa
+  rotate: false
+  xy: 127, 122
+  size: 42, 32
+  orig: 42, 32
+  offset: 0, 0
+  index: -1
+weiba
+  rotate: true
+  xy: 2, 156
+  size: 167, 171
+  orig: 167, 171
+  offset: 0, 0
+  index: -1

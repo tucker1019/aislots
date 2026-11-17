@@ -1,0 +1,279 @@
+
+h_ingot_atlas_symbols.png
+size: 300,523
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+fx_sparkle_01
+  rotate: false
+  xy: 209, 2
+  size: 15, 15
+  orig: 30, 30
+  offset: 7, 7
+  index: -1
+h_ingot_L_fx_screen_01
+  rotate: false
+  xy: 264, 92
+  size: 20, 20
+  orig: 26, 32
+  offset: 3, 10
+  index: -1
+sweep/sweep_00
+  rotate: true
+  xy: 187, 398
+  size: 3, 2
+  orig: 142, 86
+  offset: 8, 74
+  index: -1
+sweep/sweep_01
+  rotate: false
+  xy: 146, 330
+  size: 11, 7
+  orig: 142, 86
+  offset: 4, 70
+  index: -1
+sweep/sweep_02
+  rotate: true
+  xy: 146, 339
+  size: 16, 11
+  orig: 142, 86
+  offset: 2, 66
+  index: -1
+sweep/sweep_03
+  rotate: false
+  xy: 255, 9
+  size: 22, 18
+  orig: 142, 86
+  offset: 0, 59
+  index: -1
+sweep/sweep_04
+  rotate: false
+  xy: 231, 188
+  size: 27, 26
+  orig: 142, 86
+  offset: 0, 51
+  index: -1
+sweep/sweep_05
+  rotate: false
+  xy: 264, 114
+  size: 32, 35
+  orig: 142, 86
+  offset: 0, 43
+  index: -1
+sweep/sweep_06
+  rotate: false
+  xy: 146, 357
+  size: 39, 44
+  orig: 142, 86
+  offset: 0, 34
+  index: -1
+sweep/sweep_07
+  rotate: false
+  xy: 217, 73
+  size: 45, 54
+  orig: 142, 86
+  offset: 0, 24
+  index: -1
+sweep/sweep_08
+  rotate: true
+  xy: 154, 73
+  size: 54, 61
+  orig: 142, 86
+  offset: 0, 17
+  index: -1
+sweep/sweep_09
+  rotate: true
+  xy: 160, 129
+  size: 62, 68
+  orig: 142, 86
+  offset: 0, 10
+  index: -1
+sweep/sweep_10
+  rotate: false
+  xy: 159, 266
+  size: 71, 72
+  orig: 142, 86
+  offset: 0, 6
+  index: -1
+sweep/sweep_11
+  rotate: true
+  xy: 2, 9
+  size: 77, 75
+  orig: 142, 86
+  offset: 1, 3
+  index: -1
+sweep/sweep_12
+  rotate: false
+  xy: 2, 245
+  size: 78, 76
+  orig: 142, 86
+  offset: 8, 2
+  index: -1
+sweep/sweep_13
+  rotate: false
+  xy: 82, 244
+  size: 75, 77
+  orig: 142, 86
+  offset: 19, 1
+  index: -1
+sweep/sweep_14
+  rotate: false
+  xy: 80, 88
+  size: 72, 77
+  orig: 142, 86
+  offset: 31, 1
+  index: -1
+sweep/sweep_15
+  rotate: false
+  xy: 79, 9
+  size: 72, 77
+  orig: 142, 86
+  offset: 40, 1
+  index: -1
+sweep/sweep_16
+  rotate: false
+  xy: 2, 88
+  size: 76, 77
+  orig: 142, 86
+  offset: 49, 1
+  index: -1
+sweep/sweep_17
+  rotate: false
+  xy: 2, 167
+  size: 78, 76
+  orig: 142, 86
+  offset: 57, 2
+  index: -1
+sweep/sweep_18
+  rotate: false
+  xy: 82, 167
+  size: 76, 75
+  orig: 142, 86
+  offset: 65, 3
+  index: -1
+sweep/sweep_19
+  rotate: false
+  xy: 160, 193
+  size: 69, 71
+  orig: 142, 86
+  offset: 73, 6
+  index: -1
+sweep/sweep_20
+  rotate: true
+  xy: 232, 277
+  size: 61, 66
+  orig: 142, 86
+  offset: 81, 11
+  index: -1
+sweep/sweep_21
+  rotate: false
+  xy: 153, 11
+  size: 54, 60
+  orig: 142, 86
+  offset: 88, 17
+  index: -1
+sweep/sweep_22
+  rotate: false
+  xy: 209, 19
+  size: 44, 52
+  orig: 142, 86
+  offset: 98, 25
+  index: -1
+sweep/sweep_23
+  rotate: false
+  xy: 260, 151
+  size: 38, 42
+  orig: 142, 86
+  offset: 104, 35
+  index: -1
+sweep/sweep_24
+  rotate: true
+  xy: 264, 242
+  size: 33, 34
+  orig: 142, 86
+  offset: 109, 43
+  index: -1
+sweep/sweep_25
+  rotate: false
+  xy: 230, 159
+  size: 27, 27
+  orig: 142, 86
+  offset: 114, 50
+  index: -1
+sweep/sweep_26
+  rotate: false
+  xy: 230, 139
+  size: 23, 18
+  orig: 142, 86
+  offset: 118, 58
+  index: -1
+sweep/sweep_27
+  rotate: true
+  xy: 264, 73
+  size: 17, 11
+  orig: 142, 86
+  offset: 122, 65
+  index: -1
+sweep/sweep_28
+  rotate: true
+  xy: 255, 139
+  size: 10, 7
+  orig: 142, 86
+  offset: 127, 69
+  index: -1
+sweep/sweep_29
+  rotate: true
+  xy: 154, 157
+  size: 8, 4
+  orig: 142, 86
+  offset: 128, 71
+  index: -1
+y_hair_l1
+  rotate: true
+  xy: 260, 195
+  size: 45, 38
+  orig: 45, 38
+  offset: 0, 0
+  index: -1
+y_hair_l2
+  rotate: false
+  xy: 231, 216
+  size: 27, 28
+  orig: 27, 28
+  offset: 0, 0
+  index: -1
+y_hair_r1
+  rotate: true
+  xy: 255, 29
+  size: 42, 37
+  orig: 42, 37
+  offset: 0, 0
+  index: -1
+y_hair_r2
+  rotate: false
+  xy: 232, 246
+  size: 30, 29
+  orig: 30, 29
+  offset: 0, 0
+  index: -1
+y_tanzi
+  rotate: true
+  xy: 191, 340
+  size: 181, 107
+  orig: 181, 107
+  offset: 0, 0
+  index: -1
+y_yb_down
+  rotate: false
+  xy: 2, 403
+  size: 187, 118
+  orig: 187, 118
+  offset: 0, 0
+  index: -1
+y_yb_up
+  rotate: false
+  xy: 2, 323
+  size: 142, 78
+  orig: 142, 86
+  offset: 0, 0
+  index: -1

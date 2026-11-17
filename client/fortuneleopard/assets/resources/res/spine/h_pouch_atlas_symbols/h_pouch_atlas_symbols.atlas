@@ -1,0 +1,83 @@
+
+h_pouch_atlas_symbols.png
+size: 389,146
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+dz_coin1
+  rotate: false
+  xy: 284, 93
+  size: 34, 17
+  orig: 34, 17
+  offset: 0, 0
+  index: -1
+dz_coin2
+  rotate: true
+  xy: 347, 21
+  size: 43, 37
+  orig: 43, 37
+  offset: 0, 0
+  index: -1
+dz_coin3
+  rotate: false
+  xy: 320, 66
+  size: 53, 30
+  orig: 53, 31
+  offset: 0, 1
+  index: -1
+dz_coin4
+  rotate: true
+  xy: 251, 4
+  size: 63, 40
+  orig: 63, 40
+  offset: 0, 0
+  index: -1
+dz_coin5
+  rotate: false
+  xy: 293, 18
+  size: 52, 46
+  orig: 53, 50
+  offset: 0, 1
+  index: -1
+dz_daizi
+  rotate: false
+  xy: 2, 2
+  size: 173, 142
+  orig: 181, 185
+  offset: 0, 0
+  index: -1
+dz_daizi_back
+  rotate: false
+  xy: 177, 112
+  size: 142, 32
+  orig: 142, 35
+  offset: 0, 0
+  index: -1
+dz_ld_l
+  rotate: true
+  xy: 321, 98
+  size: 46, 66
+  orig: 46, 66
+  offset: 0, 0
+  index: -1
+dz_ld_r
+  rotate: true
+  xy: 177, 12
+  size: 55, 72
+  orig: 55, 72
+  offset: 0, 0
+  index: -1
+dz_lj
+  rotate: false
+  xy: 177, 69
+  size: 105, 41
+  orig: 105, 41
+  offset: 0, 0
+  index: -1
+fx_sparkle_01
+  rotate: false
+  xy: 293, 66
+  size: 25, 25
+  orig: 31, 31
+  offset: 3, 3
+  index: -1

@@ -1,0 +1,62 @@
+
+h_ruyi_atlas_symbols.png
+size: 251,134
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+fx_sparkle_01 
+  rotate: false
+  xy: 199, 76
+  size: 6, 6
+  orig: 8, 8
+  offset: 1, 1
+  index: -1
+h_ruyi_tass_head
+  rotate: false
+  xy: 70, 17
+  size: 18, 21
+  orig: 18, 21
+  offset: 0, 0
+  index: -1
+ry_gan
+  rotate: false
+  xy: 2, 40
+  size: 106, 92
+  orig: 130, 160
+  offset: 0, 45
+  index: -1
+ry_head
+  rotate: false
+  xy: 110, 72
+  size: 87, 60
+  orig: 87, 60
+  offset: 0, 0
+  index: -1
+ry_line
+  rotate: false
+  xy: 2, 4
+  size: 66, 34
+  orig: 66, 34
+  offset: 0, 0
+  index: -1
+ry_line_jie
+  rotate: false
+  xy: 199, 84
+  size: 47, 48
+  orig: 52, 48
+  offset: 5, 0
+  index: -1
+ry_line_weiba
+  rotate: true
+  xy: 183, 3
+  size: 67, 66
+  orig: 67, 66
+  offset: 0, 0
+  index: -1
+ry_weiba
+  rotate: true
+  xy: 110, 2
+  size: 68, 71
+  orig: 68, 72
+  offset: 0, 1
+  index: -1

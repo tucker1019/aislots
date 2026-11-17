@@ -1,0 +1,90 @@
+
+sb_vfx_e_add.png
+size: 1631,1010
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ui_light/ui_00
+  rotate: true
+  xy: 2, 758
+  size: 250, 541
+  orig: 250, 541
+  offset: 0, 0
+  index: -1
+ui_light/ui_02
+  rotate: true
+  xy: 545, 758
+  size: 250, 541
+  orig: 250, 541
+  offset: 0, 0
+  index: -1
+ui_light/ui_04
+  rotate: true
+  xy: 1088, 758
+  size: 250, 541
+  orig: 250, 541
+  offset: 0, 0
+  index: -1
+ui_light/ui_06
+  rotate: true
+  xy: 2, 506
+  size: 250, 541
+  orig: 250, 541
+  offset: 0, 0
+  index: -1
+ui_light/ui_08
+  rotate: true
+  xy: 545, 506
+  size: 250, 541
+  orig: 250, 541
+  offset: 0, 0
+  index: -1
+ui_light/ui_10
+  rotate: true
+  xy: 1088, 506
+  size: 250, 541
+  orig: 250, 541
+  offset: 0, 0
+  index: -1
+ui_light/ui_12
+  rotate: true
+  xy: 2, 254
+  size: 250, 541
+  orig: 250, 541
+  offset: 0, 0
+  index: -1
+ui_light/ui_14
+  rotate: true
+  xy: 545, 254
+  size: 250, 541
+  orig: 250, 541
+  offset: 0, 0
+  index: -1
+ui_light/ui_16
+  rotate: true
+  xy: 1088, 254
+  size: 250, 541
+  orig: 250, 541
+  offset: 0, 0
+  index: -1
+ui_light/ui_18
+  rotate: true
+  xy: 2, 2
+  size: 250, 541
+  orig: 250, 541
+  offset: 0, 0
+  index: -1
+ui_light/ui_20
+  rotate: true
+  xy: 545, 2
+  size: 250, 541
+  orig: 250, 541
+  offset: 0, 0
+  index: -1
+ui_light/ui_24
+  rotate: true
+  xy: 1088, 2
+  size: 250, 541
+  orig: 250, 541
+  offset: 0, 0
+  index: -1

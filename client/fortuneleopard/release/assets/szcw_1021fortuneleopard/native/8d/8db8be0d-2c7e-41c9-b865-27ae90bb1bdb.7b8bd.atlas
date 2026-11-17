@@ -1,0 +1,20 @@
+
+7c1dj.png
+size: 1035,1060
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bw_vfx_i_normal
+  rotate: true
+  xy: 2, 544
+  size: 514, 943
+  orig: 540, 1170
+  offset: 14, 163
+  index: -1
+single
+  rotate: true
+  xy: 2, 2
+  size: 540, 1031
+  orig: 540, 1170
+  offset: 0, 93
+  index: -1

@@ -14,12 +14,12 @@
   "mainBundleIsRemote": false,
   "mainBundleCompressionType": "merge_dep",
   "replaceSplashScreen": false,
-  "startScene": "7dfdd5f3-9fca-49de-9ac2-4c8bf718b81c",
+  "startScene": "0ddfc36f-87df-438f-9dae-3ed7ddd259e1",
   "outputName": "web-mobile",
   "scenes": [
     {
-      "url": "db://assets/FTGameScene.scene",
-      "uuid": "7dfdd5f3-9fca-49de-9ac2-4c8bf718b81c",
+      "url": "db://assets/FLGameScene.scene",
+      "uuid": "0ddfc36f-87df-438f-9dae-3ed7ddd259e1",
       "inBundle": false
     }
   ],

@@ -2,7 +2,6 @@
 #///////////////////////////
 # Cocos Creator 3D Project
 #///////////////////////////
-
 library/
 temp/
 local/
@@ -24,10 +23,3 @@ node_modules/
 #//////////////////////////
 .idea/
 
-
-# Local and original release artifacts
-.DS_Store
-.build.log
-*.compile.log
-release/
-hot_update/

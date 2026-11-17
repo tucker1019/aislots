@@ -1,0 +1,525 @@
+syntax = "proto2";
+package Hall;
+//心跳协议 id=1
+message heartBeatC2S{
+required int32 sign = 1; //随便发个什么标志，目前没实际用处
+}
+//id =2
+message heartBeatS2C{
+required int32 sign = 1;//随便发个什么标志，目前没实际用处
+}
+
+//登录协议 id = 101
+message loginC2S{
+required int32 mType=1;  //登录类型，1快速登录，2账号登录，3第三方登录
+required int32 mAgentID=2; //渠道号
+required string mAccount=3; //账号名，如果是快速登录和第三方就是一串唯一码
+required string mPassWord=4; //密码
+required string mNickName=5; //昵称
+required int32 mTimeStamp=6; //时间戳(秒为单位)
+required string mMac=7;     //玩家机器的mac地址
+optional string mAddress=8; //玩家的地理位置
+optional string mIp = 9; //客户端ip
+}
+//id = 102
+message loginS2C{
+required int32 mResult=1; //登录返回，0是成功，1是账号不存在，2是账号被冻结，3是密码错误，4是其他原因
+required int32 mUserID=2; //玩家ID
+required string mNickName=3; //玩家昵称
+required string mAccount=4; //玩家账号名，空表示还没设置账号
+required int64 mMoney=5; //玩家身上金币数
+required int64 mBank=6;  //玩家银行金币数
+required bool mIsMan=7;  //是否是男性玩家
+required int32 mHeadIndex=8;  //玩家头像编号[1,8]
+required string mSignature=9; //玩家个性签名
+required bool mIsSetBankPwd=10; //是否设置了银行密码
+required int32 mGameID=11; //正在玩的游戏ID,用在玩家重登时拉回游戏
+required int32 mRoomID=12; //正在玩的房间ID
+required int32 mDeskIndex=13; //正在坐的桌子号
+required int32 mSeatIndex=14; //所在桌子的座位号
+required int32 mAgentID =15; //玩家渠道号
+required int32 mTimeStamp=16; //服务器当前时间戳(秒为单位)
+optional string mNewServerIp=17; //专用服务器ip地址
+optional int32 mNewServerPort=18; //专用服务器端口
+required bool mIsBindPhone = 19; //是否需要绑定手机号
+optional int32 mCollectWebAward=20; //收藏官网的奖励金币数，如果已经领取过奖励或不开启的返回0，如果还没领取过的返回奖励的金币数
+}
+
+//注册 id=103
+message registerC2S{
+required int32 mAgentID = 1;  //渠道号
+required string mAccount =2;  //玩家账号名
+required string mNickName=3;  //玩家昵称
+required string mPassWord=4;  //登录密码
+required string mMac = 5;     //玩家机器的mac地址，用于mac注册数量限制，防止刷号
+optional string mIp = 6; //玩家IP
+}
+//注册返回 id=104
+message registerS2C{
+required int32 mResult = 1; //注册是否成功 0为成功，1是账户已存在，2是Mac限制，3是ip限制
+}
+
+//绑定账号 id=105
+message bindAccountC2S{
+required string mAccount =1;  //玩家账号名
+required string mPassWord=2;  //登录密码
+}
+//绑定返回 id = 106
+message bindAccountS2C{
+required int32 mResult = 1; //是否成功 0为成功，1是账户已存在,2是其他失败原因
+}
+
+//绑定手机号 id =107
+message bindPhoneNumC2S{
+required string mPhoneNum = 1; //手机号
+required string mVerifyCode = 2; //验证码
+}
+//绑定手机号返回 id = 108
+message bindPhoneNumS2C{
+required int32 mResult = 1; //是否成功 0为成功，1是手机已被绑定,2是其他失败原因
+required int64 mAwardMoney = 2; //绑定后奖励的金币数
+}
+
+//邮件结构体
+message emailInfo{
+required int32 mEmailID = 1; //邮件编号，从0递增的，不能错乱，请求邮件补发会用到
+required int32 mTimeStamp = 2; //邮件时间戳，秒为单位
+required string mTitle = 3; //邮件标题
+required string mContent = 4; //邮件具体内容，如果邮件内容里面含有"money|",则表示后面需要接着的数字需要金币比例转换
+}
+//客户端主动拉取邮件 id=109
+message requestEmailC2S{
+}
+//服务器推送邮件 id=110
+message pushEmailS2C{
+repeated emailInfo mEmails = 1;  //服务器给客户端推送的邮件列表
+}
+//客户端收到的邮件确认回复 id=111
+message confirmEmailC2S{
+repeated int32 mEmailIDs = 1;   //客户端确认收到的邮件ID列表
+}
+
+//一个玩家的基本信息结构
+message playerInfo{
+required int32 mUserID = 1; //玩家的ID
+required string mNickName = 2; //玩家的昵称
+optional int32 mHeadIndex = 3; //玩家头像索引
+optional bool mIsMan = 4;   //是否是男性玩家
+optional int64 mMoney = 5; //玩家的金币数
+optional string mSignature = 6; //玩家的个性签名
+}
+//客户端请求排行榜 id = 112
+message requestRankC2S{
+}
+//服务器返回排行榜 id = 113
+message requestRankS2C{
+message rankInfo{
+required int32 mOrder =1;  //排名
+required playerInfo mData=2; //玩家信息
+}
+repeated rankInfo mRankInfos = 1;  //返回排行榜的玩家列表
+}
+
+//客户端搜索玩家信息 id=114
+message requestPlayerInfoC2S{
+required int32 mUserID = 1; //玩家ID
+}
+//服务器返回玩家信息 id=115
+message requestPlayerInfoS2C{
+required int32 mResult = 1; //搜索结果，0是成功，1是用户不存在，2是其他错误
+optional playerInfo mData = 2; //成功时返回该玩家的一些数据
+}
+
+//设置或修改银行密码 id=116
+message setBankPwdC2S{
+required string mOldPwd =1 ; //旧密码，如果原来没设置过则是""
+required string mNewPwd=2;  //新密码
+}
+//设置或修改银行密码返回 id=117
+message setBankPwdS2C{
+required int32 mResult = 1; //返回0表示成功，1表示原密码错误，2表示其他错误
+required string mNewPwd = 2; //返回密码
+}
+//存取银行的钱 id= 118
+message bankMoneyChangeC2S{
+required bool mIsPush = 1;  //是否是存钱，否则是取钱
+required int64 mChangeMoney = 2; //存取的数量，数值是按服务器的1:10000
+required string mBankPwd = 3; //银行密码
+}
+//存取钱返回 id=119
+message bankMoneyChangeS2C{
+required int32 mResult = 1; //存取是否成功，1表示密码错误，2表示金币不足，3其他错误
+required bool mIsPush = 2;  //是否是存钱，否则是取钱
+required int64 mMoney=3; //身上的金币数
+required int64 mBank =4; //银行的钱
+}
+//赠送金币 id=120
+message giveMoneyC2S{
+required int32 mReceiverID = 1; //接收人的ID
+required int64 mMoney = 2; //赠送金币数1:10000
+required string mBankPwd = 3; //银行密码
+}
+//赠送返回 id=121
+message giveMoneyS2C{
+required int32 mResult = 1; //返回0表示成功，1表示密码错误，2表示金币不足，3表示对方ID不存在，4是其他错误
+required int64 mMoney =2; //玩家身上金币数
+required int64 mBank=3; //玩家银行金币数
+}
+
+//游戏跑马灯公告 id = 122
+message notificationS2C{
+repeated string mContent=1; //公告内容，如果公告里面含有"money|",则表示后面需要接着的数字需要金币比例转换
+}
+
+//玩家修改账号信息id=123
+message changeAccountDataC2S{
+required string mNickName =1; //玩家昵称
+required bool mIsMan = 2; //是否是男性玩家
+required int32 mHeadIndex = 3; //头像索引
+optional string mSignature =4; //个性签名
+}
+//修改返回id=124
+message changeAccountDataS2C{
+required int32 mResult = 1; //返回0表示成功，1表示失败
+}
+//玩家修改登录密码id=125
+message changeLoginPwdC2S{
+required string mOldPwd =1; //原密码
+required string mNewPwd =2; //新密码
+}
+//修改登录密码返回 id=126
+message changeLoginPwdS2C{
+required int32 mResult = 1; //返回0表示成功，1表示原密码出错，2表示未绑定账号，3是其他错误
+}
+
+//验证银行密码 id=129
+message verifyBankPwdC2S{
+required string mBankPwd=1;
+}
+//验证银行密码返回 id=130
+message verifyBankPwdS2C{
+required int32 mResult = 1; //验证结果，0是正确，1是错误
+}
+
+//服务器推送玩家的身上金币变化 id=131
+message playerMoneyChangeS2C{
+required int32 mUserID = 1;//变化的属性的玩家的id
+required int64 mMoney = 2; //玩家身上金币数
+}
+//服务器推送玩家的银行金币变化 id=132
+message playerBankChangeS2C{
+required int32 mUserID = 1;//变化的属性的玩家的id
+required int64 mBank = 2; //玩家身上金币数
+}
+//服务器推送玩家的头像和签名变化 id=133
+message playerInfoChangeS2C{
+	required int32 mUserID = 1;//变化的属性的玩家的id
+	required bool mIsMan = 2; //性别
+	required string mSignature = 3; //签名
+	required int32 mHeadIndex = 4; //头像索引
+	required string mNickName = 5; //昵称
+}
+
+//服务器踢人 id =134
+message serverKickClientS2C{
+	required int32 mCode = 1; // code=0 表示账号在另外的地方登录了，code =1 表示其他原因
+}
+
+//请求免费转盘金币 id=135
+message requestFreeMoneyC2S{
+}
+//免费转盘金币回复 id=136
+message requestFreeMoneyS2C{
+	required int32 mResult = 1; // 0表示成功返回，1表示今天已经领取，2表示其他错误
+	required int32 mIndex = 2;  //中奖的索引[1-8]
+	repeated int64 mAwards=3; //免费金币数列表,从12点方向，顺时针一圈8个
+}
+
+//查询游戏的房间列表 id = 137
+message requestRoomListC2S{
+	required int32 mGameID = 1;  //游戏ID
+}
+//返回房间列表 id = 138
+message requestRoomListS2C{
+	required int32 mResult=1; //0是成功，1是失败
+	required int32 mGameID=2; //游戏ID,用于前端校验是该游戏的信息
+	message roomInfo  //房间信息结构
+	{
+		required int32 mRoomID = 1;  //房间ID
+		required int32 mRoomType=2;  //房间类型，0 体验场（目前没用，预留），1大众场，2 vip场 3 至尊场
+		required int64 mLessMoney=3; //房间的最低入场金币数
+		optional int32 mPlayerCount=4; //目前没用，预留以后要显示在线人数
+		optional string mRoomName=5;  //目前没有，预留后面显示房间名字
+	}
+	repeated roomInfo mRoomList =3; //房间列表
+}
+
+//查询房间中的坐桌情况 id=139，查询该消息时，等于请求进入房间，如果进入成功，后端就要推送玩家的坐桌和离桌消息过来
+message requestRoomInfoC2S{
+	required int32 mGameID =1;  //游戏ID
+	required int32 mRoomID=2; //房间ID
+}
+//返回房间的坐桌情况 id=140
+message requestRoomInfoS2C{
+	required int32 mResult =1;//0是成功，1是房间已满人，2是其他失败原因
+	required int32 mGameID=2; //游戏ID,用于前端校验是该游戏的信息
+	required int32 mRoomID=3; //房间ID,用于前端校验是该房间的信息
+	required int32 mDeskCount=4; //总桌子数
+	required int32 mSeatCount=5; //每个桌子的最大人数
+
+	message playerSeatInfo{  //玩家的坐桌数据
+		required int32 mDeskIndex=1; //所在的桌子号
+		required int32 mSeatIndex=2; //所在座位号
+		required playerInfo mPlayerInfo =3; //玩家的基本信息数据
+	}
+
+	repeated playerSeatInfo mPlayerList= 6; //玩家坐桌情况
+	required int32 mRoomType = 7; //房间类型，0 体验场（目前没用，预留），1大众场，2 vip场 3 至尊场
+}
+
+//当玩家处于房间中或在游戏中的时候，服务器需要推送其他玩家坐桌的消息过来 id =141
+message pushPlayerSeatDownS2C{
+	required int32 mGameID=1; //游戏ID,用于前端校验是该游戏的信息
+	required int32 mRoomID=2; //房间ID,用于前端校验是该房间的信息
+	required int32 mDeskIndex=3; //桌子号
+	required int32 mSeatIndex=4; //座位号
+	required playerInfo mPlayerInfo=5; //玩家信息
+}
+//当玩家处于房间中或在游戏中的时候，服务器需要推送其他玩家离桌的消息过来 id =142
+message pushPlayerSeatUpS2C{
+	required int32 mGameID=1; //游戏ID,用于前端校验是该游戏的信息
+	required int32 mRoomID=2; //房间ID,用于前端校验是该房间的信息
+	required int32 mDeskIndex=3; //桌子号
+	required int32 mSeatIndex=4; //座位号
+}
+
+//请求进入游戏 id=143
+message requestEnterGameC2S{
+	required int32 mGameID =1; //游戏ID
+	required int32 mRoomID=2; //房间ID
+	required int32 mDeskIndex=3; //桌子号
+	required int32 mSeatIndex=4; //座位号
+}
+//请求进入游戏返回 id=144
+message requestEnterGameS2C{
+	required int32 mResult =1; //0表示进入成功，1表示已经在游戏中，2表示该位置被别人坐了，3表示其他错误
+	required int32 mGameID=2; //游戏ID,用于前端校验是该游戏
+	required int32 mRoomID=3; //房间ID,用于前端校验是该房间
+	required int32 mDeskIndex=4; //桌子号,用于前端校验是该桌子
+	required int32 mSeatIndex=5; //座位号,用于前端校验是该座位
+}
+
+//请求离开当前游戏 id=145
+message requestLeaveGameC2S{
+}
+//请求离开当前游戏返回 id=146
+message requestLeaveGameS2C{
+	required int32 mResult =1; //0表示同意离开游戏,1表示游戏尚未结束不能离开，2表示其他原因不能离开
+}
+
+//刷新桌子上的玩家金币 id=147，仅推送当前玩家所在桌子的信息，其他桌子的不用发
+message pushDeskPlayerMoneyS2C{
+	required int32 mGameID=1; //游戏ID,用于前端校验是该游戏的信息
+	required int32 mRoomID=2; //房间ID,用于前端校验是该房间的信息
+	required int32 mDeskIndex=3; //桌子号
+	message seatPlayMoney{
+		required int32 mUserID =1;
+		required int32 mSeatIndex=2;
+		required int64 mMoney=3;
+	}
+	repeated seatPlayMoney mPlayerList =4; //需要刷新金币的玩家列表
+}
+
+//从房间退出到大厅协议 id=148
+message requestRoomBackToHallC2S{
+}
+//从房间退出到大厅协议返回 id=149
+message requestRoomBackToHallS2C{
+	required int32 mResult=1; //0是成功，1是失败
+}
+
+//请求支付面额信息 id=150
+message requestPayDataC2S{
+}
+//支付面额返回 id=151
+message requestPayDataS2C{
+	message payData{
+		required int32 mID = 1; //商品ID
+		required int32 mGold=2; //商品金币数
+		required int32 mMoney=3; //商品价格
+		optional string mDesc=4; //商品描述
+		required int32 mGiveRate=5; //赠送金币的百分比，如果是0就不会显示赠送
+	}
+	message daiLiData{  //代理充值信息
+		required string mNickName =1; //代理名字
+		required string mWechat=2; //代理微信号
+		required string mQQ = 3; //代理QQ号
+	}
+	message bankData{ //银行转账
+		repeated int32 mMoneyList=1; //转账的金额列表，8个
+		required string mBankName=2; //收款银行名
+		required string mBankAccount=3; //收款银行账号
+		required string mBankOwner=4; //收款人
+		required string mBankNoteCode=5; //备注码
+		required string mBankBranch=6; //开户支行名
+	}
+	repeated payData mPayDataList=1; //商品信息列表
+	repeated daiLiData mDaiLiDataList=2; //代理充值信息列表
+	required int32 mExternGold = 3; //是否开启额外赠送金币，0是不开启，1是开启，如果是关闭状态，商品有赠送比例也不会显示
+	optional bankData mBankData=4; //银行卡充值信息
+}
+//请求下单 id=152
+message requestPayOrderC2S{
+	required int32 mID =1; //请求下单的商品ID
+}
+//请求订单返回 id=153
+message requestPayOrderS2C{
+	required int32 mResult = 1; //0表示成功，1失败
+	required string mPayOrder=2; //支付订单
+	required string mPayLink=3; //打开支付页面的连接
+}
+
+//充值验单 id=154
+message checkPayOrderC2S{
+required string mPayOrder = 1; //支付订单
+}
+//验单返回 id=155
+message checkPayOrderS2C{
+required int32 mResult =1; //返回0表示成功，1表示订单重复，2表示等待验单中，3表示其他错误
+}
+//更新玩家地理位置 id=156
+message updatePlayerAddress{
+	required string mAddress = 1; //玩家地理位置
+}
+//更新玩家IP id=157
+message updatePlayerIp{
+	required string mIp = 1; //ip
+}
+//登录后获取公告 id=158
+message requestAnnouncementC2S{
+}
+//获取公告返回 id=159
+message requestAnnouncementS2C{
+	required int32 mResult = 1; //0表示成功，1是获取失败或者无公告
+	repeated string mAnnouncements=2; //公告内容，可以多条
+}
+//请求获取手机验证码 id=160
+message requestPhoneVerifyCodeC2S{
+	required string mPhoneNum = 1; //手机号
+}
+//请求验证码返回 id=161
+message requestPhoneVerifyCodeS2C{
+	required int32 mResult = 1; //0请求成功，1该手机已被绑定，2其他原因失败
+}
+
+//请求福利/任务列表 id=162, 目前暂时只有三个任务，10001是每日登录转盘，10002是每日首冲，10003是每日分享朋友圈
+message requestTaskListC2S{
+}
+//返回任务列表 id=163,除了客户端主动请求要返回，当任何一个任务状态有变化也要全量推送
+message requestTaskListS2C{
+	message taskInfo{
+		required int32 mTaskID = 1; //目前暂定三个任务，10001是每日登录转盘，10002是每日首冲，10003是每日分享朋友圈
+		required int32 mState = 2; //任务状态，0是未完成，1是已完成
+		required int32 mMoney = 3; //有些任务需要展示奖励的金币数，比如每日分享
+	}
+	repeated taskInfo mTaskList = 1;
+}
+//微信分享成功通知服务器 id=164
+message shareWechatC2S{
+	required int32 mShareType = 1; //0是分享给聊天朋友，1是分享到朋友圈
+}
+//微信分享成功后，获得奖励返回 id=165,如果已经完成了任务或没获得奖励，不用返回
+message shareWechatS2C{
+	required int32 mMoney = 1; //获得的金币数
+}
+//中奖跑马灯 id=166
+message pushNotificationS2C{
+	required int32 mGameID=1; //游戏ID
+	required int32 mNotifyID=2; //跑马灯ID
+	required string mNickName=3; //获奖的玩家名
+	required int64 mMoney=4; //获得的金币数
+}
+//领取成就奖励 id=167
+message getAchieveAwardC2S{
+	required int32 mAchieveType = 1; //0表示我的充值成就，1表示我的推荐人成就奖励，都是一键全领取
+}
+//领取成就奖励返回 id=168
+message getAchieveAwardS2C{
+	required int32 mResult = 1; //0领取成功，1没有可领取的成就奖励
+	required int64 mMoney=2; //本次一共领了多少金币，如果有的领取，记得还要发大厅的金币更新协议，还要发170号协议更新数据
+}
+//请求成就数据 id=169
+message requestAchieveDataC2S{
+}
+//成就数据返回，id=170,除了客户端主动请求要返回，当成就有任何变化也要全量推送
+message requestAchieveDataS2C{
+	required int32 mOpenAchieve = 1; //该玩家是否开放成就系统，0是不开启，1是开启
+	required int32 mRecommenderID = 2; //我的推荐人ID,如果还没填则返回0
+	required string mRecommenderNickName=3; //推荐人的昵称
+	
+	//一个成就点的数据结构
+	message achieveAwardInfo{   
+		required int32 mRecharge=1; //达到改成就需要多少元充值
+		required int64 mMoney = 2; //奖励的金币数
+		required int32 mState = 3; //奖励的状态，0是未达成，1是未领取，2是已领取
+	}
+	//所有成就点的数据结构
+	message achieveInfo{
+		required int32 mAllRecharge = 1; //总充值，单位元，取整，不是金币
+		required int32 mUserID = 2; //玩家的ID
+		required string mNickName=3; //玩家的昵称
+		repeated achieveAwardInfo mAchieveAwardList = 4; //所有成就列表，一定要从小到大按顺序
+	}
+	
+	required int32 mMyAllRecharge=4; //我的总充值，元
+	repeated achieveAwardInfo mMyAchieveAwardList = 5; //我的成就列表，一定要从小到大按顺序
+	repeated achieveInfo mMyBranches =6; //我推荐的人的成就数据，如果对方没有开启成就系统，就不要放进去
+}
+//绑定推荐人 id=171
+message bindRecommenderC2S{
+	required int32 mUserID = 1; //推荐人的ID
+}
+//绑定返回结果 id=172
+message bindRecommenderS2C{
+	required int32 mResult = 1; //0是绑定成功，成功后需要发 170号协议更新数据，1是已绑定过推荐人了，2是该推荐人已达到绑定上限，3是其他原因失败
+}
+
+//请求换桌 id=173 
+message requestChangeDeskC2S{
+}
+
+//换桌返回 id=174
+message requestChangeDeskS2C{
+	required int32 mResult =1; //0表示进入成功，1表示该状态不允许换桌，2表示没有空余的桌子，3表示该游戏不支持换桌，4表示其他换桌失败
+	required int32 mGameID=2; //游戏ID,用于前端校验是该游戏
+	required int32 mRoomID=3; //房间ID,用于前端校验是该房间
+	required int32 mDeskIndex=4; //新的桌子号
+	required int32 mSeatIndex=5; //新的座位号
+}
+
+//提交银行卡充值 id=175
+message requestSubmitBankRechargeC2S{
+	required int32 mMoney = 1; //充值金额
+	required string mBankName=2; //收款银行名
+	required string mBankAccount=3; //收款银行账号
+	required string mBankOwner=4; //收款人
+	required string mBankNoteCode=5; //备注码
+	required string mBankBranch=6; //开户支行名
+	required string mUserName=7; //存款人姓名
+	required string mUserAccount=8; //存款人银行卡后四位
+}
+//提交银行卡充值返回 id=176
+message requestSubmitBankRechargeS2C{
+	required int32 mResult=1; //返回码，0是提交成功，1是提交失败
+}
+
+//收藏官网领取奖励 id=177
+message requestCollectWebAwardC2S{
+	required string mAwardCode=1; //奖励码
+}
+//收藏官网领取奖励返回 id=178
+message requestCollectWebAwardS2C{
+	required int32 mResult=1; //0是领取成功，1是奖励码无效，2是该账号已领取过奖励，3是其他原因失败
+	required int32 mMoney=2; //奖励的金币数
+}
+

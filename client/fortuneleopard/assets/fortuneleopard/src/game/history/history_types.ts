@@ -1,4 +1,4 @@
-import type { GoFrame } from '../net/FTResultAdapter';
+import type { GoFrame } from '../net/FLResultAdapter';
 export interface HistoryRecord {
     betId: string;
     gameId: string;

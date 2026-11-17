@@ -1,0 +1,27 @@
+
+3c1dj.png
+size: 1145,368
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1jikuangs
+  rotate: false
+  xy: 2, 134
+  size: 737, 232
+  orig: 737, 232
+  offset: 0, 0
+  index: -1
+1jikuangx
+  rotate: false
+  xy: 2, 2
+  size: 724, 130
+  orig: 724, 130
+  offset: 0, 0
+  index: -1
+baozi
+  rotate: false
+  xy: 741, 3
+  size: 402, 363
+  orig: 402, 363
+  offset: 0, 0
+  index: -1

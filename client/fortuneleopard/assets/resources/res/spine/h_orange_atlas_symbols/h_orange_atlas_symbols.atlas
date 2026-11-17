@@ -1,0 +1,48 @@
+
+h_orange_atlas_symbols.png
+size: 170,290
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+jz_ban_1
+  rotate: false
+  xy: 2, 82
+  size: 90, 59
+  orig: 95, 66
+  offset: 1, 2
+  index: -1
+jz_ban_2
+  rotate: true
+  xy: 94, 41
+  size: 70, 73
+  orig: 84, 78
+  offset: 0, 2
+  index: -1
+jz_ban_3
+  rotate: false
+  xy: 2, 22
+  size: 89, 58
+  orig: 99, 66
+  offset: 8, 2
+  index: -1
+jz_juzi
+  rotate: true
+  xy: 2, 143
+  size: 145, 162
+  orig: 145, 162
+  offset: 0, 0
+  index: -1
+jz_yezi_l
+  rotate: false
+  xy: 94, 113
+  size: 74, 28
+  orig: 74, 28
+  offset: 0, 0
+  index: -1
+jz_yezi_r
+  rotate: false
+  xy: 93, 2
+  size: 55, 37
+  orig: 55, 37
+  offset: 0, 0
+  index: -1

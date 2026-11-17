@@ -6,7 +6,7 @@
     "watermarkLocation": "default",
     "logo": {
       "type": "custom",
-      "image": "project://web.png"
+      "image": "project://web.jpg"
     },
     "background": {
       "type": "color",
@@ -23,7 +23,7 @@
   },
   "bundleConfig": {
     "custom": {
-      "auto_f2h3aYRYFMUpzejDXTG9BP": {
+      "auto_77aH0FW/5EZoXkMtl+TjaD": {
         "displayName": "szcw_1021fortuneleopard",
         "configs": {
           "native": {
@@ -93,12 +93,6 @@
             "preferredOptions": {
               "compressionType": "merge_dep",
               "isRemote": false
-            },
-            "overwriteSettings": {
-              "web-desktop": {
-                "compressionType": "merge_all_json",
-                "isRemote": false
-              }
             }
           }
         }

@@ -1,0 +1,83 @@
+
+2c3dj.png
+size: 978,275
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+er1
+  rotate: true
+  xy: 518, 3
+  size: 50, 63
+  orig: 50, 63
+  offset: 0, 0
+  index: -1
+er2
+  rotate: false
+  xy: 644, 2
+  size: 62, 65
+  orig: 63, 66
+  offset: 1, 1
+  index: -1
+houbi
+  rotate: true
+  xy: 590, 69
+  size: 204, 196
+  orig: 209, 199
+  offset: 5, 3
+  index: -1
+jinbi0104
+  rotate: true
+  xy: 583, 13
+  size: 40, 59
+  orig: 41, 59
+  offset: 0, 0
+  index: -1
+jinbi0105
+  rotate: false
+  xy: 938, 224
+  size: 38, 49
+  orig: 38, 49
+  offset: 0, 0
+  index: -1
+jinbi02
+  rotate: false
+  xy: 708, 20
+  size: 47, 47
+  orig: 47, 47
+  offset: 0, 0
+  index: -1
+meimao
+  rotate: false
+  xy: 399, 24
+  size: 117, 29
+  orig: 117, 30
+  offset: 0, 0
+  index: -1
+qianbi
+  rotate: true
+  xy: 788, 19
+  size: 254, 148
+  orig: 254, 150
+  offset: 0, 2
+  index: -1
+tou
+  rotate: true
+  xy: 2, 3
+  size: 270, 395
+  orig: 278, 395
+  offset: 0, 0
+  index: -1
+toufa
+  rotate: true
+  xy: 757, 21
+  size: 46, 29
+  orig: 46, 29
+  offset: 0, 0
+  index: -1
+weiba
+  rotate: false
+  xy: 399, 55
+  size: 189, 218
+  orig: 189, 218
+  offset: 0, 0
+  index: -1

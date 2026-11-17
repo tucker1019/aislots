@@ -1,5 +1,5 @@
 import { _decorator, Component, director, sp } from 'cc';
-import { xNodeFT } from '../../xtools/xNodeFT';
+import { xNodeFL } from '../../xtools/xNodeFL';
 const { ccclass, property } = _decorator;
 
 @ccclass('PGFW')
@@ -8,7 +8,7 @@ export class PGFW extends Component {
     // onEnable() {
     //     const refresh = (index = 1) => {
     //         const spineName = ["1", "xh"][index];
-    //         const pgSpine: sp.Skeleton = xNodeFT.findComponent("pg", this.node, sp.Skeleton)
+    //         const pgSpine: sp.Skeleton = xNodeFL.findComponent("pg", this.node, sp.Skeleton)
     //         //@ts-ignore
     //         pgSpine._updateSkeletonData()
     //         pgSpine.setAnimation(0, spineName, false)
@@ -20,7 +20,7 @@ export class PGFW extends Component {
     // }
 
     protected onEnable(): void {
-        const pgSpine: sp.Skeleton = xNodeFT.findComponent("pg", this.node, sp.Skeleton)
+        const pgSpine: sp.Skeleton = xNodeFL.findComponent("pg", this.node, sp.Skeleton)
         if (director.getScene().name == "game") {
             // @ts-ignore
             pgSpine._updateSkeletonData()

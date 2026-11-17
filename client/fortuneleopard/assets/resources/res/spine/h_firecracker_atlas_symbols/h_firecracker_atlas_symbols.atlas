@@ -1,0 +1,48 @@
+
+h_firecracker_atlas_symbols.png
+size: 124,226
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bz_boom_l1
+  rotate: true
+  xy: 2, 36
+  size: 66, 73
+  orig: 67, 73
+  offset: 0, 0
+  index: -1
+bz_boom_l2
+  rotate: true
+  xy: 2, 104
+  size: 48, 76
+  orig: 48, 76
+  offset: 0, 0
+  index: -1
+bz_boom_r1
+  rotate: true
+  xy: 77, 23
+  size: 61, 45
+  orig: 61, 46
+  offset: 0, 0
+  index: -1
+bz_boom_r2
+  rotate: true
+  xy: 80, 86
+  size: 66, 42
+  orig: 66, 42
+  offset: 0, 0
+  index: -1
+bz_ld
+  rotate: false
+  xy: 2, 2
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
+bz_ld_line
+  rotate: true
+  xy: 2, 154
+  size: 70, 114
+  orig: 70, 114
+  offset: 0, 0
+  index: -1

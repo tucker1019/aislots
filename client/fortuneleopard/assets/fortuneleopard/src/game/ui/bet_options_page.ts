@@ -1,5 +1,5 @@
 import { fitGameOverlay } from './game_overlay';
-import { showMoney } from '../common/FTUtils';
+import { showMoney } from '../common/FLUtils';
 import { totalBet, type BetChoice } from './bet_choices';
 const formatMoney = (value: string) => showMoney(Number(value));
 interface BetInfo { choices: BetChoice[]; bet: string; level: number; lines: number; balance: string }
