@@ -33,11 +33,15 @@ export function GamePage({onBack,onMinimize,minimized=false,gameId='AG1'}:{onBac
   const receive=(event:MessageEvent<unknown>)=>{
    if(event.source!==frameRef.current?.contentWindow||event.origin!==origin)return;
    const data=event.data;
-   if(!data||typeof data!=='object'||!('type' in data)||!('gameId' in data)||data.type!=='aislots:exit'||data.gameId!==gameId)return;
+   if(!data||typeof data!=='object'||!('type' in data)||!('gameId' in data)||data.gameId!==gameId)return;
+   if(data.type==='aislots:session-expired'){
+    forgetGameEntry(gameId);setUrl(undefined);void reopen();return;
+   }
+   if(data.type!=='aislots:exit')return;
    forgetGameEntry(gameId);void client.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'all'});onBack();
   };
   window.addEventListener('message',receive);return()=>window.removeEventListener('message',receive);
- },[url,allowed,gameId,client,onBack]);
+ },[url,allowed,gameId,client,onBack,reopen]);
  function close(){forgetGameEntry(gameId);void client.invalidateQueries({queryKey:['lobby','current-profile'],refetchType:'all'});onBack();}
  const content=<section className={`game-detail-shell${expanded?' game-detail-expanded':''}${transitioning?' game-detail-transitioning':''}${minimized?' game-detail-minimized':''}`} inert={minimized} aria-hidden={minimized} role="dialog" aria-modal={!minimized} aria-label={t('gamePreview.dialog')}>
   {!expanded&&<header className="game-detail-toolbar"><button className="game-toolbar-icon" type="button" onClick={close} aria-label={t('copy.backToLobby')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><span>{t('gamePreview.details')}</span><button className="game-toolbar-icon" type="button" disabled={transitioning} onClick={onMinimize} aria-label={t('gamePreview.minimize')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 9 7 7 7-7"/></svg></button></header>}

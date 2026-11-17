@@ -47,10 +47,10 @@ export function OperationPopupHost() {
   });
 
   useEffect(() => {
-    if (view !== 'home') return;
+    if (view !== 'home' || uid === undefined) return;
     const { enqueue } = useOperationPopups.getState();
     enqueue([{ kind: 'deposit', id: 'entry:deposit', priority: 20 }]);
-    if (uid !== undefined) enqueue([{ kind: 'checkin', id: 'entry:checkin:' + uid, priority: 10, uid }]);
+    enqueue([{ kind: 'checkin', id: 'entry:checkin:' + uid, priority: 10, uid }]);
   }, [view, uid]);
 
   useEffect(() => {

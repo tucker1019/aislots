@@ -27,11 +27,32 @@ export async function launchGame(gameId: string): Promise<string> {
 }
 
 
-const embeddedEntryKey = (gameId: string) => 'aislots-embedded-' + gameId;
+// Version the per-tab entry cache so an entry issued before a game's launch
+// address was corrected (for example AG9 pointing at the AG4 port) cannot be
+// reused after a local catalog/config change.
+const embeddedEntryKey = (gameId: string) => 'aislots-embedded-v2-' + gameId;
 /** 仅在当前标签页保存服务端签发的入口，父页面刷新时恢复同一iframe。 */
-export function rememberGameEntry(url: string, gameId = 'AG1') { sessionStorage.setItem(embeddedEntryKey(gameId), url); }
+export function rememberGameEntry(url: string, gameId = 'AG1', expiresAt?: string) {
+  const expires = expiresAt && Number.isFinite(Date.parse(expiresAt))
+    ? Date.parse(expiresAt)
+    : Date.now() + 4 * 60 * 1000;
+  sessionStorage.setItem(embeddedEntryKey(gameId), JSON.stringify({ url, expiresAt: expires }));
+}
 export function readGameEntry(gameId = 'AG1'): string | undefined {
-  const value = sessionStorage.getItem(embeddedEntryKey(gameId));
-  return value ? resolveGameEntry(value, false) : undefined;
+  const stored = sessionStorage.getItem(embeddedEntryKey(gameId));
+  if (!stored) return undefined;
+  try {
+    const value = JSON.parse(stored);
+    if (typeof value?.url !== 'string' || !Number.isFinite(value.expiresAt) || value.expiresAt <= Date.now()) {
+      sessionStorage.removeItem(embeddedEntryKey(gameId));
+      return undefined;
+    }
+    return resolveGameEntry(value.url, false);
+  } catch {
+    // Drop entries written by the old version: they had no expiry and could
+    // keep an expired launch ticket alive forever.
+    sessionStorage.removeItem(embeddedEntryKey(gameId));
+    return undefined;
+  }
 }
 export function forgetGameEntry(gameId = 'AG1') { sessionStorage.removeItem(embeddedEntryKey(gameId)); }
