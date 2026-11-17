@@ -1,6 +1,7 @@
 import { object, string } from './schema';
 
-export type PreviewGameId = 'AG1' | 'AG2' | 'AG3';
+export const previewGameIds = ['AG1', 'AG2', 'AG3', 'AG4', 'AG5', 'AG6', 'AG7', 'AG8', 'AG9'] as const;
+export type PreviewGameId = typeof previewGameIds[number];
 
 export async function issuePreviewTicket(uid: number, sid: string, gameId: PreviewGameId = 'AG1'): Promise<string> {
  const response = await fetch('/api/game/launch', {

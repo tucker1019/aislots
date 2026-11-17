@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { Alert, Card, Form, Input, Select } from 'antd';
 import { AsyncButton } from '../components/AsyncButton';
 import { Page } from '../components/Page';
-import { issuePreviewTicket, type PreviewGameId } from '../services/gamePreview';
+import { issuePreviewTicket, previewGameIds, type PreviewGameId } from '../services/gamePreview';
 
 interface PreviewFields {
  gameId: PreviewGameId;
@@ -62,7 +62,7 @@ export function GamePreview() {
   <Card>
    <Form form={form} layout="vertical" initialValues={{ gameId: 'AG1', previewUrl: 'http://localhost:7456/' }} onFinish={openPreview}>
     <Form.Item label="游戏" name="gameId" rules={[{ required: true, message: '请选择游戏' }]}>
-     <Select disabled={pending} options={[{ value: 'AG1', label: 'AG1' }, { value: 'AG2', label: 'AG2' }, { value: 'AG3', label: 'AG3' }]} />
+     <Select disabled={pending} options={previewGameIds.map(gameId=>({value:gameId,label:gameId}))} />
     </Form.Item>
     <Form.Item label="平台 UID" name="uid" rules={[{ required: true, message: '请输入平台 UID' }]}>
      <Input inputMode="numeric" disabled={pending} />
