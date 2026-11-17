@@ -1,6 +1,6 @@
 import { t } from '../../i18n';
 import { useEffect, useRef, useState } from 'react';
-import { Spin } from 'antd';
+import { SlotsLoader } from '../../components/feedback/SlotsLoader';
 import { FloatingBenefits } from './FloatingBenefits';
 import { NoticeBar } from './NoticeBar';
 import { PromotionBanner } from './PromotionBanner';
@@ -76,12 +76,12 @@ export function HomeContent({ onComingSoon }: { onComingSoon: () => void }) {
         {visibleGames.map((game, index) => (
           <GameTile gameId={game.id} key={game.id} cover={game.cover} label={game.id === 'AG1' ? t('copy.enterMahjongWays') : (getLocale() !== 'zh-TW' && game.nameEn ? game.nameEn : game.name)} onEnter={game.enabled ? () => navigateLobby('game', { gameId: game.id }) : onComingSoon} lazy={index >= 12 && index < GAMES_PER_BATCH} />
         ))}
-        {catalog.isPending && <span className="home-game-catalog-state" role="status" aria-label={t('copy.loading')}><Spin size="small" /></span>}
+        {catalog.isPending && <span className="home-game-catalog-state" role="status" aria-label={t('copy.loading')}><SlotsLoader className="slots-loader-home" /></span>}
         {catalog.isError && <div className="home-game-catalog-state"><NetworkError onRetry={() => void catalog.refetch()} disabled={catalog.isFetching}/></div>}
         {catalog.isSuccess && !games.length && <p className="home-game-catalog-state">{t('copy.comingSoon')}</p>}
       </div>
       {hasMore && <div className="home-game-list-end" ref={listEnd}>
-        {loadingMore && <span role="status" aria-label={t('copy.loading')}><Spin size="small" /></span>}
+        {loadingMore && <span role="status" aria-label={t('copy.loading')}><SlotsLoader className="slots-loader-home" /></span>}
       </div>}
     </section>
   </>;

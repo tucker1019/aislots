@@ -4,8 +4,8 @@ import {afterEach,expect,it,vi} from 'vitest';
 import {rememberGameCardOrigin} from './gameCardOrigin';
 import {useGameCardTransition} from './useGameCardTransition';
 function Harness({onClose}:{onClose:()=>void}){
- const shell=useRef<HTMLElement>(null);const close=useGameCardTransition('card-test',shell);
- return <section ref={shell}><button onClick={()=>close(onClose)}>close</button><iframe title="game" src="about:blank"/></section>;
+ const shell=useRef<HTMLElement>(null);const {closeToCard}=useGameCardTransition('card-test',shell);
+ return <section ref={shell}><button onClick={()=>closeToCard(onClose)}>close</button><iframe title="game" src="about:blank"/></section>;
 }
 afterEach(()=>{cleanup();vi.restoreAllMocks();});
 it('opens from the clicked card, then closes back to it after 500ms without remounting the iframe',()=>{

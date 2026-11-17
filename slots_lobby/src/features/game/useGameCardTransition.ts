@@ -1,8 +1,9 @@
-import { useCallback, useLayoutEffect, useRef, type RefObject } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { gameCardOrigin } from './gameCardOrigin';
 import { gamePageFrames, gamePageMotionOptions } from './gamePageMotion';
 
 export function useGameCardTransition(gameId: string, shellRef: RefObject<HTMLElement | null>) {
+  const [opening, setOpening] = useState(true);
   const running = useRef<Animation | null>(null);
   const closing = useRef(false);
   const animate = useCallback((shrinking: boolean, done: () => void) => {
@@ -25,16 +26,17 @@ export function useGameCardTransition(gameId: string, shellRef: RefObject<HTMLEl
   }, [gameId, shellRef]);
   useLayoutEffect(() => {
     const shell = shellRef.current;
-    animate(false, () => {});
+    animate(false, () => setOpening(false));
     return () => {
       running.current?.cancel();
       running.current = null;
       shell?.classList.remove('game-detail-docking');
     };
   }, [animate, shellRef]);
-  return useCallback((done: () => void) => {
+  const closeToCard = useCallback((done: () => void) => {
     if (closing.current || running.current) return;
     closing.current = true;
     animate(true, done);
   }, [animate]);
+  return { opening, closeToCard };
 }

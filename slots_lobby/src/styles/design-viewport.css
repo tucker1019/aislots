@@ -1,5 +1,5 @@
 /* Layout zoom avoids Android Chrome clipping transformed scroll containers twice. */
-:root { --lobby-scale: 1; --lobby-inverse-scale: 1; --lobby-height: 100dvh; --content: 420px; }
+:root { --lobby-scale: 1; --lobby-inverse-scale: 1; --lobby-height: 100dvh; --content: 420px; touch-action: pan-x pan-y; }
 body { min-width: 0; height: 100dvh; }
 #lobby-viewport { position: fixed; left: 50%; top: 0; width: 420px; height: var(--lobby-height); transform: translateX(-50%); zoom: var(--lobby-scale); isolation: isolate; }
 #root { width: 420px; max-width: none; height: var(--lobby-height); margin: 0; }

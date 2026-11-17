@@ -44,14 +44,45 @@
 :root[data-theme="dark"] .header-deposit:hover { background: #ffe08b; }
 :root[data-theme="dark"] .home-notice { color: #e6d3ff; }
 :root[data-theme="dark"] .home-notice > svg { color: var(--arcade-gold); }
-:root[data-theme="dark"] .promotion-banner { border-radius: 16px; }
+:root[data-theme="dark"] .header-balance-value { color: var(--arcade-gold); }
+:root[data-theme="dark"] .my-account .account-balance { color: var(--arcade-gold); }
+:root[data-theme="dark"] .promotion-banner {
+  position: relative;
+  border: 1px solid #8e5bd0;
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px #4f2b7a, 0 5px 18px #160b294d;
+  isolation: isolate;
+}
+:root[data-theme="dark"] .promotion-banner::before {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  content: '';
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(112deg, #a568ff1c 0%, transparent 32%, #36c9ff18 68%, #a568ff20 100%);
+  mix-blend-mode: screen;
+}
+:root[data-theme="dark"] .promotion-banner::after {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  content: '';
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 #ffffff3b, inset 0 -1px 0 #180b2e88;
+}
+:root[data-theme="dark"] .promotion-banner img { filter: saturate(1.12) contrast(1.04); }
 :root[data-theme="dark"] .provider-tabs { gap: 7px; padding-bottom: 14px; }
 :root[data-theme="dark"] .provider-tab {
-  border-radius: 16px;
-  font-weight: 700;
-  box-shadow: 0 4px 0 var(--arcade-depth);
+  min-height: 52px;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 2px 0 var(--arcade-depth);
   transition: transform 120ms ease, background-color 120ms ease;
 }
+:root[data-theme="dark"] .provider-tab .provider-mark { height: 20px; font-size: 17px; }
+:root[data-theme="dark"] .provider-tab.provider-hot .provider-mark { font-size: 20px; }
 :root[data-theme="dark"] .provider-tab[aria-pressed="true"] {
   color: var(--arcade-gold-ink);
   background: var(--arcade-gold);
@@ -113,6 +144,9 @@
 }
 :root[data-theme="dark"] .checkin-day.current > span { color: inherit; }
 :root[data-theme="dark"] .checkin-day.claimed { color: #a4edce; }
+:root[data-theme="dark"] .checkin-day.current.claimed,
+:root[data-theme="dark"] .checkin-day.current.claimed > span,
+:root[data-theme="dark"] .checkin-day.current.claimed > strong { color: var(--arcade-gold-ink); }
 :root[data-theme="dark"] .checkin-progress p > span:last-child { color: var(--theme-ink); }
 :root[data-theme="dark"] .checkin-progress b { color: #ffd15c; }
 :root[data-theme="dark"] .checkin-progress b.met { color: #a4edce; }
@@ -269,4 +303,31 @@
 @media (prefers-reduced-motion: reduce) {
   :root[data-theme="dark"] .account-money-actions button { transition: none; }
   :root[data-theme="dark"] .account-money-actions button:active { transform: none; }
+}
+
+/* Keep secondary account services quiet so deposit and withdrawal remain the primary actions. */
+:root[data-theme="dark"] .my-account .account-card:not(.account-benefits-card) .account-action-icon {
+  --shortcut-face: #916bc0;
+  --shortcut-rim: #c1a4e3;
+  --shortcut-base: #60388a;
+  --shortcut-ink: #fff8ff;
+}
+
+/* Benefit shortcuts use a softer gold so the wallet actions remain the visual anchor. */
+:root[data-theme="dark"] .my-account .account-benefits-card .account-action-icon {
+  --shortcut-face: #d8c18b;
+  --shortcut-rim: #f0dfb1;
+  --shortcut-base: #9d8150;
+  --shortcut-ink: #5b4525;
+  box-shadow: inset 0 2px 0 #ffffff35, inset 0 -2px 0 #0000000d, 0 3px 0 var(--shortcut-base), 0 4px 4px #160b2933;
+}
+
+/* Benefits use an opal-teal keycap to separate rewards from wallet actions. */
+:root[data-theme="dark"] .my-account .account-benefits-card .account-action-icon {
+  --shortcut-face: #70c7bf;
+  --shortcut-rim: #b8f0e7;
+  --shortcut-base: #367f79;
+  --shortcut-ink: #17484a;
+  background: linear-gradient(145deg, #9adfd6, var(--shortcut-face));
+  box-shadow: inset 0 2px 0 #ffffff55, inset 0 -2px 0 #0b4a4622, 0 3px 0 var(--shortcut-base), 0 5px 6px #160b2933;
 }

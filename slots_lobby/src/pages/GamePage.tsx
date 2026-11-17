@@ -2,7 +2,6 @@ import { useGameCardTransition } from '../features/game/useGameCardTransition';
 import { useGameDocking } from '../features/game/useGameDocking';
 import type { RefObject } from 'react';
 import { gameDisplay, type GameId } from '../app/games';
-import {AsyncButton} from '../components/buttons/AsyncButton';
 import { createPortal } from 'react-dom';
 import { t } from '../i18n';
 import { useCallback,useEffect,useLayoutEffect,useRef,useState } from 'react';
@@ -15,7 +14,7 @@ import { useGameExpansion } from '../features/game/useGameExpansion';
 import { GameInsights } from '../features/game/GameInsights';
 export function GamePage({onBack,onMinimize,minimized=false,gameId='AG1',dockRef}:{onBack:()=>void;onMinimize?:()=>void;minimized?:boolean;gameId?:GameId;dockRef?:RefObject<HTMLElement | null>}){
  const shellRef=useGameDocking(minimized,dockRef);
- const closeToCard=useGameCardTransition(gameId,shellRef);
+ const {opening,closeToCard}=useGameCardTransition(gameId,shellRef);
  const catalog=useLobbyGames();
  const entry=catalog.data?.find(game=>game.id===gameId);
  const allowed=entry?.enabled===true;
@@ -66,10 +65,10 @@ export function GamePage({onBack,onMinimize,minimized=false,gameId='AG1',dockRef
    {allowed&&<GameInsights part="rtp" gameId={gameId}/>}
    <div className="game-detail-play-area">
    <div className="game-preview" ref={previewRef}><div className="game-preview-frame" ref={surfaceRef}>
-    {allowed&&url&&<iframe ref={frameRef} key={url} src={url} title={game.frameTitle} allow="autoplay; fullscreen; clipboard-write" allowFullScreen referrerPolicy="no-referrer" onError={()=>{setError(t('copy.gameFailedToLoadPleaseReEnter'));}}/>}
+    {!opening&&allowed&&url&&<iframe ref={frameRef} key={url} src={url} title={game.frameTitle} allow="autoplay; fullscreen; clipboard-write" allowFullScreen referrerPolicy="no-referrer" onError={()=>{setError(t('copy.gameFailedToLoadPleaseReEnter'));}}/>}
     {catalog.isError&&<NetworkError onRetry={()=>void catalog.refetch()} disabled={catalog.isFetching}/>}
     {catalog.isSuccess&&!allowed&&<p>{t('copy.comingSoon')}</p>}
-    {error&&<div className="game-preview-error" role="alert"><p>{error}</p><AsyncButton loading={preparing} type="button" disabled={preparing||!allowed} onClick={()=>void reopen()}>{t('gamePreview.retry')}</AsyncButton></div>}
+    {error&&<NetworkError onRetry={()=>void reopen()} disabled={preparing}/>}
    </div><div className="game-preview-actions"><span>{t('gamePreview.preview')}</span><button type="button" disabled={!allowed||!url||preparing} onClick={()=>changeExpanded(true)}>{t('gamePreview.expand')}</button></div></div>
    {allowed&&<GameInsights part="ranking" gameId={gameId}/>}
    </div>

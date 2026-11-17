@@ -236,3 +236,52 @@
   line-height: 1;
   cursor: pointer;
 }
+
+/* Image skeletons keep banner and game cards stable while remote artwork loads. */
+@keyframes lobby-image-shimmer {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(220%); }
+}
+
+.promotion-link,
+.game-tile { position: relative; isolation: isolate; }
+
+.promotion-link::before,
+.game-tile::before {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-panel, #281b4b) 94%, #fff), var(--theme-soft, #3b2b63));
+}
+
+.promotion-link::after,
+.game-tile::after {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 42%;
+  height: 100%;
+  content: '';
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent, color-mix(in srgb, #fff 18%, transparent), transparent);
+  transform: translateX(-120%);
+  animation: lobby-image-shimmer 1.5s ease-in-out infinite;
+}
+
+.promotion-link::before,
+.promotion-link::after { inset: 0; width: auto; }
+.promotion-link:not(.is-image-loaded)::before,
+.game-tile:not(.is-image-loaded)::before { z-index: 0; }
+.promotion-link.is-image-loaded::after,
+.game-tile.is-image-loaded::after { display: none; }
+
+.promotion-link img,
+.game-tile > img { position: relative; z-index: 1; transition: opacity 180ms ease; }
+.promotion-link:not(.is-image-loaded) img,
+.game-tile:not(.is-image-loaded) > img { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .promotion-link::after,
+  .game-tile::after { animation: none; opacity: .35; transform: translateX(0); }
+}

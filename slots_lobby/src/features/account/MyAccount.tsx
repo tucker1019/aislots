@@ -17,7 +17,7 @@ interface AccountAction {id:string;icon:IconName;label:string;shortLabel?:string
 const benefits = ():AccountAction[] => [
  {id:'checkin',icon:'calendar',label:t('copy.dailyCheckIn'),shortLabel:t('account.shortcut.checkin')},
  {id:'weekly',icon:'gift',label:t('copy.weeklyGift'),shortLabel:t('account.shortcut.weekly')},
- {id:'monthly',icon:'calendar',label:t('copy.monthlyGift'),shortLabel:t('account.shortcut.monthly')},
+ {id:'monthly',icon:'chest',label:t('copy.monthlyGift'),shortLabel:t('account.shortcut.monthly')},
  {id:'upgrade',icon:'growth',label:t('copy.levelUpReward'),shortLabel:t('account.shortcut.upgrade')},
  {id:'vip',icon:'crown',label:t('copy.vipCenter'),shortLabel:t('account.shortcut.vip')},
 ];

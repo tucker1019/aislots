@@ -27,9 +27,8 @@ export function BenefitsPage({ onBack, onComingSoon, onVip }: { onVip?: () => vo
       {vip.isPending ? <LoadingState label={t('copy.loadingVipBenefits')}/> : !info ? <NetworkError disabled={vip.isFetching} onRetry={() => void vip.refetch()}/> : <>
         <SalaryBenefit kind="weekly" info={info}/>
         <SalaryBenefit kind="monthly" info={info}/>
-        <BenefitCard claimable={rewards.active('upgrade')} title={t('copy.levelUpReward')} icon="growth" tone="green" value={betMoney(info.nextUpgradeReward ?? 0)} description={info.nextBet === null ? t('copy.youHaveReachedTheHighestVipLevel238') : t('copy.upgradeToVipValueToEarnA', {p0: info.level + 1})} action={info.upgradeReward > 0 ? t('copy.viewLevelUpRewards') : t('copy.upgradeVipForRewards')} onAction={info.upgradeReward > 0 ? (onVip ?? onComingSoon) : () => setUpgradeOpen(true)} />
-        <BenefitCard claimable={rewards.vip} title={t('copy.vipCenter')} icon="crown" tone="gold" value={`VIP${info.level}`} description={growth} action={t('copy.viewDetails')} onAction={onVip ?? onComingSoon} />
-        <p className="benefits-note">{t('copy.weeklyAndMonthlyGiftsAreEstimatesFor')}</p>
+        <BenefitCard claimable={rewards.active('upgrade')} title={t('copy.levelUpReward')} icon="growth" tone="purple" value={betMoney(info.nextUpgradeReward ?? 0)} description={info.nextBet === null ? t('copy.youHaveReachedTheHighestVipLevel238') : t('copy.upgradeToVipValueToEarnA', {p0: info.level + 1})} action={info.upgradeReward > 0 ? t('copy.viewLevelUpRewards') : t('copy.upgradeVipForRewards')} onAction={info.upgradeReward > 0 ? (onVip ?? onComingSoon) : () => setUpgradeOpen(true)} />
+        <BenefitCard claimable={rewards.vip} title={t('copy.vipCenter')} icon="crown" tone="purple" value={`VIP${info.level}`} description={growth} action={t('copy.viewDetails')} onAction={onVip ?? onComingSoon} />
       </>}
     </div>
     {upgradeOpen && info && <VipUpgradeModal info={info} onClose={() => setUpgradeOpen(false)} onHome={() => { setUpgradeOpen(false); navigateLobby('home'); }} />}

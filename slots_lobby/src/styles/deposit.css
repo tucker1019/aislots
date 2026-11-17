@@ -45,3 +45,65 @@
 .withdrawal-turnover-item dl { margin: 8px 0 0; }
 .withdrawal-turnover-item dl > div { border-top: 1px solid var(--line); padding: 5px 0; }
 .withdrawal-turnover-item dd { margin: 0; text-align: end; font-size: 12px; }
+
+/* Bonus badges get a restrained attention cue without changing tier layout. */
+@keyframes deposit-bonus-pulse {
+  0%, 72%, 100% { transform: scale(1); }
+  78%, 86% { transform: scale(1.045); }
+}
+
+@keyframes deposit-bonus-shine {
+  0%, 58% { transform: translateX(-180%) skewX(-18deg); opacity: 0; }
+  66% { opacity: .55; }
+  76%, 100% { transform: translateX(260%) skewX(-18deg); opacity: 0; }
+}
+
+.deposit-tiers .tier-bonus {
+  overflow: hidden;
+  animation: none;
+  transform-origin: 100% 0;
+}
+
+.deposit-tiers .tier-bonus::after {
+  position: absolute;
+  top: -30%;
+  bottom: -30%;
+  left: 0;
+  width: 34%;
+  content: '';
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, #ffffffb3, transparent);
+  opacity: 0;
+  transform: translateX(-180%) skewX(-18deg);
+}
+
+/* Wait for the deposit view to settle, then introduce each offer in sequence.
+   Keeping the idle state still prevents a later badge from flashing before its turn. */
+.deposit-tiers--animate .tier-bonus {
+  animation: deposit-bonus-pulse 3.6s ease-in-out infinite;
+  animation-delay: var(--bonus-delay, 0s);
+}
+
+.deposit-tiers--animate .tier-bonus::after {
+  animation: deposit-bonus-shine 3.6s ease-in-out infinite;
+  animation-delay: var(--bonus-delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deposit-tiers .tier-bonus,
+  .deposit-tiers .tier-bonus::after { animation: none; }
+}
+
+/* Stagger each bonus badge so the offers do not animate as one block. */
+.deposit-tiers > button:nth-child(1) .tier-bonus { --bonus-delay: .16s; }
+.deposit-tiers > button:nth-child(2) .tier-bonus { --bonus-delay: .32s; }
+.deposit-tiers > button:nth-child(3) .tier-bonus { --bonus-delay: .48s; }
+.deposit-tiers > button:nth-child(4) .tier-bonus { --bonus-delay: .64s; }
+.deposit-tiers > button:nth-child(5) .tier-bonus { --bonus-delay: .80s; }
+.deposit-tiers > button:nth-child(6) .tier-bonus { --bonus-delay: .96s; }
+.deposit-tiers > button:nth-child(7) .tier-bonus { --bonus-delay: 1.12s; }
+.deposit-tiers > button:nth-child(8) .tier-bonus { --bonus-delay: 1.28s; }
+.deposit-tiers > button:nth-child(9) .tier-bonus { --bonus-delay: 1.44s; }
+.deposit-tiers > button:nth-child(10) .tier-bonus { --bonus-delay: 1.60s; }
+.deposit-tiers > button:nth-child(11) .tier-bonus { --bonus-delay: 1.76s; }
+.deposit-tiers > button:nth-child(12) .tier-bonus { --bonus-delay: 1.92s; }

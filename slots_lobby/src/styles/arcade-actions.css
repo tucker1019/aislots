@@ -132,6 +132,18 @@
   opacity: 1;
   cursor: not-allowed;
 }
+
+/* The signed-in state sits on a neutral disabled face: keep the label bright
+   and remove the raised-action shadow that reduces contrast on grey. */
+:root[data-theme="dark"] .checkin-claim:disabled {
+  --raised-face: #5b506a;
+  --raised-ink: #fff7ff;
+  --raised-rim: #b9a9ca;
+  --raised-base: #302040;
+  --raised-text-shadow: transparent;
+  color: var(--raised-ink);
+  text-shadow: none;
+}
 @media (prefers-reduced-motion: reduce) {
 :root[data-theme="dark"] :is(
   .ant-btn-primary,
@@ -201,4 +213,62 @@
 @media (prefers-reduced-motion: reduce) {
   :root[data-theme="dark"] :is(.deposit-promotion-close, .checkin-close) { transition: none; }
   :root[data-theme="dark"] :is(.deposit-promotion-close, .checkin-close):enabled:active { transform: none; }
+}
+
+/* Keep disabled claim actions dimensional even when page-specific styles override the face. */
+:root[data-theme="dark"] :is(
+  .earn-page .rebate-claim-row > button,
+  .agent-overview .agent-claim button,
+  .agent-claim button
+):disabled {
+  background: linear-gradient(180deg, #70627f, #554866);
+  color: #f5effb;
+  border: 1px solid #9b8bac;
+  box-shadow: inset 0 2px 0 #ffffff26, inset 0 0 0 1px #9b8bac, 0 4px 0 #302040;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Benefit detail actions share the opal-teal reward treatment. */
+:root[data-theme="dark"] .benefits-page :is(.benefit-card-bottom button, .benefits-feedback button) {
+  --raised-face: #70c7bf;
+  --raised-ink: #17484a;
+  --raised-rim: #b8f0e7;
+  --raised-base: #367f79;
+  --raised-text-shadow: #b8f0e7;
+  background: linear-gradient(145deg, #9adfd6, var(--raised-face));
+  box-shadow: inset 0 2px 0 #ffffff55, inset 0 0 0 1px var(--raised-rim), 0 4px 0 var(--raised-base);
+}
+:root[data-theme="dark"] .benefits-page :is(.benefit-card-bottom button, .benefits-feedback button):enabled:hover {
+  background: linear-gradient(145deg, #a8e8df, #7ad1c8);
+}
+
+/* Force the activity action buttons to match the mint reward keycaps. */
+:root[data-theme="dark"] :is(
+  .benefits-page .benefit-card-bottom button,
+  .benefits-page .benefits-feedback button,
+  .benefits-page .checkin-claim,
+  .vip-upgrade-home
+):enabled {
+  background: linear-gradient(145deg, #9adfd6, #70c7bf) !important;
+  border: 1px solid #b8f0e7 !important;
+  color: #17484a !important;
+  text-shadow: 0 1px 0 #b8f0e7 !important;
+  box-shadow: inset 0 2px 0 #ffffff55, inset 0 0 0 1px #b8f0e7, 0 4px 0 #367f79 !important;
+}
+
+:root[data-theme="dark"] :is(
+  .benefits-page .benefit-card-bottom button,
+  .benefits-page .benefits-feedback button,
+  .benefits-page .checkin-claim,
+  .vip-upgrade-home
+):enabled:hover {
+  background: linear-gradient(145deg, #a8e8df, #7ad1c8) !important;
+}
+
+:root[data-theme="dark"] .checkin-claim:enabled {
+  background: linear-gradient(145deg, #9adfd6, #70c7bf) !important;
+  border-color: #b8f0e7 !important;
+  color: #17484a !important;
+  box-shadow: inset 0 2px 0 #ffffff55, inset 0 0 0 1px #b8f0e7, 0 4px 0 #367f79 !important;
 }

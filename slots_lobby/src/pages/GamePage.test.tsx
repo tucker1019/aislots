@@ -36,8 +36,8 @@ it('同一大廳內iframe加載遊戲，刷新恢復原入口，返回前使錢�
 it('詳情打開時申請入口，失敗後可重試', async () => {
  vi.mocked(launchGame).mockRejectedValueOnce(new Error('服務暫時不可用')).mockResolvedValueOnce(first);
  const {user}=setup();
- expect(await screen.findByRole('alert')).toHaveTextContent('服務暫時不可用');
- await user.click(screen.getByRole('button',{name:'重試加載'}));
+ expect(await screen.findByRole('alert')).toHaveTextContent('網絡異常，請重試');
+ await user.click(screen.getByRole('button',{name:'重試'}));
  await waitFor(()=>expect(screen.getByTitle(firstTitle)).toHaveAttribute('src',first));
  expect(launchGame).toHaveBeenCalledTimes(2);
 });
