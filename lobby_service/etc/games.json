@@ -924,6 +924,20 @@
       "theoreticalRtp": 97.0,
       "volatility": "medium",
       "maxWin": -1
+    },
+    "AG10": {
+      "url": "http://127.0.0.1:5192/",
+      "name": "Fortune Chinchilla",
+      "sort": 360,
+      "cover": "/assets/lobby/games/1022.png",
+      "apiUrl": "http://127.0.0.1:8080",
+      "nameEn": "Fortune Chinchilla",
+      "enabled": true,
+      "visible": true,
+      "provider": "AG",
+      "theoreticalRtp": 97.0,
+      "volatility": "medium",
+      "maxWin": 5000
     }
   },
   "appkey": "web",

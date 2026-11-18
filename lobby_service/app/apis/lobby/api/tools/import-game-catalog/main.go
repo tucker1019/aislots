@@ -27,6 +27,7 @@ func main() {
 }
 func run() error {
 	enableAG9 := flag.Bool("enable-ag9", false, "enable AG9 using the release URL and hide G1021")
+	enableAG10 := flag.Bool("enable-ag10", false, "enable AG10 using the release URL and hide G1022")
 	apply := flag.Bool("apply", false, "save and publish the merged catalog")
 	hideFortuneTigerPlaceholder := flag.Bool("hide-fortune-tiger-placeholder", false, "hide G1017 when launching AG4")
 	hideFortuneOxPlaceholder := flag.Bool("hide-fortune-ox-placeholder", false, "hide G1023 when launching AG7")
@@ -59,7 +60,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	if *enableReleaseGames || *enableAG9 || *hideFortuneTigerPlaceholder || *hideFortuneOxPlaceholder {
+	if *enableReleaseGames || *enableAG9 || *enableAG10 || *hideFortuneTigerPlaceholder || *hideFortuneOxPlaceholder {
 		var doc map[string]json.RawMessage
 		var games map[string]map[string]json.RawMessage
 		if err = json.Unmarshal(next, &doc); err != nil {
@@ -73,26 +74,35 @@ func run() error {
 				return err
 			}
 		}
-		if *enableAG9 {
+		for _, migration := range []struct {
+			enabled bool
+			id, old string
+		}{
+			{*enableAG9, "AG9", "G1021"},
+			{*enableAG10, "AG10", "G1022"},
+		} {
+			if !migration.enabled {
+				continue
+			}
 			var release struct {
 				Games map[string]map[string]json.RawMessage
 			}
 			if err = json.Unmarshal(seed, &release); err != nil {
 				return err
 			}
-			entry := games["AG9"]
+			entry := games[migration.id]
 			if entry == nil {
-				return fmt.Errorf("缺少发布游戏 AG9")
+				return fmt.Errorf("缺少发布游戏 %s", migration.id)
 			}
 			for _, field := range []string{"url", "apiUrl"} {
 				var value string
-				if err = json.Unmarshal(release.Games["AG9"][field], &value); err != nil || value == "" {
-					return fmt.Errorf("AG9 缺少发布地址 %s", field)
+				if err = json.Unmarshal(release.Games[migration.id][field], &value); err != nil || value == "" {
+					return fmt.Errorf("%s 缺少发布地址 %s", migration.id, field)
 				}
-				entry[field] = release.Games["AG9"][field]
+				entry[field] = release.Games[migration.id][field]
 			}
 			entry["enabled"], entry["visible"] = json.RawMessage("true"), json.RawMessage("true")
-			if old := games["G1021"]; old != nil {
+			if old := games[migration.old]; old != nil {
 				old["visible"] = json.RawMessage("false")
 			}
 		}
@@ -158,6 +168,9 @@ func run() error {
 	}
 	if *enableAG9 {
 		reason = "发布 AG9 Fortune Leopard 并隐藏旧 G1021 入口"
+	}
+	if *enableAG10 {
+		reason = "发布 AG10 Fortune Chinchilla 并隐藏旧 G1022 入口"
 	}
 	if err = store.Draft(ctx, "games", row.Version, next, actor, reason); err != nil {
 		return err
