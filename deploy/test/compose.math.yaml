@@ -1,0 +1,26 @@
+# Optional math tool; use together with compose.yaml. Runtime data is separate from payload.
+services:
+  math:
+    build:
+      context: .
+      dockerfile: Dockerfile.math
+    restart: unless-stopped
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 0.50
+    pids_limit: 64
+    volumes:
+      - ./math-data:/data
+    healthcheck:
+      test: [CMD-SHELL, 'wget -q -O /dev/null http://127.0.0.1:8090/healthz']
+      interval: 10s
+      timeout: 3s
+      retries: 12
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'

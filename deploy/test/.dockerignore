@@ -5,3 +5,7 @@
 !payload/bin/lobby
 !payload/bin/admin
 !payload/bin/game
+
+!Dockerfile.math
+!payload/math/
+!payload/math/**

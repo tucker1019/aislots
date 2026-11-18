@@ -21,11 +21,20 @@ for name in ('compose.yaml', 'Dockerfile.service', '.dockerignore', 'nginx.conf'
     shutil.copy2(repo / 'deploy/test' / name, out / name)
 payload = out / 'payload'
 payload.mkdir()
+# Full releases must retain the deployed math service; never silently drop it.
+math_dist = repo / 'slot_math/dist'
+math_server = repo / 'slot_math/dist-server'
+if not math_dist.is_dir() or not math_server.is_dir():
+    raise SystemExit('Build slot_math first: npm run build:deploy')
+for name in ('Dockerfile.math', 'compose.math.yaml'):
+    shutil.copy2(repo / 'deploy/test' / name, out / name)
+shutil.copytree(math_dist, payload / 'math/dist')
+shutil.copytree(math_server, payload / 'math/dist-server')
 shutil.copytree(repo / 'lobby_service/etc', payload / 'lobby-etc')
 games_path = payload / 'lobby-etc/games.json'
 games = json.loads(games_path.read_text())
 projects = ('mahjongway', 'mahjongway2', 'showdown', 'fortunetiger',
-            'fortunerabbit', 'fortunemouse', 'fortuneox', 'fortunedragon', 'fortuneleopard')
+            'fortunerabbit', 'fortunemouse', 'fortuneox', 'fortunedragon', 'fortuneleopard', 'fortunechinchilla')
 game_paths = {f'AG{i}': project for i, project in enumerate(projects, start=1)}
 for name in game_paths:
     path = name.lower()

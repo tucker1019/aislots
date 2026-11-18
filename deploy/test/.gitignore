@@ -1,6 +1,2 @@
-.env
-payload/
-acme/
-certificates/
-backups/
-__pycache__/
+/math-data/
+/math-secrets/

@@ -16,6 +16,7 @@
 
 ```sh
 (cd slots_lobby_admin && npm run build -- --base=/ops/)
+(cd slot_math && npm run build:deploy)
 python3 deploy/test/prepare.py --origin https://YOUR_ORIGIN --output /tmp/aislots-test-release
 (cd lobby_service && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags='-s -w' -o /tmp/aislots-test-release/payload/bin/lobby ./app/apis/lobby/api)
 (cd lobby_service && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags='-s -w' -o /tmp/aislots-test-release/payload/bin/admin ./app/apis/lobby/api/admin)
@@ -75,3 +76,31 @@ HTTP公网IP不属于浏览器安全上下文，`crypto.randomUUID`、剪贴板�
 已发布配置保存在数据库，覆盖 `etc/*.json` 或重启服务不会更新它。需要同步本地后台参数时，先读取并留存两边的已发布文档及版本，确认目标分区没有未发布草稿，再通过后台校验、保存草稿和发布接口逐项同步，最后读回核对。使用目标环境的邀请地址、游戏公网入口和容器 API 地址；不复制管理员、会话、玩家或密钥。签到、代理等分区的版本由目标环境发布流程生成，不强行沿用本地版本号。
 
 单独发布 AG9 时，可传 `-enable-ag9` 给 `import-game-catalog`，按发布包设置 AG9 的地址及开关、隐藏旧 G1021 占位入口，并保留其他游戏的运营配置。
+
+## 数值工具 `/math/`
+
+数值工具使用独立 Node 22 容器和正式构建。按当前测试环境要求，`/math/` 页面及文件接口无需账号密码，写入仍执行同源检查与版本冲突校验。
+
+```sh
+(cd slot_math && npm test && npm run build:deploy)
+python3 deploy/test/prepare-math.py --output /tmp/aislots-math-release
+```
+
+上传包内的 `payload/math`、`Dockerfile.math` 和 `compose.math.yaml`，并为现有 Nginx 增加仓库配置中的 `/math` 路由。首次将 `math-seed/game_configs` 复制到服务器 `math-data/game_configs`，创建空的 `math-data/game_libraries`；之后发布只替换程序，禁止覆盖现有 `math-data`。数据目录由容器 UID/GID 1000 读写。`math-data` 位于 payload 之外，重建容器不会重置数据。
+
+```sh
+sudo docker compose -f compose.yaml -f compose.math.yaml config --quiet
+sudo docker compose -f compose.yaml -f compose.math.yaml up -d --build --wait math
+sudo docker compose exec -T web nginx -t
+sudo docker compose exec -T web nginx -s reload
+```
+
+服务器 `.env` 设置 `COMPOSE_FILE=compose.yaml:compose.math.yaml` 后，常规 `docker compose` 命令会包含数值工具服务；原有环境变量继续保留。全量打包器要求先构建 math，并附带程序产物及 overlay，防止后续整体替换 payload 时丢失 math 程序。默认打包不触碰独立工具数据。
+
+Nginx 将 `/math/` 转发到 math 容器，保留 Host 用于同源检查，上传限制为 40MiB；容器不映射宿主机端口，限制为 0.5 CPU、512MiB 内存。模拟与骨架生成在浏览器 Worker 执行，服务端仍执行保存校验；较大的校验会排队占用服务时间，不承诺与本机同速。无需登录即可访问 HTML、静态文件、游戏目录和配置接口，过期版本保存返回 409，跨站保存返回 403。验证候选库时使用一次性测试目录，完成后只删除该目录。
+
+工具配置与候选库分别存于 `math-data/game_configs` 和 `math-data/game_libraries`，不会直接修改游戏服挂载的文件，也不会自动启用候选库。服务器编辑结果需要通过 SSH 导出、审查后纳入配置发布流程。仅更新工具时保留上一版程序和 Nginx 配置以便回滚，不备份或重置数据库。
+
+### AG10 发布
+
+打包器已增加 `fortunechinchilla`，Nginx 已兼容 `/games/ag10/`，机台配置包含独立 AG10 快照。发布需构建 AG10（Creator 3.8.5），更新游戏服务的 AG10 持久化解码，并仅追加 AG10 所需的配置与盘面库。已有环境通过 `import-game-catalog -enable-ag10 -apply` 审计发布入口并隐藏旧 G1022，占位之外的游戏开关与排序保留。继续保留 `.env`、证书、数据库卷和后台已发布运营配置，不重新初始化，不备份数据库。
