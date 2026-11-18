@@ -88,3 +88,24 @@ it('exposes legacy experience funding defaults and preserves other fields on edi
  fireEvent.change(screen.getByLabelText('experience.initialCoinsMax'), {target:{value:'5000000'}});
  expect(JSON.parse(screen.getByTestId('document').textContent??'{}')).toMatchObject({enabled:false,gameWeights:{AG2:3},initialCoinsMin:10000,initialCoinsMax:5000000,initialCoinsStep:10000,betDivisorMin:100,betDivisorMax:300,createMinSeconds:30});
 });
+
+it('shows live percentage examples for every rebate rate and hides legacy loss fields', () => {
+ render(<Fixture initial={{dailyRateBps:80,weeklyRateBps:10,monthlyRateBps:10,loserReturnRateBps:1000}} path="returns"/>);
+ expect(screen.getByText(/当前：80 基点 = 0.8%/)).toBeTruthy();
+ expect(screen.getAllByText(/当前：10 基点 = 0.1%/)).toHaveLength(2);
+ expect(screen.queryByLabelText('returns.loserReturnRateBps')).toBeNull();
+ fireEvent.change(screen.getByLabelText('returns.dailyRateBps'), {target:{value:'1000'}});
+ expect(screen.getByText(/当前：1000 基点 = 10%/)).toBeTruthy();
+ expect(JSON.parse(screen.getByTestId('document').textContent??'{}')).toEqual({dailyRateBps:1000,weeklyRateBps:10,monthlyRateBps:10});
+});
+it('edits loss fee and each fixed reward switch independently, preserving explicit zero and false', () => {
+ render(<Fixture initial={{loserReturnRateBps:1000,platformFeeRateBps:0,rewardSources:{checkin:false}}} path="loss-return"/>);
+ expect(screen.getByText(/当前：0 基点 = 0%/)).toBeTruthy();
+ expect(screen.getByLabelText('loss-return.rewardSources.checkin').getAttribute('aria-checked')).toBe('false');
+ expect(screen.getByLabelText('loss-return.rewardSources.agentCommission').getAttribute('aria-checked')).toBe('false');
+ expect(screen.getByLabelText('loss-return.rewardSources.inviteReward').getAttribute('aria-checked')).toBe('false');
+ fireEvent.click(screen.getByLabelText('loss-return.rewardSources.agentCommission'));
+ expect(JSON.parse(screen.getByTestId('document').textContent??'{}')).toMatchObject({loserReturnRateBps:1000,platformFeeRateBps:0,rewardSources:{checkin:false,rebate:false,agentCommission:true,inviteReward:false}});
+ expect(screen.getAllByRole('switch')).toHaveLength(11);
+ expect(screen.getByText(/1000 − 600 − 100 − 40 = 260/)).toBeTruthy();
+});

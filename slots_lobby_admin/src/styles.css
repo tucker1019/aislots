@@ -17,3 +17,5 @@
 
 .account-totals dl{margin:18px 0 0;padding-top:14px;border-top:1px solid #edf0ec;display:grid;gap:10px;overflow-x:auto}.account-totals dl>div{display:grid;grid-template-columns:max-content minmax(max-content,1fr);align-items:baseline;gap:16px}.account-totals dt{font-size:12px;color:#687f86}.account-totals dd{margin:0;text-align:right;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
 @media(max-width:700px){.stats{grid-template-columns:minmax(0,1fr)}}
+
+.document-note{grid-column:1/-1;margin:0;padding:14px 16px;border-radius:8px;background:#f5f8f6;color:#536971;line-height:1.8}.rate-hint{margin:6px 0 0;font-size:12px;line-height:1.6;color:#536971}
