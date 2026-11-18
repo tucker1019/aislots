@@ -9,6 +9,7 @@ import (
 	game "aislots/slots_service/internal/domain/game"
 	"aislots/slots_service/internal/engine"
 	"aislots/slots_service/internal/games/ag1"
+	"aislots/slots_service/internal/games/ag10"
 	"aislots/slots_service/internal/games/ag2"
 	"aislots/slots_service/internal/games/ag3"
 	"aislots/slots_service/internal/games/ag4"
@@ -138,6 +139,16 @@ func DecodeResult(raw []byte) (game.Result, error) {
 		if out.RuleType == paylines.RuleType {
 			if out.GameID != ag4.ID || !strings.HasPrefix(out.Version, out.RuleType+":") {
 				return out, fmt.Errorf("unknown AG4 result version")
+			}
+			return out, out.Validate()
+		}
+		// AG10 retains the AG5 wire rule identifier but owns its snapshots and results.
+		if out.GameID == ag10.ID && out.RuleType == ag10.RuleType {
+			if !strings.HasPrefix(out.Version, ag10.RuleType+":") || len(out.Version) != len(ag10.RuleType)+65 {
+				return out, fmt.Errorf("unknown AG10 result version")
+			}
+			if _, err := ag10.DecodeState(out.NextState); err != nil {
+				return out, err
 			}
 			return out, out.Validate()
 		}
