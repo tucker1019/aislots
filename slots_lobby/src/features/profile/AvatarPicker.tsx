@@ -1,3 +1,4 @@
+import '../../styles/profile.css';
 import {AsyncAntButton as Button} from '../../components/buttons/AsyncButton';
 import { overlayContainer } from '../../app/designViewport';
 import {useState} from 'react';

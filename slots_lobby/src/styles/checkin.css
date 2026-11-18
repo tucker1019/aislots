@@ -63,3 +63,26 @@ body:has(.checkin-modal) .ant-modal-mask { backdrop-filter: blur(4px); }
 .checkin-close { display: grid; place-items: center; margin: 13px auto 0; padding: 0; width: 42px; height: 42px; border-radius: 50%; border: 1px solid #e1f4e873; background: #16271f; color: #edf9f1; cursor: pointer; }
 .checkin-close:disabled { opacity: .6; cursor: not-allowed; }
 .checkin-error { color: #ffc2b3; font-size: 12px; text-align: center; }
+
+/* Entry popups hand off in place; scaling a centered reward panel makes it jump. */
+.checkin-modal.checkin-fade-appear,
+.checkin-modal.checkin-fade-enter,
+.checkin-modal.checkin-fade-leave {
+  animation-duration: 160ms;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}
+.checkin-modal.checkin-fade-appear-prepare,
+.checkin-modal.checkin-fade-enter-prepare,
+.checkin-modal.checkin-fade-appear,
+.checkin-modal.checkin-fade-enter { opacity: 0; }
+.checkin-modal.checkin-fade-appear-active,
+.checkin-modal.checkin-fade-enter-active { animation-name: checkin-fade-in; }
+.checkin-modal.checkin-fade-leave-active { animation-name: checkin-fade-out; }
+@keyframes checkin-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes checkin-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .checkin-modal.checkin-fade-appear,
+  .checkin-modal.checkin-fade-enter,
+  .checkin-modal.checkin-fade-leave { animation-duration: 1ms; }
+}

@@ -272,3 +272,19 @@
   color: #17484a !important;
   box-shadow: inset 0 2px 0 #ffffff55, inset 0 0 0 1px #b8f0e7, 0 4px 0 #367f79 !important;
 }
+
+/* Keep both logout actions neutral; cancellation uses the gold arcade key. */
+:root[data-theme="dark"] .security-logout:enabled {
+  --raised-face: #70677e;
+  --raised-ink: #fff7ff;
+  --raised-rim: #b9aec6;
+  --raised-base: #40344f;
+  --raised-text-shadow: #40344f;
+}
+:root[data-theme="dark"] .security-cancel:enabled {
+  --raised-face: var(--arcade-gold);
+  --raised-ink: var(--arcade-gold-ink);
+  --raised-rim: #ffe7a0;
+  --raised-base: #ad7437;
+  --raised-text-shadow: #fff2bc;
+}

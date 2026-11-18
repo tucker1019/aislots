@@ -14,7 +14,7 @@ export function LossReturn() {
  const uid=useSessionStore(state=>state.session?.uid),client=useQueryClient();
  const {notify,holder}=useClaimToast();
  const key=['lobby','loss-return',uid] as const;
- const query=useQuery({queryKey:key,queryFn:({signal})=>fetchLossReturn(signal),retry:false,refetchOnWindowFocus:false,refetchOnReconnect:false});
+ const query=useQuery({queryKey:key,queryFn:({signal})=>fetchLossReturn(signal),retry:false,refetchOnWindowFocus:true,refetchInterval:query=>query.state.error?false:5000,refetchOnReconnect:false});
  const claim=useMutation({meta:{claimUid:uid,claimIndicator:'loss'},mutationFn:claimLossReturn,retry:false,onSuccess:()=>{
   notify();client.setQueryData<LossReturnInfo>(key,previous=>previous?{...previous,claimable:0}:previous);
   for(const queryKey of [['lobby','current-profile'],['wallet-ledger'],['personal-report']])void client.invalidateQueries({queryKey});
