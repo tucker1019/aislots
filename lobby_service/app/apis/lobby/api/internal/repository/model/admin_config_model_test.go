@@ -13,6 +13,7 @@ import (
 func configIdentity(_ AdminConfigRow, doc json.RawMessage, _ int64) (json.RawMessage, error) {
 	return doc, nil
 }
+
 func TestAdminConfigSeedAndConcurrentDraft(t *testing.T) {
 	db := vipTestDB(t)
 	s := AdminConfigStore{DB: db}
@@ -302,5 +303,47 @@ func TestAdminConfigDraftRejectsStaleVersionAfterPublish(t *testing.T) {
 	}
 	if n != 3 {
 		t.Fatalf("stale draft wrote audit: %d", n)
+	}
+}
+
+func TestAdminRebateAndLossPublishIndependently(t *testing.T) {
+	db := vipTestDB(t)
+	ctx := context.Background()
+	s := AdminConfigStore{DB: db}
+	must := func(e error) {
+		t.Helper()
+		if e != nil {
+			t.Fatal(e)
+		}
+	}
+	must(s.Seed(ctx, "checkin", json.RawMessage(`{"timezone":"Asia/Jakarta"}`)))
+	// Legacy audit baseline survives seeding; published loss settings apply immediately.
+	must(db.Exec(`INSERT INTO lobby_return_rate_rules(kind,effective_from,rate_bps) VALUES('loser_return','0001-01-01',777)`).Error)
+	must(s.Seed(ctx, "returns", json.RawMessage(`{"dailyRateBps":80,"weeklyRateBps":10,"monthlyRateBps":10,"loserReturnRateBps":9999}`)))
+	must(s.Seed(ctx, "loss-return", json.RawMessage(`{"loserReturnRateBps":777,"platformFeeRateBps":1000,"rewardSources":{"checkin":true}}`)))
+	var baseline LobbyReturnRateRule
+	must(db.Where("kind='loser_return' AND effective_from='0001-01-01'").Take(&baseline).Error)
+	if baseline.RateBps != 777 || baseline.PlatformFeeRateBps != 0 || baseline.RewardSources != "{}" {
+		t.Fatal(baseline)
+	}
+	must(s.Draft(ctx, "returns", 1, json.RawMessage(`{"dailyRateBps":90,"weeklyRateBps":20,"monthlyRateBps":30}`), "admin", "rebate"))
+	must(s.Publish(ctx, "returns", 2, 0, "rebate", "rebate", "admin", "rebate", configIdentity))
+	var lossRows int64
+	must(db.Table("lobby_return_rate_rules").Where("kind='loser_return'").Count(&lossRows).Error)
+	if lossRows != 1 {
+		t.Fatal("rebate publication changed loss policy")
+	}
+	must(s.Draft(ctx, "loss-return", 1, json.RawMessage(`{"loserReturnRateBps":1000,"platformFeeRateBps":1000,"rewardSources":{"checkin":true,"inviteReward":false}}`), "admin", "loss"))
+	must(s.Publish(ctx, "loss-return", 2, 0, "loss", "loss", "admin", "loss", configIdentity))
+	must(s.Publish(ctx, "loss-return", 2, 1, "loss-rollback", "loss-rollback", "admin", "rollback", configIdentity))
+	var scheduled LobbyReturnRateRule
+	must(db.Where("kind='loser_return' AND effective_from>'0001-01-01'").Take(&scheduled).Error)
+	if scheduled.RateBps != 777 || scheduled.PlatformFeeRateBps != 1000 {
+		t.Fatal(scheduled)
+	}
+	var daily LobbyReturnRateRule
+	must(db.Where("kind='daily' AND effective_from>'0001-01-01'").Take(&daily).Error)
+	if daily.RateBps != 90 {
+		t.Fatal("loss publication or rollback changed rebate", daily)
 	}
 }

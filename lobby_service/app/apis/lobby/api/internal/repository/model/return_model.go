@@ -17,6 +17,7 @@ import (
 type ReturnModel struct{ DB *gorm.DB }
 
 type ReturnPeriod struct {
+	LossPolicy config.LossReturnConfig
 	LobbyReturnClaim
 	Status      string
 	AvailableAt time.Time
@@ -50,19 +51,23 @@ func rateFor(c config.ReturnConfig, kind string) int32 {
 	}
 }
 
-func sumReturnPeriod(tx *gorm.DB, uid int64, kind string, start, end time.Time, rate int32) (*ReturnPeriod, error) {
+func sumReturnPeriod(tx *gorm.DB, uid int64, kind string, start, end time.Time, rate int32, policy config.LossReturnConfig) (*ReturnPeriod, error) {
 	var totals struct{ ValidBet, BetAmount, WinAmount int64 }
 	if err := tx.Model(&LobbyActivityDaily{}).Select("COALESCE(SUM(valid_bet),0) AS valid_bet, COALESCE(SUM(bet_amount),0) AS bet_amount, COALESCE(SUM(win_amount),0) AS win_amount").Where("uid = ? AND business_date >= ? AND business_date < ?", uid, start.Format(time.DateOnly), end.Format(time.DateOnly)).Scan(&totals).Error; err != nil {
 		return nil, err
 	}
 	base := totals.ValidBet
 	if kind == ReturnLoser {
-		base = totals.BetAmount - totals.WinAmount
-		if base < 0 {
-			base = 0
+		credits, err := lossRewardCredits(tx, uid, start, end, policy)
+		if err != nil {
+			return nil, err
+		}
+		base, err = lossReturnBase(totals.BetAmount, totals.WinAmount, credits, policy.PlatformFeeRateBps)
+		if err != nil {
+			return nil, err
 		}
 	}
-	return &ReturnPeriod{LobbyReturnClaim: LobbyReturnClaim{UID: uid, Kind: kind, PeriodStart: start.Format(time.DateOnly), PeriodEnd: end.Format(time.DateOnly), ValidBet: totals.ValidBet, BetAmount: totals.BetAmount, WinAmount: totals.WinAmount, BaseAmount: base, RateBps: rate, Reward: returnAmount(base, rate)}, AvailableAt: end, ExpiresAt: end.AddDate(0, 0, 1)}, nil
+	return &ReturnPeriod{LossPolicy: policy, LobbyReturnClaim: LobbyReturnClaim{UID: uid, Kind: kind, PeriodStart: start.Format(time.DateOnly), PeriodEnd: end.Format(time.DateOnly), ValidBet: totals.ValidBet, BetAmount: totals.BetAmount, WinAmount: totals.WinAmount, BaseAmount: base, RateBps: rate, Reward: returnAmount(base, rate)}, AvailableAt: end, ExpiresAt: end.AddDate(0, 0, 1)}, nil
 }
 
 func readReturns(tx *gorm.DB, uid int64, group string, c config.ReturnConfig, loc *time.Location, now time.Time) (*ReturnView, error) {
@@ -73,7 +78,14 @@ func readReturns(tx *gorm.DB, uid int64, group string, c config.ReturnConfig, lo
 		if err != nil {
 			return nil, err
 		}
-		claim, err := sumReturnPeriod(tx, uid, kind, start, current, claimRate)
+		policy := config.LossReturnConfig{}
+		if kind == ReturnLoser {
+			policy, err = effectiveLossPolicy(tx, c, start)
+			if err != nil {
+				return nil, err
+			}
+		}
+		claim, err := sumReturnPeriod(tx, uid, kind, start, current, claimRate, policy)
 		if err != nil {
 			return nil, err
 		}
@@ -100,7 +112,13 @@ func readReturns(tx *gorm.DB, uid int64, group string, c config.ReturnConfig, lo
 		if err != nil {
 			return nil, err
 		}
-		preview, err := sumReturnPeriod(tx, uid, kind, current, end, previewRate)
+		if kind == ReturnLoser {
+			policy, err = effectiveLossPolicy(tx, c, current)
+			if err != nil {
+				return nil, err
+			}
+		}
+		preview, err := sumReturnPeriod(tx, uid, kind, current, end, previewRate, policy)
 		if err != nil {
 			return nil, err
 		}

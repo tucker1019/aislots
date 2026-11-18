@@ -1,15 +1,17 @@
 package model
 
 import (
-	"apps/app/apis/lobby/api/internal/config"
 	"context"
 	"errors"
-	"gorm.io/gorm"
 	"testing"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/config"
+
+	"gorm.io/gorm"
 )
 
-func TestReturnRatesEffectivePeriods(t *testing.T) {
+func TestReturnRatesApplyImmediately(t *testing.T) {
 	db := vipTestDB(t)
 	loc, _ := time.LoadLocation("Asia/Jakarta")
 	now := time.Date(2026, 6, 10, 23, 59, 0, 0, loc)
@@ -25,22 +27,21 @@ func TestReturnRatesEffectivePeriods(t *testing.T) {
 		previous, current, end := returnBounds(now, loc, kind)
 		for _, start := range []time.Time{previous, current} {
 			r, e := effectiveReturnRate(db, next, kind, start)
-			if e != nil || r != rateFor(old, kind) {
+			if e != nil || r != rateFor(next, kind) {
 				t.Fatalf("%s historical/current rate=%d %v", kind, r, e)
 			}
 		}
-		r, e := effectiveReturnRate(db, old, kind, end)
+		r, e := effectiveReturnRate(db, next, kind, end)
 		if e != nil || r != rateFor(next, kind) {
 			t.Fatalf("%s next rate=%d %v", kind, r, e)
 		}
 		future := end.AddDate(0, 2, 0)
-		r, e = effectiveReturnRate(db, old, kind, future)
+		r, e = effectiveReturnRate(db, next, kind, future)
 		if e != nil || r != rateFor(next, kind) {
 			t.Fatalf("%s carried rate=%d %v", kind, r, e)
 		}
 	}
-	// Repeated seed must preserve historical baseline, and repeated publication
-	// before a boundary replaces only the scheduled rate for that boundary.
+	// Repeated seed preserves the baseline. Same-day publications replace the audit row.
 	if e := ConfigureReturnRates(db, next, loc, now, true); e != nil {
 		t.Fatal(e)
 	}
@@ -55,25 +56,25 @@ func TestReturnRatesEffectivePeriods(t *testing.T) {
 	}
 	for _, kind := range []string{ReturnDaily, ReturnWeekly, ReturnMonthly, ReturnLoser} {
 		_, current, end := returnBounds(now, loc, kind)
-		r, e := effectiveReturnRate(db, next, kind, current)
-		if e != nil || r != rateFor(old, kind) {
+		r, e := effectiveReturnRate(db, replacement, kind, current)
+		if e != nil || r != rateFor(replacement, kind) {
 			t.Fatalf("%s baseline changed %d %v", kind, r, e)
 		}
-		r, e = effectiveReturnRate(db, next, kind, end)
+		r, e = effectiveReturnRate(db, replacement, kind, end)
 		if e != nil || r != rateFor(replacement, kind) {
 			t.Fatalf("%s pending replacement %d %v", kind, r, e)
 		}
 	}
-	// A later publication retains the now-effective rule and schedules another boundary.
+	// A later publication retains earlier audit records, while all unpaid periods use the latest config.
 	later := now.AddDate(0, 2, 0)
 	if e := ConfigureReturnRates(db, old, loc, later, false); e != nil {
 		t.Fatal(e)
 	}
 	for _, kind := range []string{ReturnDaily, ReturnWeekly, ReturnMonthly, ReturnLoser} {
 		_, _, firstEnd := returnBounds(now, loc, kind)
-		r, e := effectiveReturnRate(db, next, kind, firstEnd)
-		if e != nil || r != rateFor(replacement, kind) {
-			t.Fatalf("%s rollback rewrote history %d %v", kind, r, e)
+		r, e := effectiveReturnRate(db, old, kind, firstEnd)
+		if e != nil || r != rateFor(old, kind) {
+			t.Fatalf("%s immediate rollback %d %v", kind, r, e)
 		}
 	}
 }
@@ -111,7 +112,7 @@ func TestReturnRateScheduleTransactionRollback(t *testing.T) {
 	}
 }
 
-func TestReturnReadsUsePeriodRulesAndFallback(t *testing.T) {
+func TestReturnReadsUseLatestPublishedConfig(t *testing.T) {
 	db := vipTestDB(t)
 	loc := time.UTC
 	now := time.Date(2026, 6, 10, 12, 0, 0, 0, loc)
@@ -150,17 +151,21 @@ func TestReturnReadsUsePeriodRulesAndFallback(t *testing.T) {
 			t.Fatal(e)
 		}
 		for _, section := range v.Sections {
-			if section.Claim.RateBps != rateFor(old, section.Claim.Kind) || section.Preview.RateBps != rateFor(old, section.Preview.Kind) {
+			if section.Claim.RateBps != rateFor(changed, section.Claim.Kind) || section.Preview.RateBps != rateFor(changed, section.Preview.Kind) {
 				t.Fatalf("current configuration recomputed %s", section.Claim.Kind)
 			}
 		}
 	}
+	// A pending boundary rule left by the old implementation cannot override the current config.
 	tomorrow := now.AddDate(0, 0, 1)
+	if e = db.Exec(`INSERT INTO lobby_return_rate_rules(kind,effective_from,rate_bps) VALUES('daily',?,9999)`, tomorrow.Format(time.DateOnly)).Error; e != nil {
+		t.Fatal(e)
+	}
 	v, e := readReturns(db, uid, GroupRebate, changed, loc, tomorrow)
 	if e != nil {
 		t.Fatal(e)
 	}
-	if v.Sections[0].Claim.RateBps != 100 || v.Sections[0].Claim.Reward != 100 || v.Sections[0].Preview.RateBps != 1000 {
+	if v.Sections[0].Claim.RateBps != 1000 || v.Sections[0].Claim.Reward != 1000 || v.Sections[0].Preview.RateBps != 1000 {
 		t.Fatalf("daily transition %+v", v.Sections[0])
 	}
 }

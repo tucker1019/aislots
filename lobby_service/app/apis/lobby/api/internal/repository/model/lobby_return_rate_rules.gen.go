@@ -12,10 +12,12 @@ const TableNameLobbyReturnRateRule = "lobby_return_rate_rules"
 
 // LobbyReturnRateRule mapped from table <lobby_return_rate_rules>
 type LobbyReturnRateRule struct {
-	Kind          string    `gorm:"column:kind;primaryKey" json:"kind"`
-	EffectiveFrom time.Time `gorm:"column:effective_from;primaryKey" json:"effective_from"`
-	RateBps       int32     `gorm:"column:rate_bps;not null" json:"rate_bps"`
-	UpdatedAt     time.Time `gorm:"column:updated_at;not null;default:now()" json:"updated_at"`
+	Kind               string    `gorm:"column:kind;primaryKey" json:"kind"`
+	EffectiveFrom      time.Time `gorm:"column:effective_from;primaryKey" json:"effective_from"`
+	RateBps            int32     `gorm:"column:rate_bps;not null" json:"rate_bps"`
+	UpdatedAt          time.Time `gorm:"column:updated_at;not null;default:now()" json:"updated_at"`
+	PlatformFeeRateBps int32     `gorm:"column:platform_fee_rate_bps;not null" json:"platform_fee_rate_bps"`
+	RewardSources      string    `gorm:"column:reward_sources;not null;default:{}" json:"reward_sources"`
 }
 
 // TableName LobbyReturnRateRule's table name

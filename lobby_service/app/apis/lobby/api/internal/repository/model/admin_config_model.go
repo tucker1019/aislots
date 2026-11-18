@@ -1,12 +1,13 @@
 package model
 
 import (
-	"apps/app/apis/lobby/api/internal/config"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/config"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -57,6 +58,7 @@ func (s AdminConfigStore) List(ctx context.Context) ([]AdminConfigRow, error) {
 	e := s.DB.WithContext(ctx).Order("section").Find(&v).Error
 	return v, e
 }
+
 func (s AdminConfigStore) Get(ctx context.Context, key string, lock bool) (AdminConfigRow, error) {
 	var r AdminConfigRow
 	q := s.DB.WithContext(ctx)
@@ -66,16 +68,19 @@ func (s AdminConfigStore) Get(ctx context.Context, key string, lock bool) (Admin
 	e := q.Where("section=?", key).Take(&r).Error
 	return r, e
 }
+
 func (s AdminConfigStore) History(ctx context.Context, key string) ([]AdminConfigVersion, error) {
 	v := []AdminConfigVersion{}
 	e := s.DB.WithContext(ctx).Where("section=?", key).Order("version DESC").Limit(100).Find(&v).Error
 	return v, e
 }
+
 func (s AdminConfigStore) Version(ctx context.Context, key string, version int64) (AdminConfigVersion, error) {
 	var v AdminConfigVersion
 	e := s.DB.WithContext(ctx).Where("section=? AND version=? AND status IN ?", key, version, []string{"published", "superseded"}).Take(&v).Error
 	return v, e
 }
+
 func (s AdminConfigStore) Seed(ctx context.Context, key string, doc json.RawMessage) error {
 	return s.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		r := AdminConfigRow{Section: key, Version: 1, PublishedVersion: 1, Published: doc, UpdatedAt: time.Now().UTC()}
@@ -84,17 +89,17 @@ func (s AdminConfigStore) Seed(ctx context.Context, key string, doc json.RawMess
 			return result.Error
 		}
 		if result.RowsAffected == 0 {
-			if key == "returns" {
+			if key == "returns" || key == "loss-return" {
 				current, e := (AdminConfigStore{tx}).Get(ctx, key, true)
 				if e != nil {
 					return e
 				}
-				return configurePublishedReturnRates(tx, current.Published, true)
+				return configurePublishedReturnRates(tx, key, current.Published, true)
 			}
 			return nil
 		}
-		if key == "returns" {
-			if e := configurePublishedReturnRates(tx, doc, true); e != nil {
+		if key == "returns" || key == "loss-return" {
+			if e := configurePublishedReturnRates(tx, key, doc, true); e != nil {
 				return e
 			}
 		}
@@ -103,6 +108,7 @@ func (s AdminConfigStore) Seed(ctx context.Context, key string, doc json.RawMess
 		return tx.Create(&v).Error
 	})
 }
+
 func (s AdminConfigStore) Draft(ctx context.Context, key string, expected int64, doc json.RawMessage, actor, reason string) error {
 	return s.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		ss := AdminConfigStore{tx}
@@ -172,8 +178,8 @@ func (s AdminConfigStore) Publish(ctx context.Context, key string, expected int6
 		if e != nil {
 			return e
 		}
-		if key == "returns" {
-			if e = configurePublishedReturnRates(tx, doc, false); e != nil {
+		if key == "returns" || key == "loss-return" {
+			if e = configurePublishedReturnRates(tx, key, doc, false); e != nil {
 				return e
 			}
 		}
@@ -200,16 +206,18 @@ func (s AdminConfigStore) Publish(ctx context.Context, key string, expected int6
 		return InsertAdminAudit(tx, actor, action, key, reason)
 	})
 }
+
 func (s AdminConfigStore) Revision(ctx context.Context) (int64, error) {
 	var n int64
 	e := s.DB.WithContext(ctx).Raw("SELECT COALESCE(MAX(id),0) FROM lobby_admin_config_releases").Scan(&n).Error
 	return n, e
 }
+
 func (s AdminConfigStore) RecordRuntime(ctx context.Context, instance string, revision int64, message string) error {
 	return s.DB.WithContext(ctx).Exec(`INSERT INTO lobby_admin_runtime_state(instance,revision,last_error,updated_at) VALUES (?,?,?,now()) ON CONFLICT(instance) DO UPDATE SET revision=EXCLUDED.revision,last_error=EXCLUDED.last_error,updated_at=EXCLUDED.updated_at`, instance, revision, message).Error
 }
 
-func configurePublishedReturnRates(tx *gorm.DB, doc json.RawMessage, initial bool) error {
+func configurePublishedReturnRates(tx *gorm.DB, key string, doc json.RawMessage, initial bool) error {
 	var rates config.ReturnConfig
 	if e := json.Unmarshal(doc, &rates); e != nil {
 		return e
@@ -231,5 +239,9 @@ func configurePublishedReturnRates(tx *gorm.DB, doc json.RawMessage, initial boo
 	if e != nil {
 		return e
 	}
-	return ConfigureReturnRates(tx, rates, loc, time.Now().UTC(), initial)
+	kinds := []string{ReturnDaily, ReturnWeekly, ReturnMonthly}
+	if key == "loss-return" {
+		kinds = []string{ReturnLoser}
+	}
+	return configureReturnKinds(tx, rates, loc, time.Now().UTC(), initial, kinds)
 }

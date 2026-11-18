@@ -1,27 +1,50 @@
 package model
 
 import (
-	"apps/app/apis/lobby/api/internal/config"
+	"encoding/json"
 	"errors"
-	"gorm.io/gorm"
 	"time"
+
+	"apps/app/apis/lobby/api/internal/config"
+
+	"gorm.io/gorm"
 )
 
-// ConfigureReturnRates initializes immutable historical baselines, or schedules a
-// publication for the next period boundary. Pass the configuration publication's
-// transaction so rules, document and audit become visible together.
+// ConfigureReturnRates records baseline/publication policies for audit compatibility.
+// Unclaimed rewards use the current published configuration immediately.
+// Pass the publication transaction so policy records and audit commit together.
 func ConfigureReturnRates(tx *gorm.DB, c config.ReturnConfig, loc *time.Location, now time.Time, initial bool) error {
+	return configureReturnKinds(tx, c, loc, now, initial, []string{ReturnDaily, ReturnWeekly, ReturnMonthly, ReturnLoser})
+}
+
+func configureReturnKinds(tx *gorm.DB, c config.ReturnConfig, loc *time.Location, now time.Time, initial bool, kinds []string) error {
+	if e := c.LossConfig().Validate(); e != nil {
+		return e
+	}
 	if loc == nil {
 		return errors.New("return activity timezone is required")
 	}
 	return tx.Transaction(func(db *gorm.DB) error {
-		for _, kind := range []string{ReturnDaily, ReturnWeekly, ReturnMonthly, ReturnLoser} {
+		for _, kind := range kinds {
+			fee := int32(0)
+			sources := map[string]bool{}
+			if kind == ReturnLoser {
+				fee = c.PlatformFeeRateBps
+				sources = c.RewardSources
+				if sources == nil {
+					sources = map[string]bool{}
+				}
+			}
+			encoded, e := json.Marshal(sources)
+			if e != nil {
+				return e
+			}
 			rate := rateFor(c, kind)
 			if rate < 0 || rate > 10000 {
 				return errors.New("return rate outside [0,10000]")
 			}
 			if initial {
-				if e := db.Exec(`INSERT INTO lobby_return_rate_rules(kind,effective_from,rate_bps) VALUES(?,'0001-01-01',?) ON CONFLICT(kind,effective_from) DO NOTHING`, kind, rate).Error; e != nil {
+				if e := db.Exec(`INSERT INTO lobby_return_rate_rules(kind,effective_from,rate_bps,platform_fee_rate_bps,reward_sources) VALUES(?,'0001-01-01',?,?,?::jsonb) ON CONFLICT(kind,effective_from) DO NOTHING`, kind, rate, fee, string(encoded)).Error; e != nil {
 					return e
 				}
 				continue
@@ -33,8 +56,8 @@ func ConfigureReturnRates(tx *gorm.DB, c config.ReturnConfig, loc *time.Location
 			if count != 1 {
 				return errors.New("return rate baseline must be initialized before publishing")
 			}
-			_, _, next := returnBounds(now, loc, kind)
-			if e := db.Exec(`INSERT INTO lobby_return_rate_rules(kind,effective_from,rate_bps) VALUES(?,?,?) ON CONFLICT(kind,effective_from) DO UPDATE SET rate_bps=EXCLUDED.rate_bps,updated_at=now()`, kind, next.Format(time.DateOnly), rate).Error; e != nil {
+			effectiveDate := activityDate(now, loc)
+			if e := db.Exec(`INSERT INTO lobby_return_rate_rules(kind,effective_from,rate_bps,platform_fee_rate_bps,reward_sources) VALUES(?,?,?,?,?::jsonb) ON CONFLICT(kind,effective_from) DO UPDATE SET rate_bps=EXCLUDED.rate_bps,platform_fee_rate_bps=EXCLUDED.platform_fee_rate_bps,reward_sources=EXCLUDED.reward_sources,updated_at=now()`, kind, effectiveDate, rate, fee, string(encoded)).Error; e != nil {
 				return e
 			}
 		}
@@ -42,14 +65,11 @@ func ConfigureReturnRates(tx *gorm.DB, c config.ReturnConfig, loc *time.Location
 	})
 }
 
-func effectiveReturnRate(tx *gorm.DB, c config.ReturnConfig, kind string, start time.Time) (int32, error) {
-	var rows []struct{ RateBps int32 }
-	e := tx.Table("lobby_return_rate_rules").Select("rate_bps").Where("kind=? AND effective_from<=?", kind, start.Format(time.DateOnly)).Order("effective_from DESC").Limit(1).Scan(&rows).Error
-	if e != nil {
-		return 0, e
+// Saved claims keep their paid snapshot; every unclaimed period uses this request's published config.
+func effectiveReturnRate(_ *gorm.DB, c config.ReturnConfig, kind string, _ time.Time) (int32, error) {
+	rate := rateFor(c, kind)
+	if rate < 0 || rate > 10000 {
+		return 0, errors.New("return rate outside [0,10000]")
 	}
-	if len(rows) == 0 {
-		return rateFor(c, kind), nil
-	}
-	return rows[0].RateBps, nil
+	return rate, nil
 }

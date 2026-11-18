@@ -17,6 +17,7 @@ import (
 	"apps/app/apis/lobby/api/internal/config"
 	"apps/app/apis/lobby/api/internal/repository/model"
 	migrations "apps/deploy/migration"
+
 	"github.com/jackc/pgx/v5"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -64,6 +65,7 @@ func isolatedConfigDB(t *testing.T) *gorm.DB {
 	}
 	return db
 }
+
 func configDefaults(t *testing.T) config.Config {
 	t.Helper()
 	var c config.Config
@@ -78,6 +80,7 @@ func configDefaults(t *testing.T) config.Config {
 	}
 	return c
 }
+
 func TestConfigHTTPPublishedSnapshotAndPermissions(t *testing.T) {
 	db := isolatedConfigDB(t)
 	ctx := context.Background()
@@ -190,5 +193,65 @@ func TestConfigHTTPPublishedSnapshotAndPermissions(t *testing.T) {
 	}
 	if w = call("GET", "/admin/api/configs/recharge", "", cookie); w.Code != 200 {
 		t.Fatal("viewer read rejected", w.Code)
+	}
+}
+
+func TestSplitLossSectionPreservesLegacyPublishedRateAndDraft(t *testing.T) {
+	t.Setenv("LOBBY_EXPERIENCE_CONFIG", "../../../../../../etc/experience.json")
+	db := isolatedConfigDB(t)
+	ctx := context.Background()
+	c := configDefaults(t)
+	store := model.AdminConfigStore{DB: db}
+	calendar, err := json.Marshal(c.Checkin)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if e := store.Seed(ctx, "checkin", calendar); e != nil {
+		t.Fatal(e)
+	}
+	legacy := json.RawMessage(`{"dailyRateBps":80,"weeklyRateBps":10,"monthlyRateBps":10,"loserReturnRateBps":777}`)
+	if e := store.Seed(ctx, "returns", legacy); e != nil {
+		t.Fatal(e)
+	}
+	if e := store.Draft(ctx, "returns", 1, json.RawMessage(`{"dailyRateBps":90,"weeklyRateBps":20,"monthlyRateBps":30,"loserReturnRateBps":999}`), "operator", "pending"); e != nil {
+		t.Fatal(e)
+	}
+	if e := Seed(ctx, db, c); e != nil {
+		t.Fatal(e)
+	}
+	row, e := store.Get(ctx, "loss-return", false)
+	if e != nil {
+		t.Fatal(e)
+	}
+	var loss config.LossReturnConfig
+	if e = json.Unmarshal(row.Published, &loss); e != nil {
+		t.Fatal(e)
+	}
+	if loss.LoserReturnRateBps != 777 || loss.PlatformFeeRateBps != 1000 || !loss.RewardSources["checkin"] || loss.RewardSources["agentCommission"] || loss.RewardSources["inviteReward"] {
+		t.Fatal(loss)
+	}
+	before, e := store.Get(ctx, "returns", false)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if before.PublishedVersion != 1 || before.DraftVersion != 2 {
+		t.Fatal(before)
+	}
+	if e = Seed(ctx, db, c); e != nil {
+		t.Fatal(e)
+	}
+	after, e := store.Get(ctx, "returns", false)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if after.Version != before.Version || string(after.Draft) != string(before.Draft) || string(after.Published) != string(before.Published) {
+		t.Fatal("restart changed legacy draft")
+	}
+	runtime, e := LoadPublished(ctx, db, c)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if runtime.Returns.LoserReturnRateBps != 777 || runtime.Returns.DailyRateBps != 80 {
+		t.Fatal(runtime.Returns)
 	}
 }

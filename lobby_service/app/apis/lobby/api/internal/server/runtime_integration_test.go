@@ -16,6 +16,7 @@ import (
 	users "apps/app/apis/lobby/api/internal/logic/userv1/userservice"
 	"apps/app/apis/lobby/api/internal/repository/model"
 	migrations "apps/deploy/migration"
+
 	"github.com/jackc/pgx/v5"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -105,7 +106,7 @@ func TestRuntimeAppliesPublishedConfigWithoutRestart(t *testing.T) {
 	}
 	c.Game.Games = map[string]config.GameEntry{}
 	experience := t.TempDir() + "/experience.json"
-	if e = os.WriteFile(experience, []byte(`{"enabled":false,"createMinSeconds":1,"createMaxSeconds":2,"playMinSeconds":1,"playMaxSeconds":2}`), 0600); e != nil {
+	if e = os.WriteFile(experience, []byte(`{"enabled":false,"createMinSeconds":1,"createMaxSeconds":2,"playMinSeconds":1,"playMaxSeconds":2}`), 0o600); e != nil {
 		t.Fatal(e)
 	}
 	t.Setenv("LOBBY_EXPERIENCE_CONFIG", experience)
@@ -155,6 +156,50 @@ func TestRuntimeAppliesPublishedConfigWithoutRestart(t *testing.T) {
 	for amount() != tiers[0].Amount {
 		if time.Now().After(deadline) {
 			t.Fatal("published config did not become live")
+		}
+		time.Sleep(30 * time.Millisecond)
+	}
+	// An already-running player listener adopts all loss settings immediately after publication.
+	type lossPolicyReply struct {
+		Data struct {
+			PlatformFeeRateBps int32    `json:"platformFeeRateBps"`
+			RewardCategories   []string `json:"rewardCategories"`
+			Daily              struct {
+				Preview struct {
+					RateBps int32 `json:"rateBps"`
+				} `json:"preview"`
+			} `json:"daily"`
+		} `json:"data"`
+	}
+	lossInfo := func() lossPolicyReply {
+		t.Helper()
+		w := httptest.NewRecorder()
+		live.ServeHTTP(w, httptest.NewRequest("GET", "/api/activity/loserreturn/info?"+query.Encode(), nil))
+		var reply lossPolicyReply
+		if w.Code != 200 || json.Unmarshal(w.Body.Bytes(), &reply) != nil {
+			t.Fatal(w.Code, w.Body.String())
+		}
+		return reply
+	}
+	lossBefore := lossInfo()
+	lossDoc := json.RawMessage(`{"loserReturnRateBps":800,"platformFeeRateBps":1200,"rewardSources":{"inviteReward":true,"checkin":false}}`)
+	if e = store.Draft(ctx, "loss-return", 1, lossDoc, "test-admin", "immediate loss draft"); e != nil {
+		t.Fatal(e)
+	}
+	if lossInfo().Data.Daily.Preview.RateBps != lossBefore.Data.Daily.Preview.RateBps {
+		t.Fatal("draft affected live loss policy")
+	}
+	if e = store.Publish(ctx, "loss-return", 2, 0, "runtime-loss-publish", "loss-fp", "test-admin", "immediate loss", func(_ model.AdminConfigRow, b json.RawMessage, _ int64) (json.RawMessage, error) { return b, nil }); e != nil {
+		t.Fatal(e)
+	}
+	deadline = time.Now().Add(6 * time.Second)
+	for {
+		info := lossInfo()
+		if info.Data.Daily.Preview.RateBps == 800 && info.Data.PlatformFeeRateBps == 1200 && len(info.Data.RewardCategories) == 1 && info.Data.RewardCategories[0] == "inviteReward" {
+			break
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("loss settings did not become live", info)
 		}
 		time.Sleep(30 * time.Millisecond)
 	}

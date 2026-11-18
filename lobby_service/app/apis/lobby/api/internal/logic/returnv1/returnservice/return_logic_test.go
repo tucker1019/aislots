@@ -54,9 +54,12 @@ func TestReturnLogic(t *testing.T) {
 	if err != nil || out.ClaimableTotal != 300 || out.Daily.Claim.Type != "daily" || out.Weekly.Claim.Type != "weekly" || out.Monthly.Claim.Type != "monthly" || out.Daily.Claim.LossAmount != 2000 || len(out.Platforms) != 1 || out.Platforms[0].Name != "AG" || out.Platforms[0].DailyRateBps != 80 {
 		t.Fatal(out, err)
 	}
-	store.EXPECT().ReadReturns(ctx, uid, gomock.Any(), model.GroupLoser, cfg, l.location, gomock.Any()).Return(&model.ReturnView{Date: "2026-06-01", Total: 100, Sections: []*model.ReturnSection{section(model.ReturnLoser)}}, nil)
+	lossSection := section(model.ReturnLoser)
+	lossSection.Claim.BaseAmount = 26000
+	lossSection.Preview.LossPolicy = config.LossReturnConfig{PlatformFeeRateBps: 1000, RewardSources: map[string]bool{"checkin": true, "inviteReward": false}}
+	store.EXPECT().ReadReturns(ctx, uid, gomock.Any(), model.GroupLoser, cfg, l.location, gomock.Any()).Return(&model.ReturnView{Date: "2026-06-01", Total: 100, Sections: []*model.ReturnSection{lossSection}}, nil)
 	loser, err := l.LoserReturnInfo(ctx, request())
-	if err != nil || loser.ClaimableTotal != 100 || loser.Daily.Claim.Type != "loser_return" {
+	if err != nil || loser.ClaimableTotal != 100 || loser.Daily.Claim.Type != "loser_return" || loser.Daily.Claim.LossAmount != 26000 || loser.PlatformFeeRateBps != 1000 || len(loser.RewardCategories) != 1 || loser.RewardCategories[0] != "checkin" {
 		t.Fatal(loser, err)
 	}
 	for _, action := range []struct {

@@ -435,13 +435,15 @@ func (x *RebateInfoReply) GetClaimableTotal() int64 {
 }
 
 type LoserReturnInfoReply struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	ActivityDate   string                 `protobuf:"bytes,1,opt,name=activity_date,json=activityDate,proto3" json:"activity_date,omitempty"`
-	Timezone       string                 `protobuf:"bytes,2,opt,name=timezone,proto3" json:"timezone,omitempty"`
-	Daily          *ReturnSection         `protobuf:"bytes,3,opt,name=daily,proto3" json:"daily,omitempty"`
-	ClaimableTotal int64                  `protobuf:"varint,4,opt,name=claimable_total,json=claimableTotal,proto3" json:"claimable_total,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	PlatformFeeRateBps int32                  `protobuf:"varint,5,opt,name=platform_fee_rate_bps,json=platformFeeRateBps,proto3" json:"platform_fee_rate_bps,omitempty"`
+	RewardCategories   []string               `protobuf:"bytes,6,rep,name=reward_categories,json=rewardCategories,proto3" json:"reward_categories,omitempty"`
+	ActivityDate       string                 `protobuf:"bytes,1,opt,name=activity_date,json=activityDate,proto3" json:"activity_date,omitempty"`
+	Timezone           string                 `protobuf:"bytes,2,opt,name=timezone,proto3" json:"timezone,omitempty"`
+	Daily              *ReturnSection         `protobuf:"bytes,3,opt,name=daily,proto3" json:"daily,omitempty"`
+	ClaimableTotal     int64                  `protobuf:"varint,4,opt,name=claimable_total,json=claimableTotal,proto3" json:"claimable_total,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *LoserReturnInfoReply) Reset() {
@@ -472,6 +474,20 @@ func (x *LoserReturnInfoReply) ProtoReflect() protoreflect.Message {
 // Deprecated: Use LoserReturnInfoReply.ProtoReflect.Descriptor instead.
 func (*LoserReturnInfoReply) Descriptor() ([]byte, []int) {
 	return file_apis_lobby_api_v1_return_api_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *LoserReturnInfoReply) GetPlatformFeeRateBps() int32 {
+	if x != nil {
+		return x.PlatformFeeRateBps
+	}
+	return 0
+}
+
+func (x *LoserReturnInfoReply) GetRewardCategories() []string {
+	if x != nil {
+		return x.RewardCategories
+	}
+	return nil
 }
 
 func (x *LoserReturnInfoReply) GetActivityDate() string {
@@ -625,8 +641,10 @@ const file_apis_lobby_api_v1_return_api_proto_rawDesc = "" +
 	"\x05daily\x18\x03 \x01(\v2 .apis.lobby.api.v1.ReturnSectionR\x05daily\x128\n" +
 	"\x06weekly\x18\x04 \x01(\v2 .apis.lobby.api.v1.ReturnSectionR\x06weekly\x12:\n" +
 	"\amonthly\x18\x05 \x01(\v2 .apis.lobby.api.v1.ReturnSectionR\amonthly\x12'\n" +
-	"\x0fclaimable_total\x18\x06 \x01(\x03R\x0eclaimableTotal\"\xb8\x01\n" +
-	"\x14LoserReturnInfoReply\x12#\n" +
+	"\x0fclaimable_total\x18\x06 \x01(\x03R\x0eclaimableTotal\"\x98\x02\n" +
+	"\x14LoserReturnInfoReply\x121\n" +
+	"\x15platform_fee_rate_bps\x18\x05 \x01(\x05R\x12platformFeeRateBps\x12+\n" +
+	"\x11reward_categories\x18\x06 \x03(\tR\x10rewardCategories\x12#\n" +
 	"\ractivity_date\x18\x01 \x01(\tR\factivityDate\x12\x1a\n" +
 	"\btimezone\x18\x02 \x01(\tR\btimezone\x126\n" +
 	"\x05daily\x18\x03 \x01(\v2 .apis.lobby.api.v1.ReturnSectionR\x05daily\x12'\n" +

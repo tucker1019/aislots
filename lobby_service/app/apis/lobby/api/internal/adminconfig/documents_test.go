@@ -21,6 +21,7 @@ func TestDocumentsValidateAllSeedSections(t *testing.T) {
 		})
 	}
 }
+
 func TestDocumentsRejectUnknownOrUnsafeValues(t *testing.T) {
 	for _, tc := range []struct{ key, document string }{
 		{"recharge", `[{"id":"x","amount":100,"bonus":0,"fee":0,"unknown":true}]`},
@@ -34,6 +35,7 @@ func TestDocumentsRejectUnknownOrUnsafeValues(t *testing.T) {
 		}
 	}
 }
+
 func TestPublishedDocumentPreservesImmutableSettings(t *testing.T) {
 	old := config.Config{Checkin: config.CheckinConfig{Timezone: "Asia/Jakarta"}, Game: config.GameConfig{AppName: "lobby", AppKey: "lobby", Country: "ID", Currency: "IDR"}}
 	check := func(key string, v any) {
@@ -52,8 +54,14 @@ func TestGameRTPAllowsDecimalsWithoutRelaxingIntegerSettings(t *testing.T) {
 		field string
 		valid bool
 	}{
-		{`"theoreticalRtp":97.03`, true}, {`"theoreticalRtp":97.1`, true}, {`"theoreticalRtp":0`, true}, {`"theoreticalRtp":100`, true},
-		{`"theoreticalRtp":100.01`, false}, {`"theoreticalRtp":-0.01`, false}, {`"maxWin":5000.5`, false}, {`"sort":1.5`, false},
+		{`"theoreticalRtp":97.03`, true},
+		{`"theoreticalRtp":97.1`, true},
+		{`"theoreticalRtp":0`, true},
+		{`"theoreticalRtp":100`, true},
+		{`"theoreticalRtp":100.01`, false},
+		{`"theoreticalRtp":-0.01`, false},
+		{`"maxWin":5000.5`, false},
+		{`"sort":1.5`, false},
 	} {
 		document := `{"appname":"lobby","appkey":"web","country":"ID","currency":"IDR","games":{"AG1":{` + tc.field + `}}}`
 		err := ValidateDocument("games", []byte(document))
@@ -69,5 +77,37 @@ func TestGameRTPAllowsDecimalsWithoutRelaxingIntegerSettings(t *testing.T) {
 	}
 	if err := withDocument("games", []byte(`{"other":{"AG1":{"theoreticalRtp":97.03}}}`), func(string) error { return nil }); err == nil {
 		t.Fatal("decimal exception escaped game RTP path")
+	}
+}
+
+func TestLossAndRebateDocumentsStayIndependent(t *testing.T) {
+	c := config.Config{Returns: config.ReturnConfig{DailyRateBps: 80, WeeklyRateBps: 10, MonthlyRateBps: 10, LoserReturnRateBps: 1000, PlatformFeeRateBps: 1000, RewardSources: map[string]bool{"checkin": true}}}
+	// Legacy rebate documents remain readable, but cannot overwrite independent loss settings.
+	if e := applyDocument(&c, "returns", []byte(`{"dailyRateBps":90,"weeklyRateBps":20,"monthlyRateBps":30,"loserReturnRateBps":9999}`)); e != nil {
+		t.Fatal(e)
+	}
+	if c.Returns.DailyRateBps != 90 || c.Returns.LoserReturnRateBps != 1000 || c.Returns.PlatformFeeRateBps != 1000 || !c.Returns.RewardSources["checkin"] {
+		t.Fatal(c.Returns)
+	}
+	if e := applyDocument(&c, "loss-return", []byte(`{"loserReturnRateBps":0,"platformFeeRateBps":0,"rewardSources":{"checkin":false,"inviteReward":true}}`)); e != nil {
+		t.Fatal(e)
+	}
+	if c.Returns.DailyRateBps != 90 || c.Returns.LoserReturnRateBps != 0 || c.Returns.PlatformFeeRateBps != 0 || c.Returns.RewardSources["checkin"] || !c.Returns.RewardSources["inviteReward"] {
+		t.Fatal(c.Returns)
+	}
+	if e := ValidateDocument("returns", []byte(`{"dailyRateBps":80,"weeklyRateBps":10,"monthlyRateBps":10}`)); e != nil {
+		t.Fatal(e)
+	}
+	for _, doc := range []string{
+		`{"loserReturnRateBps":1000,"platformFeeRateBps":1000,"rewardSources":{"unknown":true}}`,
+		`{"loserReturnRateBps":1000,"platformFeeRateBps":10001,"rewardSources":{}}`,
+		`{"loserReturnRateBps":1000,"platformFeeRateBps":-1,"rewardSources":{}}`,
+		`{"loserReturnRateBps":1000,"rewardSources":{}}`,
+		`{"loserReturnRateBps":1000,"platformFeeRateBps":1000,"rewardSources":null}`,
+		`{"loserReturnRateBps":1000,"platformFeeRateBps":1000,"rewardSources":{},"extra":1}`,
+	} {
+		if e := ValidateDocument("loss-return", []byte(doc)); e == nil {
+			t.Fatal("accepted", doc)
+		}
 	}
 }

@@ -1,0 +1,17 @@
+{
+  "loserReturnRateBps": 1000,
+  "platformFeeRateBps": 1000,
+  "rewardSources": {
+    "rebate": true,
+    "checkin": true,
+    "vipUpgrade": true,
+    "vipWeekly": true,
+    "vipMonthly": true,
+    "lossReturn": true,
+    "rechargeBonus": true,
+    "withdrawalBonus": true,
+    "newbieReward": true,
+    "agentCommission": false,
+    "inviteReward": false
+  }
+}

@@ -9,10 +9,12 @@ import (
 
 // 10000 basis points = 100%. Pointers in the decoder distinguish omitted from zero rates.
 type ReturnConfig struct {
-	DailyRateBps       int32 `json:"dailyRateBps"`
-	WeeklyRateBps      int32 `json:"weeklyRateBps"`
-	MonthlyRateBps     int32 `json:"monthlyRateBps"`
-	LoserReturnRateBps int32 `json:"loserReturnRateBps"`
+	DailyRateBps       int32           `json:"dailyRateBps"`
+	WeeklyRateBps      int32           `json:"weeklyRateBps"`
+	MonthlyRateBps     int32           `json:"monthlyRateBps"`
+	LoserReturnRateBps int32           `json:"loserReturnRateBps"`
+	PlatformFeeRateBps int32           `json:"platformFeeRateBps"`
+	RewardSources      map[string]bool `json:"rewardSources"`
 }
 
 func LoadReturns(path string) (ReturnConfig, error) {
@@ -26,10 +28,12 @@ func LoadReturns(path string) (ReturnConfig, error) {
 	}
 	defer func() { _ = f.Close() }()
 	var raw struct {
-		Daily   *int32 `json:"dailyRateBps"`
-		Weekly  *int32 `json:"weeklyRateBps"`
-		Monthly *int32 `json:"monthlyRateBps"`
-		Loser   *int32 `json:"loserReturnRateBps"`
+		Daily   *int32          `json:"dailyRateBps"`
+		Weekly  *int32          `json:"weeklyRateBps"`
+		Monthly *int32          `json:"monthlyRateBps"`
+		Loser   *int32          `json:"loserReturnRateBps"`
+		Fee     int32           `json:"platformFeeRateBps"`
+		Sources map[string]bool `json:"rewardSources"`
 	}
 	d := json.NewDecoder(f)
 	d.DisallowUnknownFields()
@@ -45,5 +49,10 @@ func LoadReturns(path string) (ReturnConfig, error) {
 		}
 	}
 	c = ReturnConfig{DailyRateBps: *raw.Daily, WeeklyRateBps: *raw.Weekly, MonthlyRateBps: *raw.Monthly, LoserReturnRateBps: *raw.Loser}
+	c.PlatformFeeRateBps = raw.Fee
+	c.RewardSources = raw.Sources
+	if err = c.LossConfig().Validate(); err != nil {
+		return c, err
+	}
 	return c, nil
 }

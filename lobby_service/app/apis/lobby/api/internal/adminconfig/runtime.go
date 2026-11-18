@@ -8,6 +8,7 @@ import (
 
 	"apps/app/apis/lobby/api/internal/config"
 	"apps/app/apis/lobby/api/internal/repository/model"
+
 	"gorm.io/gorm"
 )
 
@@ -22,9 +23,23 @@ func Seed(ctx context.Context, db *gorm.DB, c config.Config) error {
 	for _, r := range existing {
 		found[r.Section] = true
 	}
-	values := map[string]any{"content": c.Content, "recharge": c.RechargeTiers, "withdrawal": c.WithdrawalTiers, "checkin": c.Checkin, "returns": c.Returns, "turnover": c.Turnover, "agent": c.Agent, "vip": c.VIP, "invite": c.Invite, "newbie-recharge": c.Newbie, "games": c.Game}
+	values := map[string]any{"content": c.Content, "recharge": c.RechargeTiers, "withdrawal": c.WithdrawalTiers, "checkin": c.Checkin, "returns": c.Returns, "turnover": c.Turnover, "agent": c.Agent, "vip": c.VIP, "invite": c.Invite, "newbie-recharge": c.Newbie, "games": c.Game, "loss-return": c.Returns.LossConfig()}
+	// Migrate the loss return rate from the published legacy document, never from deployment defaults.
+	if found["returns"] && !found["loss-return"] {
+		for _, row := range existing {
+			if row.Section == "returns" {
+				var old config.ReturnConfig
+				if e = json.Unmarshal(row.Published, &old); e != nil {
+					return e
+				}
+				loss := c.Returns.LossConfig()
+				loss.LoserReturnRateBps = old.LoserReturnRateBps
+				values["loss-return"] = loss
+			}
+		}
+	}
 	for _, s := range Sections {
-		if found[s.Key] && s.Key != "returns" {
+		if found[s.Key] && s.Key != "returns" && s.Key != "loss-return" {
 			continue
 		}
 		v := values[s.Key]
@@ -48,6 +63,7 @@ func Seed(ctx context.Context, db *gorm.DB, c config.Config) error {
 	}
 	return nil
 }
+
 func LoadPublished(ctx context.Context, db *gorm.DB, base config.Config) (config.Config, error) {
 	rows, e := (model.AdminConfigStore{DB: db}).List(ctx)
 	if e != nil {
@@ -64,6 +80,7 @@ func LoadPublished(ctx context.Context, db *gorm.DB, base config.Config) (config
 	}
 	return out, nil
 }
+
 func LoadExperiencePublished(ctx context.Context, db *gorm.DB, fallback config.ExperienceConfig) (config.ExperienceConfig, error) {
 	r, e := (model.AdminConfigStore{DB: db}).Get(ctx, "experience", false)
 	if e != nil {
@@ -76,6 +93,7 @@ func LoadExperiencePublished(ctx context.Context, db *gorm.DB, fallback config.E
 	e = json.Unmarshal(r.Published, &c)
 	return c, e
 }
+
 func PublishedRevision(ctx context.Context, db *gorm.DB) (int64, error) {
 	return (model.AdminConfigStore{DB: db}).Revision(ctx)
 }

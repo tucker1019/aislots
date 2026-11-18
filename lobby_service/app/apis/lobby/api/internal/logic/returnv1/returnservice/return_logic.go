@@ -64,7 +64,14 @@ func (l *Logic) LoserReturnInfo(ctx context.Context, r *pb.ReturnRequest) (*pb.L
 	if err != nil {
 		return nil, err
 	}
-	return &pb.LoserReturnInfoReply{ActivityDate: v.Date, Timezone: l.location.String(), Daily: sectionReply(v.Sections[0]), ClaimableTotal: v.Total}, nil
+	policy := v.Sections[0].Preview.LossPolicy
+	categories := []string{}
+	for _, category := range config.LossRewardCategories {
+		if policy.RewardSources[category] {
+			categories = append(categories, category)
+		}
+	}
+	return &pb.LoserReturnInfoReply{ActivityDate: v.Date, Timezone: l.location.String(), Daily: sectionReply(v.Sections[0]), ClaimableTotal: v.Total, PlatformFeeRateBps: policy.PlatformFeeRateBps, RewardCategories: categories}, nil
 }
 
 func (l *Logic) RebateClaim(ctx context.Context, r *pb.ReturnRequest) (*pb.ReturnClaimReply, error) {
@@ -100,6 +107,9 @@ func sectionReply(s *model.ReturnSection) *pb.ReturnSection {
 
 func periodReply(p *model.ReturnPeriod) *pb.ReturnPeriod {
 	loss := p.BetAmount - p.WinAmount
+	if p.Kind == model.ReturnLoser {
+		loss = p.BaseAmount
+	}
 	if loss < 0 {
 		loss = 0
 	}

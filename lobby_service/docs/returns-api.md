@@ -9,25 +9,30 @@
 | 日反水daily | 昨天有效流水 | 今天00:00至明天00:00 | 0.8% |
 | 周反水weekly | 上周一至周日有效流水 | 本周一当天 | 0.1% |
 | 月反水monthly | 上个月自然月有效流水 | 本月1号当天 | 0.1% |
-| loser_return | max(昨天实际投注－昨天游戏派彩,0) | 今天00:00至明天00:00 | 10% |
+| loser_return | max(游戏亏损－选中奖励－平台费用,0) | 今天00:00至明天00:00 | 10% |
 
 全部使用与签到一致的活动时区，默认Asia/Jakarta。周期开始包含、结束不包含。窗口结束作废，未领取奖励不累计、不补领。每天的日反水只指向昨天；本周、本月则各自独立。
 
-同一笔有效流水可同时参与日、周、月反水。一号恰好周一时，可一次领取三份反水；Loser Return再单独领取一次。领取活动奖励、充值赠送不算游戏派彩，不影响净亏损。
+同一笔有效流水可同时参与日、周、月反水。一号恰好周一时，可一次领取三份反水；Loser Return再单独领取一次。活动奖励不是游戏派彩；后台选中的奖励来源按实际到账日从游戏亏损中扣除。
 
-每种奖励先对整个周期汇总，再乘比例并向下取整到分；不足一分为0，不创建奖励流水。Loser Return盈利或持平时为0。
+每种奖励先对整个周期汇总，再乘比例并向下取整到分；不足一分为0，不创建奖励流水。Loser Return仅在最终净亏损为0时不返还；平台费用单独截零，最终返还基数也最低为0。
 
 ## 比例配置
 
-[etc/returns.json](../etc/returns.json)，环境变量 `LOBBY_RETURN_CONFIG` 可覆盖路径，修改后重启生效。
+部署默认在 [etc/returns.json](../etc/returns.json)（`LOBBY_RETURN_CONFIG` 可覆盖），只在后台分区缺失时初始化。后台分为两个独立分区，草稿、发布、回滚互不影响：
 
-```json
-{"dailyRateBps":80,"weeklyRateBps":10,"monthlyRateBps":10,"loserReturnRateBps":1000}
-```
+- `returns`：日、周、月反水（`dailyRateBps`、`weeklyRateBps`、`monthlyRateBps`）。
+- `loss-return`：亏损返还比例 `loserReturnRateBps`、平台手续费率 `platformFeeRateBps`、奖励开关 `rewardSources`。完整示例见 [loss-return.json](../etc/loss-return.json)。
 
-10000基点=100%；80=0.8%，10=0.1%，1000=10%。四个字段必须明确配置，允许0–10000整数；0表示该奖励比例为0。不使用浮点金额。活动时区统一沿用checkin.json，不单独配置另一套时区。
+所有比例为0–10000的整数基点：10=0.1%、80=0.8%、100=1%、1000=10%、10000=100%。后台输入下方实时显示百分比和例子；0为有效配置。平台手续费默认1000（10%），与返还比例分别配置，不扣减钱包余额。
 
-尚未领取的奖励、当前预估使用当前配置比例；领取后保存统计和比例快照，不因配置修改或迟到事件而改变，也不追加补发。正式接机台时，投注及全部派彩应可靠地提交完毕后再提供最终可领奖统计。
+游戏亏损 = 实际投注 − 游戏派彩。平台费用 = max(游戏亏损, 0) × 平台手续费率（按分向下取整，最低0，不包含奖励）。返还基数 = max(游戏亏损 − 选中奖励 − 平台费用, 0)，API的lossAmount/baseAmount均返回该基数。返还金额 = 基数 × 返还比例，按分向下取整。平台手续费率与返还比例独立配置。
+
+例：投注1000、派彩600、选中奖励100、平台费率10% → 费用40、返还基数260；返还比例8% → 返还20.8。游戏亏损1445、无奖励、平台费率10% → 费用144.5、基数1300.5，8%返还104.04。投注与派彩都是1000时，平台费用、返还基数和返还均为0；盈利时费用为0，不会变为负数。
+
+奖励以活动时区的实际入账日为准，仅读取钱包中已提交的正数金币流水，体验账号不参与。默认计入：`rebate`（日/周/月反水）、`checkin`（签到）、`vipUpgrade`、`vipWeekly`、`vipMonthly`、`lossReturn`（今天领取的昨日亏损返还）、`rechargeBonus`、`withdrawalBonus`、`newbieReward`；`agentCommission`、`inviteReward` 默认不计入，也可独立开启。充值本金、派彩、取款退回本金及未领取奖励均不算赠币。未列出的类别键被拒绝；缺少的开关等同关闭，`false` 不会被默认值覆盖。
+
+发布/回滚后立即生效：所有尚未领取的日/周/月反水、昨日亏损返还及当前预估均使用当前已发布配置，含返还比例、平台手续费和奖励类别。`lobby_return_rate_rules` 保留初始化/发布策略记录，不再作为未领取周期的结算依据，旧的未来日期规则不会在之后覆盖最新配置。已领取的基数、比例和金额保持支付快照，配置变化或迟到事件均不补发或追回。正在处理的请求保留原配置快照；新请求在大厅加载新发布快照后使用新配置（约2秒），相关页面每5秒刷新，接口失败后转为手动重试。
 
 ## 1. 反水信息
 
@@ -135,7 +140,7 @@ items只包含本次实际领取的明细，按type字典序排列；按type取�
 
 `GET /api/activity/loserreturn/info?uid=123&sid=YOUR_SID`
 
-结构为activityDate、timezone、claimableTotal、daily；daily也包含claim和preview，字段与反水一致，type固定loser_return。
+结构为activityDate、timezone、claimableTotal、daily、platformFeeRateBps、rewardCategories；后两项是今天preview周期实际生效的手续费率与启用奖励类别ID，允许0和空列表。daily也包含claim和preview，字段与反水一致，type固定loser_return。
 
 - daily.claim：昨天实际投注betAmount、昨天派彩winAmount、净亏损lossAmount、baseAmount=lossAmount、rateBps=1000和reward。
 - daily.preview：今天投注/派彩、当前净亏损和预计明天奖励。今天后续中奖可能使预估奖励减少至0。
@@ -168,7 +173,7 @@ items只包含本次实际领取的明细，按type字典序排列；按type取�
 
 ## 数据与source
 
-不遍历机台source，基于lobby_activity_daily按(uid,business_date)索引查询最多31天汇总。新增bet_amount、win_amount；valid_bet保留给签到及反水。旧game_bet事件兼容为实际投注=有效流水，并在迁移时回填bet_amount。
+游戏数据基于lobby_activity_daily按(uid,business_date)索引查询最多31天汇总；奖励按(uid,created_at,source)索引读取lobby_coin_ledger中的正数真实账号流水。新增bet_amount、win_amount；valid_bet保留给签到及反水。旧game_bet事件兼容为实际投注=有效流水，并在迁移时回填bet_amount。
 
 可信服务内部ActivityModel.RecordEvent预留：
 

@@ -48,6 +48,8 @@ message RebateInfoReply {
  int64 claimable_total = 6 [json_name="claimableTotal"];
 }
 message LoserReturnInfoReply {
+ int32 platform_fee_rate_bps = 5 [json_name="platformFeeRateBps"];
+ repeated string reward_categories = 6 [json_name="rewardCategories"];
  string activity_date = 1 [json_name="activityDate"];
  string timezone = 2;
  ReturnSection daily = 3;

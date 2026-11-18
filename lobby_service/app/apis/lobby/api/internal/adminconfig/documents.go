@@ -24,7 +24,8 @@ var Sections = []Section{
 	{"recharge", "存款档位", "金额、赠送、手续费（金额单位：分）；只影响新订单"},
 	{"withdrawal", "取款档位", "金额、赠送、手续费（金额单位：分）；保留原订单快照"},
 	{"checkin", "每日签到", "奖励和达标要求；活动时区固定"},
-	{"returns", "反水与亏损返还", "整数基点：100基点=1%；仅影响未结算的新统计周期"},
+	{"returns", "反水", "日/周/月反水分别配置；100基点=1%，发布后立即生效"},
+	{"loss-return", "亏损返还", "返还比例、平台手续费及计入奖励；发布后立即生效，已领取奖励不变"},
 	{"turnover", "取款流水倍数", "按入账来源配置；历史入账流水要求不重算"},
 	{"agent", "代理佣金", "厂商阶梯及比例；历史结算规则保持快照"},
 	{"vip", "VIP等级与奖励", "升级、保级、周月工资；已生成奖励不变"},
@@ -77,6 +78,7 @@ func withDocument(key string, doc []byte, run func(string) error) error {
 	}
 	return run(path)
 }
+
 func safeValues(v any, section string, path ...string) error {
 	switch t := v.(type) {
 	case json.Number:
@@ -111,12 +113,14 @@ func safeValues(v any, section string, path ...string) error {
 	}
 	return nil
 }
+
 func strict[T any](b []byte) error {
 	d := json.NewDecoder(bytes.NewReader(b))
 	d.DisallowUnknownFields()
 	var v T
 	return d.Decode(&v)
 }
+
 func ValidateDocument(key string, doc []byte) error {
 	return withDocument(key, doc, func(path string) error {
 		var e error
@@ -129,8 +133,10 @@ func ValidateDocument(key string, doc []byte) error {
 			_, e = config.LoadCheckin(path)
 		case "returns":
 			if e = strict[config.ReturnConfig](doc); e == nil {
-				_, e = config.LoadReturns(path)
+				_, e = loadRebateDocument(doc, path)
 			}
+		case "loss-return":
+			_, e = config.LoadLossReturn(path)
 		case "turnover":
 			_, e = config.LoadTurnover(path)
 		case "agent":
@@ -154,6 +160,7 @@ func ValidateDocument(key string, doc []byte) error {
 		return nil
 	})
 }
+
 func applyDocument(c *config.Config, key string, doc []byte) error {
 	if e := ValidateDocument(key, doc); e != nil {
 		return e
@@ -170,7 +177,15 @@ func applyDocument(c *config.Config, key string, doc []byte) error {
 		case "checkin":
 			c.Checkin, e = config.LoadCheckin(path)
 		case "returns":
-			c.Returns, e = config.LoadReturns(path)
+			var v config.ReturnConfig
+			v, e = loadRebateDocument(doc, path)
+			c.Returns.DailyRateBps = v.DailyRateBps
+			c.Returns.WeeklyRateBps = v.WeeklyRateBps
+			c.Returns.MonthlyRateBps = v.MonthlyRateBps
+		case "loss-return":
+			var v config.LossReturnConfig
+			v, e = config.LoadLossReturn(path)
+			c.Returns.SetLoss(v)
 		case "turnover":
 			c.Turnover, e = config.LoadTurnover(path)
 		case "agent":
@@ -189,6 +204,7 @@ func applyDocument(c *config.Config, key string, doc []byte) error {
 		return e
 	})
 }
+
 func checkImmutable(c config.Config, key string, doc []byte) error {
 	switch key {
 	case "checkin":
@@ -219,9 +235,11 @@ func checkImmutable(c config.Config, key string, doc []byte) error {
 	}
 	return nil
 }
+
 func versioned(key string) bool {
 	return key == "checkin" || key == "turnover" || key == "agent" || key == "vip" || key == "invite" || key == "newbie-recharge"
 }
+
 func publishDocument(key string, version int64, doc []byte) ([]byte, error) {
 	if !versioned(key) {
 		return doc, nil
@@ -233,4 +251,24 @@ func publishDocument(key string, version int64, doc []byte) ([]byte, error) {
 	b, _ := json.Marshal(fmt.Sprintf("admin-%s-%d", key, version))
 	v["version"] = b
 	return json.Marshal(v)
+}
+
+// The legacy returns document may still carry loss fields. Its independent
+// replacement only requires the three rebate rates; loss fields never apply here.
+func loadRebateDocument(doc []byte, path string) (config.ReturnConfig, error) {
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(doc, &fields); err != nil {
+		return config.ReturnConfig{}, err
+	}
+	if _, ok := fields["loserReturnRateBps"]; !ok {
+		fields["loserReturnRateBps"] = json.RawMessage("0")
+	}
+	b, err := json.Marshal(fields)
+	if err != nil {
+		return config.ReturnConfig{}, err
+	}
+	if err = os.WriteFile(path, b, 0o600); err != nil {
+		return config.ReturnConfig{}, err
+	}
+	return config.LoadReturns(path)
 }
