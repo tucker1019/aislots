@@ -121,7 +121,7 @@ export function createBoardStore(root, validate, io = fs) {
   };
 }
 
-export function createGameMiddleware(store, boardStore, libraryStore, paylineStore, tigerLibraryStore) {
+export function createGameMiddleware(store, boardStore, libraryStore, paylineStore, tigerLibraryStore, { allowRemote = false } = {}) {
   return async (req, res, next) => {
     const route = (req.url || '').split('?')[0];
     if (route !== '/__game-files/games' && !route.startsWith('/__game-files/games/')) return next();
@@ -133,7 +133,7 @@ export function createGameMiddleware(store, boardStore, libraryStore, paylineSto
     };
     try {
       const remote = req.socket.remoteAddress;
-      if (!['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(remote)) throw new FileError(403, '文件服务仅允许本机访问。');
+      if (!allowRemote && !['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(remote)) throw new FileError(403, '文件服务仅允许本机访问。');
       if (req.headers.origin) {
         let origin;
         try { origin = new URL(req.headers.origin); }

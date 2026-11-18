@@ -5,7 +5,7 @@ import { validateRabbitConfig } from '../domain/fortuneRabbit';
 import {validateMouseConfig,type MouseConfig,type MouseLibrary,mouseCoverage} from '../domain/fortuneMouse';
 import { validateGameFiles, type GameDocument, type GameFiles } from '../domain/settings';
 import { validateBoardFile, type BoardDocument, type BoardFile } from '../domain/board';
-const endpoint = '/__game-files/games';
+const endpoint = new URL('__game-files/games', document.baseURI).pathname;
 export async function readDragonConfig(gameId:string):Promise<{gameId:string;revision:string;file:DragonConfig}>{
  const data=await request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`);
  if(data.gameId!==gameId||typeof data.revision!=='string')throw Error('金龙盘面响应格式错误。');return {...data,file:validateDragonConfig(data.file)};
@@ -39,10 +39,10 @@ export async function saveMouseLibrary(gameId:string,revision:string,file:MouseL
 async function request(path: string, options?: RequestInit) {
   let response: Response;
   try { response = await fetch(path, { ...options, cache: 'no-store' }); }
-  catch { throw new Error('无法连接本地文件服务，请在 slot_math 中运行 npm run dev。'); }
+  catch { throw new Error('无法连接数值文件服务，请检查网络后重试。'); }
   let data;
   try { data = await response.json(); }
-  catch { throw new Error('本地文件服务不可用，请在 slot_math 中运行 npm run dev 或 npm run preview。'); }
+  catch { throw new Error('数值文件服务不可用或登录已失效，请刷新页面后重试。'); }
   if (!response.ok) throw new Error(data.error || `文件操作失败（${response.status}）`);
   return data;
 }

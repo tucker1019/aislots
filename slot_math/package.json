@@ -10,7 +10,9 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "build:deploy": "npm run build -- --base=/math/ && vite build --config vite.server.config.mjs",
+    "start": "node dist-server/server.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",
