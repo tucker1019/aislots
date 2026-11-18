@@ -1,0 +1,49 @@
+syntax = "proto2";
+
+// 1022 Fortune Rabbit
+package Game_1022;
+
+//===============================主游戏部分===============================
+//游戏图标类型 0=空白  1=萝卜 2=火箭 3=铜钱 4=红包 5=福袋 6=元宝 7=wild兔
+
+//一次转盘的数据结构
+message onceRotateInfo{
+	repeated int32 mIcons = 1;  //15个框中的图标类型，一列列的区分，第一列1,2,3第二列456...
+	
+	repeated awardIconInfo mAwardList=2; //所有中奖的数据列表 
+} 
+message awardIconInfo{  //中奖数据结构
+		repeated int32 mIconIdxs = 1; //中奖的图标的索引[1-15]
+		optional int64 mMoney=2; //中奖金额
+		optional int32 flag_id=3; //中奖线id
+		optional int32 mWinOdds=4; //中奖赔率
+	}
+//获取游戏状态 id=10221
+message getGameStateC2S{
+	optional int32 roomLevel = 1; ///房间等级
+}
+ 
+//游戏状态返回 id=10222
+message getGameStateS2C{
+	repeated int32 mMultiples=1; //筹码列表 
+	required int64 mMoney =2; ///玩家身上金币数
+	optional int32 roomLevel = 3; ///房间等级
+}
+
+//请求开奖 id=10223
+message requestOpenAwardC2S{
+	required int32 mMultipleIdx=1; //下注的筹码索引
+	required int32 isFree=2; //是否免费  0是正常结算  1是免费游戏
+	required int32 moddsLevel = 3; //下注 倍数
+}
+//下注返回 id=10224
+message requestOpenAwardS2C{
+	required int32 mResult=1; //下注返回，0是成功，1是身上钱不足，2是当前状态不允许下注，3是其他失败原因
+	required int32 mMultipleIdx = 2; //所使用的筹码索引
+	required onceRotateInfo mRotateData=3; //转盘数据
+	required int64 mMoney=4; ///玩家身上金币数
+	required int64 win_money_all=5; ///中奖总赢
+	required int32 isFree=6; //是否免费 0是正常结算  1是免费游戏 
+	required int32 moddsLevel = 7; //下注 倍数
+	repeated onceRotateInfo mFeeData=8; //免费游戏转盘数据
+}

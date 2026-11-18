@@ -1,0 +1,244 @@
+
+h_ingot_atlas_symbols.png
+size: 1714,458
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+fx_sparkl
+  rotate: false
+  xy: 1544, 2
+  size: 54, 54
+  orig: 56, 56
+  offset: 1, 1
+  index: -1
+h_i_glowborder
+  rotate: false
+  xy: 2, 154
+  size: 332, 302
+  orig: 332, 302
+  offset: 0, 0
+  index: -1
+h_ing003_baseF
+  rotate: false
+  xy: 336, 271
+  size: 333, 185
+  orig: 336, 188
+  offset: 3, 3
+  index: -1
+h_ing006_head
+  rotate: false
+  xy: 1133, 262
+  size: 214, 194
+  orig: 246, 282
+  offset: 19, 61
+  index: -1
+h_ing007_baseB
+  rotate: false
+  xy: 336, 113
+  size: 300, 77
+  orig: 301, 77
+  offset: 0, 0
+  index: -1
+h_ing007_baseBx
+  rotate: false
+  xy: 336, 192
+  size: 301, 77
+  orig: 301, 77
+  offset: 0, 0
+  index: -1
+jinwenguang4/jinwenguang4_00000
+  rotate: false
+  xy: 1444, 51
+  size: 98, 96
+  orig: 300, 300
+  offset: 101, 91
+  index: -1
+jinwenguang4/jinwenguang4_00002
+  rotate: true
+  xy: 1444, 149
+  size: 126, 121
+  orig: 300, 300
+  offset: 87, 81
+  index: -1
+jinwenguang4/jinwenguang4_00003
+  rotate: true
+  xy: 995, 136
+  size: 139, 133
+  orig: 300, 300
+  offset: 80, 76
+  index: -1
+jinwenguang4/jinwenguang4_00004
+  rotate: true
+  xy: 1561, 302
+  size: 154, 145
+  orig: 300, 300
+  offset: 72, 71
+  index: -1
+jinwenguang4/jinwenguang4_00005
+  rotate: true
+  xy: 836, 10
+  size: 168, 156
+  orig: 300, 300
+  offset: 65, 66
+  index: -1
+jinwenguang4/jinwenguang4_00006
+  rotate: false
+  xy: 1130, 94
+  size: 182, 166
+  orig: 300, 300
+  offset: 58, 62
+  index: -1
+jinwenguang4/jinwenguang4_00007
+  rotate: false
+  xy: 638, 4
+  size: 196, 174
+  orig: 300, 300
+  offset: 51, 60
+  index: -1
+jinwenguang4/jinwenguang4_00008
+  rotate: false
+  xy: 1349, 277
+  size: 210, 179
+  orig: 300, 300
+  offset: 44, 60
+  index: -1
+jinwenguang4/jinwenguang4_00009
+  rotate: false
+  xy: 908, 277
+  size: 223, 179
+  orig: 300, 300
+  offset: 37, 65
+  index: -1
+jinwenguang4/jinwenguang4_00010
+  rotate: false
+  xy: 671, 285
+  size: 235, 171
+  orig: 300, 300
+  offset: 32, 76
+  index: -1
+jinwenguang4/jinwenguang4_00011
+  rotate: false
+  xy: 2, 4
+  size: 238, 148
+  orig: 300, 300
+  offset: 31, 97
+  index: -1
+jinwenguang4/jinwenguang4_00012
+  rotate: false
+  xy: 639, 180
+  size: 238, 74
+  orig: 300, 300
+  offset: 31, 142
+  index: -1
+jinwenguang4/jinwenguang4_00013
+  rotate: false
+  xy: 671, 256
+  size: 222, 27
+  orig: 300, 300
+  offset: 36, 186
+  index: -1
+jinwenguang4/jinwenguang4_00014
+  rotate: true
+  xy: 1708, 453
+  size: 3, 4
+  orig: 300, 300
+  offset: 39, 206
+  index: -1
+jinwenguang5/jinwenguang5_00000
+  rotate: false
+  xy: 895, 180
+  size: 98, 95
+  orig: 300, 300
+  offset: 101, 91
+  index: -1
+jinwenguang5/jinwenguang5_00002
+  rotate: false
+  xy: 1314, 9
+  size: 114, 111
+  orig: 300, 300
+  offset: 93, 84
+  index: -1
+jinwenguang5/jinwenguang5_00003
+  rotate: false
+  xy: 1567, 58
+  size: 120, 118
+  orig: 300, 300
+  offset: 90, 81
+  index: -1
+jinwenguang5/jinwenguang5_00004
+  rotate: false
+  xy: 1567, 178
+  size: 126, 122
+  orig: 300, 300
+  offset: 87, 80
+  index: -1
+jinwenguang5/jinwenguang5_00005
+  rotate: false
+  xy: 994, 7
+  size: 132, 127
+  orig: 300, 300
+  offset: 84, 79
+  index: -1
+jinwenguang5/jinwenguang5_00006
+  rotate: true
+  xy: 1314, 122
+  size: 138, 128
+  orig: 300, 300
+  offset: 81, 81
+  index: -1
+jinwenguang5/jinwenguang5_00007
+  rotate: false
+  xy: 307, 6
+  size: 142, 105
+  orig: 300, 300
+  offset: 79, 107
+  index: -1
+jinwenguang5/jinwenguang5_00008
+  rotate: true
+  xy: 242, 4
+  size: 148, 63
+  orig: 300, 300
+  offset: 76, 151
+  index: -1
+jinwenguang5/jinwenguang5_00009
+  rotate: false
+  xy: 451, 53
+  size: 152, 58
+  orig: 300, 300
+  offset: 74, 159
+  index: -1
+jinwenguang5/jinwenguang5_00010
+  rotate: false
+  xy: 1128, 41
+  size: 156, 51
+  orig: 300, 300
+  offset: 72, 168
+  index: -1
+jinwenguang5/jinwenguang5_00011
+  rotate: false
+  xy: 451, 10
+  size: 154, 41
+  orig: 300, 300
+  offset: 73, 180
+  index: -1
+jinwenguang5/jinwenguang5_00012
+  rotate: false
+  xy: 1128, 19
+  size: 146, 20
+  orig: 300, 300
+  offset: 77, 199
+  index: -1
+jinwenguang5/jinwenguang5_00013
+  rotate: false
+  xy: 1130, 274
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+jinwenguang5/jinwenguang5_00014
+  rotate: false
+  xy: 1130, 274
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,125 @@
+
+h_coins_atlas_symbols.png
+size: 634,1025
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+h_cF
+  rotate: false
+  xy: 249, 792
+  size: 232, 231
+  orig: 246, 233
+  offset: 6, 2
+  index: -1
+h_cM
+  rotate: true
+  xy: 2, 166
+  size: 210, 212
+  orig: 228, 215
+  offset: 10, 3
+  index: -1
+jinwenguang3/jinwenguang3_00000
+  rotate: false
+  xy: 628, 1022
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+jinwenguang3/jinwenguang3_00001
+  rotate: true
+  xy: 117, 62
+  size: 102, 74
+  orig: 300, 300
+  offset: 36, 27
+  index: -1
+jinwenguang3/jinwenguang3_00002
+  rotate: true
+  xy: 2, 14
+  size: 150, 113
+  orig: 300, 300
+  offset: 26, 25
+  index: -1
+jinwenguang3/jinwenguang3_00003
+  rotate: true
+  xy: 483, 844
+  size: 179, 143
+  orig: 300, 300
+  offset: 24, 24
+  index: -1
+jinwenguang3/jinwenguang3_00004
+  rotate: true
+  xy: 465, 464
+  size: 200, 167
+  orig: 300, 300
+  offset: 23, 24
+  index: -1
+jinwenguang3/jinwenguang3_00005
+  rotate: true
+  xy: 433, 44
+  size: 218, 186
+  orig: 300, 300
+  offset: 23, 25
+  index: -1
+jinwenguang3/jinwenguang3_00006
+  rotate: false
+  xy: 2, 378
+  size: 232, 204
+  orig: 300, 300
+  offset: 23, 25
+  index: -1
+jinwenguang3/jinwenguang3_00007
+  rotate: false
+  xy: 2, 584
+  size: 242, 216
+  orig: 300, 300
+  offset: 24, 30
+  index: -1
+jinwenguang3/jinwenguang3_00008
+  rotate: false
+  xy: 2, 802
+  size: 245, 221
+  orig: 300, 300
+  offset: 27, 40
+  index: -1
+jinwenguang3/jinwenguang3_00009
+  rotate: true
+  xy: 246, 551
+  size: 239, 217
+  orig: 300, 300
+  offset: 35, 54
+  index: -1
+jinwenguang3/jinwenguang3_00010
+  rotate: false
+  xy: 236, 343
+  size: 227, 206
+  orig: 300, 300
+  offset: 48, 70
+  index: -1
+jinwenguang3/jinwenguang3_00011
+  rotate: false
+  xy: 216, 152
+  size: 215, 189
+  orig: 300, 300
+  offset: 62, 88
+  index: -1
+jinwenguang3/jinwenguang3_00012
+  rotate: true
+  xy: 465, 264
+  size: 198, 167
+  orig: 300, 300
+  offset: 78, 110
+  index: -1
+jinwenguang3/jinwenguang3_00013
+  rotate: true
+  xy: 483, 666
+  size: 176, 143
+  orig: 300, 300
+  offset: 98, 134
+  index: -1
+jinwenguang3/jinwenguang3_00014
+  rotate: true
+  xy: 193, 2
+  size: 148, 112
+  orig: 300, 300
+  offset: 123, 165
+  index: -1

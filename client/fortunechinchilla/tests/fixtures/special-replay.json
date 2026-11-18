@@ -1,0 +1,2004 @@
+{
+  "startBoard": [
+    [
+      {
+        "id": 1,
+        "symbolId": 11
+      },
+      {
+        "id": 2,
+        "symbolId": 5
+      },
+      {
+        "id": 3,
+        "symbolId": 11
+      }
+    ],
+    [
+      {
+        "id": 4,
+        "symbolId": 2
+      },
+      {
+        "id": 5,
+        "symbolId": 4
+      },
+      {
+        "id": 6,
+        "symbolId": 6
+      },
+      {
+        "id": 7,
+        "symbolId": 4
+      }
+    ],
+    [
+      {
+        "id": 8,
+        "symbolId": 1
+      },
+      {
+        "id": 9,
+        "symbolId": 6
+      },
+      {
+        "id": 10,
+        "symbolId": 3
+      }
+    ]
+  ],
+  "amountScale": 2,
+  "bet": {
+    "winningRoundCount": 5,
+    "totalRoundCount": 9,
+    "profitAmount": "450000",
+    "betId": "ag10-special-sample",
+    "gameId": "AG10",
+    "betAmount": "10000",
+    "totalWinAmount": "460000",
+    "status": "complete",
+    "country": "ID",
+    "currency": "IDR",
+    "createdAt": "2026-11-19T01:07:30.765348+08:00",
+    "updatedAt": "2026-11-19T01:11:30.598641+08:00"
+  },
+  "frames": [
+    {
+      "chargeAmount": "10000",
+      "profitAmount": "-10000",
+      "payoutUnit": "1000",
+      "lineCount": 10,
+      "payouts": [],
+      "gameData": {
+        "capped": false,
+        "replay": {
+          "payouts": [],
+          "lineCount": 10,
+          "payoutUnit": "1000"
+        },
+        "rewards": [
+          {
+            "cellId": 10,
+            "payout": 5,
+            "symbolId": 11
+          }
+        ],
+        "lineWins": [],
+        "ruleType": "fortune_rabbit_v1",
+        "dueAmount": 0,
+        "rawPayout": 0,
+        "paidAmount": 0,
+        "rewardCount": 1,
+        "specialIndex": 0,
+        "specialTotal": 8,
+        "paidRawPayout": 0,
+        "truncatedAmount": 0,
+        "specialRemaining": 8
+      },
+      "awardedFreeSpins": 8,
+      "cascadeIndex": 0,
+      "betId": "ag10-special-sample",
+      "spinIndex": 0,
+      "stepIndex": 1,
+      "mode": "base",
+      "status": "ready",
+      "nextAction": "continue",
+      "board": [
+        [
+          {
+            "id": 1,
+            "symbolId": 4
+          },
+          {
+            "id": 2,
+            "symbolId": 2
+          },
+          {
+            "id": 3,
+            "symbolId": 4
+          }
+        ],
+        [
+          {
+            "id": 4,
+            "symbolId": 6
+          },
+          {
+            "id": 5,
+            "symbolId": 2
+          },
+          {
+            "id": 6,
+            "symbolId": 2
+          },
+          {
+            "id": 7,
+            "symbolId": 4
+          }
+        ],
+        [
+          {
+            "id": 8,
+            "symbolId": 6
+          },
+          {
+            "id": 9,
+            "symbolId": 1
+          },
+          {
+            "id": 10,
+            "symbolId": 11
+          }
+        ]
+      ],
+      "wins": [],
+      "removedIds": [],
+      "transformedIds": [],
+      "winAmount": 0,
+      "totalWinAmount": 0,
+      "betAmount": 10000,
+      "balance": 0,
+      "freeRemaining": 8,
+      "triggeredFree": true,
+      "settledAt": "2026-11-19T01:07:30.765348+08:00"
+    },
+    {
+      "chargeAmount": "0",
+      "profitAmount": "0",
+      "payoutUnit": "1000",
+      "lineCount": 10,
+      "payouts": [],
+      "gameData": {
+        "capped": false,
+        "replay": {
+          "payouts": [],
+          "lineCount": 10,
+          "payoutUnit": "1000"
+        },
+        "rewards": [
+          {
+            "cellId": 8,
+            "payout": 5,
+            "symbolId": 11
+          }
+        ],
+        "lineWins": [],
+        "ruleType": "fortune_rabbit_v1",
+        "dueAmount": 0,
+        "rawPayout": 0,
+        "paidAmount": 0,
+        "rewardCount": 1,
+        "specialIndex": 1,
+        "specialTotal": 8,
+        "paidRawPayout": 0,
+        "truncatedAmount": 0,
+        "specialRemaining": 7
+      },
+      "cascadeIndex": 0,
+      "betId": "ag10-special-sample",
+      "spinIndex": 0,
+      "stepIndex": 2,
+      "mode": "free",
+      "status": "ready",
+      "nextAction": "continue",
+      "board": [
+        [
+          {
+            "id": 1,
+            "symbolId": 0
+          },
+          {
+            "id": 2,
+            "symbolId": 0
+          },
+          {
+            "id": 3,
+            "symbolId": 0
+          }
+        ],
+        [
+          {
+            "id": 4,
+            "symbolId": 0
+          },
+          {
+            "id": 5,
+            "symbolId": 0
+          },
+          {
+            "id": 6,
+            "symbolId": 0
+          },
+          {
+            "id": 7,
+            "symbolId": 0
+          }
+        ],
+        [
+          {
+            "id": 8,
+            "symbolId": 11
+          },
+          {
+            "id": 9,
+            "symbolId": 0
+          },
+          {
+            "id": 10,
+            "symbolId": 0
+          }
+        ]
+      ],
+      "wins": [],
+      "removedIds": [],
+      "transformedIds": [],
+      "winAmount": 0,
+      "totalWinAmount": 0,
+      "betAmount": 10000,
+      "balance": 0,
+      "freeRemaining": 7,
+      "triggeredFree": false,
+      "settledAt": "2026-11-19T01:11:30.37914+08:00"
+    },
+    {
+      "chargeAmount": "0",
+      "profitAmount": "35000",
+      "payoutUnit": "1000",
+      "lineCount": 10,
+      "payouts": [
+        {
+          "symbolId": 12,
+          "columns": 1,
+          "ways": 1,
+          "amount": "10000",
+          "rawPayout": "10"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 12,
+          "columns": 1,
+          "ways": 1,
+          "amount": "10000",
+          "rawPayout": "10"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        }
+      ],
+      "gameData": {
+        "capped": false,
+        "replay": {
+          "payouts": [
+            {
+              "ways": 1,
+              "amount": "10000",
+              "columns": 1,
+              "symbolId": 12,
+              "rawPayout": "10"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "10000",
+              "columns": 1,
+              "symbolId": 12,
+              "rawPayout": "10"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            }
+          ],
+          "lineCount": 10,
+          "payoutUnit": "1000"
+        },
+        "rewards": [
+          {
+            "cellId": 3,
+            "payout": 10,
+            "symbolId": 12
+          },
+          {
+            "cellId": 5,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 6,
+            "payout": 10,
+            "symbolId": 12
+          },
+          {
+            "cellId": 9,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 10,
+            "payout": 5,
+            "symbolId": 11
+          }
+        ],
+        "lineWins": [],
+        "ruleType": "fortune_rabbit_v1",
+        "dueAmount": 35000,
+        "rawPayout": 35,
+        "paidAmount": 35000,
+        "rewardCount": 5,
+        "specialIndex": 2,
+        "specialTotal": 8,
+        "paidRawPayout": 35,
+        "truncatedAmount": 0,
+        "specialRemaining": 6
+      },
+      "spinWinAmount": 35000,
+      "cascadeIndex": 0,
+      "betId": "ag10-special-sample",
+      "spinIndex": 0,
+      "stepIndex": 3,
+      "mode": "free",
+      "status": "ready",
+      "nextAction": "continue",
+      "board": [
+        [
+          {
+            "id": 1,
+            "symbolId": 0
+          },
+          {
+            "id": 2,
+            "symbolId": 0
+          },
+          {
+            "id": 3,
+            "symbolId": 12
+          }
+        ],
+        [
+          {
+            "id": 4,
+            "symbolId": 0
+          },
+          {
+            "id": 5,
+            "symbolId": 11
+          },
+          {
+            "id": 6,
+            "symbolId": 12
+          },
+          {
+            "id": 7,
+            "symbolId": 0
+          }
+        ],
+        [
+          {
+            "id": 8,
+            "symbolId": 0
+          },
+          {
+            "id": 9,
+            "symbolId": 11
+          },
+          {
+            "id": 10,
+            "symbolId": 11
+          }
+        ]
+      ],
+      "wins": [
+        {
+          "symbolId": 12,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            3
+          ],
+          "rawPayout": "10"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            5
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 12,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            6
+          ],
+          "rawPayout": "10"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            9
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            10
+          ],
+          "rawPayout": "5"
+        }
+      ],
+      "removedIds": [],
+      "transformedIds": [],
+      "winAmount": 35000,
+      "totalWinAmount": 35000,
+      "betAmount": 10000,
+      "balance": 0,
+      "freeRemaining": 6,
+      "triggeredFree": false,
+      "settledAt": "2026-11-19T01:11:30.414699+08:00"
+    },
+    {
+      "chargeAmount": "0",
+      "profitAmount": "45000",
+      "payoutUnit": "1000",
+      "lineCount": 10,
+      "payouts": [
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 13,
+          "columns": 1,
+          "ways": 1,
+          "amount": "20000",
+          "rawPayout": "20"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        }
+      ],
+      "gameData": {
+        "capped": false,
+        "replay": {
+          "payouts": [
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "20000",
+              "columns": 1,
+              "symbolId": 13,
+              "rawPayout": "20"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            }
+          ],
+          "lineCount": 10,
+          "payoutUnit": "1000"
+        },
+        "rewards": [
+          {
+            "cellId": 2,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 4,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 6,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 7,
+            "payout": 20,
+            "symbolId": 13
+          },
+          {
+            "cellId": 8,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 10,
+            "payout": 5,
+            "symbolId": 11
+          }
+        ],
+        "lineWins": [],
+        "ruleType": "fortune_rabbit_v1",
+        "dueAmount": 45000,
+        "rawPayout": 45,
+        "paidAmount": 45000,
+        "rewardCount": 6,
+        "specialIndex": 3,
+        "specialTotal": 8,
+        "paidRawPayout": 45,
+        "truncatedAmount": 0,
+        "specialRemaining": 5
+      },
+      "spinWinAmount": 45000,
+      "cascadeIndex": 0,
+      "betId": "ag10-special-sample",
+      "spinIndex": 0,
+      "stepIndex": 4,
+      "mode": "free",
+      "status": "ready",
+      "nextAction": "continue",
+      "board": [
+        [
+          {
+            "id": 1,
+            "symbolId": 0
+          },
+          {
+            "id": 2,
+            "symbolId": 11
+          },
+          {
+            "id": 3,
+            "symbolId": 0
+          }
+        ],
+        [
+          {
+            "id": 4,
+            "symbolId": 11
+          },
+          {
+            "id": 5,
+            "symbolId": 0
+          },
+          {
+            "id": 6,
+            "symbolId": 11
+          },
+          {
+            "id": 7,
+            "symbolId": 13
+          }
+        ],
+        [
+          {
+            "id": 8,
+            "symbolId": 11
+          },
+          {
+            "id": 9,
+            "symbolId": 0
+          },
+          {
+            "id": 10,
+            "symbolId": 11
+          }
+        ]
+      ],
+      "wins": [
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            2
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            4
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            6
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 13,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            7
+          ],
+          "rawPayout": "20"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            8
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            10
+          ],
+          "rawPayout": "5"
+        }
+      ],
+      "removedIds": [],
+      "transformedIds": [],
+      "winAmount": 45000,
+      "totalWinAmount": 80000,
+      "betAmount": 10000,
+      "balance": 0,
+      "freeRemaining": 5,
+      "triggeredFree": false,
+      "settledAt": "2026-11-19T01:11:30.450715+08:00"
+    },
+    {
+      "chargeAmount": "0",
+      "profitAmount": "0",
+      "payoutUnit": "1000",
+      "lineCount": 10,
+      "payouts": [],
+      "gameData": {
+        "capped": false,
+        "replay": {
+          "payouts": [],
+          "lineCount": 10,
+          "payoutUnit": "1000"
+        },
+        "rewards": [
+          {
+            "cellId": 5,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 8,
+            "payout": 5,
+            "symbolId": 11
+          }
+        ],
+        "lineWins": [],
+        "ruleType": "fortune_rabbit_v1",
+        "dueAmount": 0,
+        "rawPayout": 0,
+        "paidAmount": 0,
+        "rewardCount": 2,
+        "specialIndex": 4,
+        "specialTotal": 8,
+        "paidRawPayout": 0,
+        "truncatedAmount": 0,
+        "specialRemaining": 4
+      },
+      "cascadeIndex": 0,
+      "betId": "ag10-special-sample",
+      "spinIndex": 0,
+      "stepIndex": 5,
+      "mode": "free",
+      "status": "ready",
+      "nextAction": "continue",
+      "board": [
+        [
+          {
+            "id": 1,
+            "symbolId": 0
+          },
+          {
+            "id": 2,
+            "symbolId": 0
+          },
+          {
+            "id": 3,
+            "symbolId": 0
+          }
+        ],
+        [
+          {
+            "id": 4,
+            "symbolId": 0
+          },
+          {
+            "id": 5,
+            "symbolId": 11
+          },
+          {
+            "id": 6,
+            "symbolId": 0
+          },
+          {
+            "id": 7,
+            "symbolId": 0
+          }
+        ],
+        [
+          {
+            "id": 8,
+            "symbolId": 11
+          },
+          {
+            "id": 9,
+            "symbolId": 0
+          },
+          {
+            "id": 10,
+            "symbolId": 0
+          }
+        ]
+      ],
+      "wins": [],
+      "removedIds": [],
+      "transformedIds": [],
+      "winAmount": 0,
+      "totalWinAmount": 80000,
+      "betAmount": 10000,
+      "balance": 0,
+      "freeRemaining": 4,
+      "triggeredFree": false,
+      "settledAt": "2026-11-19T01:11:30.480066+08:00"
+    },
+    {
+      "chargeAmount": "0",
+      "profitAmount": "0",
+      "payoutUnit": "1000",
+      "lineCount": 10,
+      "payouts": [],
+      "gameData": {
+        "capped": false,
+        "replay": {
+          "payouts": [],
+          "lineCount": 10,
+          "payoutUnit": "1000"
+        },
+        "rewards": [
+          {
+            "cellId": 1,
+            "payout": 10,
+            "symbolId": 12
+          },
+          {
+            "cellId": 2,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 4,
+            "payout": 10,
+            "symbolId": 12
+          }
+        ],
+        "lineWins": [],
+        "ruleType": "fortune_rabbit_v1",
+        "dueAmount": 0,
+        "rawPayout": 0,
+        "paidAmount": 0,
+        "rewardCount": 3,
+        "specialIndex": 5,
+        "specialTotal": 8,
+        "paidRawPayout": 0,
+        "truncatedAmount": 0,
+        "specialRemaining": 3
+      },
+      "cascadeIndex": 0,
+      "betId": "ag10-special-sample",
+      "spinIndex": 0,
+      "stepIndex": 6,
+      "mode": "free",
+      "status": "ready",
+      "nextAction": "continue",
+      "board": [
+        [
+          {
+            "id": 1,
+            "symbolId": 12
+          },
+          {
+            "id": 2,
+            "symbolId": 11
+          },
+          {
+            "id": 3,
+            "symbolId": 0
+          }
+        ],
+        [
+          {
+            "id": 4,
+            "symbolId": 12
+          },
+          {
+            "id": 5,
+            "symbolId": 0
+          },
+          {
+            "id": 6,
+            "symbolId": 0
+          },
+          {
+            "id": 7,
+            "symbolId": 0
+          }
+        ],
+        [
+          {
+            "id": 8,
+            "symbolId": 0
+          },
+          {
+            "id": 9,
+            "symbolId": 0
+          },
+          {
+            "id": 10,
+            "symbolId": 0
+          }
+        ]
+      ],
+      "wins": [],
+      "removedIds": [],
+      "transformedIds": [],
+      "winAmount": 0,
+      "totalWinAmount": 80000,
+      "betAmount": 10000,
+      "balance": 0,
+      "freeRemaining": 3,
+      "triggeredFree": false,
+      "settledAt": "2026-11-19T01:11:30.501189+08:00"
+    },
+    {
+      "chargeAmount": "0",
+      "profitAmount": "45000",
+      "payoutUnit": "1000",
+      "lineCount": 10,
+      "payouts": [
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 13,
+          "columns": 1,
+          "ways": 1,
+          "amount": "20000",
+          "rawPayout": "20"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        }
+      ],
+      "gameData": {
+        "capped": false,
+        "replay": {
+          "payouts": [
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "20000",
+              "columns": 1,
+              "symbolId": 13,
+              "rawPayout": "20"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            }
+          ],
+          "lineCount": 10,
+          "payoutUnit": "1000"
+        },
+        "rewards": [
+          {
+            "cellId": 2,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 4,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 6,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 7,
+            "payout": 20,
+            "symbolId": 13
+          },
+          {
+            "cellId": 8,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 10,
+            "payout": 5,
+            "symbolId": 11
+          }
+        ],
+        "lineWins": [],
+        "ruleType": "fortune_rabbit_v1",
+        "dueAmount": 45000,
+        "rawPayout": 45,
+        "paidAmount": 45000,
+        "rewardCount": 6,
+        "specialIndex": 6,
+        "specialTotal": 8,
+        "paidRawPayout": 45,
+        "truncatedAmount": 0,
+        "specialRemaining": 2
+      },
+      "spinWinAmount": 45000,
+      "cascadeIndex": 0,
+      "betId": "ag10-special-sample",
+      "spinIndex": 0,
+      "stepIndex": 7,
+      "mode": "free",
+      "status": "ready",
+      "nextAction": "continue",
+      "board": [
+        [
+          {
+            "id": 1,
+            "symbolId": 0
+          },
+          {
+            "id": 2,
+            "symbolId": 11
+          },
+          {
+            "id": 3,
+            "symbolId": 0
+          }
+        ],
+        [
+          {
+            "id": 4,
+            "symbolId": 11
+          },
+          {
+            "id": 5,
+            "symbolId": 0
+          },
+          {
+            "id": 6,
+            "symbolId": 11
+          },
+          {
+            "id": 7,
+            "symbolId": 13
+          }
+        ],
+        [
+          {
+            "id": 8,
+            "symbolId": 11
+          },
+          {
+            "id": 9,
+            "symbolId": 0
+          },
+          {
+            "id": 10,
+            "symbolId": 11
+          }
+        ]
+      ],
+      "wins": [
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            2
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            4
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            6
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 13,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            7
+          ],
+          "rawPayout": "20"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            8
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            10
+          ],
+          "rawPayout": "5"
+        }
+      ],
+      "removedIds": [],
+      "transformedIds": [],
+      "winAmount": 45000,
+      "totalWinAmount": 125000,
+      "betAmount": 10000,
+      "balance": 0,
+      "freeRemaining": 2,
+      "triggeredFree": false,
+      "settledAt": "2026-11-19T01:11:30.528476+08:00"
+    },
+    {
+      "chargeAmount": "0",
+      "profitAmount": "120000",
+      "payoutUnit": "1000",
+      "lineCount": 10,
+      "payouts": [
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 12,
+          "columns": 1,
+          "ways": 1,
+          "amount": "10000",
+          "rawPayout": "10"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 13,
+          "columns": 1,
+          "ways": 1,
+          "amount": "20000",
+          "rawPayout": "20"
+        },
+        {
+          "symbolId": 12,
+          "columns": 1,
+          "ways": 1,
+          "amount": "10000",
+          "rawPayout": "10"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 14,
+          "columns": 1,
+          "ways": 1,
+          "amount": "50000",
+          "rawPayout": "50"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        }
+      ],
+      "gameData": {
+        "capped": false,
+        "replay": {
+          "payouts": [
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "10000",
+              "columns": 1,
+              "symbolId": 12,
+              "rawPayout": "10"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "20000",
+              "columns": 1,
+              "symbolId": 13,
+              "rawPayout": "20"
+            },
+            {
+              "ways": 1,
+              "amount": "10000",
+              "columns": 1,
+              "symbolId": 12,
+              "rawPayout": "10"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "50000",
+              "columns": 1,
+              "symbolId": 14,
+              "rawPayout": "50"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            }
+          ],
+          "lineCount": 10,
+          "payoutUnit": "1000"
+        },
+        "rewards": [
+          {
+            "cellId": 1,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 2,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 3,
+            "payout": 10,
+            "symbolId": 12
+          },
+          {
+            "cellId": 4,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 5,
+            "payout": 20,
+            "symbolId": 13
+          },
+          {
+            "cellId": 6,
+            "payout": 10,
+            "symbolId": 12
+          },
+          {
+            "cellId": 7,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 8,
+            "payout": 50,
+            "symbolId": 14
+          },
+          {
+            "cellId": 9,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 10,
+            "payout": 5,
+            "symbolId": 11
+          }
+        ],
+        "lineWins": [],
+        "ruleType": "fortune_rabbit_v1",
+        "dueAmount": 120000,
+        "rawPayout": 120,
+        "paidAmount": 120000,
+        "rewardCount": 10,
+        "specialIndex": 7,
+        "specialTotal": 8,
+        "paidRawPayout": 120,
+        "truncatedAmount": 0,
+        "specialRemaining": 1
+      },
+      "spinWinAmount": 120000,
+      "cascadeIndex": 0,
+      "betId": "ag10-special-sample",
+      "spinIndex": 0,
+      "stepIndex": 8,
+      "mode": "free",
+      "status": "ready",
+      "nextAction": "continue",
+      "board": [
+        [
+          {
+            "id": 1,
+            "symbolId": 11
+          },
+          {
+            "id": 2,
+            "symbolId": 11
+          },
+          {
+            "id": 3,
+            "symbolId": 12
+          }
+        ],
+        [
+          {
+            "id": 4,
+            "symbolId": 11
+          },
+          {
+            "id": 5,
+            "symbolId": 13
+          },
+          {
+            "id": 6,
+            "symbolId": 12
+          },
+          {
+            "id": 7,
+            "symbolId": 11
+          }
+        ],
+        [
+          {
+            "id": 8,
+            "symbolId": 14
+          },
+          {
+            "id": 9,
+            "symbolId": 11
+          },
+          {
+            "id": 10,
+            "symbolId": 11
+          }
+        ]
+      ],
+      "wins": [
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            1
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            2
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 12,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            3
+          ],
+          "rawPayout": "10"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            4
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 13,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            5
+          ],
+          "rawPayout": "20"
+        },
+        {
+          "symbolId": 12,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            6
+          ],
+          "rawPayout": "10"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            7
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 14,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            8
+          ],
+          "rawPayout": "50"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            9
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            10
+          ],
+          "rawPayout": "5"
+        }
+      ],
+      "removedIds": [],
+      "transformedIds": [],
+      "winAmount": 120000,
+      "totalWinAmount": 245000,
+      "betAmount": 10000,
+      "balance": 0,
+      "freeRemaining": 1,
+      "triggeredFree": false,
+      "settledAt": "2026-11-19T01:11:30.564506+08:00"
+    },
+    {
+      "chargeAmount": "0",
+      "profitAmount": "215000",
+      "payoutUnit": "1000",
+      "lineCount": 10,
+      "payouts": [
+        {
+          "symbolId": 13,
+          "columns": 1,
+          "ways": 1,
+          "amount": "20000",
+          "rawPayout": "20"
+        },
+        {
+          "symbolId": 14,
+          "columns": 1,
+          "ways": 1,
+          "amount": "50000",
+          "rawPayout": "50"
+        },
+        {
+          "symbolId": 15,
+          "columns": 1,
+          "ways": 1,
+          "amount": "100000",
+          "rawPayout": "100"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 13,
+          "columns": 1,
+          "ways": 1,
+          "amount": "20000",
+          "rawPayout": "20"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "ways": 1,
+          "amount": "5000",
+          "rawPayout": "5"
+        }
+      ],
+      "gameData": {
+        "capped": false,
+        "replay": {
+          "payouts": [
+            {
+              "ways": 1,
+              "amount": "20000",
+              "columns": 1,
+              "symbolId": 13,
+              "rawPayout": "20"
+            },
+            {
+              "ways": 1,
+              "amount": "50000",
+              "columns": 1,
+              "symbolId": 14,
+              "rawPayout": "50"
+            },
+            {
+              "ways": 1,
+              "amount": "100000",
+              "columns": 1,
+              "symbolId": 15,
+              "rawPayout": "100"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            },
+            {
+              "ways": 1,
+              "amount": "20000",
+              "columns": 1,
+              "symbolId": 13,
+              "rawPayout": "20"
+            },
+            {
+              "ways": 1,
+              "amount": "5000",
+              "columns": 1,
+              "symbolId": 11,
+              "rawPayout": "5"
+            }
+          ],
+          "lineCount": 10,
+          "payoutUnit": "1000"
+        },
+        "rewards": [
+          {
+            "cellId": 1,
+            "payout": 20,
+            "symbolId": 13
+          },
+          {
+            "cellId": 3,
+            "payout": 50,
+            "symbolId": 14
+          },
+          {
+            "cellId": 4,
+            "payout": 100,
+            "symbolId": 15
+          },
+          {
+            "cellId": 5,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 6,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 7,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 8,
+            "payout": 5,
+            "symbolId": 11
+          },
+          {
+            "cellId": 9,
+            "payout": 20,
+            "symbolId": 13
+          },
+          {
+            "cellId": 10,
+            "payout": 5,
+            "symbolId": 11
+          }
+        ],
+        "lineWins": [],
+        "ruleType": "fortune_rabbit_v1",
+        "dueAmount": 215000,
+        "rawPayout": 215,
+        "paidAmount": 215000,
+        "rewardCount": 9,
+        "specialIndex": 8,
+        "specialTotal": 8,
+        "paidRawPayout": 215,
+        "truncatedAmount": 0,
+        "specialRemaining": 0
+      },
+      "spinWinAmount": 215000,
+      "cascadeIndex": 0,
+      "betId": "ag10-special-sample",
+      "spinIndex": 0,
+      "stepIndex": 9,
+      "mode": "free",
+      "status": "ready",
+      "nextAction": "complete",
+      "board": [
+        [
+          {
+            "id": 1,
+            "symbolId": 13
+          },
+          {
+            "id": 2,
+            "symbolId": 0
+          },
+          {
+            "id": 3,
+            "symbolId": 14
+          }
+        ],
+        [
+          {
+            "id": 4,
+            "symbolId": 15
+          },
+          {
+            "id": 5,
+            "symbolId": 11
+          },
+          {
+            "id": 6,
+            "symbolId": 11
+          },
+          {
+            "id": 7,
+            "symbolId": 11
+          }
+        ],
+        [
+          {
+            "id": 8,
+            "symbolId": 11
+          },
+          {
+            "id": 9,
+            "symbolId": 13
+          },
+          {
+            "id": 10,
+            "symbolId": 11
+          }
+        ]
+      ],
+      "wins": [
+        {
+          "symbolId": 13,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            1
+          ],
+          "rawPayout": "20"
+        },
+        {
+          "symbolId": 14,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            3
+          ],
+          "rawPayout": "50"
+        },
+        {
+          "symbolId": 15,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            4
+          ],
+          "rawPayout": "100"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            5
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            6
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            7
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            8
+          ],
+          "rawPayout": "5"
+        },
+        {
+          "symbolId": 13,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            9
+          ],
+          "rawPayout": "20"
+        },
+        {
+          "symbolId": 11,
+          "columns": 1,
+          "counts": null,
+          "ways": 1,
+          "cellIds": [
+            10
+          ],
+          "rawPayout": "5"
+        }
+      ],
+      "removedIds": [],
+      "transformedIds": [],
+      "winAmount": 215000,
+      "totalWinAmount": 460000,
+      "betAmount": 10000,
+      "balance": 0,
+      "freeRemaining": 0,
+      "triggeredFree": false,
+      "settledAt": "2026-11-19T01:11:30.598641+08:00"
+    }
+  ]
+}

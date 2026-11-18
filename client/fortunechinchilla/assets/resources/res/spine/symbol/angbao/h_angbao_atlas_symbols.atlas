@@ -1,0 +1,237 @@
+
+h_angbao_atlas_symbols.png
+size: 697,269
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+h_abL
+  rotate: true
+  xy: 2, 80
+  size: 187, 248
+  orig: 187, 248
+  offset: 0, 0
+  index: -1
+h_abLflap
+  rotate: false
+  xy: 218, 27
+  size: 24, 51
+  orig: 28, 54
+  offset: 2, 1
+  index: -1
+h_abR
+  rotate: true
+  xy: 252, 95
+  size: 172, 246
+  orig: 172, 246
+  offset: 0, 0
+  index: -1
+jinwenguang/jinwenguang_00000
+  rotate: true
+  xy: 692, 44
+  size: 17, 2
+  orig: 150, 150
+  offset: 65, 23
+  index: -1
+jinwenguang/jinwenguang_00001
+  rotate: true
+  xy: 202, 20
+  size: 58, 14
+  orig: 150, 150
+  offset: 45, 22
+  index: -1
+jinwenguang/jinwenguang_00002
+  rotate: true
+  xy: 176, 3
+  size: 75, 24
+  orig: 150, 150
+  offset: 37, 22
+  index: -1
+jinwenguang/jinwenguang_00003
+  rotate: false
+  xy: 89, 43
+  size: 85, 35
+  orig: 150, 150
+  offset: 32, 22
+  index: -1
+jinwenguang/jinwenguang_00004
+  rotate: false
+  xy: 346, 49
+  size: 91, 44
+  orig: 150, 150
+  offset: 29, 23
+  index: -1
+jinwenguang/jinwenguang_00005
+  rotate: true
+  xy: 597, 76
+  size: 94, 47
+  orig: 150, 150
+  offset: 28, 31
+  index: -1
+jinwenguang/jinwenguang_00006
+  rotate: true
+  xy: 500, 172
+  size: 95, 47
+  orig: 150, 150
+  offset: 27, 41
+  index: -1
+jinwenguang/jinwenguang_00007
+  rotate: false
+  xy: 549, 172
+  size: 95, 46
+  orig: 150, 150
+  offset: 27, 52
+  index: -1
+jinwenguang/jinwenguang_00008
+  rotate: false
+  xy: 500, 123
+  size: 95, 47
+  orig: 150, 150
+  offset: 27, 62
+  index: -1
+jinwenguang/jinwenguang_00009
+  rotate: false
+  xy: 549, 220
+  size: 95, 47
+  orig: 150, 150
+  offset: 27, 72
+  index: -1
+jinwenguang/jinwenguang_00010
+  rotate: false
+  xy: 252, 48
+  size: 92, 45
+  orig: 150, 150
+  offset: 28, 83
+  index: -1
+jinwenguang/jinwenguang_00011
+  rotate: true
+  xy: 439, 5
+  size: 88, 35
+  orig: 150, 150
+  offset: 30, 93
+  index: -1
+jinwenguang/jinwenguang_00012
+  rotate: false
+  xy: 476, 2
+  size: 77, 24
+  orig: 150, 150
+  offset: 35, 104
+  index: -1
+jinwenguang/jinwenguang_00013
+  rotate: false
+  xy: 618, 11
+  size: 59, 14
+  orig: 150, 150
+  offset: 43, 114
+  index: -1
+jinwenguang/jinwenguang_00014
+  rotate: true
+  xy: 692, 63
+  size: 20, 3
+  orig: 150, 150
+  offset: 64, 125
+  index: -1
+jinwenguang3/jinwenguang3_00000
+  rotate: false
+  xy: 686, 82
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+jinwenguang3/jinwenguang3_00014
+  rotate: false
+  xy: 686, 82
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+jinwenguang3/jinwenguang3_00001
+  rotate: false
+  xy: 646, 76
+  size: 38, 7
+  orig: 150, 150
+  offset: 53, 29
+  index: -1
+jinwenguang3/jinwenguang3_00002
+  rotate: true
+  xy: 476, 28
+  size: 65, 17
+  orig: 150, 150
+  offset: 41, 29
+  index: -1
+jinwenguang3/jinwenguang3_00003
+  rotate: false
+  xy: 89, 13
+  size: 80, 28
+  orig: 150, 150
+  offset: 35, 29
+  index: -1
+jinwenguang3/jinwenguang3_00004
+  rotate: false
+  xy: 346, 9
+  size: 87, 38
+  orig: 150, 150
+  offset: 32, 29
+  index: -1
+jinwenguang3/jinwenguang3_00005
+  rotate: true
+  xy: 646, 177
+  size: 90, 46
+  orig: 150, 150
+  offset: 30, 32
+  index: -1
+jinwenguang3/jinwenguang3_00006
+  rotate: true
+  xy: 500, 28
+  size: 93, 47
+  orig: 150, 150
+  offset: 28, 41
+  index: -1
+jinwenguang3/jinwenguang3_00007
+  rotate: true
+  xy: 549, 28
+  size: 93, 46
+  orig: 150, 150
+  offset: 28, 52
+  index: -1
+jinwenguang3/jinwenguang3_00008
+  rotate: false
+  xy: 597, 27
+  size: 93, 47
+  orig: 150, 150
+  offset: 28, 62
+  index: -1
+jinwenguang3/jinwenguang3_00009
+  rotate: true
+  xy: 646, 85
+  size: 90, 46
+  orig: 150, 150
+  offset: 30, 72
+  index: -1
+jinwenguang3/jinwenguang3_00010
+  rotate: false
+  xy: 2, 41
+  size: 85, 37
+  orig: 150, 150
+  offset: 32, 83
+  index: -1
+jinwenguang3/jinwenguang3_00011
+  rotate: false
+  xy: 2, 11
+  size: 77, 28
+  orig: 150, 150
+  offset: 36, 93
+  index: -1
+jinwenguang3/jinwenguang3_00012
+  rotate: false
+  xy: 555, 8
+  size: 61, 17
+  orig: 150, 150
+  offset: 44, 104
+  index: -1
+jinwenguang3/jinwenguang3_00013
+  rotate: false
+  xy: 618, 3
+  size: 29, 6
+  orig: 150, 150
+  offset: 61, 114
+  index: -1

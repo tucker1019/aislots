@@ -1,0 +1,22 @@
+{
+  "name": "fortunechinchilla",
+  "uuid": "c8a0da8a-40be-4e67-8887-e3dc4f2f3c30",
+  "version": "1.0.0",
+  "creator": {
+    "version": "3.8.5"
+  },
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "cross-spawn": "^7.0.3",
+    "jsonfile": "^6.1.0",
+    "protobufjs": "^5.0.3",
+    "zip-local": "^0.3.5"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "node scripts/build.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
