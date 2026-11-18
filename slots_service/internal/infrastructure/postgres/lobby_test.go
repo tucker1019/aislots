@@ -144,6 +144,12 @@ func TestLobbySettlementRecoversLostResponseWithoutRedrawing(t *testing.T) {
 	if e = inspect.QueryRow(ctx, `SELECT count(*) FROM spin_steps`).Scan(&count); e != nil || count != 0 {
 		t.Fatal("unsettled frame committed", count, e)
 	}
+	// A pre-upgrade intent can still contain a legacy notification. Recovery
+	// must ignore it even when the unused outbox cannot accept any inserts.
+	if _, e = inspect.Exec(ctx, `CREATE FUNCTION block_legacy_outbox() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'legacy outbox write'; END $$; CREATE TRIGGER block_legacy_outbox BEFORE INSERT ON outbox_events FOR EACH ROW EXECUTE FUNCTION block_legacy_outbox();
+ UPDATE lobby_pending_settlements SET data=jsonb_set(data,'{Writes}',(data->'Writes') || jsonb_build_array(jsonb_build_object('SQL','INSERT INTO outbox_events(event_key,event_type,aggregate_id,payload) VALUES($1,$2,$3,$4)','Args','[]'::jsonb)))`); e != nil {
+		t.Fatal(e)
+	}
 	// A new store and service simulate restart; the durable intent must contain the original drawn result.
 	restarted, e := postgres.Open(ctx, dsn)
 	if e != nil {
@@ -247,6 +253,9 @@ func TestLobbySettlementRecoversLostResponseWithoutRedrawing(t *testing.T) {
 	}
 	if e = inspect.QueryRow(ctx, `SELECT count(*) FROM lobby_pending_settlements`).Scan(&count); e != nil || count != 0 {
 		t.Fatal("unfinished intent", count, e)
+	}
+	if e = inspect.QueryRow(ctx, `SELECT count(*) FROM outbox_events`).Scan(&count); e != nil || count != 0 {
+		t.Fatal("unused frame outbox was repopulated", count, e)
 	}
 	// Another wallet action can spend funds after the game's balance read. A definite rejection must allow a new funded attempt.
 	status, e := service.Status(ctx, session, "AG1")

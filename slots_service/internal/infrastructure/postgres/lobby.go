@@ -242,12 +242,17 @@ func (s *Store) finishPending(ctx context.Context, conn interface {
 	}
 	defer tx.Rollback(context.Background())
 	for _, m := range plan.Writes {
+		// Older durable plans include unused frame notifications. Do not recreate
+		// them when recovering a settlement after the legacy outbox was cleared.
+		if strings.HasPrefix(m.SQL, "INSERT INTO outbox_events") {
+			continue
+		}
 		args, e := m.arguments()
 		if e != nil {
 			return e
 		}
 		// Historical frames retain the lobby's actual settlement balance, including concurrent recharges.
-		if strings.HasPrefix(m.SQL, "INSERT INTO spin_steps") || strings.HasPrefix(m.SQL, "INSERT INTO outbox_events") && args[1] == "spin.frame.settled" {
+		if strings.HasPrefix(m.SQL, "INSERT INTO spin_steps") {
 			var f play.Frame
 			if e = json.Unmarshal(args[3].([]byte), &f); e != nil {
 				return e
