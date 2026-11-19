@@ -242,9 +242,9 @@ func (s *Store) finishPending(ctx context.Context, conn interface {
 	}
 	defer tx.Rollback(context.Background())
 	for _, m := range plan.Writes {
-		// Older durable plans include unused frame notifications. Do not recreate
-		// them when recovering a settlement after the legacy outbox was cleared.
-		if strings.HasPrefix(m.SQL, "INSERT INTO outbox_events") {
+		// Older durable plans contain retired frame notifications and duplicate
+		// orders. Do not recreate either when recovering an old settlement.
+		if strings.HasPrefix(m.SQL, "INSERT INTO outbox_events") || strings.HasPrefix(m.SQL, "INSERT INTO bet_orders") {
 			continue
 		}
 		args, e := m.arguments()
@@ -264,12 +264,7 @@ func (s *Store) finishPending(ctx context.Context, conn interface {
 			}
 		}
 		if strings.HasPrefix(m.SQL, "INSERT INTO spin_request_receipts") {
-			var r play.SpinReceipt
-			if e = json.Unmarshal(args[3].([]byte), &r); e != nil {
-				return e
-			}
-			r.Frame.Balance = balance
-			args[3], e = json.Marshal(r)
+			args[3], e = receiptWithBalance(args[3].([]byte), balance)
 			if e != nil {
 				return e
 			}
@@ -287,15 +282,5 @@ func (s *Store) finishPending(ctx context.Context, conn interface {
 // The response must come from the committed receipt, not the speculative balance used while planning.
 func (s *Store) SettledReceipt(ctx context.Context, p identity.Context, game, id string) (play.SpinReceipt, bool, error) {
 	scope, _ := json.Marshal(p)
-	var r play.SpinReceipt
-	var raw []byte
-	e := s.pool.QueryRow(ctx, `SELECT data FROM spin_request_receipts WHERE scope=$1 AND game_id=$2 AND request_id=$3`, string(scope), game, id).Scan(&raw)
-	if errors.Is(e, pgx.ErrNoRows) {
-		return r, false, nil
-	}
-	if e != nil {
-		return r, false, e
-	}
-	e = json.Unmarshal(raw, &r)
-	return r, true, e
+	return readSpinReceipt(s.pool.QueryRow(ctx, receiptSelect+` WHERE r.scope=$1 AND r.game_id=$2 AND r.request_id=$3`, string(scope), game, id))
 }

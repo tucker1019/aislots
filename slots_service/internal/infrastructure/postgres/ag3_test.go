@@ -43,15 +43,20 @@ func TestAG3ActualLibraryProgressiveWagerAndPreview(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	policy, err := policies.List(ctx, session.Player, "AG3")
+	if err != nil {
+		t.Fatal(err)
+	}
+	stake := policy.Default * int64(policy.LineCount)
 	status, err := s.Status(ctx, session, "AG3")
 	if err != nil {
 		t.Fatal(err)
 	}
-	first, err := s.Spin(ctx, session, "AG3", status.RequestID, 200)
+	first, err := s.Spin(ctx, session, "AG3", status.RequestID, stake)
 	if err != nil {
 		t.Fatal(err)
 	}
-	repeated, err := s.Spin(ctx, session, "AG3", status.RequestID, 200)
+	repeated, err := s.Spin(ctx, session, "AG3", status.RequestID, stake)
 	if err != nil || !reflect.DeepEqual(first, repeated) {
 		t.Fatal("wager retry changed frame", err)
 	}
@@ -71,7 +76,7 @@ func TestAG3ActualLibraryProgressiveWagerAndPreview(t *testing.T) {
 		if frame.NextAction == "complete" {
 			break
 		}
-		frame, err = s.Spin(ctx, session, "AG3", frame.NextRequestID, 200)
+		frame, err = s.Spin(ctx, session, "AG3", frame.NextRequestID, stake)
 		if err != nil {
 			t.Fatal(err)
 		}

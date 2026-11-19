@@ -23,9 +23,11 @@ var (
 )
 
 type Session struct {
-	Player    identity.Context
-	GameID    string
-	ExpiresAt time.Time
+	// Only the authenticated experience scheduler enables this policy.
+	SkipZeroWinReplay bool `json:"-"`
+	Player            identity.Context
+	GameID            string
+	ExpiresAt         time.Time
 }
 type TestProfile struct {
 	Enabled        bool   `json:"enabled"`
@@ -57,7 +59,8 @@ type LoginResponse struct {
 	Balance     int64            `json:"balance"`
 }
 type Ticket struct {
-	BuyMode                 int `json:",omitempty"`
+	ReplayOmitted           bool `json:",omitempty"`
+	BuyMode                 int  `json:",omitempty"`
 	ID                      string
 	Player                  identity.Context
 	GameID, Version, Status string
@@ -71,6 +74,7 @@ type Cursor struct {
 	StepIndex int `json:"stepIndex"`
 }
 type Frame struct {
+	ReplayOmitted    bool            `json:"-"`
 	BuyMode          int             `json:"buyMode,omitempty"`
 	GameData         json.RawMessage `json:"gameData,omitempty"`
 	BottomSymbols    []int           `json:"bottomSymbols,omitempty"`
@@ -185,9 +189,10 @@ type Tx interface {
 
 // SpinReceipt and the next request token commit alongside the round and wallet.
 type SpinReceipt struct {
-	BuyMode int `json:",omitempty"`
-	Amount  int64
-	Frame   Frame
+	ReplayOmitted bool `json:",omitempty"`
+	BuyMode       int  `json:",omitempty"`
+	Amount        int64
+	Frame         Frame
 }
 type Status struct {
 	LastFrame *Frame `json:"lastFrame,omitempty"`

@@ -117,6 +117,8 @@ go vet ./...
 
 真实数据库集成测试通过 `make integration` 运行，需要 AISLOTS_TEST_DATABASE_URL。测试为每个用例创建并清理独立 schema，不修改联调用户的余额。覆盖并发重复请求、跳步拒绝、无未来结果泄漏、持久化恢复、免费链路、累计取整以及跨身份隔离。
 
+请求回执采用引用逐帧记录的精简格式，投注票据不再双写订单表；旧数据兼容及显式历史维护命令见 [存储优化与维护](docs/storage-optimization.md)。
+
 更新对照样本（需要已安装 `slot_math` 依赖和 Node 22）：
 
 ```sh

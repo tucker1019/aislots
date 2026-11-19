@@ -214,10 +214,7 @@ func (t *transaction) SaveTicket(ctx context.Context, value play.Ticket) error {
 	if _, err = t.tx.Exec(ctx, `INSERT INTO bet_tickets(id,appname,appkey,uid,status,data) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(id) DO UPDATE SET status=excluded.status,data=excluded.data,updated_at=now()`, value.ID, p.AppName, p.AppKey, p.UID, value.Status, raw); err != nil {
 		return err
 	}
-	if value.Status == "active" || value.Status == "complete" {
-		_, err = t.tx.Exec(ctx, `INSERT INTO bet_orders(bet_id,status,data) VALUES($1,$2,$3) ON CONFLICT(bet_id) DO UPDATE SET status=excluded.status,data=excluded.data,updated_at=now()`, value.ID, value.Status, raw)
-	}
-	if err == nil && t.remote && value.Status == "complete" {
+	if t.remote && value.Status == "complete" {
 		_, err = t.tx.Exec(ctx, `WITH seq AS (
  INSERT INTO game_statistics_sequences(game_id,uid,sequence)
  SELECT $1,$2,1 WHERE NOT EXISTS(SELECT 1 FROM game_statistics_outbox WHERE bet_id=$3)
@@ -332,37 +329,17 @@ func (t *transaction) SpinToken(ctx context.Context, gameID string) (string, err
 	return token, err
 }
 func (t *transaction) SpinReceipt(ctx context.Context, gameID, id string) (play.SpinReceipt, bool, error) {
-	var raw []byte
-	var receipt play.SpinReceipt
-	err := t.tx.QueryRow(ctx, `SELECT data FROM spin_request_receipts WHERE scope=$1 AND game_id=$2 AND request_id=$3`, t.requestScope(), gameID, id).Scan(&raw)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return receipt, false, nil
-	}
-	if err != nil {
-		return receipt, false, err
-	}
-	err = json.Unmarshal(raw, &receipt)
-	return receipt, true, err
+	return readSpinReceipt(t.tx.QueryRow(ctx, receiptSelect+` WHERE r.scope=$1 AND r.game_id=$2 AND r.request_id=$3`, t.requestScope(), gameID, id))
 }
 
 // LastSpinReceipt follows the current token back to its committed receipt.
 // It restores presentation only; it neither advances the cursor nor touches the wallet.
 func (t *transaction) LastSpinReceipt(ctx context.Context, gameID, next string) (play.SpinReceipt, bool, error) {
-	var raw []byte
-	var receipt play.SpinReceipt
-	err := t.tx.QueryRow(ctx, `SELECT data FROM spin_request_receipts WHERE scope=$1 AND game_id=$2 AND data->'Frame'->>'nextRequestId'=$3`, t.requestScope(), gameID, next).Scan(&raw)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return receipt, false, nil
-	}
-	if err != nil {
-		return receipt, false, err
-	}
-	err = json.Unmarshal(raw, &receipt)
-	return receipt, true, err
+	return readSpinReceipt(t.tx.QueryRow(ctx, receiptSelect+` WHERE r.scope=$1 AND r.game_id=$2 AND r.data->'Frame'->>'nextRequestId'=$3`, t.requestScope(), gameID, next))
 }
 
 func (t *transaction) SaveSpinReceipt(ctx context.Context, gameID, id string, receipt play.SpinReceipt, next string) error {
-	raw, err := json.Marshal(receipt)
+	raw, err := encodeSpinReceipt(receipt)
 	if err != nil {
 		return err
 	}

@@ -10,13 +10,15 @@ import (
 )
 
 type AutoRoundRequest struct {
-	RequestID string `json:"requestId"`
-	UID       int64  `json:"uid"`
-	GameID    string `json:"gameId"`
-	Bet       int64  `json:"bet"`
-	BetLevel  int    `json:"betLevel"`
-	Country   string `json:"country"`
-	Currency  string `json:"currency"`
+	// Trusted internal commands only; normal game HTTP requests cannot set this.
+	SkipZeroWinReplay bool   `json:"skipZeroWinReplay,omitempty"`
+	RequestID         string `json:"requestId"`
+	UID               int64  `json:"uid"`
+	GameID            string `json:"gameId"`
+	Bet               int64  `json:"bet"`
+	BetLevel          int    `json:"betLevel"`
+	Country           string `json:"country"`
+	Currency          string `json:"currency"`
 }
 type AutoRoundReply struct {
 	Status    string `json:"status"`
@@ -47,7 +49,7 @@ func (s *Service) AutoRound(ctx context.Context, r AutoRoundRequest) (AutoRoundR
 	if e != nil {
 		return AutoRoundReply{}, e
 	}
-	session := Session{Player: p, GameID: r.GameID, ExpiresAt: time.Now().Add(time.Hour)}
+	session := Session{Player: p, GameID: r.GameID, ExpiresAt: time.Now().Add(time.Hour), SkipZeroWinReplay: r.SkipZeroWinReplay}
 	policy, e := s.Bets(ctx, session, r.GameID)
 	if e != nil {
 		return AutoRoundReply{}, e

@@ -43,7 +43,7 @@ func (s *Service) Status(ctx context.Context, session Session, gameID string) (S
 				return err
 			}
 		}
-		if found {
+		if found && !receipt.ReplayOmitted {
 			frame := receipt.Frame
 			frame.Balance = out.Balance
 			frame.Next = nil
@@ -142,7 +142,7 @@ func (s *Service) Spin(ctx context.Context, session Session, gameID, requestID s
 		frame.Next = nil // Cursors remain private; clients only decide when to request another round.
 		frame.RequestID = requestID
 		frame.NextRequestID = rand.Text()
-		if err := tx.SaveSpinReceipt(ctx, gameID, requestID, SpinReceipt{Amount: amount, Frame: frame, BuyMode: mode}, frame.NextRequestID); err != nil {
+		if err := tx.SaveSpinReceipt(ctx, gameID, requestID, SpinReceipt{Amount: amount, Frame: frame, BuyMode: mode, ReplayOmitted: frame.ReplayOmitted}, frame.NextRequestID); err != nil {
 			return err
 		}
 		out = frame

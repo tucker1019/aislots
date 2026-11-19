@@ -252,9 +252,6 @@ func (s *Service) advanceTx(ctx context.Context, tx Tx, session Session, gameID,
 				return err
 			}
 			spin = StoredSpin{Result: result}
-			if err = tx.SaveSpin(ctx, id, cursor.SpinIndex, spin); err != nil {
-				return err
-			}
 		}
 		result := spin.Result
 		module, err := s.games.Resolve(gameID, t.Version)
@@ -282,6 +279,18 @@ func (s *Service) advanceTx(ctx context.Context, tx Tx, session Session, gameID,
 		if err = json.Unmarshal(presentation, &frame); err != nil {
 			return err
 		}
+		// The existing engine still draws and validates normally. Only a paid,
+		// single-frame terminal loss can omit its presentation. Any continuation,
+		// free award, respin or previously persisted step keeps the original path.
+		omitReplay := session.SkipZeroWinReplay && initial && cursor.SpinIndex == 0 && cursor.StepIndex == 1 &&
+			!exists && result.WinMinorUnits == 0 && !result.NextState.Pending && len(result.Frames) == 1 &&
+			plan.NextAction == "complete" && frame.Mode == "base" && result.ChargeMinorUnits > 0 && !frame.TriggeredFree && frame.AwardedFreeSpins == 0 && frame.FreeRemaining == 0
+		if !exists && !omitReplay {
+			if err = tx.SaveSpin(ctx, id, cursor.SpinIndex, spin); err != nil {
+				return err
+			}
+		}
+		t.ReplayOmitted, frame.ReplayOmitted = omitReplay, omitReplay
 		// Presentation cannot supply financial fields, identity or progress.
 		frame.BetID = id
 		frame.SpinIndex = cursor.SpinIndex
@@ -322,8 +331,10 @@ func (s *Service) advanceTx(ctx context.Context, tx Tx, session Session, gameID,
 		if err = tx.SaveTicket(ctx, t); err != nil {
 			return err
 		}
-		if err = tx.SaveFrame(ctx, frame); err != nil {
-			return err
+		if !omitReplay {
+			if err = tx.SaveFrame(ctx, frame); err != nil {
+				return err
+			}
 		}
 		response = frame
 		return nil

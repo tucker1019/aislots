@@ -144,10 +144,64 @@ func TestLobbySettlementRecoversLostResponseWithoutRedrawing(t *testing.T) {
 	if e = inspect.QueryRow(ctx, `SELECT count(*) FROM spin_steps`).Scan(&count); e != nil || count != 0 {
 		t.Fatal("unsettled frame committed", count, e)
 	}
-	// A pre-upgrade intent can still contain a legacy notification. Recovery
-	// must ignore it even when the unused outbox cannot accept any inserts.
+	// A pre-upgrade intent can contain both a legacy notification and an order
+	// write. Neither may be recreated after retiring the duplicate storage.
 	if _, e = inspect.Exec(ctx, `CREATE FUNCTION block_legacy_outbox() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'legacy outbox write'; END $$; CREATE TRIGGER block_legacy_outbox BEFORE INSERT ON outbox_events FOR EACH ROW EXECUTE FUNCTION block_legacy_outbox();
- UPDATE lobby_pending_settlements SET data=jsonb_set(data,'{Writes}',(data->'Writes') || jsonb_build_array(jsonb_build_object('SQL','INSERT INTO outbox_events(event_key,event_type,aggregate_id,payload) VALUES($1,$2,$3,$4)','Args','[]'::jsonb)))`); e != nil {
+ DROP TABLE bet_orders;
+ UPDATE lobby_pending_settlements SET data=jsonb_set(data,'{Writes}',(data->'Writes') || jsonb_build_array(
+ jsonb_build_object('SQL','INSERT INTO outbox_events(event_key,event_type,aggregate_id,payload) VALUES($1,$2,$3,$4)','Args','[]'::jsonb),
+ jsonb_build_object('SQL','INSERT INTO bet_orders(bet_id,status,data) VALUES($1,$2,$3)','Args','[]'::jsonb)))`); e != nil {
+		t.Fatal(e)
+	}
+	// Turn the first compact journal receipt back into the legacy full-frame
+	// format. Restart must recover this old intent; subsequent rounds use v1.
+	var plan struct {
+		Request json.RawMessage
+		Writes  []struct {
+			SQL  string
+			Args []struct {
+				Kind  string
+				Value json.RawMessage
+			}
+		}
+	}
+	var planRaw []byte
+	if e = inspect.QueryRow(ctx, `SELECT data FROM lobby_pending_settlements`).Scan(&planRaw); e != nil {
+		t.Fatal(e)
+	}
+	if e = json.Unmarshal(planRaw, &plan); e != nil {
+		t.Fatal(e)
+	}
+	var savedFrame play.Frame
+	for i := range plan.Writes {
+		m := &plan.Writes[i]
+		if strings.HasPrefix(m.SQL, "INSERT INTO spin_steps") {
+			var raw []byte
+			if e = json.Unmarshal(m.Args[3].Value, &raw); e != nil {
+				t.Fatal(e)
+			}
+			if e = json.Unmarshal(raw, &savedFrame); e != nil {
+				t.Fatal(e)
+			}
+		}
+		if strings.HasPrefix(m.SQL, "INSERT INTO spin_request_receipts") {
+			var raw []byte
+			if e = json.Unmarshal(m.Args[3].Value, &raw); e != nil {
+				t.Fatal(e)
+			}
+			var receipt play.SpinReceipt
+			if e = json.Unmarshal(raw, &receipt); e != nil {
+				t.Fatal(e)
+			}
+			savedFrame.RequestID, savedFrame.NextRequestID = receipt.Frame.RequestID, receipt.Frame.NextRequestID
+			savedFrame.Next = receipt.Frame.Next
+			receipt.Frame = savedFrame
+			raw, _ = json.Marshal(receipt)
+			m.Args[3].Value, _ = json.Marshal(raw)
+		}
+	}
+	planRaw, _ = json.Marshal(plan)
+	if _, e = inspect.Exec(ctx, `UPDATE lobby_pending_settlements SET data=$1`, planRaw); e != nil {
 		t.Fatal(e)
 	}
 	// A new store and service simulate restart; the durable intent must contain the original drawn result.
