@@ -105,7 +105,7 @@ func (m AdminQueryModel) Overview(ctx context.Context, now time.Time, loc *time.
 	return v, e
 }
 func (m AdminQueryModel) memberQuery(ctx context.Context) *gorm.DB {
-	return m.DB.WithContext(ctx).Table("lobby_users u").Select("u.uid::text uid,coalesce(u.account,'') account,u.nickname,u.avatar_id,coalesce(v.level,0) vip_level,w.coins::text coins,u.created_at,(SELECT max(created_at) FROM lobby_sessions s WHERE s.uid=u.uid) last_login_at").Joins("JOIN lobby_wallet_balances w ON w.uid=u.uid").Joins("LEFT JOIN lobby_vip_states v ON v.uid=u.uid")
+	return m.DB.WithContext(ctx).Table("lobby_users u").Select("u.uid::text uid,coalesce(u.account,'') account,u.nickname,u.avatar_id,coalesce(v.level,0) vip_level,w.coins::text coins,u.created_at,(SELECT max(created_at) FROM lobby_sessions s WHERE s.uid=u.uid) last_login_at").Joins("JOIN lobby_wallet_balances w ON w.uid=u.uid").Joins("LEFT JOIN lobby_vip_states v ON v.uid=u.uid").Where("u.account_type = ?", "real")
 }
 func (m AdminQueryModel) Members(ctx context.Context, c AdminListCriteria) ([]AdminMember, error) {
 	q := m.memberQuery(ctx)
