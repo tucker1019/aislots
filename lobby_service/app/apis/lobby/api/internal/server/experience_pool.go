@@ -136,7 +136,7 @@ func dispatchExperience(ctx context.Context, c config.Config, cfg config.Experie
 			Code string
 			Data struct{ Status, RequestID, BetID string }
 		}
-		err := client.call(ctx, job.GameID, "/internal/auto-round", map[string]any{"requestId": job.RequestID, "uid": job.UID, "gameId": job.GameID, "bet": job.Bet, "betLevel": job.BetLevel, "country": job.Country, "currency": job.Currency}, &reply)
+		err := client.call(ctx, job.GameID, "/internal/auto-round", map[string]any{"requestId": job.RequestID, "uid": job.UID, "gameId": job.GameID, "bet": job.Bet, "betLevel": job.BetLevel, "country": job.Country, "currency": job.Currency, "skipZeroWinReplay": true}, &reply)
 		if errors.Is(err, errExperienceFunds) {
 			if err = m.StopJob(ctx, job); err != nil {
 				return err
