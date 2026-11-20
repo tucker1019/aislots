@@ -1,12 +1,4 @@
-:root[data-theme="dark"] {
-  --raised-face: var(--theme-action);
-  --raised-ink: var(--theme-on-action);
-  --raised-rim: #e5c8ff;
-  --raised-base: #7140b3;
-  --raised-text-shadow: #532481;
-}
-
-/* Shared arcade action treatment; dimensions and loading remain component-owned. */
+/* Shared action surfaces use the approved warm gold, without raised bases. */
 :root[data-theme="dark"] :is(
   .ant-btn-primary,
   .ant-btn-default:not(.ant-btn-icon-only),
@@ -28,27 +20,14 @@
   .deposit-payment,
   .account-logout
 ) {
-  --raised-travel: 4px;
   border-radius: 12px;
-  border-color: var(--raised-rim);
-  background: var(--raised-face);
-  color: var(--raised-ink);
+  border-color: transparent;
+  background: var(--theme-action);
+  color: var(--theme-on-action);
   font-weight: var(--weight-strong);
-  text-shadow: 0 1px 0 var(--raised-text-shadow);
-  box-shadow: inset 0 2px 0 #ffffff40, inset 0 0 0 1px var(--raised-rim), 0 var(--raised-travel) 0 var(--raised-base);
-  transition: transform 120ms ease, box-shadow 120ms ease;
-}
-:root[data-theme="dark"] :is(.deposit-submit, .checkin-claim) {
-  --raised-face: var(--arcade-gold);
-  --raised-ink: var(--arcade-gold-ink);
-  --raised-rim: #ffe7a0;
-  --raised-base: #ad7437;
-  --raised-text-shadow: #fff2bc;
-}
-:root[data-theme="dark"] .vip-perks .vip-claim {
-  min-height: 36px;
-  border-radius: 12px;
-  font-weight: var(--weight-strong);
+  text-shadow: none;
+  box-shadow: none;
+  transition: background-color 150ms ease;
 }
 :root[data-theme="dark"] :is(
   .ant-btn-primary,
@@ -70,9 +49,7 @@
   .game-preview-actions button,
   .deposit-payment,
   .account-logout
-):enabled:hover {
-  background: var(--raised-face);
-}
+):enabled:hover { background: var(--theme-action-hover); }
 :root[data-theme="dark"] :is(
   .ant-btn-primary,
   .ant-btn-default:not(.ant-btn-icon-only),
@@ -93,12 +70,7 @@
   .game-preview-actions button,
   .deposit-payment,
   .account-logout
-):enabled:active {
-  --raised-travel: 1px;
-  transform: translateY(3px);
-  background: var(--raised-face);
-  box-shadow: inset 0 2px 0 #ffffff40, inset 0 0 0 1px var(--raised-rim), 0 var(--raised-travel) 0 var(--raised-base);
-}
+):enabled:active { background: var(--theme-action-active); }
 :root[data-theme="dark"] :is(
   .ant-btn-primary,
   .ant-btn-default:not(.ant-btn-icon-only),
@@ -120,171 +92,40 @@
   .deposit-payment,
   .account-logout
 ):disabled {
-  --raised-face: var(--theme-disabled);
-  --raised-ink: var(--theme-disabled-ink);
-  --raised-rim: var(--theme-disabled-border);
-  --raised-base: #2c203b;
-  --raised-text-shadow: #2c203b;
-  background: var(--raised-face);
-  border-color: var(--raised-rim);
-  color: var(--raised-ink);
-  box-shadow: inset 0 2px 0 #ffffff20, inset 0 0 0 1px var(--raised-rim), 0 4px 0 var(--raised-base);
-  opacity: 1;
-  cursor: not-allowed;
-}
-
-/* The signed-in state sits on a neutral disabled face: keep the label bright
-   and remove the raised-action shadow that reduces contrast on grey. */
-:root[data-theme="dark"] .checkin-claim:disabled {
-  --raised-face: #5b506a;
-  --raised-ink: #fff7ff;
-  --raised-rim: #b9a9ca;
-  --raised-base: #302040;
-  --raised-text-shadow: transparent;
-  color: var(--raised-ink);
-  text-shadow: none;
-}
-@media (prefers-reduced-motion: reduce) {
-:root[data-theme="dark"] :is(
-  .ant-btn-primary,
-  .ant-btn-default:not(.ant-btn-icon-only),
-  .deposit-submit,
-  .withdrawal-submit,
-  .checkin-claim,
-  .vip-claim,
-  .benefit-card-bottom button,
-  .benefits-feedback button,
-  .rebate-claim-row button,
-  .rebate-feedback button,
-  .agent-claim button,
-  .agent-search button,
-  .agent-invite button,
-  .invite-card button,
-  .invite-link button,
-  .bet-records-more,
-  .game-preview-actions button,
-  .deposit-payment,
-  .account-logout
-) { transition: none; }
-:root[data-theme="dark"] :is(
-  .ant-btn-primary,
-  .ant-btn-default:not(.ant-btn-icon-only),
-  .deposit-submit,
-  .withdrawal-submit,
-  .checkin-claim,
-  .vip-claim,
-  .benefit-card-bottom button,
-  .benefits-feedback button,
-  .rebate-claim-row button,
-  .rebate-feedback button,
-  .agent-claim button,
-  .agent-search button,
-  .agent-invite button,
-  .invite-card button,
-  .invite-link button,
-  .bet-records-more,
-  .game-preview-actions button,
-  .deposit-payment,
-  .account-logout
-):enabled:active { transform: none; }
-}
-
-/* Round dismiss keys use the same depth without changing their hit areas. */
-:root[data-theme="dark"] :is(.deposit-promotion-close, .checkin-close) {
-  border: 1px solid #c9a4ff;
-  border-radius: 50%;
-  background: #7040ac;
-  color: #fff7ff;
-  box-shadow: inset 0 2px 0 #ffffff40, 0 4px 0 #3e205f, 0 7px 10px #160b294d;
-  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
-}
-:root[data-theme="dark"] :is(.deposit-promotion-close, .checkin-close):enabled:hover { background: #8550c4; }
-:root[data-theme="dark"] :is(.deposit-promotion-close, .checkin-close):enabled:active {
-  transform: translateY(3px);
-  box-shadow: inset 0 2px 0 #ffffff30, 0 1px 0 #3e205f;
-}
-:root[data-theme="dark"] :is(.deposit-promotion-close, .checkin-close):disabled {
   background: var(--theme-disabled);
   border-color: var(--theme-disabled-border);
   color: var(--theme-disabled-ink);
-  box-shadow: inset 0 2px 0 #ffffff20, 0 4px 0 #2c203b;
+  box-shadow: none;
+  text-shadow: none;
   opacity: 1;
 }
-@media (prefers-reduced-motion: reduce) {
-  :root[data-theme="dark"] :is(.deposit-promotion-close, .checkin-close) { transition: none; }
-  :root[data-theme="dark"] :is(.deposit-promotion-close, .checkin-close):enabled:active { transform: none; }
-}
 
-/* Keep disabled claim actions dimensional even when page-specific styles override the face. */
-:root[data-theme="dark"] :is(
-  .earn-page .rebate-claim-row > button,
-  .agent-overview .agent-claim button,
-  .agent-claim button
-):disabled {
-  background: linear-gradient(180deg, #70627f, #554866);
-  color: #f5effb;
-  border: 1px solid #9b8bac;
-  box-shadow: inset 0 2px 0 #ffffff26, inset 0 0 0 1px #9b8bac, 0 4px 0 #302040;
-  opacity: 1;
-  cursor: not-allowed;
+/* Secondary and destructive operations retain their own visual priority. */
+:root[data-theme="dark"] :is(.ant-btn-default:not(.ant-btn-icon-only), .account-logout, .security-logout):enabled {
+  border-color: var(--theme-border);
+  background: var(--theme-soft);
+  color: var(--ink);
 }
-
-/* Benefit detail actions share the opal-teal reward treatment. */
-:root[data-theme="dark"] .benefits-page :is(.benefit-card-bottom button, .benefits-feedback button) {
-  --raised-face: #70c7bf;
-  --raised-ink: #17484a;
-  --raised-rim: #b8f0e7;
-  --raised-base: #367f79;
-  --raised-text-shadow: #b8f0e7;
-  background: linear-gradient(145deg, #9adfd6, var(--raised-face));
-  box-shadow: inset 0 2px 0 #ffffff55, inset 0 0 0 1px var(--raised-rim), 0 4px 0 var(--raised-base);
+:root[data-theme="dark"] .ant-btn-primary.ant-btn-dangerous:enabled {
+  background: var(--theme-red-tint);
+  color: var(--theme-red-text);
+  border-color: var(--theme-red-text);
 }
-:root[data-theme="dark"] .benefits-page :is(.benefit-card-bottom button, .benefits-feedback button):enabled:hover {
-  background: linear-gradient(145deg, #a8e8df, #7ad1c8);
+:root[data-theme="dark"] .account-money-actions button {
+  min-height: 40px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--theme-action);
+  color: var(--theme-on-action);
+  font-weight: var(--weight-strong);
 }
-
-/* Force the activity action buttons to match the mint reward keycaps. */
-:root[data-theme="dark"] :is(
-  .benefits-page .benefit-card-bottom button,
-  .benefits-page .benefits-feedback button,
-  .benefits-page .checkin-claim,
-  .vip-upgrade-home
-):enabled {
-  background: linear-gradient(145deg, #9adfd6, #70c7bf) !important;
-  border: 1px solid #b8f0e7 !important;
-  color: #17484a !important;
-  text-shadow: 0 1px 0 #b8f0e7 !important;
-  box-shadow: inset 0 2px 0 #ffffff55, inset 0 0 0 1px #b8f0e7, 0 4px 0 #367f79 !important;
+:root[data-theme="dark"] .account-money-actions button + button { background: var(--theme-soft); color: var(--ink); border: 1px solid var(--theme-border); }
+:root[data-theme="dark"] .account-money-actions button:first-child:hover { background: var(--theme-action-hover); }
+:root[data-theme="dark"] :is(.deposit-promotion-close, .checkin-close) {
+  border: 1px solid var(--theme-border);
+  border-radius: 50%;
+  background: var(--theme-soft);
+  color: var(--ink);
+  box-shadow: none;
 }
-
-:root[data-theme="dark"] :is(
-  .benefits-page .benefit-card-bottom button,
-  .benefits-page .benefits-feedback button,
-  .benefits-page .checkin-claim,
-  .vip-upgrade-home
-):enabled:hover {
-  background: linear-gradient(145deg, #a8e8df, #7ad1c8) !important;
-}
-
-:root[data-theme="dark"] .checkin-claim:enabled {
-  background: linear-gradient(145deg, #9adfd6, #70c7bf) !important;
-  border-color: #b8f0e7 !important;
-  color: #17484a !important;
-  box-shadow: inset 0 2px 0 #ffffff55, inset 0 0 0 1px #b8f0e7, 0 4px 0 #367f79 !important;
-}
-
-/* Keep both logout actions neutral; cancellation uses the gold arcade key. */
-:root[data-theme="dark"] .security-logout:enabled {
-  --raised-face: #70677e;
-  --raised-ink: #fff7ff;
-  --raised-rim: #b9aec6;
-  --raised-base: #40344f;
-  --raised-text-shadow: #40344f;
-}
-:root[data-theme="dark"] .security-cancel:enabled {
-  --raised-face: var(--arcade-gold);
-  --raised-ink: var(--arcade-gold-ink);
-  --raised-rim: #ffe7a0;
-  --raised-base: #ad7437;
-  --raised-text-shadow: #fff2bc;
-}
+:root[data-theme="dark"] :is(.deposit-promotion-close, .checkin-close):disabled { background: var(--theme-disabled); color: var(--theme-disabled-ink); }

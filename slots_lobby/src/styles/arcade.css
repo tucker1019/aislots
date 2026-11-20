@@ -1,333 +1,121 @@
-/* 紫晶电玩厅：保留设计坐标和业务结构，只调整深色外观。 */
-:root[data-theme="dark"] :is(.benefits-heading h1, .benefit-card h2, .vip-section-title) {
-  font-weight: var(--weight-key);
-  text-shadow: 0 2px 0 #160b29;
-}
-:root[data-theme="dark"] :is(.benefit-card header > strong, .vip-perks strong) {
-  font-weight: var(--weight-key);
-  text-shadow: 0 2px 0 #704324;
-}
+/* Jade lobby: original artwork carries the colour; chrome stays restrained. */
 :root[data-theme="dark"] {
-  --arcade-gold: #ffd15c;
-  --arcade-gold-ink: #372047;
-  --arcade-depth: #160b29;
+  --arcade-gold: var(--theme-action);
+  --arcade-gold-ink: var(--theme-on-action);
+  --arcade-depth: #0b2221;
+  --header-height: calc(148px + var(--lobby-safe-top, 0px));
 }
 
-:root[data-theme="dark"] .site-header {
-  border-bottom-color: #624383;
-  box-shadow: 0 3px 0 #160b294d;
+:root[data-theme="dark"] .site-header { border-bottom: 0; }
+:root[data-theme="dark"] .header-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: 38px 54px;
+  gap: 14px 12px;
+  padding: 20px 20px 22px;
 }
-:root[data-theme="dark"] .brand { color: #fff4d7; }
-:root[data-theme="dark"] .brand-symbol {
-  background: var(--arcade-gold);
-  box-shadow: 0 3px 0 #ad7437;
-  transform: rotate(-7deg);
-}
-:root[data-theme="dark"] .brand-symbol i { background: #4d2875; }
-:root[data-theme="dark"] .brand-dot { color: var(--arcade-gold); }
-:root[data-theme="dark"] .header-auth button {
-  border-color: #8963b5;
-  border-radius: 12px;
-  color: #ead9ff;
-  font-weight: 700;
-}
-:root[data-theme="dark"] .header-auth button:last-child {
-  border-color: transparent;
-  color: #fff;
-  box-shadow: 0 3px 0 #582c94;
-}
-:root[data-theme="dark"] .header-deposit {
-  color: var(--arcade-gold-ink);
-  background: var(--arcade-gold);
-  box-shadow: 0 2px 0 #ad7437;
-}
-:root[data-theme="dark"] .header-deposit:hover { background: #ffe08b; }
-:root[data-theme="dark"] .home-notice { color: #e6d3ff; }
-:root[data-theme="dark"] .home-notice > svg { color: var(--arcade-gold); }
-:root[data-theme="dark"] .header-balance-value { color: var(--arcade-gold); }
-:root[data-theme="dark"] .my-account .account-balance { color: var(--arcade-gold); }
-:root[data-theme="dark"] .promotion-banner {
-  position: relative;
-  border: 1px solid #8e5bd0;
-  border-radius: 16px;
-  box-shadow: 0 0 0 1px #4f2b7a, 0 5px 18px #160b294d;
-  isolation: isolate;
-}
-:root[data-theme="dark"] .promotion-banner::before {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  content: '';
-  pointer-events: none;
-  border-radius: inherit;
-  background: linear-gradient(112deg, #a568ff1c 0%, transparent 32%, #36c9ff18 68%, #a568ff20 100%);
-  mix-blend-mode: screen;
-}
-:root[data-theme="dark"] .promotion-banner::after {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  content: '';
-  pointer-events: none;
-  border-radius: inherit;
-  box-shadow: inset 0 1px 0 #ffffff3b, inset 0 -1px 0 #180b2e88;
-}
-:root[data-theme="dark"] .promotion-banner img { filter: saturate(1.12) contrast(1.04); }
-:root[data-theme="dark"] .provider-tabs { gap: 7px; padding-bottom: 14px; }
-:root[data-theme="dark"] .provider-tab {
-  min-height: 52px;
-  border-radius: 12px;
-  font-weight: 600;
-  box-shadow: 0 2px 0 var(--arcade-depth);
-  transition: transform 120ms ease, background-color 120ms ease;
-}
-:root[data-theme="dark"] .provider-tab .provider-mark { height: 20px; font-size: 17px; }
-:root[data-theme="dark"] .provider-tab.provider-hot .provider-mark { font-size: 20px; }
-:root[data-theme="dark"] .provider-tab[aria-pressed="true"] {
-  color: var(--arcade-gold-ink);
-  background: var(--arcade-gold);
+:root[data-theme="dark"] .brand { grid-area: 1 / 1; font-size: 27px; color: var(--ink); }
+:root[data-theme="dark"] .brand-symbol { display: none; }
+:root[data-theme="dark"] .brand-dot { color: inherit; }
+:root[data-theme="dark"] .site-header .header-account { display: contents; }
+:root[data-theme="dark"] .site-header .header-avatar-link { grid-area: 1 / 2; }
+:root[data-theme="dark"] .site-header .header-wallet {
+  grid-area: 2 / 1 / 3 / -1;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  gap: 8px;
+  width: 100%;
+  height: 54px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
   box-shadow: none;
 }
-:root[data-theme="dark"] .provider-tab:active { transform: translateY(2px); }
-:root[data-theme="dark"] .home-game-grid { gap: 10px 8px; }
-:root[data-theme="dark"] .game-tile {
-  border-radius: 16px;
-  box-shadow: 0 4px 0 var(--arcade-depth);
+:root[data-theme="dark"] .site-header .header-balance-refresh {
+  height: 36px;
+  background: transparent;
+  color: var(--theme-gold-text);
 }
+:root[data-theme="dark"] .site-header .header-balance-value {
+  min-width: 0;
+  padding: 0;
+  text-align: left;
+  font-size: 24px;
+  line-height: 1.1;
+}
+:root[data-theme="dark"] .site-header .header-wallet output { white-space: normal; overflow-wrap: anywhere; }
+:root[data-theme="dark"] .header-deposit {
+  width: auto;
+  min-width: 120px;
+  height: 46px;
+  padding-inline: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+}
+:root[data-theme="dark"] .header-deposit-bonus {
+  top: -7px;
+  right: 2px;
+  border-color: var(--theme-surface);
+  background: var(--theme-action);
+  color: var(--theme-on-action);
+  font-size: 9px;
+}
+:root[data-theme="dark"] .header-auth { grid-area: 2 / 1 / 3 / -1; justify-content: flex-end; align-items: center; }
+:root[data-theme="dark"] .header-auth button { min-height: 44px; border-color: var(--theme-border); color: var(--ink); }
+:root[data-theme="dark"] .header-auth button:last-child { border-color: transparent; color: var(--theme-on-action); }
+/* Guests have no wallet row: keep identity and authentication on one line.
+   The same height variable controls both the fixed header and scroll offset. */
+:root[data-theme="dark"]:has(.site-header .header-auth) {
+  --header-height: calc(82px + var(--lobby-safe-top, 0px));
+}
+:root[data-theme="dark"] .header-inner:has(.header-auth) {
+  grid-template-rows: 44px;
+  gap: 12px;
+  padding-block: 19px;
+}
+:root[data-theme="dark"] .header-auth { margin-left: 0; }
+:root[data-theme="dark"] .header-inner > .header-auth { grid-area: 1 / 2; }
+:root[data-theme="dark"] .home-notice > svg { color: var(--theme-gold-text); }
+:root[data-theme="dark"] .provider-tab { font-size: 14px; font-weight: var(--weight-key); }
+:root[data-theme="dark"] .provider-hot .provider-mark { display: none; }
+:root[data-theme="dark"] .provider-AG .provider-mark { display: none; }
 :root[data-theme="dark"] .bottom-navigation {
-  border-radius: 22px 22px 0 0;
-  box-shadow: 0 -5px 18px #160b2959;
+  padding-top: 10px;
+  padding-bottom: calc(10px + var(--lobby-safe-bottom, 0px));
+  border-color: var(--theme-border);
 }
-:root[data-theme="dark"] .bottom-navigation button[aria-current="page"] { color: var(--arcade-gold); }
-:root[data-theme="dark"] .bottom-navigation button[aria-current="page"] .bottom-navigation-icon {
-  background: var(--arcade-gold);
-  color: var(--arcade-gold-ink);
-  border-radius: 12px;
-  box-shadow: 0 3px 0 #a97734;
+:root[data-theme="dark"] .bottom-navigation button { position: relative; }
+:root[data-theme="dark"] .bottom-navigation button[aria-current="page"]::before {
+  position: absolute;
+  top: -10px;
+  width: 26px;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: var(--theme-active);
+  content: '';
 }
-:root[data-theme="dark"] .floating-benefits-entry span {
-  -webkit-text-stroke-color: #583081;
-  text-shadow: 0 2px 0 #31164c, 0 3px 4px #0008;
-}
-
-:root[data-theme="dark"] .checkin-panel {
-  border: 2px solid #8961b4;
-  border-radius: 26px;
-  background: radial-gradient(ellipse at 85% 0%, #62388a, transparent 60%), #2c174b;
-  box-shadow: 0 6px 0 #160b29, inset 0 1px #ffffff26;
-  color: var(--theme-ink);
-}
-:root[data-theme="dark"] .checkin-header-icon {
-  background: var(--arcade-gold);
-  color: var(--arcade-gold-ink);
-  transform: rotate(7deg);
-  box-shadow: 0 3px 0 #ad7437;
-}
-:root[data-theme="dark"] :is(.checkin-stats > div, .checkin-progress p) {
-  border-color: #69468b;
-  border-radius: 12px;
-  background: #21103d;
-  color: var(--theme-muted);
-}
-:root[data-theme="dark"] .checkin-stats strong { color: var(--arcade-gold); }
-:root[data-theme="dark"] .checkin-day {
-  border-color: #765396;
-  border-radius: 13px;
-  background: #45296d;
-  color: #ffe08b;
-}
-:root[data-theme="dark"] .checkin-day > span { color: #ead9ff; }
-:root[data-theme="dark"] .checkin-day.current {
-  background: var(--arcade-gold);
-  border-color: transparent;
-  color: var(--arcade-gold-ink);
-}
+:root[data-theme="dark"] .bottom-navigation button[aria-current="page"] .bottom-navigation-icon { background: transparent; }
+:root[data-theme="dark"] .my-account .account-balance { color: var(--ink); }
+:root[data-theme="dark"] .my-account .account-action-icon { border-color: transparent; background: var(--theme-soft); color: var(--theme-muted); }
+:root[data-theme="dark"] .my-account .account-benefits-card .account-action-icon { background: var(--theme-soft); color: var(--theme-gold-text); }
+:root[data-theme="dark"] .account-money-actions { flex-wrap: wrap; }
+:root[data-theme="dark"] .account-balance-card { flex-wrap: wrap; }
+:root[data-theme="dark"] .checkin-panel { border-color: var(--theme-border); background: var(--theme-panel); box-shadow: 0 16px 48px #0004; }
+:root[data-theme="dark"] .checkin-header-icon { background: var(--theme-soft); color: var(--theme-gold-text); }
+:root[data-theme="dark"] :is(.checkin-stats > div, .checkin-progress p) { border-color: var(--theme-border); background: var(--theme-canvas); color: var(--muted); }
+:root[data-theme="dark"] .checkin-stats strong { color: var(--ink); }
+:root[data-theme="dark"] .checkin-day { border-color: var(--theme-border); background: var(--theme-soft); color: var(--theme-gold-text); }
+:root[data-theme="dark"] .checkin-day > span { color: var(--muted); }
+:root[data-theme="dark"] .checkin-day.current { background: var(--theme-action); border-color: transparent; color: var(--theme-on-action); }
 :root[data-theme="dark"] .checkin-day.current > span { color: inherit; }
-:root[data-theme="dark"] .checkin-day.claimed { color: #a4edce; }
-:root[data-theme="dark"] .checkin-day.current.claimed,
-:root[data-theme="dark"] .checkin-day.current.claimed > span,
-:root[data-theme="dark"] .checkin-day.current.claimed > strong { color: var(--arcade-gold-ink); }
-:root[data-theme="dark"] .checkin-progress p > span:last-child { color: var(--theme-ink); }
-:root[data-theme="dark"] .checkin-progress b { color: #ffd15c; }
-:root[data-theme="dark"] .checkin-progress b.met { color: #a4edce; }
-:root[data-theme="dark"] .checkin-claim:not(:disabled) {
-  border-color: transparent;
-  border-radius: 14px;
-  background: var(--arcade-gold);
-  color: var(--arcade-gold-ink);
-  box-shadow: 0 4px 0 #ad7437;
-  font-weight: 800;
-}
-:root[data-theme="dark"] .checkin-close {
-  border-color: #ab8dca;
-  background: #38205d;
-  color: var(--theme-ink);
-}
-:root[data-theme="dark"] :is(.provider-tab, .game-tile, .checkin-claim, .checkin-close, .header-auth button, .bottom-navigation button):focus-visible {
-  outline: 3px solid #e5c9ff;
-  outline-offset: 3px;
-}
-@media (prefers-reduced-motion: reduce) {
-  :root[data-theme="dark"] .provider-tab { transition: none; }
-  :root[data-theme="dark"] .provider-tab:active { transform: none; }
-}
-
-/* Earn uses the same purple shells and recessed figures as reward dialogs. */
-:root[data-theme="dark"] .earn-page :is(.rebate-card, .earn-invite) {
-  border-radius: 20px;
-  box-shadow: 0 4px 0 var(--arcade-depth);
-}
-:root[data-theme="dark"] .earn-page .rebate-claim-row > button {
-  border-radius: 12px;
-}
-:root[data-theme="dark"] .earn-page .rebate-claim-row > button:not(:disabled) {
-  background: var(--arcade-gold);
-  color: var(--arcade-gold-ink);
-  box-shadow: 0 3px 0 #ad7437;
-}
-:root[data-theme="dark"] .earn-page .invite-link button {
-  background: var(--theme-action);
-  color: var(--theme-on-action);
-  border-color: transparent;
-  border-radius: 9px;
-}
-
-:root[data-theme="dark"] .deposit-submit {
-  border-radius: 14px;
-  transition: transform 120ms ease, box-shadow 120ms ease;
-}
-:root[data-theme="dark"] .deposit-submit:enabled {
-  background: var(--arcade-gold);
-  color: var(--arcade-gold-ink);
-  box-shadow: inset 0 2px 0 #fff2bc, inset 0 0 0 1px #ffe7a0, 0 4px 0 #ad7437;
-}
-:root[data-theme="dark"] .deposit-submit:enabled:hover { background: #ffe08b; }
-:root[data-theme="dark"] .deposit-submit:enabled:active {
-  transform: translateY(3px);
-  box-shadow: inset 0 2px 0 #fff2bc, inset 0 0 0 1px #ffe7a0, 0 1px 0 #ad7437;
-}
-:root[data-theme="dark"] :is(.withdrawal-page .withdrawal-submit, .benefit-card-bottom button) {
-  border-radius: 14px;
-  transition: transform 120ms ease, box-shadow 120ms ease;
-}
-:root[data-theme="dark"] :is(.withdrawal-page .withdrawal-submit, .benefit-card-bottom button):enabled {
-  background: var(--theme-action);
-  border-color: #e5c8ff;
-  color: var(--theme-on-action);
-  box-shadow: inset 0 2px 0 #ffffff40, 0 4px 0 #7140b3;
-}
-:root[data-theme="dark"] :is(.withdrawal-page .withdrawal-submit, .benefit-card-bottom button):enabled:hover { background: var(--theme-action-hover); }
-:root[data-theme="dark"] :is(.withdrawal-page .withdrawal-submit, .benefit-card-bottom button):enabled:active {
-  transform: translateY(3px);
-  box-shadow: inset 0 2px 0 #ffffff40, 0 1px 0 #7140b3;
-}
-@media (prefers-reduced-motion: reduce) {
-  :root[data-theme="dark"] .deposit-submit { transition: none; }
-  :root[data-theme="dark"] .deposit-submit:enabled:active { transform: none; }
-  :root[data-theme="dark"] :is(.withdrawal-page .withdrawal-submit, .benefit-card-bottom button) { transition: none; }
-  :root[data-theme="dark"] :is(.withdrawal-page .withdrawal-submit, .benefit-card-bottom button):enabled:active { transform: none; }
-}
-
-/* Wallet actions have a solid arcade base, with a short press travel. */
-/* Account shortcuts share the same raised keycap in reward and service colors. */
-:root[data-theme="dark"] .my-account .account-actions .account-action-icon {
-  --shortcut-face: #9655ff;
-  --shortcut-rim: #c9a4ff;
-  --shortcut-base: #582c94;
-  --shortcut-ink: #fff7ff;
-  border: 1px solid var(--shortcut-rim);
-  border-radius: 11px;
-  background: var(--shortcut-face);
-  color: var(--shortcut-ink);
-  box-shadow: inset 0 2px 0 #ffffff45, inset 0 -2px 0 #00000012, 0 4px 0 var(--shortcut-base), 0 6px 5px #160b294d;
-  transition: transform 120ms ease, box-shadow 120ms ease;
-}
-:root[data-theme="dark"] .my-account .account-benefits-card .account-action-icon {
-  --shortcut-face: #ffd15c;
-  --shortcut-rim: #ffe7a0;
-  --shortcut-base: #ad7437;
-  --shortcut-ink: #5b351b;
-}
-:root[data-theme="dark"] .account-action-icon > svg {
-  filter: drop-shadow(0 1px 0 #ffffff45);
-}
-:root[data-theme="dark"] .my-account .account-actions button:active .account-action-icon {
-  transform: translateY(3px);
-  box-shadow: inset 0 2px 0 #ffffff30, 0 1px 0 var(--shortcut-base);
-}
-@media (prefers-reduced-motion: reduce) {
-  :root[data-theme="dark"] .my-account .account-actions .account-action-icon { transition: none; }
-  :root[data-theme="dark"] .my-account .account-actions button:active .account-action-icon { transform: none; }
-}
-
-:root[data-theme="dark"] .my-account .account-balance-card {
-  border-radius: 18px;
-  flex-wrap: wrap;
-  padding-bottom: 20px;
-  box-shadow: 0 4px 0 var(--arcade-depth);
-}
-:root[data-theme="dark"] .account-money-actions {
-  margin-left: auto;
-  gap: 10px;
-}
-:root[data-theme="dark"] .account-money-actions button {
-  --wallet-button-base: #ad7437;
-  --wallet-button-border: #ffe7a0;
-  --wallet-button-face: var(--arcade-gold);
-  --wallet-button-ink: var(--arcade-gold-ink);
-  --wallet-button-hover: #ffe08b;
-  min-height: 36px;
-  border: 1px solid var(--wallet-button-border);
-  border-radius: 12px;
-  background: var(--wallet-button-face);
-  color: var(--wallet-button-ink);
-  font-weight: var(--weight-key);
-  box-shadow: inset 0 2px 0 #ffffff40, 0 4px 0 var(--wallet-button-base);
-  transition: transform 120ms ease, box-shadow 120ms ease;
-}
-:root[data-theme="dark"] .account-money-actions button + button {
-  --wallet-button-base: #7140b3;
-  --wallet-button-border: #e5c8ff;
-  --wallet-button-face: var(--theme-action);
-  --wallet-button-ink: var(--theme-on-action);
-  --wallet-button-hover: var(--theme-action-hover);
-  border-color: var(--wallet-button-border);
-  background: var(--wallet-button-face);
-  color: var(--wallet-button-ink);
-}
-:root[data-theme="dark"] .account-money-actions button:hover { background: var(--wallet-button-hover); }
-:root[data-theme="dark"] .account-money-actions button:active {
-  transform: translateY(3px);
-  box-shadow: inset 0 2px 0 #ffffff26, 0 1px 0 var(--wallet-button-base);
-}
-@media (prefers-reduced-motion: reduce) {
-  :root[data-theme="dark"] .account-money-actions button { transition: none; }
-  :root[data-theme="dark"] .account-money-actions button:active { transform: none; }
-}
-
-/* Keep secondary account services quiet so deposit and withdrawal remain the primary actions. */
-:root[data-theme="dark"] .my-account .account-card:not(.account-benefits-card) .account-action-icon {
-  --shortcut-face: #916bc0;
-  --shortcut-rim: #c1a4e3;
-  --shortcut-base: #60388a;
-  --shortcut-ink: #fff8ff;
-}
-
-/* Benefit shortcuts use a softer gold so the wallet actions remain the visual anchor. */
-:root[data-theme="dark"] .my-account .account-benefits-card .account-action-icon {
-  --shortcut-face: #d8c18b;
-  --shortcut-rim: #f0dfb1;
-  --shortcut-base: #9d8150;
-  --shortcut-ink: #5b4525;
-  box-shadow: inset 0 2px 0 #ffffff35, inset 0 -2px 0 #0000000d, 0 3px 0 var(--shortcut-base), 0 4px 4px #160b2933;
-}
-
-/* Benefits use an opal-teal keycap to separate rewards from wallet actions. */
-:root[data-theme="dark"] .my-account .account-benefits-card .account-action-icon {
-  --shortcut-face: #70c7bf;
-  --shortcut-rim: #b8f0e7;
-  --shortcut-base: #367f79;
-  --shortcut-ink: #17484a;
-  background: linear-gradient(145deg, #9adfd6, var(--shortcut-face));
-  box-shadow: inset 0 2px 0 #ffffff55, inset 0 -2px 0 #0b4a4622, 0 3px 0 var(--shortcut-base), 0 5px 6px #160b2933;
-}
+:root[data-theme="dark"] .checkin-day.claimed { color: var(--theme-green-text); }
+:root[data-theme="dark"] .checkin-day.current.claimed { color: var(--theme-on-action); }
+:root[data-theme="dark"] .checkin-progress p > span:last-child { color: var(--ink); }
+:root[data-theme="dark"] .checkin-progress b { color: var(--theme-gold-text); }
+:root[data-theme="dark"] .checkin-progress b.met { color: var(--theme-green-text); }
+:root[data-theme="dark"] .deposit-promotion-card { border: 1px solid var(--theme-border); background: var(--theme-panel); box-shadow: 0 16px 48px #0004; }
+:root[data-theme="dark"] .deposit-promotion-decoration { background: none; }
+:root[data-theme="dark"] .deposit-promotion-decoration i { background: var(--theme-gold-text); box-shadow: none; }
+:root[data-theme="dark"] .deposit-promotion-percent { color: var(--theme-gold-text); -webkit-text-stroke: 0; text-shadow: none; }
+:root[data-theme="dark"] .deposit-promotion-cta { background: var(--theme-action); color: var(--theme-on-action); border: 0; border-radius: 12px; box-shadow: none; animation: none; }
+:root[data-theme="dark"] :is(.deposit-promotion-shine, .deposit-promotion-percent) { animation: none; }
