@@ -1,12 +1,12 @@
 import { ensureSession, request } from './account';
 import { isRecord } from '../features/account/types';
 import { t } from '../i18n';
-export interface WalletAccount { channel: string; account: string; name: string; bound: boolean }
+export interface WalletAccount { channel: string; account: string; name: string; bound: boolean; preferred?: boolean }
 export function parseWalletAccount(value: unknown): WalletAccount {
   if (!isRecord(value) || typeof value.channel !== 'string' || !value.channel ||
-    typeof value.account !== 'string' || typeof value.name !== 'string' || typeof value.bound !== 'boolean' ||
+    typeof value.account !== 'string' || typeof value.name !== 'string' || typeof value.bound !== 'boolean' || (value.preferred !== undefined && typeof value.preferred !== 'boolean') ||
     (value.bound && (!value.account || !value.name))) throw new Error(t('wallet.invalidResponse'));
-  return { channel: value.channel, account: value.account, name: value.name, bound: value.bound };
+  return { channel: value.channel, account: value.account, name: value.name, bound: value.bound, preferred: value.preferred === true };
 }
 export async function loadWalletAccounts(signal?: AbortSignal): Promise<WalletAccount[]> {
   const identity = await ensureSession();

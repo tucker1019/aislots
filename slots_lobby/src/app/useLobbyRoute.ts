@@ -18,6 +18,10 @@ function routeFor(path: string): LobbyRoute {
 }
 export function guardLobbyEntry() {
   if (window.location.pathname === '/' || window.history.state?.lobbyInternal === true) return;
+  if (/^\/game\/[A-Za-z][A-Za-z0-9_-]{0,63}\/?$/.test(window.location.pathname)) {
+    window.history.replaceState({lobbyInternal:true}, '', window.location.pathname);
+    return;
+  }
   const inviteCode = new URLSearchParams(window.location.search).get('inviteCode');
   const search = inviteCode && /^[A-Za-z0-9_-]{1,64}$/.test(inviteCode)
     ? '?' + new URLSearchParams({ inviteCode }) : '';
@@ -47,4 +51,13 @@ export function navigateLobby(next: LobbyRoute, options?: { orderId?: string; ga
   }
   if (next !== 'game' && !(next === 'home' && previousView === 'game'))
     document.getElementById('root')?.scrollTo({ top: 0 });
+}
+
+/** Return through the existing history entry so source queries and filters survive. */
+export function returnToLobbySource(fallback: LobbyRoute = 'my') {
+  const state = window.history.state;
+  const source: unknown = state?.lobbyFrom;
+  if (state?.lobbyInternal === true && typeof source === 'string' && source.startsWith('/') && !source.startsWith('//') && source !== readLocation()) {
+    window.history.back();
+  } else navigateLobby(fallback);
 }

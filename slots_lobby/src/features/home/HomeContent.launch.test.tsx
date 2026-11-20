@@ -1,3 +1,4 @@
+vi.mock('../../services/recent-wins',()=>({fetchRecentWins:vi.fn().mockResolvedValue({items:[],updatedAt:'2026-11-21T00:00:00Z'}),fetchRecentWinReplay:vi.fn(),recentWinMoney:vi.fn()}));
 import {testGames} from '../../test/game-catalog';
 import {beforeEach as authenticatedFixture} from 'vitest';
 import {useSessionStore} from '../../stores/session';

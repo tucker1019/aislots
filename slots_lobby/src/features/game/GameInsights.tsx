@@ -11,7 +11,7 @@ import {useSessionStore} from '../../stores/session';
 import {fetchLeaderboard,statisticsMoney} from '../../services/game-statistics';
 import type {LeaderboardRow,RankBoard,RankPeriod} from '../../services/game-statistics';
 const periods=[{value:'today',label:'gamePreview.today'},{value:'week',label:'gamePreview.week'},{value:'all',label:'gamePreview.allTime'}] as const;
-const rankings=[{value:'wins',label:'gamePreview.highestWins'},{value:'multiplier',label:'gamePreview.highestMultiplier'},{value:'streak',label:'gamePreview.longestStreak'}] as const;
+const rankings=[{value:'wins',label:'gamePreview.highestWins'},{value:'multiplier',label:'gamePreview.highestMultiplier'}] as const;
 export function GameInsights({part,gameId='AG1'}:{part:'rtp'|'ranking';gameId?:GameId}){
  const uid=useSessionStore(state=>state.session?.uid);const [ranking,setRanking]=useState<RankBoard>('wins');const [period,setPeriod]=useState<RankPeriod>('all');
  const [selected,setSelected]=useState<LeaderboardRow>();
@@ -25,27 +25,16 @@ export function GameInsights({part,gameId='AG1'}:{part:'rtp'|'ranking';gameId?:G
     <img src={`/assets/profile/avatar/${row.avatarId}.png`} alt=""/>
     <span className="game-rank-player">
      <strong>{row.nickname}</strong>
-     {ranking==='streak'
-      ? <span className="game-rank-streak-summary">
-       <b className="game-rank-streak">{t('statistics.streak',{count:row.streak})}</b>
-       {row.occurredAt && <time dateTime={row.occurredAt}>
-        {new Date(row.occurredAt).toLocaleString(undefined, {
-         timeZone: rank.data.timezone,
-         year: 'numeric', month: '2-digit', day: '2-digit',
-         hour: '2-digit', minute: '2-digit', hour12: false,
-        })}
-       </time>}
-      </span>
-      : <>
        <span className="game-rank-wager">{t('statistics.bet',{amount:statisticsMoney(row.betAmount)})}</span>
-       <span className="game-rank-result">{t('gamePreview.payout')} <b>+{statisticsMoney(row.winAmount)}</b> <small>{row.multiplier}×</small></span>
-      </>}
+       <span className="game-rank-result">{ranking==='multiplier'
+        ? <><b className="game-rank-primary">{row.multiplier}×</b> <small>{t('gamePreview.payout')} +{statisticsMoney(row.winAmount)}</small></>
+        : <>{t('gamePreview.payout')} <b className="game-rank-primary">+{statisticsMoney(row.winAmount)}</b> <small>{row.multiplier}×</small></>}
+       </span>
+
     </span>
   </>;
   return <li key={row.rank+':'+row.betId}>
-   {ranking==='streak'
-    ? <div className="game-rank-row">{content}</div>
-    : <button className="game-rank-row" type="button" onClick={()=>setSelected(row)}>{content}</button>}
+   <button className="game-rank-row" type="button" onClick={()=>setSelected(row)}>{content}</button>
   </li>;
  })}</ol>:<p className="game-ranking-empty">{t('statistics.empty')}</p>}
  {rank.isError&&<p role="alert">{t('statistics.refreshFailed')}</p>}

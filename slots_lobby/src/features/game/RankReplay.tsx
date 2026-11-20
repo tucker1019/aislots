@@ -1,3 +1,4 @@
+import {ShareSheet} from '../../components/share/ShareSheet';
 import {AsyncButton} from '../../components/buttons/AsyncButton';
 import {overlayContainer} from '../../app/designViewport';
 import {useState} from 'react';
@@ -8,23 +9,15 @@ import {fetchRankReplay,type RankBoard,type RankPeriod} from '../../services/gam
 import {t} from '../../i18n';
 import {RankOrderNumber} from './RankOrderNumber';
 
-export function RankReplay({orderId,betId,board,period,shareTarget,gameId='AG1'}:{orderId:string;betId:string;board:RankBoard;period:RankPeriod;shareTarget?:HTMLElement|null;gameId?:string}) {
+export function RankReplay({orderId,betId,board,period,shareTarget,onShare,gameId='AG1'}:{orderId:string;betId:string;board:RankBoard;period:RankPeriod;shareTarget?:HTMLElement|null;onShare?:(url:string)=>void;gameId?:string}) {
  const [panel,setPanel]=useState<'replay'|'share'>();
  const [toast,holder]=message.useMessage({getContainer:overlayContainer,maxCount:1,classNames:{list:'lobby-toast-list'}});
  const query=useMutation<string,Error,'replay'|'share'>({
   mutationFn:()=>fetchRankReplay(orderId,board,period,gameId),
   retry:false,
-  onSuccess:(_url,action)=>{setPanel(action);},
+  onSuccess:(url,action)=>{if(action==='share'&&onShare)onShare(url);else setPanel(action);},
   onError:()=>{void toast.error(t('gamePreview.replayUnavailable'));},
  });
- async function copyLink(url:string) {
-  try {
-   await navigator.clipboard.writeText(url);
-   void toast.success(t('copy.copied'));
-  } catch {
-   void toast.error(t('gamePreview.shareCopyFailed'));
-  }
- }
  const shareButton=<AsyncButton className="game-rank-share-trigger" aria-label={t('gamePreview.share')}
    loading={query.isPending&&query.variables==='share'} type="button"
    disabled={query.isPending} onClick={()=>query.mutate('share')}>
@@ -41,14 +34,11 @@ export function RankReplay({orderId,betId,board,period,shareTarget,gameId='AG1'}
    </AsyncButton>
   </div>
   {shareTarget ? createPortal(shareButton,shareTarget) : shareTarget===undefined && shareButton}
-  <Modal getContainer={overlayContainer} open={!!panel}
+  <Modal getContainer={overlayContainer} open={panel==='replay'}
    title={t(panel==='share'?'gamePreview.share':'gamePreview.replayTitle')}
    footer={null} onCancel={()=>setPanel(undefined)} destroyOnHidden width={430} className="game-rank-replay-modal">
    {panel==='replay'&&query.data&&<iframe title={t('gamePreview.replayTitle')} src={query.data} allow="autoplay; fullscreen; clipboard-write" referrerPolicy="no-referrer"/>}
-   {panel==='share'&&query.data&&<div className="game-rank-share">
-    <input aria-label={t('gamePreview.shareLink')} value={query.data} readOnly onFocus={event=>event.currentTarget.select()}/>
-    <button type="button" onClick={()=>{if(query.data)void copyLink(query.data);}}>{t('copy.copy')}</button>
-   </div>}
   </Modal>
+  <ShareSheet content={panel==='share'&&query.data?{url:query.data,kind:'replay'}:null} onClose={()=>setPanel(undefined)}/>
  </div>;
 }

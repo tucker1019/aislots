@@ -1,3 +1,4 @@
+import {ShareInvite} from '../components/share/ShareSheet';
 import { overlayContainer } from '../app/designViewport';
 import {LoadingState} from '../components/feedback/LoadingState';
 import {NetworkError} from '../components/feedback/NetworkError';
@@ -19,6 +20,7 @@ export function InvitePage({onBack}:{onBack:()=>void}){
  {query.isPending?<LoadingState label={t('invite.loading')}/>:!info?<NetworkError onRetry={()=>void query.refetch()} disabled={query.isFetching}/>:<>
  <section className="invite-card invite-table-wrap"><table><thead><tr><th>{t('invite.effectiveMembers')}</th><th>{t('invite.rewardAmount')}</th></tr></thead><tbody>{Array.from({length:info.rules.displayRows},(_,i)=><tr key={i}><td>≥{i+1}</td><td>{betMoney((i+1)*info.rules.rewardAmount)}</td></tr>)}</tbody></table></section>
  <section className="invite-card invite-link"><label htmlFor="invite-link">{t('invite.link')}</label><input id="invite-link" readOnly value={info.inviteUrl} onFocus={event=>event.currentTarget.select()}/><button type="button" onClick={()=>void copy()}>{t('copy.copy')}</button></section>
+ <ShareInvite url={info.inviteUrl}/>
  <a className="invite-card invite-support-card" href={info.supportUrl} target="_blank" rel="noopener noreferrer" aria-label={t('invite.support')}><span className="invite-support-icon"><Icon name="help" size={28}/></span><strong>{t('invite.support')}</strong><Icon name="chevron" size={18}/></a>
  <section className="invite-card invite-rules"><h2>{t('invite.rules')}</h2><ol><li>{t('invite.ruleThresholds',{days:info.rules.durationDays,count:info.rules.minDepositCount,deposit:betMoney(info.rules.minDepositAmount),bet:betMoney(info.rules.minBetAmount),reward:betMoney(info.rules.rewardAmount)})}</li><li>{t('invite.ruleBinding')}</li><li>{t('invite.ruleClaim')}</li><li>{t('invite.ruleConfig')}</li></ol></section>
  </>}

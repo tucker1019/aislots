@@ -31,7 +31,7 @@ export function WalletManagement({ onBack }: { onBack: () => void }) {
     if (selected) { setSelected(null); save.reset(); } else onBack();
   }
   return <RecordsLayout className="wallet-management-page" title={selected ? t(selected.bound ? 'wallet.edit' : 'wallet.bind') : t('wallet.title')}
-    backLabel={selected ? t('wallet.back') : t('copy.backToMyAccount')} onBack={back}>
+    backLabel={selected || window.history.state?.lobbyFrom?.startsWith('/withdrawal') ? t('wallet.back') : t('copy.backToMyAccount')} onBack={back}>
     {holder}
     {selected ? <Form key={selected.channel} layout="vertical" initialValues={{ account: selected.account, name: selected.name }}
       disabled={save.isPending} onFinish={(values: { account: string; name: string }) => save.mutate({ channel: selected.channel, account: values.account.trim(), name: values.name.trim() })}>

@@ -33,7 +33,7 @@ export function CheckinModal({ onClose, open = true, afterClose, checkedOnEntry 
     <div className="checkin-rewards"><div className="checkin-stats"><div><span>{t('copy.consecutiveCheckIns')}</span><strong>{claimedDays} {t('copy.days')}</strong></div><div><span>{t('copy.todaySReward')}</span><strong>{betMoney(data.current.reward)}</strong></div></div>
      <div className={`checkin-days${data.days.length === 7 ? ' checkin-seven' : ''}`}>
       {data.days.map(row => { const done=row.day<=claimedDays; const current=row.day===data.currentDay; return <div key={row.day} className={`checkin-day${current ? ' current' : ''}${done ? ' claimed' : ''}`} aria-label={t('copy.dayValueRewardValueValue', {p0: row.day, p1: betMoney(row.reward), p2: done ? t('copy.claimed') : current ? t('copy.current') : ''})}>
-       <span>{t('checkin.dayLabel',{day:row.day})}</span><Icon name={done?'shield':'rupiah'} size={done ? 24 : 28} /><strong>{betMoney(current ? data.current.reward : row.reward)}</strong>
+       <span>{t('checkin.dayLabel',{day:row.day})}</span><Icon name={done?'checkCircle':'rupiah'} size={done ? 24 : 28} /><strong>{betMoney(current ? data.current.reward : row.reward)}</strong>
       </div>;})}
      </div>
     </div>

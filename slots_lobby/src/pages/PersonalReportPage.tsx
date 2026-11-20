@@ -17,7 +17,7 @@ export function PersonalReportPage({onBack}:{onBack:()=>void}){
  {query.isPending?<LoadingState label={t('copy.loadingPersonalReport')}/>:query.isError&&!query.data?<NetworkError disabled={query.isFetching} onRetry={()=>void query.refetch()}/>:query.data&&<>
  <dl className="report-metrics">{query.data.items.map(row=><div key={row.key} className={`report-metric${row.key==='netProfit'?' report-net':''}`}><dt>{reportLabel(row.key,row.label)}{t('copy.yuan')}</dt><dd className={['netProfit','gameProfit'].includes(row.key)?row.amount<0?'report-negative':'report-positive':undefined}>{row.supported?betMoney(row.amount):'—'}</dd>{row.key==='netProfit'&&<p>{t('copy.netProfitGameProfitClaimedRebatesCredited')}</p>}</div>)}</dl>
  <p className="report-note">{t('copy.depositsCountPrincipalOnlyDepositsAndWithdrawals')}</p>
- <p className="report-note">{t('copy.statisticsTimezone')}{query.data.timezone} {t('copy.unitYuanUnavailableFeaturesShowSupportedMetrics')}</p>
+ <p className="report-note">{t('copy.unitYuanUnavailableFeaturesShowSupportedMetrics')}</p>
  <p className="report-updating" role="status">{query.isFetching?t('copy.updatingReport'):t('copy.basedOnActualActivityAndCreditTimes')}</p>
  {query.isError&&<p role="alert" className="report-note">{t('copy.updateFailedExistingDataIsPreserved')}<AsyncButton loading={query.isFetching} type="button" onClick={()=>void query.refetch()}>{t('copy.retry')}</AsyncButton></p>}
  </>}

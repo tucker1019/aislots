@@ -1,3 +1,4 @@
+vi.mock('../../services/recent-wins',()=>({fetchRecentWins:vi.fn().mockResolvedValue({items:[],updatedAt:'2026-11-21T00:00:00Z'}),fetchRecentWinReplay:vi.fn(),recentWinMoney:vi.fn()}));
 import { beforeEach, expect, it, vi } from 'vitest';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

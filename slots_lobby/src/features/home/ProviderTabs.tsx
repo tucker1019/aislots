@@ -1,8 +1,10 @@
+import { FavoriteStar } from '../../components/FavoriteStar';
 import { t } from '../../i18n';
 import type { AvailableProvider } from './content';
 
 const providers = () => ([
   { id: 'hot', label: t('copy.hot'), mark: '🔥' },
+  { id: 'favorites', label: t('favorites.title'), mark: <FavoriteStar/> },
   { id: 'AG', label: 'AG', mark: 'AG' },
 ] as const);
 interface ProviderTabsProps {

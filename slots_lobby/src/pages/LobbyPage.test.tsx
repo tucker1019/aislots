@@ -1,3 +1,4 @@
+vi.mock('../services/recent-wins',()=>({fetchRecentWins:vi.fn().mockResolvedValue({items:[],updatedAt:'2026-11-21T00:00:00Z'}),fetchRecentWinReplay:vi.fn(),recentWinMoney:vi.fn()}));
 import { readGameEntry, rememberGameEntry } from '../services/game-entry';
 import { navigateLobby } from '../app/useLobbyRoute';
 import { act } from '@testing-library/react';
@@ -5,11 +6,12 @@ import {testGames} from '../test/game-catalog';
 import {beforeEach as authenticatedFixture} from 'vitest';
 import {useSessionStore} from '../stores/session';
 import { beforeEach, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ConfigProvider } from 'antd';
 import { LobbyPage } from './LobbyPage';
+vi.mock('../services/game-favorites',()=>({fetchGameFavorites:vi.fn().mockResolvedValue(['AG2','AG_HIDDEN']),setGameFavorite:vi.fn()}));
 vi.mock('../services/account', () => ({ loadAccountProfile: vi.fn().mockResolvedValue({ uid: 7, nickname: '測試用戶', avatarId: 1, coins: 12345 }) }));
 beforeEach(() => { window.history.replaceState(null, '', '/'); });
 vi.mock('../services/recharge', () => ({ fetchRechargeTiers: vi.fn().mockResolvedValue([{id:'a',amount:1000,bonus:0,fee:20,creditAmount:980}]), createRecharge: vi.fn(), fetchRechargeOrder: vi.fn(), paymentLink: vi.fn() }));
@@ -24,10 +26,12 @@ it('保留資料頂欄，按通知、Banner、廠商、遊戲順序排布，首�
   expect(await screen.findByLabelText('金幣餘額 Rp123')).toBeInTheDocument();
   const main = screen.getByRole('main');
   expect(within(main).getByRole('button', { name: '福利中心' })).toBeInTheDocument();
+  await screen.findByRole('button', { name: '進入麻將胡了' });
+  await waitFor(()=>expect(main.querySelector('.recent-wins')).not.toBeInTheDocument());
   const regions = Array.from(main.children).filter(element => element.tagName !== 'ASIDE').map(element => element.getAttribute('aria-label'));
   expect(regions).toEqual(['通知', '輪播', '遊戲廠商', '遊戲列表']);
   const providers = within(screen.getByRole('navigation', { name: '遊戲廠商' }));
-  expect(providers.getAllByRole('button').map(button => button.textContent)).toHaveLength(2);
+  expect(providers.getAllByRole('button').map(button => button.textContent)).toHaveLength(3);
   expect(providers.getByRole('button', { name: '熱門' })).toHaveAttribute('aria-pressed', 'true');
   expect(within(screen.getByRole('region', { name: '遊戲列表' })).getAllByRole('button')).toHaveLength(18);
   expect(screen.getByRole('button', { name: '進入麻將胡了' })).toBeEnabled();
@@ -163,4 +167,14 @@ it('四个主路由切换保持同一底栏和按钮节点，不重播整栏挂�
     expect(within(nav).getAllByRole('button')).toEqual(buttons);
     expect(buttons[index]).toHaveAttribute('aria-current','page');
   }
+});
+
+it('favorites category precedes providers and only shows saved catalog games', async()=>{
+ const user=setup();
+ const tabs=within(screen.getByRole('navigation',{name:'遊戲廠商'}));
+ expect(tabs.getAllByRole('button').map(button=>button.getAttribute('class'))).toEqual(['provider-tab provider-hot','provider-tab provider-favorites','provider-tab provider-AG']);
+ await user.click(tabs.getByRole('button',{name:'收藏'}));
+ const list=within(screen.getByRole('region',{name:'遊戲列表'}));
+ expect(await list.findByRole('button',{name:testGames.find(game=>game.id==='AG2')!.name})).toBeInTheDocument();
+ expect(list.getAllByRole('button')).toHaveLength(1);
 });

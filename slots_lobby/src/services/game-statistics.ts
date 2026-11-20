@@ -3,10 +3,10 @@ import {isRecord} from '../features/account/types';
 import {t} from '../i18n';
 import { coinsLabel } from '../features/account/formatCoins';
 export type RtpWindow='5m'|'1h'|'24h';
-export type RankBoard='wins'|'multiplier'|'streak';
+export type RankBoard='wins'|'multiplier';
 export type RankPeriod='today'|'week'|'all';
 export interface GameRtp {percent:string;rounds:number;hasData:boolean;from:string;to:string;updatedAt:string;statisticsSince:string}
-export interface LeaderboardRow {rank:number;platformOrderId:string;userId:string;nickname:string;avatarId:number;betId:string;betAmount:string;winAmount:string;multiplier:string;streak:number;occurredAt:string}
+export interface LeaderboardRow {rank:number;platformOrderId:string;userId:string;nickname:string;avatarId:number;betId:string;betAmount:string;winAmount:string;multiplier:string;occurredAt:string}
 export interface GameLeaderboard {items:LeaderboardRow[];updatedAt:string;statisticsSince:string;timezone:string}
 const integer=(value:unknown):value is string=>typeof value==='string'&&/^\d+$/.test(value);
 const decimal=(value:unknown):value is string=>typeof value==='string'&&/^\d+(\.\d+)?$/.test(value);
@@ -16,10 +16,10 @@ export function parseGameRtp(data:unknown):GameRtp{
  return {percent:data.percent,rounds:Number(data.rounds),hasData:data.hasData,from:String(data.from),to:String(data.to),updatedAt:String(data.updatedAt),statisticsSince:String(data.statisticsSince)};
 }
 export function parseLeaderboard(data:unknown):GameLeaderboard{
- if(!isRecord(data)||!Array.isArray(data.items)||data.items.length>20||!instant(data.updatedAt)||!instant(data.statisticsSince)||typeof data.timezone!=='string')throw new Error(t('statistics.invalid'));
+ if(!isRecord(data)||!Array.isArray(data.items)||data.items.length>10||!instant(data.updatedAt)||!instant(data.statisticsSince)||typeof data.timezone!=='string')throw new Error(t('statistics.invalid'));
  const items=data.items.map((row:unknown):LeaderboardRow=>{
-  if(!isRecord(row)||!integer(row.platformOrderId)||/^0+$/.test(row.platformOrderId)||!Number.isInteger(row.rank)||Number(row.rank)<1||typeof row.userId!=='string'||typeof row.nickname!=='string'||!Number.isInteger(row.avatarId)||Number(row.avatarId)<1||Number(row.avatarId)>15||typeof row.betId!=='string'||!integer(row.betAmount)||!integer(row.winAmount)||!decimal(row.multiplier)||!Number.isSafeInteger(row.streak)||Number(row.streak)<0||!instant(row.occurredAt))throw new Error(t('statistics.invalid'));
-  return {platformOrderId:String(row.platformOrderId),rank:Number(row.rank),userId:row.userId,nickname:row.nickname,avatarId:Number(row.avatarId),betId:row.betId,betAmount:row.betAmount,winAmount:row.winAmount,multiplier:row.multiplier,streak:Number(row.streak),occurredAt:row.occurredAt};
+  if(!isRecord(row)||!integer(row.platformOrderId)||/^0+$/.test(row.platformOrderId)||!Number.isInteger(row.rank)||Number(row.rank)<1||typeof row.userId!=='string'||typeof row.nickname!=='string'||!Number.isInteger(row.avatarId)||Number(row.avatarId)<1||Number(row.avatarId)>15||typeof row.betId!=='string'||!integer(row.betAmount)||!integer(row.winAmount)||!decimal(row.multiplier)||!instant(row.occurredAt))throw new Error(t('statistics.invalid'));
+  return {platformOrderId:String(row.platformOrderId),rank:Number(row.rank),userId:row.userId,nickname:row.nickname,avatarId:Number(row.avatarId),betId:row.betId,betAmount:row.betAmount,winAmount:row.winAmount,multiplier:row.multiplier,occurredAt:row.occurredAt};
  });return {items,updatedAt:data.updatedAt,statisticsSince:data.statisticsSince,timezone:data.timezone};
 }
 async function load(path:string,fields:Record<string,string>,signal?:AbortSignal,gameId='AG1'){const identity=await ensureSession();return request(path,{method:'POST',signal,body:JSON.stringify({uid:identity.uid,sid:identity.sid,gameId,...fields})},t('statistics.failed'));}

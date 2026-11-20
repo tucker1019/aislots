@@ -1,0 +1,52 @@
+[
+  {
+    "id": "AG1",
+    "name": "Mahjong Ways",
+    "cover": "../../public/assets/lobby/mahjong-icon.png"
+  },
+  {
+    "id": "AG2",
+    "name": "Mahjong Ways 2",
+    "cover": "../../public/assets/lobby/games/1024.png"
+  },
+  {
+    "id": "AG3",
+    "name": "Wild Bounty Showdown",
+    "cover": "../../public/assets/lobby/games/1068.png"
+  },
+  {
+    "id": "AG4",
+    "name": "Fortune Tiger",
+    "cover": "../../public/assets/lobby/games/1017.png"
+  },
+  {
+    "id": "AG5",
+    "name": "Fortune Rabbit",
+    "cover": "../../public/assets/lobby/games/1018.png"
+  },
+  {
+    "id": "AG6",
+    "name": "Fortune Mouse",
+    "cover": "../../public/assets/lobby/games/1019.png"
+  },
+  {
+    "id": "AG7",
+    "name": "Fortune Ox",
+    "cover": "../../public/assets/lobby/games/1023.png"
+  },
+  {
+    "id": "AG8",
+    "name": "Fortune Dragon",
+    "cover": "../../public/assets/lobby/games/1048.png"
+  },
+  {
+    "id": "AG9",
+    "name": "Fortune Leopard",
+    "cover": "../../public/assets/lobby/games/1021.png"
+  },
+  {
+    "id": "AG10",
+    "name": "Fortune Chinchilla",
+    "cover": "../../public/assets/lobby/games/1022.png"
+  }
+]

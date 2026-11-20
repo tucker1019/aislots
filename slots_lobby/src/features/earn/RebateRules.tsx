@@ -13,7 +13,6 @@ export function RebateRules({info}:{info:RebateInfo}){
   <section className="rebate-rule-description"><h2>{t('copy.rules')}</h2><ol>
    <li>{t('copy.rebatesAreBasedOnEligibleBetsThe')}</li>
    <li>{t('copy.dailyRebatesCoverYesterdayAndCanBe')}</li>
-   <li>{t('copy.activityTimezone')} {info.timezone}{t('copy.serverDatesAndPeriodBoundariesApplyUnclaimed')}</li>
    <li>{t('copy.selectClaimOnTheEarnPageTo')}</li>
    <li>{t('copy.estimatesChangeWithEligibleTurnoverAndCannot')}</li>
    <li>{t('copy.theDisplayedRateIsTheSumOf')}</li>

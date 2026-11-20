@@ -1,0 +1,1 @@
+Social brand SVGs: Simple Icons v11 (https://github.com/simple-icons/simple-icons/tree/11.0.0), CC0-1.0. Brand marks remain the property of their respective owners. Fill set to white for colored circular buttons.

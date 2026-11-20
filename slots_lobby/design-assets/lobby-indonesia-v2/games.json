@@ -1,0 +1,62 @@
+[
+  {
+    "id": "AG1",
+    "name": "麻将胡了",
+    "cover": "covers/AG1.webp",
+    "originalCover": "../../public/assets/lobby/mahjong-icon.png"
+  },
+  {
+    "id": "AG2",
+    "name": "麻将胡了2",
+    "cover": "covers/AG2.webp",
+    "originalCover": "../../public/assets/lobby/games/1024.png"
+  },
+  {
+    "id": "AG3",
+    "name": "赏金大对决",
+    "cover": "covers/AG3.webp",
+    "originalCover": "../../public/assets/lobby/games/1068.png"
+  },
+  {
+    "id": "AG4",
+    "name": "福运虎",
+    "cover": "covers/AG4.webp",
+    "originalCover": "../../public/assets/lobby/games/1017.png"
+  },
+  {
+    "id": "AG5",
+    "name": "福运兔",
+    "cover": "covers/AG5.webp",
+    "originalCover": "../../public/assets/lobby/games/1018.png"
+  },
+  {
+    "id": "AG6",
+    "name": "福运鼠",
+    "cover": "covers/AG6.webp",
+    "originalCover": "../../public/assets/lobby/games/1019.png"
+  },
+  {
+    "id": "AG7",
+    "name": "金牛",
+    "cover": "covers/AG7.webp",
+    "originalCover": "../../public/assets/lobby/games/1023.png"
+  },
+  {
+    "id": "AG8",
+    "name": "福运金龙",
+    "cover": "covers/AG8.webp",
+    "originalCover": "../../public/assets/lobby/games/1048.png"
+  },
+  {
+    "id": "AG9",
+    "name": "福运豹",
+    "cover": "covers/AG9.webp",
+    "originalCover": "../../public/assets/lobby/games/1021.png"
+  },
+  {
+    "id": "AG10",
+    "name": "福运龙猫",
+    "cover": "covers/AG10.webp",
+    "originalCover": "../../public/assets/lobby/games/1022.png"
+  }
+]

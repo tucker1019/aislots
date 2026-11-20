@@ -4,7 +4,7 @@ import {Form,Input,Modal,message} from 'antd';
 import {RecordsLayout} from '../components/records/RecordsLayout';
 import {Icon} from '../components/Icon';
 import {overlayContainer} from '../app/designViewport';
-import {navigateLobby} from '../app/useLobbyRoute';
+import {navigateLobby,returnToLobbySource} from '../app/useLobbyRoute';
 import {changeLoginPassword,logoutSession} from '../services/security';
 import {t} from '../i18n';
 export function SecurityPage({password=false,onSignedOut}:{password?:boolean;onSignedOut:(changed:boolean)=>void}){
@@ -13,7 +13,7 @@ export function SecurityPage({password=false,onSignedOut}:{password?:boolean;onS
  const [form]=Form.useForm<{oldPassword:string;newPassword:string;confirmation:string}>();
  const run=async(action:()=>Promise<void>,changed:boolean)=>{if(busy)return;setBusy(true);try{await action();setConfirm(false);form.resetFields();onSignedOut(changed);}catch(error){void toast.error(error instanceof Error?error.message:t('security.failed'));}finally{setBusy(false);}};
  const rule={required:true,message:t('auth.passwordRule')};
- return <RecordsLayout title={t(password?'security.changeTitle':'security.title')} backLabel={t('copy.backToMyAccount')} onBack={()=>{if(!busy)navigateLobby(password?'security':'my');}} className="security-page">{holder}
+ return <RecordsLayout title={t(password?'security.changeTitle':'security.title')} backLabel={t('copy.backToMyAccount')} onBack={()=>{if(!busy)returnToLobbySource(password?'security':'my');}} className="security-page">{holder}
  {password?<Form form={form} layout="vertical" disabled={busy} onFinish={values=>void run(()=>changeLoginPassword(values.oldPassword,values.newPassword),true)} onFinishFailed={({errorFields})=>void toast.error(errorFields[0]?.errors[0]??t('security.failed'))}>
  <Form.Item help="" name="oldPassword" label={t('security.oldPassword')} rules={[{required:true,message:t('security.oldRequired')}]}><Input.Password autoComplete="current-password" maxLength={72}/></Form.Item>
  <Form.Item help="" name="newPassword" label={t('security.newPassword')} dependencies={['oldPassword']} rules={[rule,{min:8,max:72,message:t('auth.passwordRule')},{validator:(_,value:unknown)=>typeof value==='string'&&new TextEncoder().encode(value).length<=72&&value!==form.getFieldValue('oldPassword')?Promise.resolve():Promise.reject(new Error(t('security.newRule')))}]}><Input.Password autoComplete="new-password" maxLength={72}/></Form.Item>

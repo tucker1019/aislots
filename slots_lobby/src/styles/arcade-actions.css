@@ -1,4 +1,4 @@
-/* Shared action surfaces use the approved warm gold, without raised bases. */
+/* Shared action surfaces use the approved coral, without raised bases. */
 :root[data-theme="dark"] :is(
   .ant-btn-primary,
   .ant-btn-default:not(.ant-btn-icon-only),

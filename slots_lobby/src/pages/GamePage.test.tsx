@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type * as GameEntryModule from '../services/game-entry';
 import { GamePage } from './GamePage';
 import { launchGame, rememberGameEntry } from '../services/game-entry';
+vi.mock('../services/game-favorites',()=>({fetchGameFavorites:vi.fn().mockResolvedValue([]),setGameFavorite:vi.fn()}));
 vi.mock('../services/game-entry', async original => ({ ...await original<typeof GameEntryModule>(), launchGame: vi.fn() }));
 vi.mock('../services/game-statistics',async original=>({...await original<typeof StatisticsModule>(),fetchGameRtp:vi.fn().mockResolvedValue({percent:'0',rounds:0,hasData:false,from:'2026-11-03T00:00:00Z',to:'2026-11-03T01:00:00Z',updatedAt:'2026-11-03T01:00:00Z',statisticsSince:'2026-11-03T00:00:00Z'}),fetchLeaderboard:vi.fn().mockResolvedValue({items:[],updatedAt:'2026-11-03T01:00:00Z',statisticsSince:'2026-11-03T00:00:00Z',timezone:'UTC'})}));
 const firstTitle = `AG1 ${testGames.find(game=>game.id==='AG1')?.name}`;
@@ -61,7 +62,7 @@ it('放大和縮回保留同一個iframe節點和src，不再申請入口',async
  await user.click(menu);
  expect(screen.getByRole('button',{name:'退出遊戲'})).toBeInTheDocument();
  await user.click(screen.getByRole('button',{name:'縮回小窗'}));expect(screen.getByRole('dialog')).not.toHaveClass('game-detail-expanded');expect(screen.getByTitle(firstTitle)).toBe(frame);expect(frame).toHaveAttribute('src',first);expect(launchGame).not.toHaveBeenCalled();
- expect(screen.getByRole('tab',{name:'最大連勝'})).toBeInTheDocument();await user.click(screen.getByRole('tab',{name:'最大連勝'}));expect(await screen.findByText('暫無上榜記錄')).toBeInTheDocument();
+ expect(screen.queryByRole('tab',{name:'最大連勝'})).not.toBeInTheDocument();
 });
 
 it('AG2 申請自己的票據並隔離 AG1 的入口和統計',async()=>{

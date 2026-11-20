@@ -3,7 +3,7 @@ export type ThemeMode = 'light' | 'dark';
 
 function applyDarkTheme() {
   document.documentElement.dataset.theme = 'dark';
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#102c2b');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#17152a');
   try { localStorage.setItem('aislots-theme', 'dark'); } catch { /* Dark mode also works without storage. */ }
 }
 

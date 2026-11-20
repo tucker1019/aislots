@@ -13,46 +13,46 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
   color: var(--theme-ink);
-  background: #102c2b;
-  --theme-canvas: #102c2b;
-  --theme-panel: #193a36;
-  --ink: #faf6eb;
-  --muted: #a6bdb3;
-  --blue: #e9c88d;
-  --paper: #264c45;
-  --line: #35564e;
-  --theme-surface: #193a36;
-  --theme-soft: #264c45;
-  --theme-disabled: #344b46;
-  --theme-disabled-border: #6d8980;
-  --theme-disabled-ink: #d3dfd8;
-  --theme-border: #35564e;
-  --theme-border-blue: #52766b;
-  --theme-blue-tint: #264c45;
-  --theme-violet-tint: #264c45;
-  --theme-green-tint: #214b3e;
-  --theme-gold-tint: #443d2d;
-  --theme-red-tint: #4e3034;
+  background: #17152a;
+  --theme-canvas: #17152a;
+  --theme-panel: #252039;
+  --ink: #fff6ed;
+  --muted: #c0b9d0;
+  --blue: #ff9179;
+  --paper: #342d4b;
+  --line: #4a405e;
+  --theme-surface: #252039;
+  --theme-soft: #342d4b;
+  --theme-disabled: #494252;
+  --theme-disabled-border: #766780;
+  --theme-disabled-ink: #e1d9e6;
+  --theme-border: #4a405e;
+  --theme-border-blue: #665575;
+  --theme-blue-tint: #342d4b;
+  --theme-violet-tint: #342d4b;
+  --theme-green-tint: #243c36;
+  --theme-gold-tint: #433446;
+  --theme-red-tint: #502c41;
   --theme-ink: var(--ink);
   --theme-muted: var(--muted);
-  --theme-blue-text: #c2d8cd;
-  --theme-violet-text: #c2d8cd;
+  --theme-blue-text: #d8c8eb;
+  --theme-violet-text: #d8c8eb;
   --theme-green-text: #8ed6ad;
-  --theme-gold-text: #e9c88d;
+  --theme-gold-text: #f4d49a;
   --theme-red-text: #ffafb4;
-  --theme-action: #e9c88d;
-  --theme-action-hover: #f2d8a7;
-  --theme-action-active: #d7b675;
-  --theme-on-action: #102c2b;
-  --theme-active: #e9c88d;
-  --theme-active-tint: #264c45;
-  --theme-accent: #e9c88d;
-  --theme-glass: #193a36;
+  --theme-action: #ff9179;
+  --theme-action-hover: #ffa58f;
+  --theme-action-active: #ed7c65;
+  --theme-on-action: #251624;
+  --theme-active: #ff9179;
+  --theme-active-tint: #342d4b;
+  --theme-accent: #f4d49a;
+  --theme-glass: #252039;
 }
 
 :root[data-theme="dark"] body { background: var(--theme-canvas); }
 :root[data-theme="dark"] #root { background: var(--theme-canvas); }
-:root[data-theme="dark"] ::selection { background: #52766b; color: var(--ink); }
+:root[data-theme="dark"] ::selection { background: #665575; color: var(--ink); }
 
 #lobby-overlays .ant-message-notice {
   max-width: calc(100% - 24px);

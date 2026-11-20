@@ -1,3 +1,4 @@
+import {GamePageActions} from '../features/game/GamePageActions';
 import { useGameCardTransition } from '../features/game/useGameCardTransition';
 import { useGameDocking } from '../features/game/useGameDocking';
 import type { RefObject } from 'react';
@@ -61,15 +62,15 @@ export function GamePage({onBack,onMinimize,minimized=false,gameId='AG1',dockRef
   {expanded&&<FloatingGameMenu open={menuOpen} onToggle={()=>setMenuOpen(open=>!open)} onExit={close}
    onShrink={()=>{setMenuOpen(false);changeExpanded(false);}}/>}
   <div className="game-detail-content" ref={contentRef}>
-   <div className="game-detail-identity"><img src={game.cover} alt={t('gamePreview.cover')}/><div><h1>{game.title}</h1><span className="game-provider-label">{game.provider}</span><p>{t('gamePreview.tagline')}</p></div></div>
-   {allowed&&<GameInsights part="rtp" gameId={gameId}/>}
+   <div className="game-detail-overview"><div className="game-detail-identity"><img src={game.cover} alt={t('gamePreview.cover')}/><div><GamePageActions gameId={gameId} title={game.title}/><h1>{game.title}</h1><span className="game-provider-label">{game.provider}</span><p>{t('gamePreview.tagline')}</p></div></div>
+   {allowed&&<GameInsights part="rtp" gameId={gameId}/>}</div>
    <div className="game-detail-play-area">
    <div className="game-preview" ref={previewRef}><div className="game-preview-frame" ref={surfaceRef}>
     {!opening&&allowed&&url&&<iframe ref={frameRef} key={url} src={url} title={game.frameTitle} allow="autoplay; fullscreen; clipboard-write" allowFullScreen referrerPolicy="no-referrer" onError={()=>{setError(t('copy.gameFailedToLoadPleaseReEnter'));}}/>}
     {catalog.isError&&<NetworkError onRetry={()=>void catalog.refetch()} disabled={catalog.isFetching}/>}
     {catalog.isSuccess&&!allowed&&<p>{t('copy.comingSoon')}</p>}
     {error&&<NetworkError onRetry={()=>void reopen()} disabled={preparing}/>}
-   </div><div className="game-preview-actions"><span>{t('gamePreview.preview')}</span><button type="button" disabled={!allowed||!url||preparing} onClick={()=>changeExpanded(true)}>{t('gamePreview.expand')}</button></div></div>
+   </div><div className="game-preview-actions"><button type="button" disabled={!allowed||!url||preparing} onClick={()=>changeExpanded(true)}>{t('gamePreview.expand')}</button></div></div>
    {allowed&&<GameInsights part="ranking" gameId={gameId}/>}
    </div>
   </div>

@@ -1,3 +1,4 @@
+import {ShareSheet} from '../../components/share/ShareSheet';
 import { gameDisplay, type GameId } from '../../app/games';
 import {useLobbyGames} from '../home/useLobbyGames';
 import {useState} from 'react';
@@ -14,9 +15,11 @@ export function RankBetSheet({row,board,period,onClose,gameId='AG1'}:{
  const catalog=useLobbyGames();
  const game=gameDisplay(gameId,catalog.data?.find(game=>game.id===gameId));
  const [open,setOpen]=useState(true);
+ const [shareUrl,setShareUrl]=useState<string>();
+ const [sharing,setSharing]=useState(false);
  const [shareTarget,setShareTarget]=useState<HTMLSpanElement|null>(null);
- return <Drawer open={open} placement="bottom" title={t('gamePreview.betSlip')} onClose={()=>setOpen(false)}
-  afterOpenChange={visible=>{if(!visible)onClose();}}
+ return <><Drawer open={open} placement="bottom" title={t('gamePreview.betSlip')} onClose={()=>setOpen(false)}
+  afterOpenChange={visible=>{if(!visible){if(shareUrl)setSharing(true);else onClose();}}}
   getContainer={overlayContainer} rootStyle={{position:'absolute'}} className="game-rank-sheet"
   size="auto" zIndex={950} extra={<span className="game-rank-header-share" ref={setShareTarget}/>} closable={{placement:'start'}}>
   <div className="game-rank-sheet-summary">
@@ -32,8 +35,8 @@ export function RankBetSheet({row,board,period,onClose,gameId='AG1'}:{
     <img src={`/assets/profile/avatar/${row.avatarId}.png`} alt=""/>
     <div><strong>{row.nickname}</strong><time dateTime={row.occurredAt}>{new Date(row.occurredAt).toLocaleString()}</time></div>
    </div>
-   {board!=='streak' && row.platformOrderId
-    ? <RankReplay gameId={gameId} betId={row.betId} orderId={row.platformOrderId} board={board} period={period} shareTarget={shareTarget}/>
+   {row.platformOrderId
+    ? <RankReplay gameId={gameId} betId={row.betId} orderId={row.platformOrderId} board={board} period={period} shareTarget={shareTarget} onShare={url=>{setShareUrl(url);setOpen(false);}}/>
     : <RankOrderNumber betId={row.betId}/>}
    <div className="game-rank-sheet-game">
     <img src={game.cover} alt=""/>
@@ -46,5 +49,7 @@ export function RankBetSheet({row,board,period,onClose,gameId='AG1'}:{
     </button>
    </div>
   </div>
- </Drawer>;
+ </Drawer>
+ <ShareSheet content={sharing&&shareUrl?{url:shareUrl,kind:'replay'}:null} onClose={onClose}/>
+ </>;
 }

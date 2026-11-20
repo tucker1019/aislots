@@ -35,7 +35,6 @@ export function LossReturnRulesPage({onBack}:{onBack:()=>void}) {
    <div className="rebate-platforms"><div><span>{t('loss.rate')}</span><strong>{info.rateBps/100}%</strong></div></div>
    <section className="rebate-rule-description"><h2>{t('copy.rules')}</h2><ol>
     <li>{hasPlatformFee?t('loss.formula'):t('loss.formulaWithoutFee')}</li>{hasPlatformFee&&<li>{t('loss.platformFee')} {(info.platformFeeRateBps??0)/100}%</li>}<li>{t('loss.includedRewards')} {(info.rewardCategories??[]).map(category=>rewardLabel(category)).join('、')||t('loss.noRewards')}</li><li>{t('loss.window')}</li><li>{t('loss.exclusions')}</li><li>{t('loss.preview')}</li><li>{t('loss.turnover')}</li>
-    <li>{t('copy.activityTimezone')} {info.timezone}</li>
    </ol></section>
   </div>}
  </RecordsLayout>;

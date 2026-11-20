@@ -14,7 +14,7 @@ it('規則和獎勵來自服務端，客服直接打開TG，複製專屬鏈接',
 it('僅介紹邀請規則，不顯示個人進度和領取入口，客服在邀請鏈接下方',async()=>{
  vi.mocked(fetchInviteInfo).mockResolvedValue(info);setup();await screen.findByRole('table');
  expect(screen.queryByRole('button',{name:'領取'})).not.toBeInTheDocument();expect(screen.queryByText('待領取獎勵')).not.toBeInTheDocument();expect(screen.queryByText('已邀請人數')).not.toBeInTheDocument();expect(screen.queryByText('累計已領取')).not.toBeInTheDocument();expect(claimInvite).not.toHaveBeenCalled();
- const support=screen.getByRole('link',{name:'聯繫客服'});expect(support.closest('.records-page-top')).toBeNull();expect(document.querySelector('.invite-link')?.nextElementSibling).toBe(support);
+ const support=screen.getByRole('link',{name:'聯繫客服'});expect(support.closest('.records-page-top')).toBeNull();expect(document.querySelector('.invite-link')?.compareDocumentPosition(support)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);expect(screen.getByRole('button',{name:'分享'})).toBeInTheDocument();
 });
 it('錯誤響應不作為有效頁面',()=>{
  expect(()=>parseInviteInfo({...info,inviteUrl:'javascript:alert(1)'})).toThrow();expect(()=>parseInviteInfo({...info,rules:{...info.rules,rewardAmount:-1}})).toThrow();

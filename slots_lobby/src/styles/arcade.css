@@ -1,8 +1,8 @@
-/* Jade lobby: original artwork carries the colour; chrome stays restrained. */
+/* Indigo lobby: original game identities with coral actions and gold rewards. */
 :root[data-theme="dark"] {
   --arcade-gold: var(--theme-action);
   --arcade-gold-ink: var(--theme-on-action);
-  --arcade-depth: #0b2221;
+  --arcade-depth: #100e1e;
   --header-height: calc(82px + var(--lobby-safe-top, 0px));
 }
 

@@ -1,0 +1,118 @@
+import type * as RecentWinsService from '../../services/recent-wins';
+import {act,render,screen,waitFor,within} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
+import {afterEach,beforeEach,expect,it,vi} from 'vitest';
+import {RecentWins} from './RecentWins';
+import {fetchRecentWins,fetchRecentWinReplay} from '../../services/recent-wins';
+import {useSessionStore} from '../../stores/session';
+import {useAuthStore} from '../../stores/auth';
+vi.mock('../../services/lobby-games',()=>({fetchLobbyGames:vi.fn().mockResolvedValue([])}));
+vi.mock('../../services/recent-wins',async importOriginal=>({...await importOriginal<typeof RecentWinsService>(),fetchRecentWins:vi.fn(),fetchRecentWinReplay:vi.fn()}));
+const item={id:'1',betId:'ORDER1',betAmount:'2500000',avatarId:3,gameId:'AG1',gameName:'Game',gameNameEn:'Game',cover:'/assets/g.png',nickname:'ra***8',winAmount:'125000000',multiplier:'50',occurredAt:'2026-11-21T10:00:00Z',isSelf:false};
+const data={items:[item],updatedAt:item.occurredAt};
+let client:QueryClient;
+beforeEach(()=>{window.history.replaceState(null,'','/');useAuthStore.getState().close();vi.clearAllMocks();useSessionStore.setState({session:null});client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:0}}});});
+afterEach(()=>{client.clear();vi.useRealTimers();});
+function setup(active=true){return render(<QueryClientProvider client={client}><RecentWins active={active}/></QueryClientProvider>);}
+it('hides empty results and requires no login to display verified wins',async()=>{
+ vi.mocked(fetchRecentWins).mockResolvedValue({...data,items:[]});setup();
+ await waitFor(()=>expect(screen.queryByRole('region',{name:'近期大獎'})).not.toBeInTheDocument());
+ expect(fetchRecentWins).toHaveBeenCalledOnce();
+});
+it('opens a centered bet detail from the entire card and requests replay only inside the modal',async()=>{
+ vi.mocked(fetchRecentWins).mockResolvedValue({...data,items:[{...item,isSelf:true}]});
+ let done:(url:string)=>void=()=>{};
+ vi.mocked(fetchRecentWinReplay).mockImplementation(()=>new Promise(resolve=>{done=resolve;}));
+ setup();
+ const card=(await screen.findAllByRole('button',{name:'查看 你 的投注詳情'}))[0];
+ expect(card).toHaveClass('recent-win-self');
+ expect(within(card).getByText('WIN Rp1250.0 k')).toBeInTheDocument();
+ expect(within(card).getByText('50×')).toBeInTheDocument();
+ expect(within(card).getByLabelText('平台已驗證')).toBeInTheDocument();
+ await userEvent.click(within(card).getByRole('img',{name:'Game'}));
+ const modal=await screen.findByRole('dialog',{name:'投注詳情'});
+ expect(modal.closest('.ant-modal-wrap')).toHaveClass('ant-modal-centered');
+ expect(fetchRecentWinReplay).not.toHaveBeenCalled();
+ expect(window.location.pathname).toBe('/');
+ expect(within(modal).getByText('ORDER1')).toBeInTheDocument();
+ const button=within(modal).getByRole('button',{name:'回放'});
+ await userEvent.click(button);expect(button).toBeDisabled();expect(button).toHaveAttribute('aria-busy','true');
+ await userEvent.click(button);expect(fetchRecentWinReplay).toHaveBeenCalledOnce();
+ act(()=>done('https://game.example/?replay=bet&share='+'s'.repeat(52)));
+ await waitFor(()=>expect(document.querySelector('iframe')).toHaveAttribute('src',expect.stringContaining('replay=bet')));
+});
+it('requests on entering home, refreshes once per minute, stops when inactive and requests on return',async()=>{
+ vi.useFakeTimers();
+ vi.mocked(fetchRecentWins).mockResolvedValue(data);
+ const view=setup();
+ await act(async()=>{await vi.advanceTimersByTimeAsync(100);});
+ expect(fetchRecentWins).toHaveBeenCalledTimes(1);
+ await act(async()=>{await vi.advanceTimersByTimeAsync(60000);});
+ expect(fetchRecentWins).toHaveBeenCalledTimes(2);
+ view.rerender(<QueryClientProvider client={client}><RecentWins active={false}/></QueryClientProvider>);
+ await act(async()=>{await vi.advanceTimersByTimeAsync(120000);});
+ expect(fetchRecentWins).toHaveBeenCalledTimes(2);
+ view.rerender(<QueryClientProvider client={client}><RecentWins active/></QueryClientProvider>);
+ await act(async()=>{await vi.advanceTimersByTimeAsync(100);});
+ expect(fetchRecentWins).toHaveBeenCalledTimes(3);
+});
+it('shows compact skeletons during automatic retries, caps total requests at five and keeps the skeleton after exhaustion',async()=>{
+ vi.useFakeTimers();
+ vi.mocked(fetchRecentWins).mockRejectedValue(new Error('offline'));
+ const view=setup();
+ await act(async()=>{await vi.advanceTimersByTimeAsync(100);});
+ expect(screen.getByRole('status')).toBeInTheDocument();
+ expect(document.querySelectorAll('.recent-win-skeleton')).toHaveLength(4);
+ expect(screen.queryByRole('button',{name:'重試'})).not.toBeInTheDocument();
+ await act(async()=>{await vi.advanceTimersByTimeAsync(21000);});
+ expect(fetchRecentWins).toHaveBeenCalledTimes(5);
+ expect(screen.getByRole('status')).toBeInTheDocument();
+ await act(async()=>{await vi.advanceTimersByTimeAsync(120000);});
+ expect(fetchRecentWins).toHaveBeenCalledTimes(5);
+ view.rerender(<QueryClientProvider client={client}><RecentWins active={false}/></QueryClientProvider>);
+ view.rerender(<QueryClientProvider client={client}><RecentWins active/></QueryClientProvider>);
+ await act(async()=>{await vi.advanceTimersByTimeAsync(100);});
+ expect(fetchRecentWins).toHaveBeenCalledTimes(6);
+});
+it('keeps cards while a failed refresh automatically retries',async()=>{
+ vi.useFakeTimers();
+ vi.mocked(fetchRecentWins).mockResolvedValue(data);
+ setup();
+ await act(async()=>{await vi.advanceTimersByTimeAsync(100);});
+ vi.mocked(fetchRecentWins).mockRejectedValue(new Error('offline'));
+ await act(async()=>{await vi.advanceTimersByTimeAsync(81000);});
+ expect(screen.getAllByText('WIN Rp1250.0 k')[0]).toBeInTheDocument();
+ expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+ expect(fetchRecentWins).toHaveBeenCalledTimes(6);
+});
+it('cancels scheduled retries when leaving home',async()=>{
+ vi.useFakeTimers();
+ vi.mocked(fetchRecentWins).mockRejectedValue(new Error('offline'));
+ const view=setup();
+ await act(async()=>{await vi.advanceTimersByTimeAsync(100);});
+ view.rerender(<QueryClientProvider client={client}><RecentWins active={false}/></QueryClientProvider>);
+ await act(async()=>{await vi.advanceTimersByTimeAsync(30000);});
+ expect(fetchRecentWins).toHaveBeenCalledTimes(1);
+});
+
+it('opens the clicked win game rather than replay or a fixed default game',async()=>{
+ useSessionStore.setState({session:{uid:7,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'}});
+ vi.mocked(fetchRecentWins).mockResolvedValue({...data,items:[{...item,gameId:'NEW_GAME',gameName:'新遊戲',gameNameEn:'New Game'}]});
+ setup();
+ await userEvent.click((await screen.findAllByRole('button',{name:'查看 ra***8 的投注詳情'}))[0]);
+ expect(window.location.pathname).toBe('/');
+ await userEvent.click(await screen.findByRole('button',{name:/立即遊玩/}));
+ expect(window.location.pathname).toBe('/game/NEW_GAME');
+ expect(fetchRecentWinReplay).not.toHaveBeenCalled();
+});
+it('uses the existing login flow for a guest clicking a game cover',async()=>{
+ vi.mocked(fetchRecentWins).mockResolvedValue(data);
+ setup();
+ await userEvent.click((await screen.findAllByRole('button',{name:'查看 ra***8 的投注詳情'}))[0]);
+ expect(useAuthStore.getState().open).toBe(false);
+ await userEvent.click(await screen.findByRole('button',{name:/立即遊玩/}));
+ expect(window.location.pathname).toBe('/');
+ expect(useAuthStore.getState().open).toBe(true);
+ expect(fetchRecentWinReplay).not.toHaveBeenCalled();
+});

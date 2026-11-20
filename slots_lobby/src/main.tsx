@@ -38,3 +38,6 @@ import './styles/theme.css';
 
 import './styles/arcade.css';
 import './styles/arcade-actions.css';
+import './styles/indonesia.css';
+
+import './styles/share.css';

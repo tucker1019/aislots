@@ -1,11 +1,22 @@
 import { t, getLocale } from '../i18n';
 import {ensureSession,request} from './account';
 import {isRecord} from '../features/account/types';
-export interface RebatePreview {reward:number;availableAt:string}
+export interface RebateClaim {reward:number;periodStart:string;periodEnd:string;status:'claimable'|'claimed'|'expired'|'unavailable'|'no_reward'}
+export interface RebatePreview {reward:number;availableAt:string;claim?:RebateClaim}
 export interface RebatePlatform {name:string;dailyRateBps:number;weeklyRateBps:number;monthlyRateBps:number}
 export interface RebateInfo {activityDate:string;timezone:string;claimableTotal:number;daily:RebatePreview;weekly:RebatePreview;monthly:RebatePreview;platforms:RebatePlatform[]}
 function amount(value:unknown){if(!Number.isSafeInteger(value)||Number(value)<0)throw new Error(t('copy.invalidRebateData'));return Number(value);}
-function preview(value:unknown):RebatePreview{if(!isRecord(value)||!isRecord(value.preview)||typeof value.preview.availableAt!=='string'||!Number.isFinite(Date.parse(value.preview.availableAt)))throw new Error(t('copy.invalidRebatePeriod'));return {reward:amount(value.preview.reward),availableAt:value.preview.availableAt};}
+function validDate(value:unknown):value is string{return typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&Number.isFinite(Date.parse(value+'T00:00:00Z'))&&new Date(value+'T00:00:00Z').toISOString().slice(0,10)===value;}
+function preview(value:unknown):RebatePreview{
+ if(!isRecord(value)||!isRecord(value.preview)||typeof value.preview.availableAt!=='string'||!Number.isFinite(Date.parse(value.preview.availableAt)))throw new Error(t('copy.invalidRebatePeriod'));
+ let claim:RebateClaim|undefined;
+ if(value.claim!==undefined&&value.claim!==null){
+  const row=value.claim;
+  if(!isRecord(row)||!validDate(row.periodStart)||!validDate(row.periodEnd)||row.periodEnd<=row.periodStart||!['claimable','claimed','expired','unavailable','no_reward'].includes(String(row.status)))throw new Error(t('copy.invalidRebatePeriod'));
+  claim={reward:amount(row.reward),periodStart:row.periodStart,periodEnd:row.periodEnd,status:row.status as RebateClaim['status']};
+ }
+ return {reward:amount(value.preview.reward),availableAt:value.preview.availableAt,...(claim?{claim}:{})};
+}
 export function parseRebate(data:unknown):RebateInfo{
  if(!isRecord(data)||typeof data.activityDate!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(data.activityDate)||typeof data.timezone!=='string'||!Array.isArray(data.platforms))throw new Error(t('copy.invalidRebateData'));
  try{new Intl.DateTimeFormat(getLocale(),{timeZone:data.timezone});}catch{throw new Error(t('copy.invalidRebateTimezone'));}

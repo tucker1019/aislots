@@ -1,0 +1,59 @@
+/* Approved Indonesia 02. Game-detail structure and iframe geometry stay in
+   game-detail.css; only shared colour tokens apply to that page. */
+:root[data-theme="dark"] { --header-height: calc(74px + var(--lobby-safe-top, 0px)); }
+:root[data-theme="dark"] .site-header,
+:root[data-theme="dark"] .bottom-navigation { background: #211c33; border-color: #44374e; }
+:root[data-theme="dark"] .brand-dot { color: var(--theme-gold-text); }
+:root[data-theme="dark"] .site-header .header-wallet { background: transparent; box-shadow: none; height: auto; min-height: 34px; }
+:root[data-theme="dark"] .site-header .header-wallet output { white-space: normal; overflow: visible; overflow-wrap: anywhere; text-overflow: clip; }
+:root[data-theme="dark"] .header-deposit { min-width: 60px; height: 32px; border-radius: 9px; }
+:root[data-theme="dark"] .bottom-navigation button[aria-current="page"]::before { top: auto; bottom: -5px; width: 14px; border-radius: 4px; }
+.home-shortcuts { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0; margin: 8px 0 18px; padding: 9px 0; border-radius: 12px; background: var(--theme-panel); }
+.home-shortcuts button { display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 0; min-height: 34px; padding: 5px 8px; border: 0; background: transparent; color: var(--ink); font-size: 12px; line-height: 1.5; font-weight: var(--weight-strong); }
+.home-shortcuts button + button { border-left: 1px solid var(--line); }
+.home-shortcuts button > span { display: inline-flex; color: var(--theme-accent); flex-shrink: 0; }
+.home-shortcuts button:hover { background: var(--theme-soft); }
+.game-tile--redesigned { border: 1px solid #67517044; background: #1f1930; }
+.game-tile--redesigned { aspect-ratio: 4 / 5; }
+.game-tile--redesigned > img { object-fit: cover; }
+.game-tile-caption { position: absolute; z-index: 2; inset: auto 4px 7px; display: flex; flex-direction: column; align-items: center; gap: 3px; color: #fff2df; pointer-events: none; }
+.game-tile-caption strong { width: 100%; font-size: 11px; font-weight: var(--weight-key); line-height: 1.35; text-align: center; overflow-wrap: anywhere; }
+.game-tile-caption small { font-size: 9px; color: #d3bdd4; letter-spacing: 1px; }
+:root[data-theme="dark"] .my-account { padding-top: 16px; }
+:root[data-theme="dark"] .account-identity h1 { font-size: 21px; }
+:root[data-theme="dark"] .account-balance-card { display: block; padding: 16px; border-radius: 14px; border-color: #ffffff0a; }
+:root[data-theme="dark"] .account-balance-card > div { min-width: 0; }
+:root[data-theme="dark"] .account-balance { font-size: 30px; line-height: 1.4; }
+:root[data-theme="dark"] .account-money-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin-top: 12px; }
+:root[data-theme="dark"] .account-card { border-color: #ffffff0a; border-radius: 14px; }
+:root[data-theme="dark"] .account-section-heading { padding: 14px 14px 6px; }
+:root[data-theme="dark"] .account-section-heading h2 { font-size: 16px; }
+:root[data-theme="dark"] .account-section-heading > span { display: none; }
+:root[data-theme="dark"] .account-actions { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px 0; padding: 7px 8px 12px; }
+:root[data-theme="dark"] .account-benefits-card .account-actions { grid-template-columns: repeat(5,minmax(0,1fr)); }
+:root[data-theme="dark"] .account-actions button { flex-direction: column; align-items: center; gap: 6px; min-height: 70px; padding: 5px 2px; }
+:root[data-theme="dark"] .account-action-label { min-block-size: 30px; text-align: center; font-size: 11px; line-height: 15px; overflow-wrap: anywhere; }
+:root[data-theme="dark"] .my-account .account-action-icon { background: transparent; color: var(--theme-accent); border: 0; width: 30px; height: 30px; }
+:root[data-theme="dark"] .my-account .account-benefits-card .account-action-icon { background: transparent; }
+:root[data-theme="dark"] .deposit-card { border-radius: 14px; background: var(--theme-panel); border-color: #ffffff0a; }
+:root[data-theme="dark"] .deposit-tiers button { background: var(--theme-panel); border-color: var(--theme-border); border-radius: 10px; }
+:root[data-theme="dark"] .deposit-tiers button[aria-pressed="true"] { background: #66517f; color: #fff6ed; border-color: transparent; }
+:root[data-theme="dark"] .deposit-tiers button[aria-pressed="true"] .deposit-tier-symbol { background: #35283f; color: #f4d49a; }
+:root[data-theme="dark"] .deposit-summary dl > div:last-child { border-top: 1px solid var(--line); padding-top: 15px; margin-top: 8px; font-size: 17px; }
+:root[data-theme="dark"] .deposit-summary dl > div:last-child :is(dt,dd) { color: var(--ink); font-weight: var(--weight-key); }
+:root[data-theme="dark"] .benefit-card { padding: 18px; background: var(--theme-panel); border-color: #ffffff0a; border-radius: 14px; }
+:root[data-theme="dark"] .benefit-card > header { border-bottom: 0; }
+:root[data-theme="dark"] .benefit-card h2 { font-size: 16px; }
+:root[data-theme="dark"] .benefit-icon { background: transparent; color: var(--theme-accent); }
+:root[data-theme="dark"] .benefit-card header > strong { color: var(--ink); }
+:root[data-theme="dark"] .benefit-card-bottom { gap: 14px; }
+:root[data-theme="dark"] .vip-tier-card { background: var(--theme-panel); border-color: var(--theme-border); color: var(--ink); }
+:root[data-theme="dark"] .vip-tier-card h2,
+:root[data-theme="dark"] .vip-level-track button[aria-pressed="true"] { color: var(--theme-accent); }
+:root[data-theme="dark"] .vip-perks :is(svg,strong) { color: var(--theme-accent); }
+:root[data-theme="dark"] .vip-protection { border-color: var(--theme-accent); background: var(--theme-panel); }
+:root[data-theme="dark"] .checkin-day.current { background: var(--theme-accent); color: #251624; }
+:root[data-theme="dark"] .checkin-day.current > span { color: inherit; }
+:root[data-theme="dark"] :is(.benefits-heading,.records-page-header) { background: var(--theme-canvas); }
+:root[data-theme="dark"] :is(.records-filters,.cash-record-detail,.bet-record-item,.ledger-detail) { border-color: var(--theme-border); }
+@media(prefers-reduced-motion:reduce) { .game-tile-caption { transition: none; } }

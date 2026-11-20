@@ -44,6 +44,5 @@ export function BetRecordsPage({ onBack }: { onBack: () => void }) {
       {query.isError && <p role="alert" className="bet-records-feedback">{t('copy.loadingFailedExistingRecordsArePreservedPlease')}</p>}
       {query.hasNextPage && <AsyncButton loading={query.isFetchingNextPage} className="bet-records-more" type="button" disabled={query.isFetching} onClick={() => void query.fetchNextPage()}>{query.isError ? t('copy.retryLoading') : t('copy.loadMore')}</AsyncButton>}
     </>}
-    <p className="bet-records-note">{t('copy.freeGamesAndCascadePayoutsBelongTo')}</p>
   </RecordsLayout>;
 }
