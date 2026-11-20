@@ -4,7 +4,7 @@
 
 迁移012首次插入的 `lobby_game_statistics_epoch.started_at` 是固定启用时间，重启不重置。不回填历史；首次投注早于启用时间的局不纳入，即使免费链在启用后结束。完整局是一次付费投注及其所有消除、免费游戏；只在整局结算完成后统计。
 
-机台的整局提交事务写入durable outbox和玩家游戏局序号。后台按玩家游戏流顺序投递，失败保留并退避重试；其他玩家不因单个失败阻塞。大厅内部接口要求现有服务端Bearer鉴权，前端不能提交统计。大厅先核对自己已确认的逐轮资金流水是否与整局总投注、总派彩一致，再事务提交局记录、分钟桶、连胜和Top50候选。统计不修改钱包。
+机台的整局提交事务写入durable outbox和玩家游戏局序号。后台按玩家游戏流顺序投递，失败保留并退避重试；其他玩家不因单个失败阻塞。大厅内部接口要求现有服务端Bearer鉴权，前端不能提交统计。大厅先核对自己已确认的逐轮资金流水是否与整局总投注、总派彩一致，再事务提交局记录、分钟桶和Top10候选。统计不修改钱包。
 
 `POST /internal/game/complete`：uid、gameId、betId、sequence、betAmount、winAmount、startedAt、endedAt。金额为整数分、时间RFC3339。按gameId+betId幂等，内容改变拒绝；每玩家游戏sequence必须连续。历史排除事件也推进序号，但不增加统计。已收事件重试无需再次入账。数据库恢复后outbox继续投递，不依赖页面在线或客户端动画。
 
@@ -16,23 +16,22 @@
 
 ## 排行榜
 
-`POST /api/game/leaderboard`：uid、sid、gameId、board（wins/multiplier/streak）、period（today/week/all）。每种候选榜最多50条，前端返回前20。
+`POST /api/game/leaderboard`：uid、sid、gameId、board（wins/multiplier）、period（today/week/all）。每种候选榜最多10条，接口返回前10。
 
 - wins：单局总派彩，允许同一玩家多笔上榜。
 - multiplier：单局总派彩/本局付费投注，以高精度numeric排序，展示两位小数。
-- streak：单局有派彩算一胜，零派彩归零，每玩家只保留最好连续段。
 - 今日、最近7个自然日以签到活动时区为准；全部为统计启用以来。
-- 金额、倍数近7天读取7个日Top50，最多350个候选排序。连胜维护按连续段、日期的计数，为当日及后6个滚动七日窗口预计算候选，不能简单合并每日最长连胜。跨窗口的连续段在窗口起点截断。
-- 同分按成绩结束时间升序、稳定entry key升序。连胜同玩家同分保留较早成绩。
-- 先取前20，再连接用户表，不逐用户查询。返回公开HMAC用户标识、完整昵称、当前头像、投注、派彩、倍数、连胜次数和发生时间；不返回真实UID、账号、密码、sid。
+- 金额、倍数近7天读取7个日Top10，最多70个候选排序。
+- 同分按成绩结束时间升序、稳定entry key升序。
+- 先取前10，再连接用户表，不逐用户查询。返回公开HMAC用户标识、完整昵称、当前头像、投注、派彩、倍数和发生时间；不返回真实UID、账号、密码、sid。
 
 ## 并发与核对
 
-大厅按游戏短事务锁保证桶、连胜与Top50更新原子一致；机台按玩家流投递锁保证多实例顺序。完整局记录可用于审计及人工重建，日常查询不读取它。分钟表主键(game_id,minute)，候选读取索引(game_id,period,board,score...)。监测outbox最老未送时间、未送条数、顺序冲突日志、事务耗时和查询耗时；错误不丢弃事件、不伪造或跳过序号。
+大厅按游戏短事务锁保证桶与Top10更新原子一致；机台按玩家流投递锁保证多实例顺序。完整局记录可用于审计及人工重建，日常查询不读取它。分钟表主键(game_id,minute)，候选读取索引(game_id,period,board,score...)。监测outbox最老未送时间、未送条数、顺序冲突日志、事务耗时和查询耗时；错误不丢弃事件、不伪造或跳过序号。
 
 ## 验证
 
-隔离schema测试覆盖九轮普通/免费链只产生一条完成通知、丢失回执重试及机台重建、金额核对、重复/改内容/跳序号、启用时间排除、RTP分钟边界、连胜跨天及七日裁剪、Top50裁剪、脱敏信息和缓存克隆隔离。前端测试使用模拟接口，不进行真实下注。
+隔离schema测试覆盖九轮普通/免费链只产生一条完成通知、丢失回执重试及机台重建、金额核对、重复/改内容/跳序号、启用时间排除、RTP分钟边界、连胜接口拒绝与停止写入、Top10裁剪、脱敏信息和缓存克隆隔离。前端测试使用模拟接口，不进行真实下注。
 
 ## 手动核对与重建
 
@@ -53,3 +52,5 @@ go run ./app/apis/lobby/api/cmd/statistics-rebuild -game AG1 -apply
 Leaderboard items include `platformOrderId`. `POST /api/game/rank-replay` accepts the viewer's uid/sid, gameId, platformOrderId, board (`wins`/`multiplier`) and period (`today`/`week`/`all`). It rechecks the current Top 20 and resolves the owner/game bet entirely on the server. Streak replays and arbitrary non-ranked orders are rejected.
 
 Configure the game entry `apiUrl` to its private service address. The platform calls `POST /internal/rank-replay` with the existing service Bearer secret and server-resolved uid/gameId/betId. The game verifies a completed owned bet and its configured platform identity before issuing the existing read-only share token. The response is converted to the configured game URL with only `replay` and `share`; no login token or owner identity is sent to the viewer. Never log full replay URLs or service credentials.
+
+连胜榜已下线：公开协议保留原字段编号9与名称streak，拒绝board=streak；结算不再读取或写入连胜状态、连续段或窗口候选。历史表保留供审计，不参与运行时统计。序号连续性通过局记录唯一索引核验。

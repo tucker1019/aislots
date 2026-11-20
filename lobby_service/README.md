@@ -133,7 +133,7 @@ source统一维护：[script/coin_sources.py](script/coin_sources.py)，执行 `
 
 机台整局完成后通过持久化Outbox投递`/internal/game/complete`，大厅核对逐轮资金汇总后更新分钟RTP桶及排行榜，不重复结算钱包。统计启用时间固定，不回填旧局。
 
-`POST /api/game/rtp`支持5分钟、1小时、24小时；`POST /api/game/leaderboard`支持派彩、倍数、连胜及今日、近7日、全部周期。`POST /api/game/rank-replay`只允许当前派彩/倍数榜前20的订单，服务端查找所属机台并签发只读回放地址，不公开玩家身份。统计配置、精度、缓存、重建命令见[统计文档](docs/game-statistics.md)。
+`POST /api/game/rtp`支持5分钟、1小时、24小时；`POST /api/game/leaderboard`支持派彩、倍数及今日、近7日、全部周期。`POST /api/game/rank-replay`只允许当前派彩/倍数榜前10的订单，服务端查找所属机台并签发只读回放地址，不公开玩家身份。统计配置、精度、缓存、重建命令见[统计文档](docs/game-statistics.md)。
 
 ## 无限层级代理
 
@@ -202,3 +202,11 @@ GOTOOLCHAIN=local go test ./app/apis/lobby/api/internal/repository/model \
 | `maxWin` | 正安全整数或 `-1`；缺省 `-1` | `5000` → `x5000`，`-1` → 无上限 |
 
 显式空值或非法范围、枚举会被校验拒绝。实时 RTP 仍来自统计接口，其涨跌箭头按当前游戏配置的理论 RTP 比较。大厅复用游戏目录缓存，正常刷新或重新进入并刷新目录后读取发布值。
+
+### 游戏收藏
+
+- `POST /api/game/favorites`：使用现有 uid/sid 鉴权，返回当前账号的 `gameIds`。
+- `POST /api/game/favorites/set`：请求包含 `uid`、`sid`、`gameId`、显式布尔值 `favorite`；设置期望状态，重复收藏或取消均幂等。返回收藏列表，便于客户端同步详情和首页。
+- 迁移 `030_game_favorites.sql` 新增 `lobby_game_favorites`，用户与游戏组成唯一键，不修改钱包或活动数据。收藏读取仍由当前发布目录过滤隐藏游戏。
+
+取款默认钱包：`/api/user/wallet/accounts` 的已绑定钱包中仅一项 `preferred=true`。优先最近创建的取款订单使用的同渠道同账号钱包（包括待审、成功与失败），不可用或未申请则选最近绑定/修改的钱包；没有绑定时全部为 false。用户本次手动选择和待确认幂等请求优先，不自动更改待确认申请。

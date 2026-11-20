@@ -68,6 +68,7 @@ message WalletAccountReply {
  string account = 2;
  string name = 3;
  bool bound = 4;
+ bool preferred = 5; // 默认取款钱包。
 }
 message WalletAccountsReply { repeated WalletAccountReply channels = 1; }
 

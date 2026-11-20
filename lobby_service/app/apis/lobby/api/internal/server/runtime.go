@@ -15,6 +15,7 @@ import (
 	"apps/app/apis/lobby/api/internal/router"
 	"apps/app/apis/lobby/api/internal/svc"
 	"apps/pkg/xlog"
+
 	"gorm.io/gorm"
 )
 
@@ -53,9 +54,17 @@ func buildDependencies(ctx context.Context, db *gorm.DB, c config.Config) (*svc.
 	repo.ConfigureAgent(db, c.Agent, c.Game.Games, c.Checkin.Location())
 	return svc.New(c, repo), nil
 }
+
 func startWorkers(ctx context.Context, db *gorm.DB, d *svc.ServiceContext) func() {
 	worker, cancel := context.WithCancel(ctx)
-	done := []<-chan struct{}{StartPayments(worker, d.Repo.Recharge), StartVIP(worker, d.Repo.VIP), StartAgent(worker, d.Repo.Agent), StartExperience(worker, d.Config, db)}
+	recentDone := make(chan struct{})
+	go func() {
+		defer close(recentDone)
+		if d.RecentWins != nil {
+			d.RecentWins.Run(worker)
+		}
+	}()
+	done := []<-chan struct{}{recentDone, StartPayments(worker, d.Repo.Recharge), StartVIP(worker, d.Repo.VIP), StartAgent(worker, d.Repo.Agent), StartExperience(worker, d.Config, db)}
 	return func() {
 		cancel()
 		for _, v := range done {

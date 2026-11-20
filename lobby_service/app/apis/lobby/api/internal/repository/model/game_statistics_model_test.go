@@ -10,7 +10,7 @@ import (
 	"apps/pkg/xerr"
 )
 
-func TestStatisticsIncrementalIdempotentWindowsAndStreaks(t *testing.T) {
+func TestStatisticsIncrementalIdempotentWindowsWithoutStreaks(t *testing.T) {
 	db := vipTestDB(t)
 	ctx := context.Background()
 	now := time.Now().UTC().Truncate(time.Minute)
@@ -62,13 +62,14 @@ func TestStatisticsIncrementalIdempotentWindowsAndStreaks(t *testing.T) {
 	if e != nil || len(rows) != 4 || rows[0].WinAmount != "200" {
 		t.Fatal(rows, e)
 	}
-	rows, _, e = m.ReadLeaderboard(ctx, "AG1", "streak", "all", now)
-	if e != nil || len(rows) != 1 || rows[0].Streak != 3 {
-		t.Fatal(rows, e)
+	if _, _, err := m.ReadLeaderboard(ctx, "AG1", "streak", "all", now); !errors.Is(err, xerr.ErrInvalid) {
+		t.Fatal("retired board accepted", err)
 	}
-	rows, _, e = m.ReadLeaderboard(ctx, "AG1", "streak", "week", now)
-	if e != nil || rows[0].Streak != 3 {
-		t.Fatal(rows, e)
+	for _, table := range []string{"lobby_game_streaks", "lobby_game_streak_days"} {
+		var retired int64
+		if err := db.Table(table).Count(&retired).Error; err != nil || retired != 0 {
+			t.Fatal("retired statistics still written", table, retired, err)
+		}
 	}
 	var count int64
 	db.Table("lobby_game_completions").Count(&count)
@@ -111,7 +112,7 @@ func TestStatisticsIncrementalIdempotentWindowsAndStreaks(t *testing.T) {
 	}
 }
 
-func TestStatisticsTop50AndRollingStreakBoundary(t *testing.T) {
+func TestStatisticsTop10AndRollingWindow(t *testing.T) {
 	db := vipTestDB(t)
 	ctx := context.Background()
 	now := time.Now().UTC().Truncate(time.Minute)
@@ -134,20 +135,20 @@ func TestStatisticsTop50AndRollingStreakBoundary(t *testing.T) {
 	}
 	var count int64
 	db.Table("lobby_game_rank_candidates").Where("game_id='AG1' AND period='all' AND board='wins'").Count(&count)
-	if count != 50 {
-		t.Fatal("top50 not bounded", count)
+	if count != 10 {
+		t.Fatal("top10 not bounded", count)
 	}
 	rows, _, e := m.ReadLeaderboard(ctx, "AG1", "wins", "all", now)
-	if e != nil || len(rows) != 20 || rows[0].WinAmount != "60" {
+	if e != nil || len(rows) != 10 || rows[0].WinAmount != "60" {
 		t.Fatal(rows, e)
 	}
-	rows, _, e = m.ReadLeaderboard(ctx, "AG1", "streak", "all", now)
-	if e != nil || rows[0].Streak != 60 {
-		t.Fatal(rows, e)
-	}
-	rows, _, e = m.ReadLeaderboard(ctx, "AG1", "streak", "week", now)
-	if e != nil || rows[0].Streak != 59 {
-		t.Fatal("seven-day window included older wins", rows, e)
+	for _, board := range []string{"wins", "multiplier"} {
+		for _, period := range []string{"today", "week", "all"} {
+			top, _, err := m.ReadLeaderboard(ctx, "AG1", board, period, now)
+			if err != nil || len(top) > 10 {
+				t.Fatal("top10 contract", board, period, len(top), err)
+			}
+		}
 	}
 	rows, _, e = m.ReadLeaderboard(ctx, "AG1", "multiplier", "week", now)
 	if e != nil || rows[0].Multiplier != "0.60" {

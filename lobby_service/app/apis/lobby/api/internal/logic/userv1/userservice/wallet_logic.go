@@ -29,11 +29,12 @@ func (s *Service) WalletAccounts(ctx context.Context, r *pb.UserRequest) (*pb.Wa
 	result := &pb.WalletAccountsReply{}
 	for _, channel := range []string{"test1", "test2"} {
 		item := &pb.WalletAccountReply{Channel: channel}
-		for _, row := range rows {
+		for index, row := range rows {
 			if row.Channel == channel {
 				item.Account = row.Account
 				item.Name = row.Name
 				item.Bound = true
+				item.Preferred = index == 0
 				break
 			}
 		}

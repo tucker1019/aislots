@@ -11,6 +11,7 @@ import (
 )
 
 type Repository struct {
+	Favorites  FavoriteStore
 	Withdrawal *model.WithdrawalModel
 	Wallet     WalletStore
 	Agent      AgentStore
@@ -30,7 +31,7 @@ func New(db *gorm.DB, locations ...*time.Location) *Repository {
 	if len(locations) > 0 {
 		loc = locations[0]
 	}
-	return &Repository{Withdrawal: &model.WithdrawalModel{DB: db}, Wallet: &model.WalletAccountModel{DB: db}, Users: &model.UserModel{DB: db}, Recharge: &model.RechargeModel{DB: db, ActivityLocation: loc}, Checkin: &model.CheckinModel{DB: db}, Returns: &model.ReturnModel{DB: db}, Activity: &model.ActivityModel{DB: db, Location: loc}}
+	return &Repository{Favorites: &model.GameFavoriteModel{DB: db}, Withdrawal: &model.WithdrawalModel{DB: db}, Wallet: &model.WalletAccountModel{DB: db}, Users: &model.UserModel{DB: db}, Recharge: &model.RechargeModel{DB: db, ActivityLocation: loc}, Checkin: &model.CheckinModel{DB: db}, Returns: &model.ReturnModel{DB: db}, Activity: &model.ActivityModel{DB: db, Location: loc}}
 }
 
 // ConfigureVIP wires the same engine into user creation, recharge and game event transactions.

@@ -32,7 +32,7 @@ func (f *statsFake) ReadRTP(_ context.Context, _ string, minutes int, now time.T
 
 func (f *statsFake) ReadLeaderboard(context.Context, string, string, string, time.Time) ([]model.RankView, time.Time, error) {
 	f.reads++
-	return []model.RankView{{PlatformOrderID: "123", UID: 7, Nickname: "Private Account", AvatarID: 2, BetID: "bet", BetAmount: "100", WinAmount: "200", Multiplier: "2.00", Streak: 3, EndedAt: time.Now()}}, time.Now(), f.err
+	return []model.RankView{{PlatformOrderID: "123", UID: 7, Nickname: "Private Account", AvatarID: 2, BetID: "bet", BetAmount: "100", WinAmount: "200", Multiplier: "2.00", EndedAt: time.Now()}}, time.Now(), f.err
 }
 
 func TestStatisticsAPIAuthCachePrivacyAndValidation(t *testing.T) {
@@ -61,6 +61,10 @@ func TestStatisticsAPIAuthCachePrivacyAndValidation(t *testing.T) {
 	r.Window = "invalid"
 	if _, e = l.GameRtp(ctx, r); e == nil {
 		t.Fatal("window")
+	}
+	r.Board = "streak"
+	if _, e = l.GameLeaderboard(ctx, r); !errors.Is(e, xerr.ErrInvalid) {
+		t.Fatal("retired board accepted", e)
 	}
 	r.Board = "invalid"
 	if _, e = l.GameLeaderboard(ctx, r); e == nil {

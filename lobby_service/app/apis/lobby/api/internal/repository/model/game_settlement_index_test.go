@@ -77,7 +77,7 @@ func TestStatisticsSettlementLookupUsesCoveringIndex(t *testing.T) {
 	}
 }
 
-// Includes successful payout ranking and streak updates, not just the SUM query.
+// Includes successful payout ranking and RTP updates, not just the SUM query.
 // All data lives in a disposable schema created by vipTestDB.
 func BenchmarkStatisticsIndexedCompletion(b *testing.B) {
 	db := vipTestDB(b)

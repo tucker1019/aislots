@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"gorm.io/gorm"
@@ -12,8 +13,28 @@ type WalletAccountModel struct{ DB *gorm.DB }
 
 func (m *WalletAccountModel) Accounts(ctx context.Context, uid int64) ([]*LobbyPayoutAccount, error) {
 	var rows []*LobbyPayoutAccount
-	err := m.DB.WithContext(ctx).Where("uid = ?", uid).Order("channel").Find(&rows).Error
-	return rows, databaseError(err)
+	err := m.DB.WithContext(ctx).Where("uid = ?", uid).Order("updated_at DESC, channel ASC").Find(&rows).Error
+	if err != nil || len(rows) == 0 {
+		return rows, databaseError(err)
+	}
+	// Include failed and pending payouts: the latest attempt remains the user's choice.
+	var latest LobbyWithdrawalOrder
+	err = m.DB.WithContext(ctx).Where("uid = ?", uid).Order("created_at DESC, order_id DESC").Take(&latest).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return rows, nil
+	}
+	if err != nil {
+		return nil, databaseError(err)
+	}
+	for i, row := range rows {
+		if row.Channel == latest.Channel && row.Account == latest.Account {
+			preferred := rows[i]
+			copy(rows[1:i+1], rows[:i])
+			rows[0] = preferred
+			break
+		}
+	}
+	return rows, nil
 }
 
 func (m *WalletAccountModel) SaveAccount(ctx context.Context, uid int64, channel, account, name string) error {

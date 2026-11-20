@@ -8,6 +8,7 @@ import (
 
 	"apps/app/apis/lobby/api/internal/config"
 	user "apps/app/apis/lobby/api/internal/logic/userv1/userservice"
+	"apps/app/apis/lobby/api/internal/manager/recentwins"
 	"apps/app/apis/lobby/api/internal/repository"
 	"apps/app/apis/lobby/api/internal/repository/model"
 	"apps/app/apis/lobby/api/internal/svc"
@@ -19,6 +20,8 @@ import (
 const launchTicketLifetime = 5 * time.Minute
 
 type Logic struct {
+	recentWins   *recentwins.Feed
+	favorites    repository.FavoriteStore
 	invite       inviteStore
 	inviteConfig config.InviteConfig
 	location     *time.Location
@@ -33,7 +36,7 @@ func New(s *svc.ServiceContext) *Logic {
 	if s.Repo.Invite != nil {
 		invites = s.Repo.Invite
 	}
-	return &Logic{invite: invites, inviteConfig: s.Config.Invite, store: s.Repo.Game, config: s.Config.Game, users: s.Repo.Users, stats: newStatisticsCache(), location: s.Config.Checkin.Location()}
+	return &Logic{recentWins: s.RecentWins, favorites: s.Repo.Favorites, invite: invites, inviteConfig: s.Config.Invite, store: s.Repo.Game, config: s.Config.Game, users: s.Repo.Users, stats: newStatisticsCache(), location: s.Config.Checkin.Location()}
 }
 
 func (l *Logic) GameLaunch(ctx context.Context, r *pb.GameLaunchRequest) (*pb.GameLaunchReply, error) {

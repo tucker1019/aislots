@@ -123,7 +123,7 @@ func (l *Logic) GameLeaderboard(ctx context.Context, r *pb.GameStatisticsRequest
 	if e != nil {
 		return nil, e
 	}
-	if r.Board != "wins" && r.Board != "multiplier" && r.Board != "streak" || r.Period != "today" && r.Period != "week" && r.Period != "all" {
+	if r.Board != "wins" && r.Board != "multiplier" || r.Period != "today" && r.Period != "week" && r.Period != "all" {
 		return nil, xerr.ErrInvalid
 	}
 	return cachedStats(l.stats, "rank:"+r.GameId+":"+r.Board+":"+r.Period, func() (*pb.GameLeaderboardReply, error) {
@@ -138,9 +138,12 @@ func (l *Logic) GameLeaderboard(ctx context.Context, r *pb.GameStatisticsRequest
 		}
 		out := &pb.GameLeaderboardReply{Items: []*pb.GameLeaderboardItem{}, UpdatedAt: now.Format(time.RFC3339), StatisticsSince: since.Format(time.RFC3339), Timezone: zone}
 		for i, row := range rows {
+			if i >= 10 {
+				break
+			}
 			mac := hmac.New(sha256.New, []byte(l.config.ServiceToken))
 			_, _ = mac.Write([]byte(strconv.FormatInt(row.UID, 10)))
-			out.Items = append(out.Items, &pb.GameLeaderboardItem{PlatformOrderId: row.PlatformOrderID, Rank: int32(i + 1), UserId: hex.EncodeToString(mac.Sum(nil))[:20], Nickname: row.Nickname, AvatarId: row.AvatarID, BetId: row.BetID, BetAmount: row.BetAmount, WinAmount: row.WinAmount, Multiplier: row.Multiplier, Streak: row.Streak, OccurredAt: row.EndedAt.Format(time.RFC3339)})
+			out.Items = append(out.Items, &pb.GameLeaderboardItem{PlatformOrderId: row.PlatformOrderID, Rank: int32(i + 1), UserId: hex.EncodeToString(mac.Sum(nil))[:20], Nickname: row.Nickname, AvatarId: row.AvatarID, BetId: row.BetID, BetAmount: row.BetAmount, WinAmount: row.WinAmount, Multiplier: row.Multiplier, OccurredAt: row.EndedAt.Format(time.RFC3339)})
 		}
 		return out, nil
 	})

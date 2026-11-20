@@ -3,6 +3,15 @@ package apis.lobby.api.v1;
 option go_package="apps/pb/apis/lobby/api/v1;v1";
 import "google/api/annotations.proto";
 service GameService {
+ // @Desc: Latest verified completed wins, including experience accounts, from the last hour.
+ rpc GameRecentWins(GameRecentWinsRequest) returns (GameRecentWinsReply) {option (google.api.http)={post:"/api/game/recent-wins" body:"*"};}
+ // @Desc: Replay an eligible recent win using server-owned order identity.
+ rpc GameRecentWinReplay(GameRecentWinReplayRequest) returns (GameRankReplayReply) {option (google.api.http)={post:"/api/game/recent-wins/replay" body:"*"};}
+
+ // @Desc: Read the authenticated player's saved games.
+ rpc GameFavorites(GameFavoritesRequest) returns (GameFavoritesReply) {option (google.api.http)={post:"/api/game/favorites" body:"*"};}
+ // @Desc: Set an explicit favorite state; repeated requests are idempotent.
+ rpc GameFavoriteSet(GameFavoriteSetRequest) returns (GameFavoritesReply) {option (google.api.http)={post:"/api/game/favorites/set" body:"*"};}
  rpc GameRankReplay(GameRankReplayRequest) returns (GameRankReplayReply) {option (google.api.http)={post:"/api/game/rank-replay" body:"*"};}
  rpc InviteChests(InviteRequest) returns (InviteChestsReply) {option (google.api.http)={post:"/api/activity/invite/chests" body:"*"};}
  rpc InviteChestClaim(InviteRequest) returns (InviteClaimReply) {option (google.api.http)={post:"/api/activity/invite/chest/claim" body:"*"};}
@@ -48,7 +57,7 @@ message GameCompleteRequest {int64 uid=1;string game_id=2 [json_name="gameId"];s
 message GameCompleteReply {bool included=1;}
 message GameStatisticsRequest {optional int64 uid=1;optional string sid=2;string game_id=3 [json_name="gameId"];string window=4;string board=5;string period=6;}
 message GameRtpReply {string game_id=1 [json_name="gameId"];string from=2;string to=3;string updated_at=4 [json_name="updatedAt"];string statistics_since=5 [json_name="statisticsSince"];string bet_amount=6 [json_name="betAmount"];string win_amount=7 [json_name="winAmount"];int64 rounds=8;bool has_data=9 [json_name="hasData"];string percent=10;}
-message GameLeaderboardItem {reserved 12; reserved "experience_account";int32 rank=1;string user_id=2 [json_name="userId"];string nickname=3;int32 avatar_id=4 [json_name="avatarId"];string bet_id=5 [json_name="betId"];string bet_amount=6 [json_name="betAmount"];string win_amount=7 [json_name="winAmount"];string multiplier=8;int64 streak=9;string occurred_at=10 [json_name="occurredAt"];string platform_order_id=11 [json_name="platformOrderId"];}
+message GameLeaderboardItem {reserved 12; reserved "experience_account";int32 rank=1;string user_id=2 [json_name="userId"];string nickname=3;int32 avatar_id=4 [json_name="avatarId"];string bet_id=5 [json_name="betId"];string bet_amount=6 [json_name="betAmount"];string win_amount=7 [json_name="winAmount"];string multiplier=8;reserved 9; reserved "streak";string occurred_at=10 [json_name="occurredAt"];string platform_order_id=11 [json_name="platformOrderId"];}
 message GameLeaderboardReply {repeated GameLeaderboardItem items=1;string updated_at=2 [json_name="updatedAt"];string statistics_since=3 [json_name="statisticsSince"];string timezone=4;}
 
 message InviteRequest {string reward_id=4 [json_name="rewardId"];int32 page=5;optional int64 uid=1;optional string sid=2;string request_id=3 [json_name="requestId"];}
@@ -63,3 +72,20 @@ message InviteFriendsReply {repeated InviteFriend items=1;int32 page=2;bool has_
 
 message GameRankReplayRequest {int64 uid=1;string sid=2;string game_id=3 [json_name="gameId"];string platform_order_id=4 [json_name="platformOrderId"];string board=5;string period=6;}
 message GameRankReplayReply {string replay_url=1 [json_name="replayUrl"];}
+
+message GameFavoritesRequest {optional int64 uid=1;optional string sid=2;}
+message GameFavoriteSetRequest {optional int64 uid=1;optional string sid=2;string game_id=3 [json_name="gameId"];optional bool favorite=4;}
+message GameFavoritesReply {repeated string game_ids=1 [json_name="gameIds"];}
+
+
+// Amounts are integer minor units. Internal player IDs and bet IDs are not exposed.
+message GameRecentWinsRequest {optional int64 uid=1;optional string sid=2;}
+message GameRecentWinReplayRequest {string id=1;}
+message GameRecentWin {
+ string id=1;string game_id=2 [json_name="gameId"];
+ string game_name=3 [json_name="gameName"];string game_name_en=4 [json_name="gameNameEn"];string cover=5;
+ string nickname=6;string win_amount=7 [json_name="winAmount"];string multiplier=8;
+ string occurred_at=9 [json_name="occurredAt"];bool is_self=10 [json_name="isSelf"];
+ string bet_id=11 [json_name="betId"];string bet_amount=12 [json_name="betAmount"];int32 avatar_id=13 [json_name="avatarId"];
+}
+message GameRecentWinsReply {repeated GameRecentWin items=1;string updated_at=2 [json_name="updatedAt"];}

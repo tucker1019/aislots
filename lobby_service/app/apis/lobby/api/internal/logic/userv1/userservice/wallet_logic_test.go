@@ -61,7 +61,7 @@ func TestWalletAuthValidationAndSave(t *testing.T) {
 		t.Fatal(out, e)
 	}
 	list, e := s.WalletAccounts(ctx, r)
-	if e != nil || list.Channels[0].Bound || !list.Channels[1].Bound {
+	if e != nil || list.Channels[0].Bound || !list.Channels[1].Bound || !list.Channels[1].Preferred || list.Channels[0].Preferred {
 		t.Fatal(list, e)
 	}
 	f.err = errors.New("database unavailable")
