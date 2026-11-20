@@ -114,22 +114,21 @@ flowchart LR
 
    ```sh
    docker compose up -d
-   export LOBBY_DATABASE_URL='postgres://lobby:lobby-local-only@127.0.0.1:55433/aislots_lobby?sslmode=disable'
-   export LOBBY_GAME_SERVICE_TOKEN='<本地生成并由两端共用的随机密钥>'
+   source ../.env.local
    make run
    ```
 
 2. 启动机台数据库并按机台 README 设置独立的 `AISLOTS_DATABASE_URL`。在 `slots_service` 中使用相同密钥启动大厅接入模式：
 
    ```sh
-   export LOBBY_GAME_SERVICE_TOKEN='<与大厅相同的随机密钥>'
+   source ../.env.local
    go run ./cmd/slots-server -config configs/server.lobby.json
    ```
 
 3. 用 Cocos 打开 `client/mahjongway`，使网页入口与 `lobby_service/etc/games.json` 中的 URL 一致；默认5180是配置的入口地址，需自行启动对应网页服务。
 4. 在 `slots_lobby` 中运行 `npm ci`、`npm run dev`，打开5175。
 
-共享密钥可用 `openssl rand -hex 32` 生成，通过环境变量注入，不放入前端或版本库。未设置时大厅不能签发游戏票据，机台真实模式拒绝启动。`server.test.json` 是独立测试钱包模式，不能当作大厅统一钱包模式使用。
+首次配置时，在仓库根目录创建 `.env.local`，写入 `export LOBBY_DATABASE_URL='...'`、`export AISLOTS_DATABASE_URL='...'` 和 `export LOBBY_GAME_SERVICE_TOKEN='...'`，并执行 `chmod 600 .env.local`。共享密钥只需用 `openssl rand -hex 32` 生成一次；两端启动或重启都读取同一文件，不要每次重新生成。该文件已被 Git 忽略，不放入前端或版本库。大厅和机台服务可以独立重启；更换共享密钥时才需要协调更新两端。未设置时大厅不能签发游戏票据，机台真实模式拒绝启动。`server.test.json` 是独立测试钱包模式，不能当作大厅统一钱包模式使用。
 
 ## 配置与接口文档
 
