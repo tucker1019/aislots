@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "source": "game_lua/game/service/qd/1026/{1026.lua,room.lua}; game/conf/slotCfg_1026.lua",
+  "baseMeaning": "Lua rates_base 正倍率分布；零奖已移出，由 config.parameters.baseSpinWinProbability 控制",
+  "freeMeaning": "Lua rates_free：自然触发后的一次完整免费阶段结果分布，权重直接代表整段结算倍率",
+  "specialSpins": 15,
+  "retriggerSpins": 3,
+  "purchaseCostMultiplier": 100,
+  "rows": {
+    "base": 459,
+    "free": 1140,
+    "purchaseFree": 1121,
+    "baseTotalWeight": 9999999.999999998,
+    "baseZeroWeight": 7100000,
+    "freeTotalWeight": 10000000.000000061,
+    "purchaseFreeTotalWeight": 9999999.999999974,
+    "basePositive": 459,
+    "basePositiveWeight": 2899999.99999999,
+    "baseOriginal": 460,
+    "baseDouble": 460,
+    "baseDoubleOriginal": 460,
+    "freeDouble": 1141
+  },
+  "purchaseFreeMeaning": "Lua rates_free_buy：100倍投注购买免费后的一次完整免费阶段结果分布",
+  "featureOutcomeShape": "Lua odds records contain the trigger board and 15 free-spin boards; candidate sessions must contain every retriggered turn.",
+  "baseWinProbability": 0.29,
+  "double": {
+    "freeMode": 2,
+    "betMultiplier": 1.25,
+    "baseSpinWinProbability": 0.29,
+    "freeSpinTriggerProbability": 0.0066666,
+    "baseZeroRows": 1
+  }
+}
