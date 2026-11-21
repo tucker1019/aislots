@@ -13,6 +13,7 @@ import { useLobbyGames } from '../features/home/useLobbyGames';
 import { NetworkError } from '../components/feedback/NetworkError';
 import { useGameExpansion } from '../features/game/useGameExpansion';
 import { GameInsights } from '../features/game/GameInsights';
+import { RecommendationRail } from '../features/recommendations/RecommendationRail';
 export function GamePage({onBack,onMinimize,minimized=false,gameId='AG1',dockRef}:{onBack:()=>void;onMinimize?:()=>void;minimized?:boolean;gameId?:GameId;dockRef?:RefObject<HTMLElement | null>}){
  const shellRef=useGameDocking(minimized,dockRef);
  const {opening,closeToCard}=useGameCardTransition(gameId,shellRef);
@@ -72,6 +73,7 @@ export function GamePage({onBack,onMinimize,minimized=false,gameId='AG1',dockRef
     {error&&<NetworkError onRetry={()=>void reopen()} disabled={preparing}/>}
    </div><div className="game-preview-actions"><button type="button" disabled={!allowed||!url||preparing} onClick={()=>changeExpanded(true)}>{t('gamePreview.expand')}</button></div></div>
    {allowed&&<GameInsights part="ranking" gameId={gameId}/>}
+   {allowed&&<RecommendationRail scene="game_play" gameId={gameId} onComingSoon={() => undefined}/>}
    </div>
   </div>
  </section>;

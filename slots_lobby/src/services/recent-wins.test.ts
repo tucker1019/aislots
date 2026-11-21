@@ -1,6 +1,6 @@
 import {expect,it} from 'vitest';
 import {parseRecentWins,recentWinMoney} from './recent-wins';
-const row={id:'1',betId:'ORDER1',betAmount:'2500000',avatarId:3,gameId:'AG2',gameName:'Game',gameNameEn:'Game',cover:'/assets/test.png',nickname:'ra***8',winAmount:'100000000',multiplier:'50',occurredAt:'2026-11-21T10:00:00Z',isSelf:false};
+const row={id:'1',betId:'ORDER1',betAmount:'2500000',avatarId:3,gameId:'AG2',gameName:'Game',gameNameEn:'Game',cover:'/assets/test.png',nickname:'rayan',uid:'123456789',anonymous:false,winAmount:'100000000',multiplier:'50',occurredAt:'2026-11-21T10:00:00Z',isSelf:false};
 it('validates unique server records, safe covers and the 50-record limit',()=>{
  const data={items:[row],updatedAt:row.occurredAt};
  expect(parseRecentWins(data).items[0]).toEqual(row);

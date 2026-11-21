@@ -40,6 +40,13 @@ func (m *ExperienceModel) CreateScheduled(ctx context.Context, now time.Time, in
 		if err := tx.Create(&u).Error; err != nil {
 			return err
 		}
+		anonymous, err := rand.Int(rand.Reader, big.NewInt(100))
+		if err != nil {
+			return err
+		}
+		if err := tx.Model(&LobbyUser{}).Where("uid=?", u.UID).Update("leaderboard_anonymous", anonymous.Int64() < 5).Error; err != nil {
+			return err
+		}
 		if err := tx.Create(&LobbyWalletBalance{UID: u.UID, Coins: initial}).Error; err != nil {
 			return err
 		}

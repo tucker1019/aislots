@@ -9,7 +9,7 @@ import {useSessionStore} from '../../stores/session';
 import {useAuthStore} from '../../stores/auth';
 vi.mock('../../services/lobby-games',()=>({fetchLobbyGames:vi.fn().mockResolvedValue([])}));
 vi.mock('../../services/recent-wins',async importOriginal=>({...await importOriginal<typeof RecentWinsService>(),fetchRecentWins:vi.fn(),fetchRecentWinReplay:vi.fn()}));
-const item={id:'1',betId:'ORDER1',betAmount:'2500000',avatarId:3,gameId:'AG1',gameName:'Game',gameNameEn:'Game',cover:'/assets/g.png',nickname:'ra***8',winAmount:'125000000',multiplier:'50',occurredAt:'2026-11-21T10:00:00Z',isSelf:false};
+const item={id:'1',betId:'ORDER1',betAmount:'2500000',avatarId:3,gameId:'AG1',gameName:'Game',gameNameEn:'Game',cover:'/assets/g.png',nickname:'Raya Player',uid:'123456789',anonymous:false,winAmount:'125000000',multiplier:'50',occurredAt:'2026-11-21T10:00:00Z',isSelf:false};
 const data={items:[item],updatedAt:item.occurredAt};
 let client:QueryClient;
 beforeEach(()=>{window.history.replaceState(null,'','/');useAuthStore.getState().close();vi.clearAllMocks();useSessionStore.setState({session:null});client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:0}}});});
@@ -25,9 +25,10 @@ it('opens a centered bet detail from the entire card and requests replay only in
  let done:(url:string)=>void=()=>{};
  vi.mocked(fetchRecentWinReplay).mockImplementation(()=>new Promise(resolve=>{done=resolve;}));
  setup();
- const card=(await screen.findAllByRole('button',{name:'查看 你 的投注詳情'}))[0];
+ const card=(await screen.findAllByRole('button',{name:'查看 Raya Player 的投注詳情'}))[0];
  expect(card).toHaveClass('recent-win-self');
  expect(within(card).getByText('WIN Rp1250.0 k')).toBeInTheDocument();
+ expect(within(card).getByText('UID 123456789')).toBeInTheDocument();
  expect(within(card).getByText('50×')).toBeInTheDocument();
  expect(within(card).getByLabelText('平台已驗證')).toBeInTheDocument();
  await userEvent.click(within(card).getByRole('img',{name:'Game'}));
@@ -41,6 +42,15 @@ it('opens a centered bet detail from the entire card and requests replay only in
  await userEvent.click(button);expect(fetchRecentWinReplay).toHaveBeenCalledOnce();
  act(()=>done('https://game.example/?replay=bet&share='+'s'.repeat(52)));
  await waitFor(()=>expect(document.querySelector('iframe')).toHaveAttribute('src',expect.stringContaining('replay=bet')));
+});
+it('shows anonymous identity with six asterisks',async()=>{
+ vi.mocked(fetchRecentWins).mockResolvedValue({...data,items:[{...item,nickname:'匿名',uid:'******',anonymous:true}]});setup();
+ const card=(await screen.findAllByRole('button',{name:'查看 匿名 的投注詳情'}))[0];
+ expect(within(card).getByText('匿名')).toBeInTheDocument();
+ expect(within(card).getByText('UID ******')).toBeInTheDocument();
+ await userEvent.click(card);
+ const modal=await screen.findByRole('dialog',{name:'投注詳情'});
+ expect(within(modal).getByText('UID ******')).toBeInTheDocument();
 });
 it('requests on entering home, refreshes once per minute, stops when inactive and requests on return',async()=>{
  vi.useFakeTimers();
@@ -100,7 +110,7 @@ it('opens the clicked win game rather than replay or a fixed default game',async
  useSessionStore.setState({session:{uid:7,sid:'a'.repeat(52),expiresAt:'2030-01-01T00:00:00Z'}});
  vi.mocked(fetchRecentWins).mockResolvedValue({...data,items:[{...item,gameId:'NEW_GAME',gameName:'新遊戲',gameNameEn:'New Game'}]});
  setup();
- await userEvent.click((await screen.findAllByRole('button',{name:'查看 ra***8 的投注詳情'}))[0]);
+ await userEvent.click((await screen.findAllByRole('button',{name:'查看 Raya Player 的投注詳情'}))[0]);
  expect(window.location.pathname).toBe('/');
  await userEvent.click(await screen.findByRole('button',{name:/立即遊玩/}));
  expect(window.location.pathname).toBe('/game/NEW_GAME');
@@ -109,7 +119,7 @@ it('opens the clicked win game rather than replay or a fixed default game',async
 it('uses the existing login flow for a guest clicking a game cover',async()=>{
  vi.mocked(fetchRecentWins).mockResolvedValue(data);
  setup();
- await userEvent.click((await screen.findAllByRole('button',{name:'查看 ra***8 的投注詳情'}))[0]);
+ await userEvent.click((await screen.findAllByRole('button',{name:'查看 Raya Player 的投注詳情'}))[0]);
  expect(useAuthStore.getState().open).toBe(false);
  await userEvent.click(await screen.findByRole('button',{name:/立即遊玩/}));
  expect(window.location.pathname).toBe('/');

@@ -1,9 +1,12 @@
 import {useCallback,useEffect,useReducer,useState} from 'react';
 import {useQuery,useQueryClient} from '@tanstack/react-query';
 import {getLocale,t} from '../../i18n';
+import {navigateLobby} from '../../app/useLobbyRoute';
 import {fetchRecentWins,recentWinMoney} from '../../services/recent-wins';
 import type {RecentWin} from '../../services/recent-wins';
 import {useSessionStore} from '../../stores/session';
+import {ClaimBadge} from '../rewards/ClaimBadge';
+import {useClaimIndicators} from '../rewards/useClaimIndicators';
 import {coverPresentation} from './coverPresentation';
 import {emptyWinQueue,recentWinsQueue} from './recentWinsQueue';
 import {useWinRail} from './useWinRail';
@@ -26,6 +29,7 @@ export function RecentWins({active=true}:{active?:boolean}) {
 }
 function RecentWinsFeed({active,uid}:{active:boolean;uid?:number}) {
  const queryClient=useQueryClient();
+ const rewards=useClaimIndicators();
  const [queue,dispatch]=useReducer(recentWinsQueue,emptyWinQueue);
  const [selected,setSelected]=useState<RecentWin>();
  const query=useQuery({queryKey:['lobby','recent-wins',uid??'guest'],queryFn:({signal})=>fetchRecentWins(signal),
@@ -37,18 +41,18 @@ function RecentWinsFeed({active,uid}:{active:boolean;uid?:number}) {
  const rail=useWinRail(active&&!selected,queue.visible.length,onNext);
  if(query.isSuccess&&!queue.visible.length&&!query.data?.items.length)return null;
  return <section className="recent-wins" aria-label={t('recentWins.title')}>
-  <div className="recent-wins-heading"><h2><Shield/>{t('recentWins.title')}</h2><span className="recent-wins-live"><i/>{t('recentWins.live')}</span></div>
+  <div className="recent-wins-heading"><h2><Shield/>{t('recentWins.title')}</h2><div className="recent-wins-heading-actions"><button type="button" className="recent-wins-leaderboard claim-badge-anchor" aria-label={t('platformLeaderboard.open')} onClick={()=>navigateLobby('platform-leaderboard')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v3c0 3-2 5-5 5S7 10 7 7V4Zm5 8v4m-4 4h8M5 6H3v1c0 3 2 5 5 5m11-6h2v1c0 3-2 5-5 5"/></svg><ClaimBadge active={rewards.active('leaderboard')}/></button></div></div>
   {!queue.visible.length&&(!query.isSuccess||query.isFetching)&&<div className="recent-wins-skeleton" role="status" aria-label={t('copy.loading')}>
    {Array.from({length:4},(_,i)=><div className="recent-win-skeleton" key={i}><i/><span/><b/></div>)}
   </div>}
   <div className="recent-wins-rail" ref={rail} aria-label={t('recentWins.title')}>
-   {queue.visible.map((row,index)=><button type="button" key={queue.cycle+index} className={'recent-win'+(row.isSelf?' recent-win-self':'')}
-    aria-label={t('recentWins.details',{name:row.isSelf?t('recentWins.you'):row.nickname})} onClick={()=>setSelected(row)}>
+   {queue.visible.map((row,index)=><button type="button" key={queue.cycle+index} className="recent-win"
+    aria-label={t('recentWins.details',{name:row.anonymous?t('recentWins.anonymous'):row.nickname})} onClick={()=>setSelected(row)}>
     <span className="recent-win-cover"><Cover row={row}/>
      <svg className="recent-win-play-overlay" viewBox="0 0 64 64" fill="none" aria-hidden="true"><circle cx="32" cy="32" r="27" fill="black" fillOpacity=".24" stroke="white" strokeWidth="2"/><path d="m25 18 22 14-22 14Z" fill="white"/></svg>
      <span className="recent-win-multiplier">{row.multiplier.replace(/(\.\d*?[1-9])0+$|\.0+$/, '$1')}×</span>
     </span>
-    <span className="recent-win-player"><span>{row.isSelf?t('recentWins.you'):row.nickname}</span><span className="recent-win-verified" role="img" aria-label={t('recentWins.verified')} title={t('recentWins.verified')}><Shield/></span></span>
+    <span className="recent-win-player"><span className="recent-win-identity"><span className={`recent-win-nickname${row.isSelf&&!row.anonymous?' recent-win-nickname-self':''}`}>{row.anonymous?t('recentWins.anonymous'):row.isSelf?t('platformLeaderboard.me'):row.nickname}</span><small className="recent-win-uid">UID {row.uid}</small></span><span className="recent-win-verified" role="img" aria-label={t('recentWins.verified')} title={t('recentWins.verified')}><Shield/></span></span>
     <span className="recent-win-result"><strong title={'WIN '+recentWinMoney(row.winAmount)}>WIN {recentWinMoney(row.winAmount)}</strong></span>
    </button>)}
   </div>

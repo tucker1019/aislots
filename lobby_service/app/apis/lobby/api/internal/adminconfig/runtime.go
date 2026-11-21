@@ -23,7 +23,7 @@ func Seed(ctx context.Context, db *gorm.DB, c config.Config) error {
 	for _, r := range existing {
 		found[r.Section] = true
 	}
-	values := map[string]any{"content": c.Content, "recharge": c.RechargeTiers, "withdrawal": c.WithdrawalTiers, "checkin": c.Checkin, "returns": c.Returns, "turnover": c.Turnover, "agent": c.Agent, "vip": c.VIP, "invite": c.Invite, "newbie-recharge": c.Newbie, "games": c.Game, "loss-return": c.Returns.LossConfig()}
+	values := map[string]any{"content": c.Content, "recharge": c.RechargeTiers, "withdrawal": c.WithdrawalTiers, "checkin": c.Checkin, "returns": c.Returns, "turnover": c.Turnover, "agent": c.Agent, "vip": c.VIP, "invite": c.Invite, "newbie-recharge": c.Newbie, "games": c.Game, "loss-return": c.Returns.LossConfig(), "leaderboard": c.Leaderboard}
 	// Migrate the loss return rate from the published legacy document, never from deployment defaults.
 	if found["returns"] && !found["loss-return"] {
 		for _, row := range existing {

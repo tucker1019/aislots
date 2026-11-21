@@ -2,12 +2,10 @@ import {ShareSheet} from '../../components/share/ShareSheet';
 import { gameDisplay, type GameId } from '../../app/games';
 import {useLobbyGames} from '../home/useLobbyGames';
 import {useState} from 'react';
-import {Drawer} from 'antd';
-import {overlayContainer} from '../../app/designViewport';
 import {t} from '../../i18n';
-import {statisticsMoney,type LeaderboardRow,type RankBoard,type RankPeriod} from '../../services/game-statistics';
-import {RankOrderNumber} from './RankOrderNumber';
+import {type LeaderboardRow,type RankBoard,type RankPeriod} from '../../services/game-statistics';
 import {RankReplay} from './RankReplay';
+import {WinDetailModal} from './WinDetailModal';
 
 export function RankBetSheet({row,board,period,onClose,gameId='AG1'}:{
  row:LeaderboardRow; board:RankBoard; period:RankPeriod; onClose:()=>void; gameId?:GameId;
@@ -18,38 +16,7 @@ export function RankBetSheet({row,board,period,onClose,gameId='AG1'}:{
  const [shareUrl,setShareUrl]=useState<string>();
  const [sharing,setSharing]=useState(false);
  const [shareTarget,setShareTarget]=useState<HTMLSpanElement|null>(null);
- return <><Drawer open={open} placement="bottom" title={t('gamePreview.betSlip')} onClose={()=>setOpen(false)}
-  afterOpenChange={visible=>{if(!visible){if(shareUrl)setSharing(true);else onClose();}}}
-  getContainer={overlayContainer} rootStyle={{position:'absolute'}} className="game-rank-sheet"
-  size="auto" zIndex={950} extra={<span className="game-rank-header-share" ref={setShareTarget}/>} closable={{placement:'start'}}>
-  <div className="game-rank-sheet-summary">
-   <span>{t('gamePreview.payout')}</span>
-   <strong>{statisticsMoney(row.winAmount)}</strong>
-   <dl>
-    <div><dt>{t('copy.betAmount')}</dt><dd>{statisticsMoney(row.betAmount)}</dd></div>
-    <div><dt>{t('gamePreview.multiplier')}</dt><dd>{row.multiplier}×</dd></div>
-   </dl>
-  </div>
-  <div className="game-rank-sheet-info">
-   <div className="game-rank-sheet-player">
-    <img src={`/assets/profile/avatar/${row.avatarId}.png`} alt=""/>
-    <div><strong>{row.nickname}</strong><time dateTime={row.occurredAt}>{new Date(row.occurredAt).toLocaleString()}</time></div>
-   </div>
-   {row.platformOrderId
-    ? <RankReplay gameId={gameId} betId={row.betId} orderId={row.platformOrderId} board={board} period={period} shareTarget={shareTarget} onShare={url=>{setShareUrl(url);setOpen(false);}}/>
-    : <RankOrderNumber betId={row.betId}/>}
-   <div className="game-rank-sheet-game">
-    <img src={game.cover} alt=""/>
-    <div><strong>{game.title}</strong><span>{game.provider}</span></div>
-    <button type="button" className="game-rank-sheet-play" onClick={()=>setOpen(false)}>
-     {t('gamePreview.playNow')}
-     <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none">
-      <path d="m4 2 4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-     </svg>
-    </button>
-   </div>
-  </div>
- </Drawer>
+ return <><WinDetailModal open={open} onClose={()=>setOpen(false)} data={{betId:row.betId,betAmount:row.betAmount,winAmount:row.winAmount,multiplier:row.multiplier,avatarId:row.avatarId,nickname:row.nickname,uid:row.userId,anonymous:row.anonymous===true,occurredAt:row.occurredAt,gameName:game.title,gameNameEn:game.title,cover:game.cover,provider:game.provider}} titleExtra={<span className="game-rank-header-share" ref={setShareTarget}/>} replay={row.platformOrderId?<RankReplay gameId={gameId} betId={row.betId} orderId={row.platformOrderId} board={board} period={period} shareTarget={shareTarget} hideOrder onShare={url=>{setShareUrl(url);setSharing(true);setOpen(false);}}/>:<span/>} playAction={<button type="button" className="game-rank-sheet-play" onClick={()=>setOpen(false)}>{t('gamePreview.playNow')} <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12"><path d="m4 2 4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></button>}/>
  <ShareSheet content={sharing&&shareUrl?{url:shareUrl,kind:'replay'}:null} onClose={onClose}/>
  </>;
 }

@@ -6,7 +6,7 @@ import {t} from '../i18n';
 
 export interface RecentWin {
  id:string; betId:string; betAmount:string; avatarId:number; gameId:string; gameName:string; gameNameEn:string; cover:string;
- nickname:string; winAmount:string; multiplier:string; occurredAt:string; isSelf:boolean;
+ nickname:string; winAmount:string; multiplier:string; occurredAt:string; isSelf:boolean; uid:string; anonymous:boolean;
 }
 export interface RecentWins {items:RecentWin[];updatedAt:string}
 const instant=(value:unknown):value is string=>typeof value==='string'&&Number.isFinite(Date.parse(value));
@@ -22,10 +22,10 @@ export function parseRecentWins(data:unknown):RecentWins {
   if(!isRecord(row)||typeof row.id!=='string'||! /^[1-9]\d*$/.test(row.id)||ids.has(row.id)||
    typeof row.gameId!=='string'||!isGameId(row.gameId)||typeof row.gameName!=='string'||typeof row.gameNameEn!=='string'||!validCover(row.cover)||
    typeof row.betId!=='string'||!row.betId||typeof row.betAmount!=='string'||! /^\d+$/.test(row.betAmount)||!Number.isInteger(row.avatarId)||Number(row.avatarId)<1||Number(row.avatarId)>15||
-   typeof row.nickname!=='string'||typeof row.winAmount!=='string'||! /^\d+$/.test(row.winAmount)||typeof row.multiplier!=='string'||! /^\d+(\.\d+)?$/.test(row.multiplier)||
+   typeof row.nickname!=='string'||typeof row.uid!=='string'||typeof row.anonymous!=='boolean'||typeof row.winAmount!=='string'||! /^\d+$/.test(row.winAmount)||typeof row.multiplier!=='string'||! /^\d+(\.\d+)?$/.test(row.multiplier)||
    !instant(row.occurredAt)||typeof row.isSelf!=='boolean')throw new Error(t('statistics.invalid'));
   ids.add(row.id);
-  return {id:row.id,betId:row.betId,betAmount:row.betAmount,avatarId:Number(row.avatarId),gameId:row.gameId,gameName:row.gameName,gameNameEn:row.gameNameEn,cover:row.cover,nickname:row.nickname,winAmount:row.winAmount,multiplier:row.multiplier,occurredAt:row.occurredAt,isSelf:row.isSelf};
+  return {id:row.id,betId:row.betId,betAmount:row.betAmount,avatarId:Number(row.avatarId),gameId:row.gameId,gameName:row.gameName,gameNameEn:row.gameNameEn,cover:row.cover,nickname:row.nickname,winAmount:row.winAmount,multiplier:row.multiplier,occurredAt:row.occurredAt,isSelf:row.isSelf,uid:row.uid,anonymous:row.anonymous};
  });
  return {items,updatedAt:data.updatedAt};
 }
@@ -50,4 +50,10 @@ export function recentWinMoney(cents:string) {
  if(whole<1000n)return 'Rp'+whole;
  const tenths=whole/100n;
  return 'Rp'+tenths/10n+'.'+tenths%10n+' k';
+}
+export function leaderboardRewardMoney(cents:string) {
+ const whole=BigInt(cents)/100n;
+ if(whole<1000n)return 'Rp'+whole;
+ const thousands=whole/1000n;
+ return 'Rp'+thousands+'k';
 }

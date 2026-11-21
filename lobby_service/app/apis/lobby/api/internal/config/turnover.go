@@ -11,7 +11,7 @@ import (
 )
 
 // Explicit credit registry: adding a new credit source requires a configured multiplier.
-var TurnoverSources = []coinsource.Source{coinsource.SourceExperienceFunding, coinsource.SourceRechargeCredit, coinsource.SourceRechargeBonus, coinsource.SourceCheckinReward, coinsource.SourceRebateDaily, coinsource.SourceRebateWeekly, coinsource.SourceRebateMonthly, coinsource.SourceLoserReturn, coinsource.SourceVIPUpgrade, coinsource.SourceVIPWeekly, coinsource.SourceVIPMonthly, coinsource.SourceNewbieRecharge, coinsource.SourceInviteReward, coinsource.SourceAgentCommission, coinsource.SourceWithdrawalBonus, coinsource.SourceGameWin, coinsource.SourceWithdrawalRefund}
+var TurnoverSources = []coinsource.Source{coinsource.SourceExperienceFunding, coinsource.SourceRechargeCredit, coinsource.SourceRechargeBonus, coinsource.SourceCheckinReward, coinsource.SourceRebateDaily, coinsource.SourceRebateWeekly, coinsource.SourceRebateMonthly, coinsource.SourceLoserReturn, coinsource.SourceVIPUpgrade, coinsource.SourceVIPWeekly, coinsource.SourceVIPMonthly, coinsource.SourceNewbieRecharge, coinsource.SourceInviteReward, coinsource.SourceAgentCommission, coinsource.SourceWithdrawalBonus, coinsource.SourceGameWin, coinsource.SourceWithdrawalRefund, coinsource.SourceLeaderboardReward}
 
 type TurnoverConfig struct {
 	Version     string           `json:"version"`

@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"net/url"
+	"strconv"
 	"time"
 
 	"apps/app/apis/lobby/api/internal/config"
@@ -20,15 +21,17 @@ import (
 const launchTicketLifetime = 5 * time.Minute
 
 type Logic struct {
-	recentWins   *recentwins.Feed
-	favorites    repository.FavoriteStore
-	invite       inviteStore
-	inviteConfig config.InviteConfig
-	location     *time.Location
-	stats        *statisticsCache
-	users        repository.UserStore
-	store        repository.GameStore
-	config       config.GameConfig
+	recentWins        *recentwins.Feed
+	favorites         repository.FavoriteStore
+	recommendations   *model.RecommendationModel
+	invite            inviteStore
+	inviteConfig      config.InviteConfig
+	leaderboardConfig config.LeaderboardConfig
+	location          *time.Location
+	stats             *statisticsCache
+	users             repository.UserStore
+	store             repository.GameStore
+	config            config.GameConfig
 }
 
 func New(s *svc.ServiceContext) *Logic {
@@ -36,7 +39,61 @@ func New(s *svc.ServiceContext) *Logic {
 	if s.Repo.Invite != nil {
 		invites = s.Repo.Invite
 	}
-	return &Logic{recentWins: s.RecentWins, favorites: s.Repo.Favorites, invite: invites, inviteConfig: s.Config.Invite, store: s.Repo.Game, config: s.Config.Game, users: s.Repo.Users, stats: newStatisticsCache(), location: s.Config.Checkin.Location()}
+	return &Logic{recentWins: s.RecentWins, favorites: s.Repo.Favorites, recommendations: s.Repo.Recommendations, invite: invites, inviteConfig: s.Config.Invite, leaderboardConfig: s.Config.Leaderboard, store: s.Repo.Game, config: s.Config.Game, users: s.Repo.Users, stats: newStatisticsCache(), location: s.Config.Checkin.Location()}
+}
+
+func (l *Logic) GameRecommendations(ctx context.Context, r *pb.GameRecommendationsRequest) (*pb.GameRecommendationsReply, error) {
+	if r.GetUid() <= 0 || len(r.GetSid()) != 52 {
+		return nil, xerr.ErrSession
+	}
+	if e := l.users.Check(ctx, r.GetUid(), user.Hash(r.GetSid()), time.Now().UTC()); e != nil {
+		return nil, xerr.Public(e)
+	}
+	if r.Scene != "favorites" && r.Scene != "game_play" {
+		return nil, xerr.ErrInvalid
+	}
+	source := "*"
+	if r.Scene == "game_play" {
+		if r.GameId == "" {
+			return nil, xerr.ErrInvalid
+		}
+		if _, ok := l.config.Games[r.GameId]; !ok {
+			return nil, xerr.ErrInvalid
+		}
+		source = r.GameId
+	}
+	if l.recommendations == nil {
+		return &pb.GameRecommendationsReply{Items: []*pb.GameRecommendation{}}, nil
+	}
+	rows, e := l.recommendations.List(ctx, r.GetUid(), r.Scene, source)
+	if e != nil {
+		return nil, e
+	}
+	excluded := map[string]struct{}{}
+	if l.favorites != nil {
+		favoriteIDs, favoriteErr := l.favorites.List(ctx, r.GetUid())
+		if favoriteErr != nil {
+			return nil, favoriteErr
+		}
+		for _, id := range favoriteIDs {
+			excluded[id] = struct{}{}
+		}
+	}
+	out := &pb.GameRecommendationsReply{Items: make([]*pb.GameRecommendation, 0, len(rows)), UpdatedAt: time.Now().UTC().Format(time.RFC3339)}
+	for _, row := range rows {
+		if _, alreadySelected := excluded[row.GameID]; alreadySelected {
+			continue
+		}
+		entry, ok := l.config.Games[row.GameID]
+		if !ok || !entry.Enabled || !entry.IsVisible() {
+			continue
+		}
+		out.Items = append(out.Items, &pb.GameRecommendation{GameId: row.GameID, Score: strconv.FormatFloat(row.Score, 'f', 4, 64), SupportUsers: row.SupportUsers})
+		if len(out.Items) == 12 {
+			break
+		}
+	}
+	return out, nil
 }
 
 func (l *Logic) GameLaunch(ctx context.Context, r *pb.GameLaunchRequest) (*pb.GameLaunchReply, error) {

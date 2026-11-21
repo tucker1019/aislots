@@ -19,7 +19,7 @@ export function BottomNavigation({ view, onNavigate }: { view: BottomView; onNav
     {items().map(item => <button type="button" key={item.view}
       aria-label={item.label} aria-current={view === item.view ? 'page' : undefined} onClick={() => onNavigate(item.view)}>
       <span className="bottom-navigation-icon claim-badge-anchor" aria-hidden="true"><Icon name={item.icon} size={23} />
-        <ClaimBadge active={item.view==='earn'?rewards.earn:item.view==='my'?rewards.my:false}/>
+        <ClaimBadge active={item.view==='home'?rewards.home:item.view==='earn'?rewards.earn:item.view==='my'?rewards.my:false}/>
         {item.view === 'deposit' && bonusLabel && <span className="header-deposit-bonus bottom-deposit-bonus">{bonusLabel}</span>}
       </span><span className="bottom-navigation-label">{item.label}</span>
     </button>)}

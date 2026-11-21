@@ -15,7 +15,7 @@ interface TurnoverItem {
 const sourceLabels = {
  rch_001:'copy.deposit', rch_002:'withdrawal.turnoverDepositReward',
  act_001:'copy.checkIn', act_002:'copy.dailyRebate', act_003:'copy.weeklyRebate',
- act_004:'copy.monthlyRebate', act_005:'loss.title', vip_001:'copy.vipBenefits', vip_002:'copy.vipBenefits', vip_003:'copy.vipBenefits', act_007:'copy.inviteFriends',
+ act_004:'copy.monthlyRebate', act_005:'loss.title', vip_001:'copy.vipBenefits', vip_002:'copy.vipBenefits', vip_003:'copy.vipBenefits', act_007:'copy.inviteFriends', act_008:'server.leaderboardReward',
 } as const;
 
 function isMoney(value:unknown):value is number {

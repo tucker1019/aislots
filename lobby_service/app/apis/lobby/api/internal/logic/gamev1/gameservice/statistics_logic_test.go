@@ -15,6 +15,7 @@ import (
 
 type statsFake struct {
 	fake
+	rows    []model.RankView
 	reads   int
 	err     error
 	minutes int
@@ -32,7 +33,11 @@ func (f *statsFake) ReadRTP(_ context.Context, _ string, minutes int, now time.T
 
 func (f *statsFake) ReadLeaderboard(context.Context, string, string, string, time.Time) ([]model.RankView, time.Time, error) {
 	f.reads++
-	return []model.RankView{{PlatformOrderID: "123", UID: 7, Nickname: "Private Account", AvatarID: 2, BetID: "bet", BetAmount: "100", WinAmount: "200", Multiplier: "2.00", EndedAt: time.Now()}}, time.Now(), f.err
+	rows := f.rows
+	if rows == nil {
+		rows = []model.RankView{{PlatformOrderID: "123", UID: 7, Nickname: "Public Account", AvatarID: 2, BetID: "bet", BetAmount: "100", WinAmount: "200", Multiplier: "2.00", EndedAt: time.Now()}}
+	}
+	return rows, time.Now(), f.err
 }
 
 func TestStatisticsAPIAuthCachePrivacyAndValidation(t *testing.T) {
@@ -52,8 +57,13 @@ func TestStatisticsAPIAuthCachePrivacyAndValidation(t *testing.T) {
 		t.Fatal("cache mutation", out, e)
 	}
 	rank, e := l.GameLeaderboard(ctx, r)
-	if e != nil || rank.Items[0].Nickname != "Private Account" || rank.Items[0].UserId == "7" || len(rank.Items[0].UserId) != 20 {
+	if e != nil || len(rank.Items) != 1 || rank.Items[0].Nickname != "Public Account" || rank.Items[0].UserId != "7" || rank.Items[0].Anonymous {
 		t.Fatal(rank, e)
+	}
+	anonymousLogic := &Logic{store: &statsFake{rows: []model.RankView{{PlatformOrderID: "124", UID: 8, Nickname: "Private Account", AvatarID: 2, BetID: "private-bet", BetAmount: "100", WinAmount: "200", Multiplier: "2.00", EndedAt: time.Now(), Anonymous: true}}}, users: recordUsers{}, config: l.config, stats: newStatisticsCache(), location: time.UTC}
+	anonymousRank, e := anonymousLogic.GameLeaderboard(ctx, r)
+	if e != nil || len(anonymousRank.Items) != 1 || anonymousRank.Items[0].Nickname != "匿名" || anonymousRank.Items[0].UserId != "******" || !anonymousRank.Items[0].Anonymous {
+		t.Fatal("anonymous leaderboard identity leaked or malformed", anonymousRank, e)
 	}
 	if _, e = l.GameLeaderboard(ctx, r); e != nil {
 		t.Fatal(e)

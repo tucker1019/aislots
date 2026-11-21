@@ -1,7 +1,7 @@
 import {expect,it} from 'vitest';
 import type {RecentWin} from '../../services/recent-wins';
 import {emptyWinQueue,recentWinsQueue} from './recentWinsQueue';
-const row=(id:string):RecentWin=>({id,betId:'ORDER1',betAmount:'2500000',avatarId:3,gameId:'AG1',gameName:'G',gameNameEn:'G',cover:'/assets/g.png',nickname:'a***',winAmount:'10000',multiplier:'50',occurredAt:'2026-11-21T00:00:00Z',isSelf:false});
+const row=(id:string):RecentWin=>({id,betId:'ORDER1',betAmount:'2500000',avatarId:3,gameId:'AG1',gameName:'G',gameNameEn:'G',cover:'/assets/g.png',nickname:'Anita',uid:'123456789',anonymous:false,winAmount:'10000',multiplier:'50',occurredAt:'2026-11-21T00:00:00Z',isSelf:false});
 const batch=(prefix:string,count=50)=>Array.from({length:count},(_,i)=>row(prefix+(i+1)));
 it('continues 49,50,1,2 then 3,4 rather than resetting the whole row',()=>{
  let s=recentWinsQueue(emptyWinQueue,{type:'received',items:batch('a')});

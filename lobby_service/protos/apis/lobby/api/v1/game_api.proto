@@ -7,11 +7,16 @@ service GameService {
  rpc GameRecentWins(GameRecentWinsRequest) returns (GameRecentWinsReply) {option (google.api.http)={post:"/api/game/recent-wins" body:"*"};}
  // @Desc: Replay an eligible recent win using server-owned order identity.
  rpc GameRecentWinReplay(GameRecentWinReplayRequest) returns (GameRankReplayReply) {option (google.api.http)={post:"/api/game/recent-wins/replay" body:"*"};}
+ rpc PlatformLeaderboard(PlatformLeaderboardRequest) returns (PlatformLeaderboardReply) {option (google.api.http)={post:"/api/platform/leaderboard" body:"*"};}
+ rpc PlatformLeaderboardParticipation(PlatformLeaderboardParticipationRequest) returns (PlatformLeaderboardParticipationReply) {option (google.api.http)={post:"/api/platform/leaderboard/participation" body:"*"};}
+ rpc PlatformLeaderboardClaim(PlatformLeaderboardClaimRequest) returns (PlatformLeaderboardClaimReply) {option (google.api.http)={post:"/api/platform/leaderboard/claim" body:"*"};}
 
  // @Desc: Read the authenticated player's saved games.
  rpc GameFavorites(GameFavoritesRequest) returns (GameFavoritesReply) {option (google.api.http)={post:"/api/game/favorites" body:"*"};}
  // @Desc: Set an explicit favorite state; repeated requests are idempotent.
  rpc GameFavoriteSet(GameFavoriteSetRequest) returns (GameFavoritesReply) {option (google.api.http)={post:"/api/game/favorites/set" body:"*"};}
+ // @Desc: Read precomputed game recommendations for a lobby surface.
+ rpc GameRecommendations(GameRecommendationsRequest) returns (GameRecommendationsReply) {option (google.api.http)={post:"/api/game/recommendations" body:"*"};}
  rpc GameRankReplay(GameRankReplayRequest) returns (GameRankReplayReply) {option (google.api.http)={post:"/api/game/rank-replay" body:"*"};}
  rpc InviteChests(InviteRequest) returns (InviteChestsReply) {option (google.api.http)={post:"/api/activity/invite/chests" body:"*"};}
  rpc InviteChestClaim(InviteRequest) returns (InviteClaimReply) {option (google.api.http)={post:"/api/activity/invite/chest/claim" body:"*"};}
@@ -57,7 +62,7 @@ message GameCompleteRequest {int64 uid=1;string game_id=2 [json_name="gameId"];s
 message GameCompleteReply {bool included=1;}
 message GameStatisticsRequest {optional int64 uid=1;optional string sid=2;string game_id=3 [json_name="gameId"];string window=4;string board=5;string period=6;}
 message GameRtpReply {string game_id=1 [json_name="gameId"];string from=2;string to=3;string updated_at=4 [json_name="updatedAt"];string statistics_since=5 [json_name="statisticsSince"];string bet_amount=6 [json_name="betAmount"];string win_amount=7 [json_name="winAmount"];int64 rounds=8;bool has_data=9 [json_name="hasData"];string percent=10;}
-message GameLeaderboardItem {reserved 12; reserved "experience_account";int32 rank=1;string user_id=2 [json_name="userId"];string nickname=3;int32 avatar_id=4 [json_name="avatarId"];string bet_id=5 [json_name="betId"];string bet_amount=6 [json_name="betAmount"];string win_amount=7 [json_name="winAmount"];string multiplier=8;reserved 9; reserved "streak";string occurred_at=10 [json_name="occurredAt"];string platform_order_id=11 [json_name="platformOrderId"];}
+message GameLeaderboardItem {reserved 12; reserved "experience_account";int32 rank=1;string user_id=2 [json_name="userId"];string nickname=3;int32 avatar_id=4 [json_name="avatarId"];string bet_id=5 [json_name="betId"];string bet_amount=6 [json_name="betAmount"];string win_amount=7 [json_name="winAmount"];string multiplier=8;reserved 9; reserved "streak";string occurred_at=10 [json_name="occurredAt"];string platform_order_id=11 [json_name="platformOrderId"];bool anonymous=13;}
 message GameLeaderboardReply {repeated GameLeaderboardItem items=1;string updated_at=2 [json_name="updatedAt"];string statistics_since=3 [json_name="statisticsSince"];string timezone=4;}
 
 message InviteRequest {string reward_id=4 [json_name="rewardId"];int32 page=5;optional int64 uid=1;optional string sid=2;string request_id=3 [json_name="requestId"];}
@@ -77,6 +82,22 @@ message GameFavoritesRequest {optional int64 uid=1;optional string sid=2;}
 message GameFavoriteSetRequest {optional int64 uid=1;optional string sid=2;string game_id=3 [json_name="gameId"];optional bool favorite=4;}
 message GameFavoritesReply {repeated string game_ids=1 [json_name="gameIds"];}
 
+message GameRecommendationsRequest {
+ optional int64 uid=1;
+ optional string sid=2;
+ string scene=3;
+ string game_id=4 [json_name="gameId"];
+}
+message GameRecommendation {
+ string game_id=1 [json_name="gameId"];
+ string score=2;
+ int64 support_users=3 [json_name="supportUsers"];
+}
+message GameRecommendationsReply {
+ repeated GameRecommendation items=1;
+ string updated_at=2 [json_name="updatedAt"];
+}
+
 
 // Amounts are integer minor units. Internal player IDs and bet IDs are not exposed.
 message GameRecentWinsRequest {optional int64 uid=1;optional string sid=2;}
@@ -87,5 +108,13 @@ message GameRecentWin {
  string nickname=6;string win_amount=7 [json_name="winAmount"];string multiplier=8;
  string occurred_at=9 [json_name="occurredAt"];bool is_self=10 [json_name="isSelf"];
  string bet_id=11 [json_name="betId"];string bet_amount=12 [json_name="betAmount"];int32 avatar_id=13 [json_name="avatarId"];
+ string uid=14;bool anonymous=15;
 }
 message GameRecentWinsReply {repeated GameRecentWin items=1;string updated_at=2 [json_name="updatedAt"];}
+message PlatformLeaderboardRequest {optional int64 uid=1;optional string sid=2;string board=3;string period=4;}
+message PlatformLeaderboardItem {int32 rank=1;string uid=2;string nickname=3;int32 avatar_id=4 [json_name="avatarId"];string game_id=5 [json_name="gameId"];string game_name=6 [json_name="gameName"];string game_name_en=7 [json_name="gameNameEn"];string bet_id=8 [json_name="betId"];string bet_amount=9 [json_name="betAmount"];string win_amount=10 [json_name="winAmount"];string multiplier=11;string occurred_at=12 [json_name="occurredAt"];string reward_amount=13 [json_name="rewardAmount"];bool anonymous=14;string platform_order_id=15 [json_name="platformOrderId"];string cover=16;string reward_status=17 [json_name="rewardStatus"];bool claimable=18;}
+message PlatformLeaderboardReply {repeated PlatformLeaderboardItem items=1;string updated_at=2 [json_name="updatedAt"];string timezone=3;bool participating=4;repeated string rewards=5;}
+message PlatformLeaderboardParticipationRequest {int64 uid=1;string sid=2;optional bool participating=3;}
+message PlatformLeaderboardParticipationReply {bool participating=1;}
+message PlatformLeaderboardClaimRequest {int64 uid=1;string sid=2;string date=3;string board=4;int32 rank=5;}
+message PlatformLeaderboardClaimReply {string claim_id=1 [json_name="claimId"];int64 amount=2;int64 coins=3;string status=4;}

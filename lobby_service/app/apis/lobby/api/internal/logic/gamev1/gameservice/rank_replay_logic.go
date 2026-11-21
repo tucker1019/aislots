@@ -11,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	user "apps/app/apis/lobby/api/internal/logic/userv1/userservice"
+	"apps/app/apis/lobby/api/internal/repository/model"
 	pb "apps/pb/apis/lobby/api/v1"
 	"apps/pkg/xerr"
 )
@@ -23,23 +25,29 @@ func (l *Logic) GameRankReplay(ctx context.Context, r *pb.GameRankReplayRequest)
 	if err != nil || id <= 0 {
 		return nil, xerr.ErrInvalid
 	}
-	store, err := l.statisticsAuth(ctx, &pb.GameStatisticsRequest{Uid: &r.Uid, Sid: &r.Sid, GameId: r.GameId})
+	if r.Uid <= 0 || len(r.Sid) != 52 {
+		return nil, xerr.ErrSession
+	}
+	if err := l.users.Check(ctx, r.Uid, user.Hash(r.Sid), time.Now().UTC()); err != nil {
+		return nil, xerr.Public(err)
+	}
+	if _, ok := l.config.Games[r.GameId]; !ok {
+		return nil, xerr.ErrInvalid
+	}
+	durable, ok := l.store.(interface {
+		ReadReplayOrderForGame(context.Context, int64, string) (model.ReplayOrder, bool, error)
+	})
+	if !ok {
+		return nil, xerr.ErrInvalid
+	}
+	row, exists, err := durable.ReadReplayOrderForGame(ctx, id, r.GameId)
 	if err != nil {
 		return nil, err
 	}
-	rows, _, err := store.ReadLeaderboard(ctx, r.GameId, r.Board, r.Period, time.Now().UTC())
-	if err != nil {
-		return nil, err
+	if !exists {
+		return nil, xerr.ErrInvalid
 	}
-	for i, row := range rows {
-		if i >= 10 {
-			break
-		}
-		if row.PlatformOrderID == r.PlatformOrderId {
-			return l.replayGameBet(ctx, r.GameId, row.UID, row.BetID)
-		}
-	}
-	return nil, xerr.ErrInvalid
+	return l.replayGameBet(ctx, row.GameID, row.UID, row.BetID)
 }
 
 func (l *Logic) replayGameBet(ctx context.Context, gameID string, uid int64, betID string) (*pb.GameRankReplayReply, error) {

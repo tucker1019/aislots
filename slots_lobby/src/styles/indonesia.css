@@ -30,7 +30,7 @@
 :root[data-theme="dark"] .account-section-heading h2 { font-size: 16px; }
 :root[data-theme="dark"] .account-section-heading > span { display: none; }
 :root[data-theme="dark"] .account-actions { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px 0; padding: 7px 8px 12px; }
-:root[data-theme="dark"] .account-benefits-card .account-actions { grid-template-columns: repeat(5,minmax(0,1fr)); }
+:root[data-theme="dark"] .account-benefits-card .account-actions { grid-template-columns: repeat(4,minmax(0,1fr)); }
 :root[data-theme="dark"] .account-actions button { flex-direction: column; align-items: center; gap: 6px; min-height: 70px; padding: 5px 2px; }
 :root[data-theme="dark"] .account-action-label { min-block-size: 30px; text-align: center; font-size: 11px; line-height: 15px; overflow-wrap: anywhere; }
 :root[data-theme="dark"] .my-account .account-action-icon { background: transparent; color: var(--theme-accent); border: 0; width: 30px; height: 30px; }

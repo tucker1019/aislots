@@ -42,6 +42,7 @@ func (l *Logic) ledgerCategories() []ledgerCategory {
 		{"rebate", "反水奖励", []string{string(coinsource.SourceRebateDaily), string(coinsource.SourceRebateWeekly), string(coinsource.SourceRebateMonthly)}, nil},
 		{"loss", "亏损返还", []string{string(coinsource.SourceLoserReturn)}, nil},
 		{"newbie", "新手充值奖励", []string{string(coinsource.SourceNewbieRecharge)}, nil},
+		{"leaderboard", "排行榜奖励", []string{string(coinsource.SourceLeaderboardReward)}, nil},
 	}
 	providers := map[string][]string{}
 	for id, g := range l.config.Games {

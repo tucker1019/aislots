@@ -75,10 +75,11 @@ func (m *GameModel) PersonalReport(ctx context.Context, uid int64, period string
 		}
 		out.Amounts["gameProfit"] = profit.Int64()
 		mappings := map[string][]coinsource.Source{
-			"withdrawalBonus": {coinsource.SourceWithdrawalBonus},
-			"commission":      {coinsource.SourceAgentCommission},
-			"inviteReward":    {coinsource.SourceInviteReward},
-			"rebate":          {coinsource.SourceRebateDaily, coinsource.SourceRebateWeekly, coinsource.SourceRebateMonthly}, "checkin": {coinsource.SourceCheckinReward}, "vipUpgrade": {coinsource.SourceVIPUpgrade}, "vipWeekly": {coinsource.SourceVIPWeekly}, "vipMonthly": {coinsource.SourceVIPMonthly}, "loserReturn": {coinsource.SourceLoserReturn}, "rechargeBonus": {coinsource.SourceRechargeBonus}, "newbieReward": {coinsource.SourceNewbieRecharge},
+			"withdrawalBonus":   {coinsource.SourceWithdrawalBonus},
+			"leaderboardReward": {coinsource.SourceLeaderboardReward},
+			"commission":        {coinsource.SourceAgentCommission},
+			"inviteReward":      {coinsource.SourceInviteReward},
+			"rebate":            {coinsource.SourceRebateDaily, coinsource.SourceRebateWeekly, coinsource.SourceRebateMonthly}, "checkin": {coinsource.SourceCheckinReward}, "vipUpgrade": {coinsource.SourceVIPUpgrade}, "vipWeekly": {coinsource.SourceVIPWeekly}, "vipMonthly": {coinsource.SourceVIPMonthly}, "loserReturn": {coinsource.SourceLoserReturn}, "rechargeBonus": {coinsource.SourceRechargeBonus}, "newbieReward": {coinsource.SourceNewbieRecharge},
 		}
 		net := new(big.Int).Set(profit)
 		for key, list := range mappings {

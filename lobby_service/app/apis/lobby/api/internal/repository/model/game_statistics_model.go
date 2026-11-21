@@ -31,6 +31,7 @@ type RankView struct {
 	Nickname                                string
 	AvatarID                                int32
 	ExperienceAccount                       bool
+	Anonymous                               bool
 }
 
 func (m *GameModel) CompleteGame(ctx context.Context, in GameCompletion) (bool, error) {
@@ -79,10 +80,18 @@ func (m *GameModel) CompleteGame(ctx context.Context, in GameCompletion) (bool, 
 		if in.Sequence != lastSequence+1 {
 			return xerr.ErrGameConflict
 		}
-		query := `INSERT INTO lobby_game_completions(game_id,bet_id,uid,sequence,bet_amount,win_amount,started_at,ended_at,included) VALUES(?,?,?,?,?,?,?,?,?)`
-		args := []any{in.GameID, in.BetID, in.UID, in.Sequence, in.BetAmount, in.WinAmount, in.StartedAt, in.EndedAt, included}
+		var privacy struct {
+			Participating bool
+			Anonymous     bool
+			Nickname      string
+		}
+		if e := tx.Table("lobby_users").Select("leaderboard_participating AS participating,leaderboard_anonymous AS anonymous,nickname").Where("uid=?", in.UID).Take(&privacy).Error; e != nil {
+			return e
+		}
+		query := `INSERT INTO lobby_game_completions(game_id,bet_id,uid,sequence,bet_amount,win_amount,started_at,ended_at,included,leaderboard_participating,leaderboard_anonymous,leaderboard_nickname) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`
+		args := []any{in.GameID, in.BetID, in.UID, in.Sequence, in.BetAmount, in.WinAmount, in.StartedAt, in.EndedAt, included, privacy.Participating, privacy.Anonymous, privacy.Nickname}
 		if in.PlatformOrderID > 0 {
-			query = `INSERT INTO lobby_game_completions(game_id,bet_id,uid,sequence,bet_amount,win_amount,started_at,ended_at,included,platform_order_id) OVERRIDING SYSTEM VALUE VALUES(?,?,?,?,?,?,?,?,?,?)`
+			query = `INSERT INTO lobby_game_completions(game_id,bet_id,uid,sequence,bet_amount,win_amount,started_at,ended_at,included,leaderboard_participating,leaderboard_anonymous,leaderboard_nickname,platform_order_id) OVERRIDING SYSTEM VALUE VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`
 			args = append(args, in.PlatformOrderID)
 		}
 		if e := tx.Exec(query, args...).Error; e != nil {
@@ -177,7 +186,7 @@ func (m *GameModel) ReadLeaderboard(ctx context.Context, game, board, period str
 		}
 	}
 	// At most seven Top-10 sets; never reads the raw completion table. User profiles are joined only after LIMIT 10.
-	query := `SELECT completion.platform_order_id::text AS platform_order_id,ranked.uid,ranked.bet_id,ranked.bet_amount::text,ranked.win_amount::text,ROUND(ranked.win_amount::numeric/ranked.bet_amount,2)::text AS multiplier,ranked.ended_at,u.nickname,u.avatar_id,(completion.account_type='experience') AS experience_account FROM (SELECT * FROM lobby_game_rank_candidates WHERE game_id=? AND board=? AND period IN ? ORDER BY score DESC,ended_at,entry_key LIMIT 10) ranked JOIN lobby_game_completions completion ON completion.game_id=ranked.game_id AND completion.bet_id=ranked.bet_id JOIN lobby_users u ON u.uid=ranked.uid ORDER BY ranked.score DESC,ranked.ended_at,ranked.entry_key`
+	query := `SELECT completion.platform_order_id::text AS platform_order_id,ranked.uid,ranked.bet_id,ranked.bet_amount::text,ranked.win_amount::text,ROUND(ranked.win_amount::numeric/ranked.bet_amount,2)::text AS multiplier,ranked.ended_at,COALESCE(NULLIF(completion.leaderboard_nickname,''),u.nickname) AS nickname,u.avatar_id,(completion.account_type='experience') AS experience_account,(NOT completion.leaderboard_participating OR completion.leaderboard_anonymous) AS anonymous FROM (SELECT * FROM lobby_game_rank_candidates WHERE game_id=? AND board=? AND period IN ? ORDER BY score DESC,ended_at,entry_key LIMIT 10) ranked JOIN lobby_game_completions completion ON completion.game_id=ranked.game_id AND completion.bet_id=ranked.bet_id JOIN lobby_users u ON u.uid=ranked.uid ORDER BY ranked.score DESC,ranked.ended_at,ranked.entry_key`
 	var rows []RankView
 	e := db.Raw(query, game, board, keys).Scan(&rows).Error
 	return rows, since, e

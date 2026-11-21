@@ -92,5 +92,14 @@ var gameFavoritesSchema string
 //go:embed 031_recent_wins.sql
 var recentWinsSchema string
 
+//go:embed 032_platform_leaderboard.sql
+var platformLeaderboardSchema string
+
+//go:embed 033_recommendations.sql
+var recommendationsSchema string
+
+//go:embed 034_platform_leaderboard_rewards.sql
+var platformLeaderboardRewardsSchema string
+
 // Schema applies initial schema and backward-compatible upgrades in order.
-var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema + "\n" + gameSchema + "\n" + uidSchema + "\n" + gameStatisticsSchema + "\n" + inviteSchema + "\n" + inviteChestSchema + "\n" + rankReplaySchema + "\n" + agentSchema + "\n" + payoutSchema + "\n" + withdrawalSchema + "\n" + turnoverSchema + "\n" + accountNicknameSchema + "\n" + experienceSchema + "\n" + experiencePoolSchema + "\n" + adminSchema + "\n" + adminConfigSchema + "\n" + returnRateSchema + "\n" + experienceGamesSchema + "\n" + gameSettlementLookupSchema + "\n" + adminOverviewTotalsSchema + "\n" + lossReturnPolicySchema + "\n" + gameFavoritesSchema + "\n" + recentWinsSchema
+var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema + "\n" + gameSchema + "\n" + uidSchema + "\n" + gameStatisticsSchema + "\n" + inviteSchema + "\n" + inviteChestSchema + "\n" + rankReplaySchema + "\n" + agentSchema + "\n" + payoutSchema + "\n" + withdrawalSchema + "\n" + turnoverSchema + "\n" + accountNicknameSchema + "\n" + experienceSchema + "\n" + experiencePoolSchema + "\n" + adminSchema + "\n" + adminConfigSchema + "\n" + returnRateSchema + "\n" + experienceGamesSchema + "\n" + gameSettlementLookupSchema + "\n" + adminOverviewTotalsSchema + "\n" + lossReturnPolicySchema + "\n" + gameFavoritesSchema + "\n" + recentWinsSchema + "\n" + platformLeaderboardSchema + "\n" + recommendationsSchema + "\n" + platformLeaderboardRewardsSchema

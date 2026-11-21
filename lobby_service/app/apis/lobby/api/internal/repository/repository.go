@@ -11,19 +11,20 @@ import (
 )
 
 type Repository struct {
-	Favorites  FavoriteStore
-	Withdrawal *model.WithdrawalModel
-	Wallet     WalletStore
-	Agent      AgentStore
-	Invite     *model.InviteModel
-	Game       GameStore
-	Users      UserStore
-	Recharge   RechargeStore
-	Checkin    CheckinStore
-	Returns    ReturnStore
-	Activity   *model.ActivityModel
-	VIP        VIPStore
-	Newbie     NewbieStore
+	Favorites       FavoriteStore
+	Recommendations *model.RecommendationModel
+	Withdrawal      *model.WithdrawalModel
+	Wallet          WalletStore
+	Agent           AgentStore
+	Invite          *model.InviteModel
+	Game            GameStore
+	Users           UserStore
+	Recharge        RechargeStore
+	Checkin         CheckinStore
+	Returns         ReturnStore
+	Activity        *model.ActivityModel
+	VIP             VIPStore
+	Newbie          NewbieStore
 }
 
 func New(db *gorm.DB, locations ...*time.Location) *Repository {
@@ -31,7 +32,7 @@ func New(db *gorm.DB, locations ...*time.Location) *Repository {
 	if len(locations) > 0 {
 		loc = locations[0]
 	}
-	return &Repository{Favorites: &model.GameFavoriteModel{DB: db}, Withdrawal: &model.WithdrawalModel{DB: db}, Wallet: &model.WalletAccountModel{DB: db}, Users: &model.UserModel{DB: db}, Recharge: &model.RechargeModel{DB: db, ActivityLocation: loc}, Checkin: &model.CheckinModel{DB: db}, Returns: &model.ReturnModel{DB: db}, Activity: &model.ActivityModel{DB: db, Location: loc}}
+	return &Repository{Favorites: &model.GameFavoriteModel{DB: db}, Recommendations: &model.RecommendationModel{DB: db}, Withdrawal: &model.WithdrawalModel{DB: db}, Wallet: &model.WalletAccountModel{DB: db}, Users: &model.UserModel{DB: db}, Recharge: &model.RechargeModel{DB: db, ActivityLocation: loc}, Checkin: &model.CheckinModel{DB: db}, Returns: &model.ReturnModel{DB: db}, Activity: &model.ActivityModel{DB: db, Location: loc}}
 }
 
 // ConfigureVIP wires the same engine into user creation, recharge and game event transactions.

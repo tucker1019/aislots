@@ -8,13 +8,14 @@ import { fetchLossReturn, claimLossReturn, type LossReturnInfo } from '../../ser
 import { useSessionStore } from '../../stores/session';
 import { betMoney } from '../bet-records/money';
 import { useClaimToast } from '../rewards/useClaimToast';
+import { ClaimBadge } from '../rewards/ClaimBadge';
 import { RebateForecast } from './RebateForecast';
 
 export function LossReturn() {
  const uid=useSessionStore(state=>state.session?.uid),client=useQueryClient();
  const {notify,holder,toast}=useClaimToast();
  const key=['lobby','loss-return',uid] as const;
- const query=useQuery({queryKey:key,queryFn:({signal})=>fetchLossReturn(signal),retry:false,refetchOnWindowFocus:true,refetchInterval:query=>query.state.error?false:5000,refetchOnReconnect:false});
+ const query=useQuery({queryKey:key,queryFn:({signal})=>fetchLossReturn(signal),retry:false,refetchOnReconnect:false});
  const claim=useMutation({meta:{claimUid:uid,claimIndicator:'loss'},mutationFn:claimLossReturn,retry:false,onError:error=>{void toast.error(error.message);},onSuccess:()=>{
   notify();client.setQueryData<LossReturnInfo>(key,previous=>previous?{...previous,claimable:0}:previous);
   for(const queryKey of [['lobby','current-profile'],['wallet-ledger'],['personal-report']])void client.invalidateQueries({queryKey});
@@ -24,7 +25,7 @@ export function LossReturn() {
   {holder}<header><h2>{t('loss.title')}</h2><button type="button" onClick={()=>navigateLobby('loss-return-rules')}>{t('copy.viewRules')}</button></header>
   {query.isError&&<NetworkError disabled={query.isFetching} onRetry={()=>void query.refetch()}/>}
   {query.isPending?<LoadingState compact label={t('copy.loading')}/>:info&&<>
-   <div className="rebate-claim-row"><span>{t('loss.claimable')} <strong>{betMoney(info.claimable)}</strong></span><AsyncButton loading={claim.isPending} type="button" aria-busy={claim.isPending} disabled={claim.isPending||query.isFetching||query.isError||info.claimable===0} onClick={()=>claim.mutate(info.activityDate)}>{t('copy.claim')}</AsyncButton></div>
+   <div className="rebate-claim-row"><span>{t('loss.claimable')} <strong>{betMoney(info.claimable)}</strong></span><AsyncButton loading={claim.isPending} type="button" aria-busy={claim.isPending} disabled={claim.isPending||query.isFetching||query.isError||info.claimable===0} onClick={()=>claim.mutate(info.activityDate)}>{t('copy.claim')}<ClaimBadge active={info.claimable>0}/></AsyncButton></div>
    <RebateForecast items={[{id:'loss',label:t('loss.today'),amount:info.loss},{id:'reward',label:t('copy.availableTomorrow'),amount:info.reward}]}/>
    <div className="rebate-platforms"><div><span>{t('loss.rate')}</span><strong>{info.rateBps/100}%</strong></div></div>
   </>}

@@ -11,7 +11,7 @@ INSERT INTO lobby_turnover_rules(source,multiplier,version) VALUES
  ('act_002',1,'turnover-v1'),('act_003',1,'turnover-v1'),('act_004',1,'turnover-v1'),
  ('act_005',1,'turnover-v1'),('vip_001',1,'turnover-v1'),('vip_002',1,'turnover-v1'),
  ('vip_003',1,'turnover-v1'),('act_006',1,'turnover-v1'),('act_007',1,'turnover-v1'),
- ('agt_001',1,'turnover-v1'),('wdr_003',1,'turnover-v1'),('game_002',0,'turnover-v1'),('wdr_002',0,'turnover-v1')
+ ('agt_001',1,'turnover-v1'),('wdr_003',1,'turnover-v1'),('act_008',1,'turnover-v1'),('game_002',0,'turnover-v1'),('wdr_002',0,'turnover-v1')
  ON CONFLICT DO NOTHING;
 CREATE TABLE IF NOT EXISTS lobby_turnover_balances (
  uid bigint PRIMARY KEY REFERENCES lobby_users(uid), remaining bigint NOT NULL DEFAULT 0 CHECK(remaining>=0)

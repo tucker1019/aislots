@@ -111,3 +111,30 @@ func TestLossAndRebateDocumentsStayIndependent(t *testing.T) {
 		}
 	}
 }
+
+func TestPublishedTurnoverDocumentAddsNewSourceDefaults(t *testing.T) {
+	b, err := os.ReadFile("../../../../../../etc/turnover.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var value config.TurnoverConfig
+	if err := json.Unmarshal(b, &value); err != nil {
+		t.Fatal(err)
+	}
+	delete(value.Multipliers, "act_008")
+	legacy, err := json.Marshal(value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	base, err := config.LoadTurnover("../../../../../../etc/turnover.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := config.Config{Turnover: base}
+	if err := applyDocument(&c, "turnover", legacy); err != nil {
+		t.Fatal(err)
+	}
+	if got := c.Turnover.Multipliers["act_008"]; got != base.Multipliers["act_008"] {
+		t.Fatalf("act_008 default = %d, want %d", got, base.Multipliers["act_008"])
+	}
+}

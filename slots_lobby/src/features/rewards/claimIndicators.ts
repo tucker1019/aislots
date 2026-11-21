@@ -5,11 +5,12 @@ import {fetchRebate} from '../../services/rebate';
 import {fetchLossReturn} from '../../services/loss-return';
 import {fetchInviteInfo} from '../../services/invite';
 import {fetchAgent,agentDefaults} from '../../services/agent';
+import {fetchPlatformLeaderboard} from '../../services/platform-leaderboard';
 import {isRecord} from '../account/types';
-export type RewardGroup='checkin'|'vip'|'rebate'|'loss'|'invite'|'agent';
-export type RewardKey='checkin'|'weekly'|'monthly'|'upgrade'|'rebate'|'loss'|'invite'|'agent';
+export type RewardGroup='checkin'|'vip'|'rebate'|'loss'|'invite'|'agent'|'leaderboard';
+export type RewardKey='checkin'|'weekly'|'monthly'|'upgrade'|'rebate'|'loss'|'invite'|'agent'|'leaderboard';
 export type RewardCounts=Partial<Record<RewardKey,number>>;
-export const groups:RewardGroup[]=['checkin','vip','rebate','loss','invite','agent'];
+export const groups:RewardGroup[]=['checkin','vip','rebate','loss','invite','agent','leaderboard'];
 export const indicatorKey=(uid:number,group:RewardGroup)=>['claim-indicators',uid,group] as const;
 export async function loadIndicator(group:RewardGroup,signal:AbortSignal):Promise<RewardCounts>{
  switch(group){
@@ -19,12 +20,13 @@ export async function loadIndicator(group:RewardGroup,signal:AbortSignal):Promis
  case 'loss':return {loss:(await fetchLossReturn(signal)).claimable};
  case 'invite':return {invite:(await fetchInviteInfo(signal)).pendingAmount};
  case 'agent':return {agent:(await fetchAgent('center',agentDefaults,signal)).summary.claimable};
+ case 'leaderboard':return {leaderboard:(await fetchPlatformLeaderboard('wins','yesterday',signal)).items.some(row=>row.claimable)?1:0};
  }
 }
 export function aggregateIndicators(values:RewardCounts[]){
  const counts=Object.assign({},...values) as RewardCounts;
  const active=(key:RewardKey)=>(counts[key]??0)>0;
- return {active,earn:['rebate','loss','invite','agent'].some(key=>active(key as RewardKey)),my:['checkin','weekly','monthly','upgrade','agent'].some(key=>active(key as RewardKey)),vip:['weekly','monthly','upgrade'].some(key=>active(key as RewardKey))};
+ return {active,home:active('leaderboard'),earn:['rebate','loss','invite','agent'].some(key=>active(key as RewardKey)),my:['checkin','weekly','monthly','upgrade','agent','leaderboard'].some(key=>active(key as RewardKey)),vip:['weekly','monthly','upgrade'].some(key=>active(key as RewardKey))};
 }
 /** Optimistic removal is applied only after a successful credit response. */
 export async function rewardClaimed(client:QueryClient,uid:number,group:RewardGroup,data:unknown,variables:unknown,kind?:unknown){

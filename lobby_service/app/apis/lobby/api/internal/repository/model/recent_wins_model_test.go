@@ -36,17 +36,36 @@ func TestRecentWinsThresholdsWindowAndExperience(t *testing.T) {
 	add("hidden", 100, 5000, now, "HIDDEN", "real", true)
 	// Multiplying bigint near its maximum must not overflow.
 	add("hugeBet", 9000000000000000000, 9000000000000000000, now, "AG1", "real", true)
+	if err = db.Exec("UPDATE lobby_game_completions SET leaderboard_participating=false,leaderboard_nickname='Snapshot Name' WHERE bet_id='exact20'").Error; err != nil {
+		t.Fatal(err)
+	}
 	m := &GameModel{DB: db, Location: time.UTC}
+	var oldOrderID int64
+	if err = db.Table("lobby_game_completions").Select("platform_order_id").Where("bet_id=?", "old").Scan(&oldOrderID).Error; err != nil {
+		t.Fatal(err)
+	}
+	if order, exists, readErr := m.ReadReplayOrder(ctx, oldOrderID); readErr != nil || !exists || order.BetID != "old" || order.GameID != "AG1" || order.UID != uid {
+		t.Fatal("replay lookup should not expire after one hour", order, exists, readErr)
+	}
 	rows, e := m.ReadRecentWins(ctx, []string{"AG1"}, now)
 	if e != nil {
 		t.Fatal(e)
 	}
 	found := map[string]bool{}
+	var anonymousSnapshot bool
+	var snapshotName string
 	for _, r := range rows {
 		found[r.BetID] = true
+		if r.BetID == "exact20" {
+			anonymousSnapshot = r.Anonymous
+			snapshotName = r.Nickname
+		}
 		if r.BetAmount == "" || r.AvatarID < 1 || r.AvatarID > 15 {
 			t.Fatal("missing detail fields", r)
 		}
+	}
+	if !anonymousSnapshot || snapshotName != "Snapshot Name" {
+		t.Fatal("recent win did not preserve completion identity snapshot", anonymousSnapshot, snapshotName)
 	}
 	if len(rows) != 4 || !found["exact20"] || !found["exact5threshold"] || !found["belowAmount"] || !found["boundary"] {
 		t.Fatal(rows)

@@ -9,7 +9,7 @@ import {fetchRankReplay,type RankBoard,type RankPeriod} from '../../services/gam
 import {t} from '../../i18n';
 import {RankOrderNumber} from './RankOrderNumber';
 
-export function RankReplay({orderId,betId,board,period,shareTarget,onShare,gameId='AG1'}:{orderId:string;betId:string;board:RankBoard;period:RankPeriod;shareTarget?:HTMLElement|null;onShare?:(url:string)=>void;gameId?:string}) {
+export function RankReplay({orderId,betId,board,period,shareTarget,onShare,gameId='AG1',hideOrder=false}:{orderId:string;betId:string;board:RankBoard;period:RankPeriod;shareTarget?:HTMLElement|null;onShare?:(url:string)=>void;gameId?:string;hideOrder?:boolean}) {
  const [panel,setPanel]=useState<'replay'|'share'>();
  const [toast,holder]=message.useMessage({getContainer:overlayContainer,maxCount:1,classNames:{list:'lobby-toast-list'}});
  const query=useMutation<string,Error,'replay'|'share'>({
@@ -27,9 +27,10 @@ export function RankReplay({orderId,betId,board,period,shareTarget,onShare,gameI
   </AsyncButton>;
  return <div className="game-rank-replay">
   {holder}
-  <RankOrderNumber betId={betId}/>
+  {!hideOrder && <RankOrderNumber betId={betId}/>}
   <div className="game-rank-actions">
-   <AsyncButton loading={query.isPending&&query.variables==='replay'} type="button" disabled={query.isPending} onClick={()=>query.mutate('replay')}>
+   <AsyncButton className="recent-win-detail-replay-button" loading={query.isPending&&query.variables==='replay'} type="button" disabled={query.isPending} onClick={()=>query.mutate('replay')}>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
     {t('gamePreview.replay')}
    </AsyncButton>
   </div>

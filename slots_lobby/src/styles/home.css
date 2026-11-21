@@ -91,7 +91,7 @@
   display: flex;
   overflow-x: auto;
   gap: 8px;
-  padding: 8px 20px 18px;
+  padding: 8px 20px 6px;
   margin: 0 -20px;
   background: var(--theme-canvas);
 }
@@ -293,6 +293,6 @@
 .provider-hot { min-width: 105px; }
 .provider-favorites .provider-mark svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
 
-.home-favorites-empty { min-height: 200px; align-content: center; gap: 12px; color: var(--muted); }
+.home-favorites-empty { min-height: 120px; align-content: center; gap: 6px; color: var(--muted); }
 .home-favorites-empty svg { width: 54px; height: 54px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; opacity: .8; }
 .home-favorites-empty p { margin: 0; font-size: 14px; }

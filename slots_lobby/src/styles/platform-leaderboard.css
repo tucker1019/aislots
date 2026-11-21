@@ -1,0 +1,65 @@
+.platform-leaderboard { min-height: calc(100dvh - var(--header-height)); background: var(--theme-panel); color: var(--theme-text); }
+.platform-leaderboard .records-page-header { background: var(--theme-panel); border-bottom-color: var(--theme-border); }
+.platform-leaderboard .records-page-header h1 { font-size: 18px; }
+.platform-leaderboard-content { padding: 16px 20px 90px; }
+.platform-leaderboard-info, .platform-leaderboard-refresh { display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 1px solid var(--theme-border); border-radius: 9px; background: transparent; color: var(--muted); }
+.platform-leaderboard-info:hover, .platform-leaderboard-refresh:hover { color: var(--theme-action); border-color: var(--theme-action); }
+.platform-leaderboard-refresh { font-size: 18px; }
+.platform-leaderboard-tabs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; padding: 4px; background: var(--theme-soft); border-radius: 10px; margin-bottom: 10px; }
+.platform-leaderboard-tabs button { border: 0; border-radius: 7px; padding: 9px; background: transparent; color: var(--muted); font: inherit; }
+.platform-leaderboard-tabs button.active { background: var(--theme-action); color: #21182a; font-weight: 800; }
+.platform-leaderboard-tabs .platform-leaderboard-today { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.platform-leaderboard-tabs .platform-leaderboard-today .platform-leaderboard-refresh { width: 22px; height: 22px; border: 0; color: currentColor; font-size: 16px; }
+.platform-leaderboard-tabs .platform-leaderboard-today .platform-leaderboard-refresh:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
+.platform-leaderboard-tabs .platform-leaderboard-today .platform-leaderboard-refresh.is-refreshing { animation: platform-leaderboard-spin .5s linear infinite; }
+@keyframes platform-leaderboard-spin { to { transform: rotate(360deg); } }
+.platform-leaderboard-metric-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.platform-leaderboard-metric-row .platform-leaderboard-info { flex: 0 0 30px; }
+.platform-leaderboard-tabs.compact { display: flex; background: transparent; padding: 0; }
+.platform-leaderboard-tabs.compact button { border: 1px solid var(--theme-border); }
+.platform-leaderboard-tabs.compact button.active { background: var(--theme-soft); color: var(--theme-action); border-color: var(--theme-action); }
+.platform-leaderboard-note { padding: 10px 12px; border-radius: 10px; background: var(--theme-soft); color: var(--muted); font-size: 11px; }
+.platform-leaderboard-list { display: grid; gap: 8px; margin-top: 12px; }
+.platform-leaderboard-item { display: block; }
+.platform-leaderboard-row { display: grid; grid-template-columns: 24px 40px minmax(0, 1fr) auto; width: 100%; gap: 9px; align-items: center; padding: 11px 12px; border: 1px solid color-mix(in srgb, var(--theme-border) 55%, transparent); border-radius: 14px; background: color-mix(in srgb, var(--theme-soft) 88%, transparent); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+.platform-leaderboard-row:hover { border-color: var(--theme-action); background: var(--theme-soft); }
+.platform-leaderboard-row.is-self { border-color: color-mix(in srgb, var(--theme-action) 62%, var(--theme-border)); background: color-mix(in srgb, var(--theme-action) 8%, var(--theme-soft)); }
+.platform-self-badge { display: inline-block; margin-inline-start: 6px; padding: 1px 5px; border-radius: 4px; background: color-mix(in srgb, var(--theme-action) 16%, transparent); color: var(--theme-action); font-size: 9px; font-weight: 700; vertical-align: 2px; }
+.platform-leaderboard-row:focus-visible { outline: 2px solid var(--theme-action); outline-offset: 2px; }
+.platform-leaderboard-claim { min-width: 72px; min-height: 28px; margin-top: 5px; padding: 4px 10px; border: 1px solid color-mix(in srgb, var(--theme-action) 80%, #fff 20%); border-radius: 8px; background: var(--theme-action); color: var(--theme-on-action,#26192b); font: inherit; font-size: 11px; font-weight: 800; box-shadow: 0 2px 0 color-mix(in srgb, var(--theme-action) 65%, #000 35%); }
+.platform-leaderboard-claimed { display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 5px; color: var(--theme-success,#89c9ac); font-size: 13px; font-weight: 800; line-height: 1.2; }
+.platform-leaderboard-claimed svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.platform-leaderboard-list .rank { font-size: 17px; text-align: center; color: var(--ink); }
+.platform-leaderboard-row.rank-1 { border-color: #e8bd65; background: linear-gradient(100deg, #6b512933, var(--theme-soft)); }
+.platform-leaderboard-row.rank-2 { border-color: #aeb8c6; background: linear-gradient(100deg, #7f899522, var(--theme-soft)); }
+.platform-leaderboard-row.rank-3 { border-color: #c78b62; background: linear-gradient(100deg, #8b543522, var(--theme-soft)); }
+.platform-leaderboard-row.rank-1 .rank { color: #f2c96d; }
+.platform-leaderboard-row.rank-2 .rank { color: #c8d1dc; }
+.platform-leaderboard-row.rank-3 .rank { color: #d8986d; }
+.platform-avatar-wrap { position: relative; display: block; width: 40px; height: 40px; }
+.platform-avatar { display: block; width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--theme-action); }
+.platform-replay-indicator { position: absolute; right: -3px; bottom: -3px; display: grid; place-items: center; width: 16px; height: 16px; border: 2px solid var(--theme-panel); border-radius: 50%; background: var(--theme-action); color: var(--theme-on-action, #26192b); font-size: 8px; line-height: 1; }
+.platform-player { min-width: 0; }
+.platform-player strong, .platform-player small, .platform-player em { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.platform-player strong { font-size: 14px; }
+.platform-player strong { display: flex; align-items: center; min-width: 0; gap: 4px; }
+.platform-player-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.platform-player small, .platform-player em, .platform-score small { color: var(--muted); font-size: 10px; margin-top: 3px; font-style: normal; }
+.platform-multiplier { display: block; margin-top: 3px; color: var(--theme-success, #89c9ac); font-size: 14px; font-weight: 850; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.platform-score { display: flex; flex-direction: column; align-items: flex-end; min-width: 86px; text-align: right; }
+.platform-score strong { display: block; color: var(--theme-success, #89c9ac); font-size: 15px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.platform-score small { display: block; white-space: nowrap; }
+.platform-score .platform-reward-caption { margin-top: 0; color: var(--muted); font-size: 10px; }
+.platform-score .platform-reward-value { color: var(--theme-action); font-size: 18px; line-height: 1.1; }
+.platform-score .platform-reward-empty { margin-top: 0; color: var(--muted); font-size: 12px; line-height: 1.2; }
+.platform-score .platform-reward-label { margin-top: 5px; color: var(--theme-action); font-size: 13px; font-weight: 800; line-height: 1.2; }
+.platform-participation { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin: 18px 0 0; padding: 10px 0 0; border-top: 1px solid var(--theme-border); color: var(--muted); font-size: 10px; }
+.platform-participation span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.platform-participation input { accent-color: color-mix(in srgb, var(--theme-action) 72%, var(--theme-muted)); width: 16px; height: 16px; margin: 0; opacity: .78; }
+.platform-leaderboard-loading, .platform-leaderboard-error { text-align: center; padding: 40px 0; color: var(--muted); }
+
+.platform-leaderboard-rules-settlement { display: grid; gap: 6px; margin: 0 0 12px; padding: 12px; border-radius: 10px; background: var(--theme-soft); color: var(--muted); font-size: 12px; }
+.platform-leaderboard-rules-settlement strong { color: var(--ink); font-size: 14px; }
+.platform-reward-list { display: grid; gap: 7px; }
+.platform-reward-list > div { display: flex; justify-content: space-between; align-items: center; padding: 11px 12px; border-radius: 10px; background: var(--theme-soft); color: var(--muted); font-size: 13px; }
+.platform-reward-list strong { color: var(--theme-action); font-variant-numeric: tabular-nums; }

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	user "apps/app/apis/lobby/api/internal/logic/userv1/userservice"
+	"apps/app/apis/lobby/api/internal/repository/model"
 	pb "apps/pb/apis/lobby/api/v1"
 	"apps/pkg/xerr"
 )
@@ -34,7 +35,11 @@ func (l *Logic) GameRecentWins(ctx context.Context, r *pb.GameRecentWinsRequest)
 		if !ok || !g.Enabled || !g.IsVisible() {
 			continue
 		}
-		out.Items = append(out.Items, &pb.GameRecentWin{Id: row.ID, BetId: row.BetID, BetAmount: row.BetAmount, AvatarId: row.AvatarID, GameId: row.GameID, GameName: g.Name, GameNameEn: g.NameEn, Cover: g.Cover, Nickname: maskWinNickname(row.Nickname), WinAmount: row.WinAmount, Multiplier: row.Multiplier, OccurredAt: row.EndedAt.Format(time.RFC3339Nano), IsSelf: uid > 0 && uid == row.UID})
+		nickname, playerUID := row.Nickname, strconv.FormatInt(row.UID, 10)
+		if row.Anonymous {
+			nickname, playerUID = "匿名", "******"
+		}
+		out.Items = append(out.Items, &pb.GameRecentWin{Id: row.ID, BetId: row.BetID, BetAmount: row.BetAmount, AvatarId: row.AvatarID, GameId: row.GameID, GameName: g.Name, GameNameEn: g.NameEn, Cover: g.Cover, Nickname: nickname, WinAmount: row.WinAmount, Multiplier: row.Multiplier, OccurredAt: row.EndedAt.Format(time.RFC3339Nano), IsSelf: uid > 0 && uid == row.UID, Uid: playerUID, Anonymous: row.Anonymous})
 	}
 	return out, nil
 }
@@ -42,11 +47,20 @@ func (l *Logic) GameRecentWins(ctx context.Context, r *pb.GameRecentWinsRequest)
 // A public replay is authorized by membership in a server-published snapshot, not a client-supplied player/bet.
 func (l *Logic) GameRecentWinReplay(ctx context.Context, r *pb.GameRecentWinReplayRequest) (*pb.GameRankReplayReply, error) {
 	id, err := strconv.ParseInt(r.Id, 10, 64)
-	if err != nil || id <= 0 || l.recentWins == nil {
+	if err != nil || id <= 0 || strconv.FormatInt(id, 10) != r.Id {
 		return nil, xerr.ErrInvalid
 	}
-	row, ok := l.recentWins.Replay(r.Id, time.Now().UTC())
+	store, ok := l.store.(interface {
+		ReadReplayOrder(context.Context, int64) (model.ReplayOrder, bool, error)
+	})
 	if !ok {
+		return nil, xerr.ErrInvalid
+	}
+	row, exists, err := store.ReadReplayOrder(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if !exists {
 		return nil, xerr.ErrInvalid
 	}
 	g, ok := l.config.Games[row.GameID]
@@ -54,15 +68,4 @@ func (l *Logic) GameRecentWinReplay(ctx context.Context, r *pb.GameRecentWinRepl
 		return nil, xerr.ErrInvalid
 	}
 	return l.replayGameBet(ctx, row.GameID, row.UID, row.BetID)
-}
-
-func maskWinNickname(s string) string {
-	r := []rune(s)
-	if len(r) == 0 {
-		return "***"
-	}
-	if len(r) <= 2 {
-		return string(r[0]) + "***"
-	}
-	return string(r[:2]) + "***" + string(r[len(r)-1:])
 }

@@ -6,6 +6,7 @@ const paths = {
   gift: <><rect x="3" y="8" width="18" height="4" rx="1" /><path d="M5 12v9h14v-9M12 8v13" /><path d="M12 8H8a3 3 0 1 1 3-3l1 3Zm0 0h4a3 3 0 1 0-3-3l-1 3Z" /></>,
   wallet: <><path d="M20 8V5a2 2 0 0 0-2-2L5 6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2H5" /><path d="M21 12h-5v5h5M17 14.5h.01" /></>,
   growth: <><path d="M3 20h18M5 16v-4M10 16V9M15 16v-5M20 16V6M4 8l6-5 5 3 5-4M17 2h3v3" /></>,
+  leaderboard: <><path d="M4 19h16M6 16v-4h3v4m3 0V7h3v9m3 0v-6h3v6" /><path d="m5 7 4-3 4 2 5-4" /></>,
   user: <><circle cx="12" cy="8" r="4" /><path d="M4 21v-2a8 8 0 0 1 16 0v2H4Z" /></>,
   calendar: <><rect x="3" y="5" width="18" height="16" rx="3" /><path d="M7 3v4M17 3v4M3 10h18m-13 5 3 3 5-5" /></>,
   crown: <><path d="m3 6 5 5 4-8 4 8 5-5-2 13H5L3 6ZM5 22h14" /></>,

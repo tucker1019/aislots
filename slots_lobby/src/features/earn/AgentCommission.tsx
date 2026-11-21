@@ -9,6 +9,7 @@ import { agentDefaults, claimAgent, fetchAgent, type AgentData } from '../../ser
 import { useSessionStore } from '../../stores/session';
 import { betMoney } from '../bet-records/money';
 import { useClaimToast } from '../rewards/useClaimToast';
+import { ClaimBadge } from '../rewards/ClaimBadge';
 
 export function AgentCommission() {
   const uid = useSessionStore(state => state.session?.uid);
@@ -37,7 +38,7 @@ export function AgentCommission() {
     {failed && <NetworkError disabled={info.isFetching || rates.isFetching} onRetry={() => { if (info.isError) void info.refetch(); if (rates.isError) void rates.refetch(); }} />}
     {!info.data || !rates.data ? !failed && <LoadingState compact label={t('copy.loading')} /> : <>
       <div className="rebate-claim-row"><span>{t('agent.claimable')} <strong>{betMoney(info.data.summary.claimable)}</strong></span>
-        <AsyncButton loading={claim.isPending} type="button" disabled={claim.isPending || info.isFetching || info.isError || info.data.summary.claimable <= 0} aria-busy={claim.isPending} onClick={() => claim.mutate()}>{t('agent.claim')}</AsyncButton>
+        <AsyncButton loading={claim.isPending} type="button" disabled={claim.isPending || info.isFetching || info.isError || info.data.summary.claimable <= 0} aria-busy={claim.isPending} onClick={() => claim.mutate()}>{t('agent.claim')}<ClaimBadge active={info.data.summary.claimable>0}/></AsyncButton>
       </div>
       <div className="rebate-platforms"><div><span>AG</span><strong>{maxRate === null ? '—' : `${maxRate.toLocaleString(getLocale(), { maximumFractionDigits: 4 })}%`}</strong></div></div>
     </>}

@@ -24,7 +24,8 @@ export function GameInsights({part,gameId='AG1'}:{part:'rtp'|'ranking';gameId?:G
     <span className="game-rank-position">{row.rank}</span>
     <img src={`/assets/profile/avatar/${row.avatarId}.png`} alt=""/>
     <span className="game-rank-player">
-     <strong>{row.nickname}</strong>
+     <strong>{row.anonymous?t('recentWins.anonymous'):row.nickname}</strong>
+       <small className="game-rank-uid">UID {row.userId}</small>
        <span className="game-rank-wager">{t('statistics.bet',{amount:statisticsMoney(row.betAmount)})}</span>
        <span className="game-rank-result">{ranking==='multiplier'
         ? <><b className="game-rank-primary">{row.multiplier}×</b> <small>{t('gamePreview.payout')} +{statisticsMoney(row.winAmount)}</small></>

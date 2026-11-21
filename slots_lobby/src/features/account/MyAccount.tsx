@@ -22,6 +22,7 @@ const benefits = ():AccountAction[] => [
  {id:'monthly',icon:'chest',label:t('copy.monthlyGift'),shortLabel:t('account.shortcut.monthly')},
  {id:'upgrade',icon:'growth',label:t('copy.levelUpReward'),shortLabel:t('account.shortcut.upgrade')},
  {id:'vip',icon:'crown',label:t('copy.vipCenter'),shortLabel:t('account.shortcut.vip')},
+ {id:'leaderboard',icon:'leaderboard',label:t('platformLeaderboard.title'),shortLabel:t('platformLeaderboard.title')},
 ];
 const management = ():AccountAction[] => [
  {id:'ledger',icon:'list',label:t('copy.walletTransactions'),shortLabel:t('account.shortcut.ledger')},
@@ -34,9 +35,9 @@ const management = ():AccountAction[] => [
 ];
 function ActionGrid({items,onAction,label}:{items:AccountAction[];onAction:(id:string)=>void;label:string;shortLabel?:string}) {
  const rewards=useClaimIndicators();
- return <div className="account-actions" aria-label={label}>{items.map(item=><button type="button" key={item.id} aria-label={item.label} title={item.label} onClick={()=>onAction(item.id)}><span className="account-action-icon claim-badge-anchor" aria-hidden="true"><Icon name={item.icon} size={21}/><ClaimBadge active={item.id==='vip'?rewards.vip:item.id==='invite'?false:rewards.active(item.id as RewardKey)}/></span><span className="account-action-label">{item.shortLabel??item.label}</span></button>)}</div>;
+ return <div className="account-actions" aria-label={label}>{items.map(item=><button type="button" key={item.id} aria-label={item.label} title={item.label} onClick={()=>onAction(item.id)}><span className="account-action-icon claim-badge-anchor" aria-hidden="true"><Icon name={item.icon} size={21}/><ClaimBadge active={item.id==='vip'?rewards.vip:item.id==='invite'?false:item.id==='leaderboard'?rewards.active('leaderboard'):rewards.active(item.id as RewardKey)}/></span><span className="account-action-label">{item.shortLabel??item.label}</span></button>)}</div>;
 }
-export function MyAccount({ onAction, onDeposit, onRecords, onBetRecords, onBenefits, onLedger, onReport, onInvite, onAgent, onWallet, onWithdraw, onSettings }: { onAction: () => void; onDeposit: () => void; onRecords: () => void; onBetRecords?: () => void; onBenefits?: () => void; onLedger?: () => void; onReport?: () => void; onInvite?: () => void; onAgent?: () => void; onWallet?: () => void; onWithdraw?: () => void; onSettings?: () => void }) {
+export function MyAccount({ onAction, onDeposit, onRecords, onBetRecords, onBenefits, onLedger, onReport, onInvite, onAgent, onWallet, onWithdraw, onSettings, onLeaderboard }: { onAction: () => void; onDeposit: () => void; onRecords: () => void; onBetRecords?: () => void; onBenefits?: () => void; onLedger?: () => void; onReport?: () => void; onInvite?: () => void; onAgent?: () => void; onWallet?: () => void; onWithdraw?: () => void; onSettings?: () => void; onLeaderboard?: () => void }) {
   const [avatarOpen, setAvatarOpen] = useState(false);
   const { data, isPending, isError, isFetching, refetch } = useAccountProfile();
   const uid = useSessionStore(state => state.session?.uid);
@@ -53,8 +54,7 @@ export function MyAccount({ onAction, onDeposit, onRecords, onBetRecords, onBene
       <div className="account-money-actions"><button type="button" onClick={onDeposit}>{t('copy.deposit')}</button><button type="button" onClick={onWithdraw ?? onAction}>{t('copy.withdraw')}</button></div>
     </div>
     {isError&&!data&&<div className="account-profile-error"><NetworkError disabled={isFetching} onRetry={()=>void refetch()}/></div>}
-    {isError && data && <p role="alert" className="account-refresh-error">{t('copy.balanceRefreshFailedPleaseRetry')}</p>}
-    <section className="account-card account-benefits-card"><div className="account-section-heading"><h2>{t('copy.benefitsCenter')}</h2><span>{t('copy.discoverYourBenefits')}</span></div><ActionGrid items={benefits()} label={t('copy.benefitsShortcuts')} onAction={onBenefits ?? onAction} /></section>
+    <section className="account-card account-benefits-card"><div className="account-section-heading"><h2>{t('copy.benefitsCenter')}</h2><span>{t('copy.discoverYourBenefits')}</span></div><ActionGrid items={benefits()} label={t('copy.benefitsShortcuts')} onAction={name => { if (name === 'leaderboard' && onLeaderboard) onLeaderboard(); else (onBenefits ?? onAction)(); }} /></section>
     <section className="account-card"><div className="account-section-heading"><h2>{t('copy.accountServices')}</h2></div><ActionGrid items={management()} label={t('copy.accountManagementShortcuts')} onAction={name => { if(name === 'wallet' && onWallet) onWallet(); else if(name === 'agent' && onAgent) onAgent(); else if(name === 'invite' && onInvite) onInvite(); else if (name === 'report' && onReport) onReport(); else if (name === 'ledger' && onLedger) onLedger(); else if (name === 'bets' && onBetRecords) onBetRecords(); else if (name === 'records') onRecords(); else onAction(); }} /></section>
     <section className="account-card account-help" aria-label={t('copy.helpAndSecurity')}><button type="button" onClick={()=>navigateLobby('security')}><span className="account-help-icon" aria-hidden="true"><Icon name="shield" size={17}/></span><span>{t('copy.securityCenter')}</span><span aria-hidden="true"><Icon name="chevron" size={16}/></span></button><LanguageSelector /></section>
     {avatarOpen && data && <AvatarPicker uid={data.uid} current={data.avatarId} onClose={()=>setAvatarOpen(false)}/>}

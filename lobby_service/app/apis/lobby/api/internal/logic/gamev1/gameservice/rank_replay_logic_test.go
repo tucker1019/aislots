@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"apps/app/apis/lobby/api/internal/config"
+	"apps/app/apis/lobby/api/internal/repository/model"
 	pb "apps/pb/apis/lobby/api/v1"
 )
 
@@ -30,7 +31,7 @@ func TestRankReplayBindsPublicOrderToServerOwnedGameBet(t *testing.T) {
 		_ = json.NewEncoder(w).Encode(map[string]any{"data": map[string]string{"betId": "bet", "shareToken": strings.Repeat("s", 52)}})
 	}))
 	defer server.Close()
-	l := &Logic{store: &statsFake{}, users: recordUsers{}, config: config.GameConfig{ServiceToken: strings.Repeat("x", 32), Games: map[string]config.GameEntry{"AG1": {URL: "http://game.example/", APIURL: server.URL}}}}
+	l := &Logic{store: &recentReplayFake{orderID: 123, order: model.ReplayOrder{GameID: "AG1", BetID: "bet", UID: 7}}, users: recordUsers{}, config: config.GameConfig{ServiceToken: strings.Repeat("x", 32), Games: map[string]config.GameEntry{"AG1": {URL: "http://game.example/", APIURL: server.URL}}}}
 	r := &pb.GameRankReplayRequest{Uid: 7, Sid: strings.Repeat("s", 52), GameId: "AG1", Board: "wins", Period: "today", PlatformOrderId: "123"}
 	out, err := l.GameRankReplay(context.Background(), r)
 	if err != nil {

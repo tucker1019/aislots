@@ -214,3 +214,13 @@ type Profile struct {
 func profileQuery(db *gorm.DB, uid int64) *gorm.DB {
 	return db.Table("lobby_users AS u").Select("u.uid,COALESCE(u.account,'') AS account,u.nickname,u.avatar_id,w.coins").Joins("JOIN lobby_wallet_balances AS w ON w.uid = u.uid").Where("u.uid = ?", uid)
 }
+
+// LeaderboardParticipation returns the current public participation setting.
+func (m *UserModel) LeaderboardParticipation(ctx context.Context, uid int64) (bool, error) {
+ var row struct{ Participating bool }
+ if err:=m.DB.WithContext(ctx).Table("lobby_users").Select("leaderboard_participating AS participating").Where("uid=?",uid).Take(&row).Error; err!=nil{return false,databaseError(err)}
+ return row.Participating,nil
+}
+func (m *UserModel) SetLeaderboardParticipation(ctx context.Context, uid int64, participating bool) error {
+ return databaseError(m.DB.WithContext(ctx).Table("lobby_users").Where("uid=?",uid).Update("leaderboard_participating",participating).Error)
+}

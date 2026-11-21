@@ -24,6 +24,7 @@ type Config struct {
 	Returns            ReturnConfig
 	VIP                VIPConfig
 	Invite             InviteConfig
+	Leaderboard        LeaderboardConfig
 	Newbie             NewbieConfig
 }
 
@@ -95,6 +96,10 @@ func Load() (Config, error) {
 		return c, err
 	}
 	c.Invite, err = LoadInvite(os.Getenv("LOBBY_INVITE_CONFIG"))
+	if err != nil {
+		return c, err
+	}
+	c.Leaderboard, err = LoadLeaderboard(os.Getenv("LOBBY_LEADERBOARD_CONFIG"))
 	if err != nil {
 		return c, err
 	}

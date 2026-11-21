@@ -2,9 +2,6 @@ package gameservice
 
 import (
 	"context"
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/hex"
 	"strconv"
 	"sync"
 	"time"
@@ -141,9 +138,12 @@ func (l *Logic) GameLeaderboard(ctx context.Context, r *pb.GameStatisticsRequest
 			if i >= 10 {
 				break
 			}
-			mac := hmac.New(sha256.New, []byte(l.config.ServiceToken))
-			_, _ = mac.Write([]byte(strconv.FormatInt(row.UID, 10)))
-			out.Items = append(out.Items, &pb.GameLeaderboardItem{PlatformOrderId: row.PlatformOrderID, Rank: int32(i + 1), UserId: hex.EncodeToString(mac.Sum(nil))[:20], Nickname: row.Nickname, AvatarId: row.AvatarID, BetId: row.BetID, BetAmount: row.BetAmount, WinAmount: row.WinAmount, Multiplier: row.Multiplier, OccurredAt: row.EndedAt.Format(time.RFC3339)})
+			uid := strconv.FormatInt(row.UID, 10)
+			name := row.Nickname
+			if row.Anonymous {
+				uid, name = "******", "匿名"
+			}
+			out.Items = append(out.Items, &pb.GameLeaderboardItem{PlatformOrderId: row.PlatformOrderID, Rank: int32(i + 1), UserId: uid, Nickname: name, AvatarId: row.AvatarID, BetId: row.BetID, BetAmount: row.BetAmount, WinAmount: row.WinAmount, Multiplier: row.Multiplier, OccurredAt: row.EndedAt.Format(time.RFC3339), Anonymous: row.Anonymous})
 		}
 		return out, nil
 	})

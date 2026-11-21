@@ -147,6 +147,8 @@ button.game-rank-row::after {
   transform: rotate(45deg);
 }
 .game-rank-player { display: grid; gap: 2px; min-width: 0; overflow-wrap: anywhere; }
+.game-rank-uid,.game-rank-sheet-uid { color: var(--muted); font-size: 10px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.game-rank-sheet-uid { display: block; margin-top: 2px; }
 .game-rank-wager { color: var(--muted); font-size: 11px; }
 .game-rank-result b,.game-rank-sheet-summary > strong { color: var(--theme-green-text,#268765); }
 .game-rank-result small { display: inline-block; margin-inline-start: 4px; padding: 0 6px; border-radius: 4px; background: var(--theme-blue-tint,#e6edf8); color: var(--theme-blue-text,#405778); }
@@ -188,6 +190,11 @@ button.game-rank-row::after {
 .game-rank-order button { display: grid; place-items: center; border: 0; padding: 4px; background: transparent; color: var(--muted); cursor: pointer; }
 .game-rank-actions { display: flex; justify-content: flex-end; gap: 6px; }
 .game-rank-actions button,.game-rank-share button { border: 0; border-radius: 6px; padding: 6px 10px; background: var(--theme-blue-tint,#edf3fd); color: var(--blue); }
+.recent-win-detail-player > div { min-width: 0; }
+.recent-win-detail-uid { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.recent-win-detail-order .recent-win-detail-replay-button,.game-rank-sheet .recent-win-detail-replay-button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-width: 58px; min-height: 30px; padding: 5px 8px; border: 0; border-radius: 7px; background: var(--theme-action,var(--blue)); color: var(--theme-on-action,#fff); font-size: 12px; font-weight: 700; box-shadow: 0 1px 4px color-mix(in srgb, var(--theme-action,var(--blue)) 22%, transparent); }
+.recent-win-detail-replay-button svg { width: 13px; height: 13px; fill: currentColor; flex: none; }
+.recent-win-detail-order .recent-win-detail-replay-button:hover { filter: brightness(1.06); }
 .game-rank-share { display: flex; flex-wrap: wrap; gap: 8px; }
 .game-rank-share input { flex: 1; min-width: 0; }
 

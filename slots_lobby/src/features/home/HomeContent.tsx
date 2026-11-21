@@ -19,6 +19,7 @@ import { NetworkError } from '../../components/feedback/NetworkError';
 import { RecentWins } from './RecentWins';
 import { coverPresentation } from './coverPresentation';
 import { navigateLobby } from '../../app/useLobbyRoute';
+import { RecommendationRail } from '../recommendations/RecommendationRail';
 
 const GAMES_PER_BATCH = 6 * 3;
 
@@ -99,6 +100,7 @@ export function HomeContent({ onComingSoon, active=true }: { onComingSoon: () =>
       {hasMore && <div className="home-game-list-end" ref={listEnd}>
         {loadingMore && <span role="status" aria-label={t('copy.loading')}><SlotsLoader className="slots-loader-home" /></span>}
       </div>}
+      {selected === 'favorites' && uid && favorites.isSuccess && <RecommendationRail scene="favorites" onComingSoon={onComingSoon} />}
     </section>
   </>;
 }

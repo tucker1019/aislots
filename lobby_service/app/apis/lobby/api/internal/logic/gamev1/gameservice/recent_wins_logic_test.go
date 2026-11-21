@@ -22,6 +22,20 @@ func (s recentFake) ReadRecentWins(context.Context, []string, time.Time) ([]mode
 	return s.rows, nil
 }
 
+type recentReplayFake struct {
+	fake
+	orderID int64
+	order   model.ReplayOrder
+}
+
+func (s *recentReplayFake) ReadReplayOrder(_ context.Context, id int64) (model.ReplayOrder, bool, error) {
+	return s.order, id == s.orderID, nil
+}
+
+func (s *recentReplayFake) ReadReplayOrderForGame(_ context.Context, id int64, gameID string) (model.ReplayOrder, bool, error) {
+	return s.order, id == s.orderID && gameID == s.order.GameID, nil
+}
+
 func TestRecentWinsPublicPrivacySelfAndReplay(t *testing.T) {
 	ctx := context.Background()
 	now := time.Now().UTC().Add(-time.Second)
@@ -35,14 +49,20 @@ func TestRecentWinsPublicPrivacySelfAndReplay(t *testing.T) {
 	}))
 	defer adapter.Close()
 	cfg := config.GameConfig{ServiceToken: strings.Repeat("x", 32), Games: map[string]config.GameEntry{"AG1": {Enabled: true, Name: "Game", NameEn: "Game", Cover: "/assets/test.png", APIURL: adapter.URL, URL: "https://game.example/"}}}
-	feed := recentwins.New(recentFake{[]model.RecentWinView{{ID: "123", GameID: "AG1", BetID: "secret-bet", UID: 7, Nickname: "PrivateName", BetAmount: "2000000", AvatarID: 3, WinAmount: "100000000", Multiplier: "50", EndedAt: now}}}, cfg.Games)
+	feed := recentwins.New(recentFake{[]model.RecentWinView{
+		{ID: "123", GameID: "AG1", BetID: "secret-bet", UID: 7, Nickname: "PrivateName", BetAmount: "2000000", AvatarID: 3, WinAmount: "100000000", Multiplier: "50", EndedAt: now, Anonymous: false},
+		{ID: "125", GameID: "AG1", BetID: "private-bet", UID: 8, Nickname: "HiddenName", BetAmount: "2000000", AvatarID: 4, WinAmount: "100000000", Multiplier: "50", EndedAt: now.Add(-time.Second), Anonymous: true},
+	}}, cfg.Games)
 	if err := feed.Refresh(ctx, now); err != nil {
 		t.Fatal(err)
 	}
-	l := &Logic{recentWins: feed, users: recordUsers{}, config: cfg}
+	l := &Logic{recentWins: feed, users: recordUsers{}, store: &recentReplayFake{orderID: 123, order: model.ReplayOrder{GameID: "AG1", BetID: "secret-bet", UID: 7}}, config: cfg}
 	out, e := l.GameRecentWins(ctx, &pb.GameRecentWinsRequest{})
-	if e != nil || len(out.Items) != 1 || out.Items[0].IsSelf || out.Items[0].Nickname != "Pr***e" || out.Items[0].BetId != "secret-bet" || out.Items[0].BetAmount != "2000000" || out.Items[0].AvatarId != 3 {
+	if e != nil || len(out.Items) != 2 || out.Items[0].IsSelf || out.Items[0].Nickname != "PrivateName" || out.Items[0].Uid != "7" || out.Items[0].Anonymous || out.Items[0].BetId != "secret-bet" || out.Items[0].BetAmount != "2000000" || out.Items[0].AvatarId != 3 {
 		t.Fatal(out, e)
+	}
+	if out.Items[1].Nickname != "匿名" || out.Items[1].Uid != "******" || !out.Items[1].Anonymous {
+		t.Fatal("anonymous identity leaked or was malformed", out.Items[1])
 	}
 	uid := int64(7)
 	sid := strings.Repeat("s", 52)
@@ -73,17 +93,19 @@ func TestRecentWinsPublicPrivacySelfAndReplay(t *testing.T) {
 	if _, e = l.GameRecentWins(ctx, &pb.GameRecentWinsRequest{}); e == nil {
 		t.Fatal("missing feed")
 	}
+	if replay, e = l.GameRecentWinReplay(ctx, &pb.GameRecentWinReplayRequest{Id: "123"}); e != nil || !strings.Contains(replay.ReplayUrl, "replay=secret-bet") {
+		t.Fatal("replay should remain available after leaving the recent-wins cache", replay, e)
+	}
+	if calls != 2 {
+		t.Fatal("durable replay lookup did not call the game service", calls)
+	}
+	l.store = nil
 	if _, e = l.GameRecentWinReplay(ctx, &pb.GameRecentWinReplayRequest{Id: "123"}); e == nil {
-		t.Fatal("missing feed")
+		t.Fatal("missing replay store")
 	}
 	empty := recentwins.New(recentFake{}, cfg.Games)
 	l.recentWins = empty
 	if _, e = l.GameRecentWins(ctx, &pb.GameRecentWinsRequest{}); e == nil {
 		t.Fatal("uninitialized snapshot")
-	}
-	for _, in := range []string{"", "a", "ab", "中文名字"} {
-		if maskWinNickname(in) == in {
-			t.Fatal("unmasked nickname", in)
-		}
 	}
 }

@@ -30,7 +30,7 @@ func TestPersonalReportAuthorizationAndFields(t *testing.T) {
 	for _, period := range []string{"today", "yesterday", "this_week", "last_week"} {
 		r.Period = period
 		v, e := l.PersonalReport(ctx, r)
-		if e != nil || len(v.Items) != 18 || v.Items[0].Amount != 10000 || !v.Items[1].Supported || v.Items[len(v.Items)-1].Amount != -30 {
+		if e != nil || len(v.Items) != 19 || v.Items[0].Amount != 10000 || !v.Items[1].Supported || v.Items[len(v.Items)-1].Amount != -30 {
 			t.Fatal(v, e)
 		}
 	}

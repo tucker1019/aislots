@@ -1,0 +1,10 @@
+.recommendation-rail { margin-top: 6px; padding-top: 8px; border-top: 1px solid color-mix(in srgb, var(--line) 78%, transparent); }
+.recommendation-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.recommendation-heading h2 { display: flex; align-items: center; gap: 7px; margin: 0; color: var(--ink); font-size: 16px; line-height: 1.35; font-weight: 750; }
+.recommendation-heading h2 svg { width: 19px; height: 19px; fill: none; stroke: var(--theme-gold-text,#b47d2c); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.recommendation-controls { display: flex; gap: 6px; }
+.recommendation-controls button { display: grid; place-items: center; width: 27px; height: 27px; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--theme-surface,#fff); color: var(--ink); font-size: 21px; line-height: 1; }
+.recommendation-controls button:disabled { opacity: .3; }
+.recommendation-rail-list { display: flex; gap: 8px; overflow-x: auto; padding: 0 0 4px; scrollbar-width: none; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; }
+.recommendation-rail-list::-webkit-scrollbar { display: none; }
+.recommendation-rail-list .game-tile { flex: 0 0 calc((100% - 24px) / 4); min-width: 0; scroll-snap-align: start; }

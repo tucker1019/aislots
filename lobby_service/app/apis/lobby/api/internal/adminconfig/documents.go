@@ -33,6 +33,7 @@ var Sections = []Section{
 	{"newbie-recharge", "新手充值", "新注册参与者期限与档位；已有参与者保留原规则"},
 	{"games", "游戏入口", "游戏封面、排序、是否显示与上线；隐藏不返回，未上线敬请期待"},
 	{"experience", "体验账号", "体验账号生成与游戏间隔"},
+	{"leaderboard", "排行榜奖励", "排行榜前十名奖励金额"},
 }
 
 func known(key string) bool {
@@ -149,6 +150,8 @@ func ValidateDocument(key string, doc []byte) error {
 			_, e = config.LoadNewbie(path)
 		case "experience":
 			_, e = config.LoadExperience(path)
+		case "leaderboard":
+			_, e = config.LoadLeaderboard(path)
 		case "games":
 			if e = strict[config.GameConfig](doc); e == nil {
 				_, e = config.LoadGames(path)
@@ -162,6 +165,13 @@ func ValidateDocument(key string, doc []byte) error {
 }
 
 func applyDocument(c *config.Config, key string, doc []byte) error {
+	if key == "turnover" {
+		var e error
+		doc, e = normalizeTurnoverDocument(c.Turnover, doc)
+		if e != nil {
+			return e
+		}
+	}
 	if e := ValidateDocument(key, doc); e != nil {
 		return e
 	}
@@ -187,7 +197,24 @@ func applyDocument(c *config.Config, key string, doc []byte) error {
 			v, e = config.LoadLossReturn(path)
 			c.Returns.SetLoss(v)
 		case "turnover":
-			c.Turnover, e = config.LoadTurnover(path)
+			// Older published documents predate newly added credit sources. Fill
+			// only missing source keys from the deployment defaults so a restart
+			// remains compatible without changing existing published multipliers.
+			var v config.TurnoverConfig
+			if e = json.Unmarshal(doc, &v); e == nil {
+				if v.Multipliers == nil {
+					v.Multipliers = map[string]int64{}
+				}
+				for source, multiplier := range c.Turnover.Multipliers {
+					if _, ok := v.Multipliers[source]; !ok {
+						v.Multipliers[source] = multiplier
+					}
+				}
+				e = v.Validate()
+				if e == nil {
+					c.Turnover = v
+				}
+			}
 		case "agent":
 			c.Agent, e = config.LoadAgent(path)
 		case "vip":
@@ -196,6 +223,17 @@ func applyDocument(c *config.Config, key string, doc []byte) error {
 			c.Invite, e = config.LoadInvite(path)
 		case "newbie-recharge":
 			c.Newbie, e = config.LoadNewbie(path)
+		case "leaderboard":
+			defaultTurnover := c.Leaderboard.Turnover
+			c.Leaderboard, e = config.LoadLeaderboard(path)
+			if e == nil {
+				var raw map[string]json.RawMessage
+				if json.Unmarshal(doc, &raw) == nil {
+					if _, ok := raw["turnover"]; !ok {
+						c.Leaderboard.Turnover = defaultTurnover
+					}
+				}
+			}
 		case "games":
 			token := c.Game.ServiceToken
 			c.Game, e = config.LoadGames(path)
@@ -203,6 +241,22 @@ func applyDocument(c *config.Config, key string, doc []byte) error {
 		}
 		return e
 	})
+}
+
+func normalizeTurnoverDocument(base config.TurnoverConfig, doc []byte) ([]byte, error) {
+	var value config.TurnoverConfig
+	if err := json.Unmarshal(doc, &value); err != nil {
+		return nil, err
+	}
+	if value.Multipliers == nil {
+		value.Multipliers = map[string]int64{}
+	}
+	for source, multiplier := range base.Multipliers {
+		if _, ok := value.Multipliers[source]; !ok {
+			value.Multipliers[source] = multiplier
+		}
+	}
+	return json.Marshal(value)
 }
 
 func checkImmutable(c config.Config, key string, doc []byte) error {

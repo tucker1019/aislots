@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"maps"
 	"net/http"
 	"os"
 	"sync/atomic"
@@ -14,6 +15,7 @@ import (
 	"apps/app/apis/lobby/api/internal/repository/model"
 	"apps/app/apis/lobby/api/internal/router"
 	"apps/app/apis/lobby/api/internal/svc"
+	"apps/pkg/coinsource"
 	"apps/pkg/xlog"
 
 	"gorm.io/gorm"
@@ -44,7 +46,12 @@ type Runtime struct {
 
 func (r *Runtime) Close() { r.cancel(); <-r.done }
 func buildDependencies(ctx context.Context, db *gorm.DB, c config.Config) (*svc.ServiceContext, error) {
-	if e := (&model.TurnoverModel{DB: db}).Configure(ctx, c.Turnover); e != nil {
+	turnover := c.Turnover
+	turnover.Multipliers = maps.Clone(c.Turnover.Multipliers)
+	if !c.Leaderboard.Turnover {
+		turnover.Multipliers[string(coinsource.SourceLeaderboardReward)] = 0
+	}
+	if e := (&model.TurnoverModel{DB: db}).Configure(ctx, turnover); e != nil {
 		return nil, e
 	}
 	repo := repository.New(db, c.Checkin.Location())
@@ -64,7 +71,7 @@ func startWorkers(ctx context.Context, db *gorm.DB, d *svc.ServiceContext) func(
 			d.RecentWins.Run(worker)
 		}
 	}()
-	done := []<-chan struct{}{recentDone, StartPayments(worker, d.Repo.Recharge), StartVIP(worker, d.Repo.VIP), StartAgent(worker, d.Repo.Agent), StartExperience(worker, d.Config, db)}
+	done := []<-chan struct{}{recentDone, StartPayments(worker, d.Repo.Recharge), StartVIP(worker, d.Repo.VIP), StartAgent(worker, d.Repo.Agent), StartExperience(worker, d.Config, db), StartLeaderboardSettlement(worker, db, d.Config), StartRecommendations(worker, d.Repo.Recommendations)}
 	return func() {
 		cancel()
 		for _, v := range done {
