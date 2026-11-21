@@ -3,6 +3,7 @@ import {RespinAnalysis} from './components/paylines/RespinAnalysis';
 import {RabbitAnalysis} from './components/rabbit/RabbitAnalysis';
 import {OxAnalysis} from './components/ox/OxAnalysis';
 import {MouseAnalysis} from './components/mouse/MouseAnalysis';
+import {Ag11Analysis} from './components/ag11/Ag11Analysis';
 import './components/paylines/paylines.css';
 import { BasePrizeTiers } from './components/BasePrizeTiers';
 import { PersistentDetails } from './components/PersistentDetails';
@@ -32,7 +33,8 @@ export function App() {
       {document?.files.config.ruleType==='fortune_ox_v1'&&<fieldset className="analysis-editor-fieldset" disabled={loading}><OxAnalysis key={`${document.gameId}:${generation}`} document={document} onDirtyChange={setAnalysisDirty} onSavingChange={setAnalysisSaving} onSaved={analysisSaved}/></fieldset>}
       {document?.files.config.ruleType==='fortune_mouse_v1'&&<fieldset className="analysis-editor-fieldset" disabled={loading}><MouseAnalysis key={`${document.gameId}:${generation}`} document={document} onDirtyChange={setAnalysisDirty} onSavingChange={setAnalysisSaving} onSaved={analysisSaved}/></fieldset>}
       {document?.files.config.ruleType==='fortune_rabbit_v1'&&<fieldset className="analysis-editor-fieldset" disabled={loading}><RabbitAnalysis key={`${document.gameId}:${generation}`} document={document} onDirtyChange={setAnalysisDirty} onSavingChange={setAnalysisSaving} onSaved={analysisSaved}/></fieldset>}
-      {!['fortune_dragon_v1','fortune_ox_v1','fortune_mouse_v1','fortune_rabbit_v1'].includes(document?.files.config.ruleType??'')&&<>{document && ['paylines_v1','fortune_leopard_v1'].includes(document.files.config.ruleType) ? <fieldset className="analysis-editor-fieldset" disabled={loading}><RespinAnalysis key={`${document.gameId}:${generation}`} document={document} onDirtyChange={setAnalysisDirty} onSavingChange={setAnalysisSaving} onSaved={analysisSaved}/></fieldset> : document ? <fieldset className="analysis-editor-fieldset" disabled={loading} aria-busy={loading}><AnalysisEditor key={`${document.gameId}:${generation}`} document={document} onDirtyChange={setAnalysisDirty} onSavingChange={setAnalysisSaving} onSaved={analysisSaved} /></fieldset> : <div className="game-file-empty">未加载配置。数值工具没有内置默认配置；数值始终从游戏 JSON 文件读取。</div>}</>}
+      {document?.files.config.ruleType==='ag11_v1'&&<fieldset className="analysis-editor-fieldset" disabled={loading}><Ag11Analysis key={`${document.gameId}:${generation}`} document={document} onDirtyChange={setAnalysisDirty} onSavingChange={setAnalysisSaving} onSaved={analysisSaved}/></fieldset>}
+      {!['fortune_dragon_v1','fortune_ox_v1','fortune_mouse_v1','fortune_rabbit_v1','ag11_v1'].includes(document?.files.config.ruleType??'')&&<>{document && ['paylines_v1','fortune_leopard_v1'].includes(document.files.config.ruleType) ? <fieldset className="analysis-editor-fieldset" disabled={loading}><RespinAnalysis key={`${document.gameId}:${generation}`} document={document} onDirtyChange={setAnalysisDirty} onSavingChange={setAnalysisSaving} onSaved={analysisSaved}/></fieldset> : document ? <fieldset className="analysis-editor-fieldset" disabled={loading} aria-busy={loading}><AnalysisEditor key={`${document.gameId}:${generation}`} document={document} onDirtyChange={setAnalysisDirty} onSavingChange={setAnalysisSaving} onSaved={analysisSaved} /></fieldset> : <div className="game-file-empty">未加载配置。数值工具没有内置默认配置；数值始终从游戏 JSON 文件读取。</div>}</>}
     </main>
   </div>;
 }

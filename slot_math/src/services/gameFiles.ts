@@ -5,6 +5,7 @@ import { validateRabbitConfig } from '../domain/fortuneRabbit';
 import {validateMouseConfig,type MouseConfig,type MouseLibrary,mouseCoverage} from '../domain/fortuneMouse';
 import { validateGameFiles, type GameDocument, type GameFiles } from '../domain/settings';
 import { validateBoardFile, type BoardDocument, type BoardFile } from '../domain/board';
+import { validateAg11Board, type Ag11BoardConfig } from '../domain/ag11Math';
 const endpoint = new URL('__game-files/games', document.baseURI).pathname;
 export async function readDragonConfig(gameId:string):Promise<{gameId:string;revision:string;file:DragonConfig}>{
  const data=await request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`);
@@ -95,5 +96,17 @@ export async function saveRabbitConfig(gameId:string,revision:string,file:import
  return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
 }
 export async function saveRabbitLibrary(gameId:string,revision:string,file:import('../domain/fortuneRabbit').RabbitLibrary & {gameRevision:string}):Promise<{path:string;bytes:number;retained:number;validation:ReturnType<typeof import('../domain/fortuneRabbit').rabbitCoverage>}>{
+ return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines/library`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
+}
+export async function readAg11Config(gameId:string):Promise<{gameId:string;revision:string;file:Ag11BoardConfig}>{
+ const data=await request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`);
+ if(data.gameId!==gameId||typeof data.revision!=='string')throw Error('AG11 盘面配置响应格式错误。');
+ validateAg11Board(data.file);return {...data,file:data.file as Ag11BoardConfig};
+}
+export async function saveAg11Config(gameId:string,revision:string,file:Ag11BoardConfig):Promise<{revision:string}>{
+ validateAg11Board(file);
+ return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
+}
+export async function saveAg11Library(gameId:string,revision:string,file:import('../domain/ag11Skeleton').Ag11Library & {gameRevision:string}):Promise<{path:string;bytes:number;retained:number;validation:ReturnType<typeof import('../domain/ag11Skeleton').ag11Coverage>}>{
  return request(`${endpoint}/${encodeURIComponent(gameId)}/paylines/library`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,file})});
 }

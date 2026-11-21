@@ -3,6 +3,7 @@ import { PaylinePage } from './paylines/PaylinePage';
 import { RabbitDeveloper } from './rabbit/RabbitDeveloper';
 import {OxDeveloper} from './ox/OxDeveloper';
 import {MouseDeveloper} from './mouse/MouseDeveloper';
+import {Ag11Developer} from './ag11/Ag11Developer';
 import { useEffect, useRef, useState } from 'react';
 import { PersistentDetails } from './PersistentDetails';
 import { PageNav } from './PageNav';
@@ -28,6 +29,7 @@ export function DeveloperPage({ active }: { active: boolean }) {
   if(workspace.document?.files.config.ruleType==='fortune_ox_v1')return <OxDeveloper/>;
   if(workspace.document?.files.config.ruleType==='fortune_mouse_v1')return <MouseDeveloper/>;
   if(workspace.document?.files.config.ruleType==='fortune_rabbit_v1')return <RabbitDeveloper/>;
+  if(workspace.document?.files.config.ruleType==='ag11_v1')return <Ag11Developer/>;
   return ['paylines_v1','fortune_leopard_v1'].includes(workspace.document?.files.config.ruleType??'') ? <PaylinePage /> : <CascadeDeveloperPage active={active} />;
 }
 function CascadeDeveloperPage({ active }: { active: boolean }) {

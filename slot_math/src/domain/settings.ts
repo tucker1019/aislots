@@ -2,6 +2,7 @@ import {validateDragonFiles,type DragonNumerical} from './dragonMath';
 import { calculateModel, calculateRespinModel, validateRabbitParameters, validateRabbitTable, parseWeightTable, type FreeTriggerRule, type Parameters, type WeightRow, type WeightTable } from './model';
 import {calculateOxModel} from './oxMath';
 import {calculateMouseModel} from './mouseMath';
+import {validateAg11Parameters} from './ag11Math';
 
 export type LoadedTable = { name: string; table: WeightTable };
 export interface FreeSpinAwardInput { spins: string; weight: string }
@@ -110,6 +111,15 @@ export function validateGameFiles(value: unknown): GameFiles {
   if (typeof c.ruleType !== 'string' || !/^[a-z][a-z0-9_]*_v[1-9][0-9]*$/.test(c.ruleType)) throw new Error('config.json：ruleType 必须是带版本的规则标识，例如 ways_cascade_v1。');
   object(c.parameters, 'config.json.parameters');
   const p = c.parameters;
+  if (c.ruleType === 'ag11_v1') {
+    try { validateAg11Parameters(p); }
+    catch (error) { throw new Error(`config.json：${(error as Error).message}`); }
+    object(c.simulationOptions, 'config.json.simulationOptions');
+    const { paidSpins, seed } = c.simulationOptions;
+    if (!Number.isSafeInteger(paidSpins) || (paidSpins as number) < 1 || (paidSpins as number) > 1_000_000_000) throw new Error('config.json：模拟局数必须为 1 到 10 亿的整数。');
+    if (seed !== null && (seed === undefined || !Number.isSafeInteger(seed) || (seed as number) < 0 || (seed as number) > 0xffffffff)) throw new Error('config.json：种子必须为 0 到 4294967295 的整数，或 null。');
+    return value as unknown as GameFiles;
+  }
   const isLeopard=c.ruleType==='fortune_leopard_v1';
   const isOx=c.ruleType==='fortune_ox_v1';
   const isMouse=c.ruleType==='fortune_mouse_v1';
