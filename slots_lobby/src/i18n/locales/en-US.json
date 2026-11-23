@@ -863,6 +863,7 @@
   "platformLeaderboard.me": "You",
   "platformLeaderboard.reward": "Reward",
   "platformLeaderboard.issued": "Issued",
+  "platformLeaderboard.claimed": "Claimed",
   "platformLeaderboard.notParticipating": "Not participating",
   "platformLeaderboard.openReplay": "Open replay"
 }

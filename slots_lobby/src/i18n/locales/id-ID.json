@@ -862,7 +862,8 @@
   "platformLeaderboard.guest": "Pemain tamu",
   "platformLeaderboard.me": "Anda",
   "platformLeaderboard.reward": "Hadiah",
-  "platformLeaderboard.issued": "Sudah dibayarkan",
+  "platformLeaderboard.issued": "Dibayar",
+  "platformLeaderboard.claimed": "Diklaim",
   "platformLeaderboard.notParticipating": "Tidak ikut aktivitas",
   "platformLeaderboard.openReplay": "Buka tayangan ulang"
 }

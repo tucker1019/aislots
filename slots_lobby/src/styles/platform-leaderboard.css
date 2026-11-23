@@ -74,14 +74,11 @@
 .platform-score > .platform-multiplier,.platform-score > .platform-win { margin-top: 0; font-size: 33px; line-height: 1.05; font-weight: 950; }
 .platform-score > .platform-win { color: var(--theme-action); }
 .platform-score .platform-reward-caption { display: none; }
-.platform-score .platform-reward-value { font-size: 0; margin-top: 8px; padding: 7px 12px; border: 1px solid color-mix(in srgb,var(--theme-gold-text) 70%,transparent); border-radius: 10px; background: color-mix(in srgb,var(--theme-gold-text) 12%,transparent); color: var(--theme-gold-text); }
-.platform-score .platform-reward-value::before { content: '奖金 '; font-size: 14px; }
-.platform-score .platform-reward-value::after { content: ''; }
-.platform-score .platform-reward-value { font-size: 20px; }
-.platform-score .platform-reward-value::before { font-size: 14px; }
+.platform-score .platform-reward-value { margin-top: 8px; padding: 7px 12px; border: 1px solid color-mix(in srgb,var(--theme-gold-text) 70%,transparent); border-radius: 10px; background: color-mix(in srgb,var(--theme-gold-text) 12%,transparent); color: var(--theme-gold-text); white-space: nowrap; }
+.platform-score .platform-reward-value > span { font-size: 14px; }
 .platform-leaderboard-claim,.platform-leaderboard-claimed { margin-top: 8px; white-space: nowrap; }
-.platform-leaderboard-claimed { font-size: 14px; }
-@media (max-width: 560px) { .platform-leaderboard-row { grid-template-columns: 24px 40px minmax(0,1fr) minmax(128px,auto); padding: 12px 10px; gap: 8px; } .platform-avatar-wrap,.platform-avatar { width: 40px; height: 40px; } .platform-player strong { font-size: 14px; } .platform-player small,.platform-player em { font-size: 11px; } .platform-score { min-width: 128px; } .platform-score > .platform-multiplier,.platform-score > .platform-win { font-size: 24px; } .platform-score .platform-reward-value { font-size: 16px; padding: 6px 8px; } .platform-score .platform-reward-value::before { font-size: 11px; } }
+.platform-leaderboard-claimed { font-size: 11px; }
+@media (max-width: 560px) { .platform-leaderboard-row { grid-template-columns: 24px 40px minmax(0,1fr) minmax(128px,auto); padding: 12px 10px; gap: 8px; } .platform-avatar-wrap,.platform-avatar { width: 40px; height: 40px; } .platform-player strong { font-size: 14px; } .platform-player small,.platform-player em { font-size: 11px; } .platform-score { min-width: 128px; } .platform-score > .platform-multiplier,.platform-score > .platform-win { font-size: 24px; } .platform-score .platform-reward-value { font-size: 16px; padding: 6px 8px; } .platform-score .platform-reward-value > span { font-size: 11px; } }
 .platform-score { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; align-items: center; justify-content: end; column-gap: 8px; }
 .platform-score > .platform-multiplier,.platform-score > .platform-win { grid-column: 1 / -1; justify-self: end; }
 .platform-score .platform-reward-value { grid-column: 1; justify-self: end; }
@@ -109,7 +106,6 @@
   .platform-player small,.platform-player em { font-size: 11px; }
   .platform-score > .platform-multiplier,.platform-score > .platform-win { justify-self: end; font-size: 27px; }
   .platform-score .platform-reward-value { justify-self: end; max-width: 100%; font-size: 16px; padding: 6px 8px; }
-  .platform-score .platform-reward-value::before { font-size: 11px; }
   .platform-score .platform-leaderboard-claim,.platform-score .platform-leaderboard-claimed { justify-self: end; font-size: 12px; }
 }
 @container leaderboard (max-width: 560px) {
@@ -118,7 +114,6 @@
   .platform-leaderboard-row .platform-score { grid-column: 4; grid-row: 1 / 3; width: 126px; min-width: 0; }
   .platform-score > .platform-multiplier,.platform-score > .platform-win { font-size: 20px; line-height: 1.1; }
   .platform-score .platform-reward-value { font-size: 13px; padding: 5px 6px; }
-  .platform-score .platform-reward-value::before { font-size: 10px; }
   .platform-score .platform-leaderboard-claim,.platform-score .platform-leaderboard-claimed { font-size: 11px; }
 }
 @container leaderboard (max-width: 560px) {

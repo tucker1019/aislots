@@ -863,6 +863,7 @@
   "platformLeaderboard.me": "您",
   "platformLeaderboard.reward": "獎勵",
   "platformLeaderboard.issued": "已發放",
+  "platformLeaderboard.claimed": "已領取",
   "platformLeaderboard.notParticipating": "不參與活動",
   "platformLeaderboard.openReplay": "點擊查看回放"
 }

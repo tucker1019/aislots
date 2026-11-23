@@ -25,6 +25,13 @@ it('個人報表全部服務端指標都有英文文案',()=>{
  expect(gameLabel('AG1','服務端名稱變化')).toBe('Mahjong Ways');
 });
 
+it('排行榜獎勵與發放狀態提供印尼語短文案',()=>{
+ useLanguageStore.getState().setLocale('id-ID');
+ expect(t('copy.bonus')).toBe('Bonus');
+ expect(t('platformLeaderboard.issued')).toBe('Dibayar');
+ expect(t('platformLeaderboard.claimed')).toBe('Diklaim');
+});
+
 it('registered languages are selectable; previous Simplified preference migrates',async()=>{
  expect(languages.map(item=>item.id)).toEqual(['zh-TW','en-US','id-ID']);
  expect(isLocale('zh-CN')).toBe(false);expect(resolveLocale('zh-CN')).toBe('zh-TW');
@@ -34,11 +41,11 @@ it('registered languages are selectable; previous Simplified preference migrates
  expect(fresh.getLocale()).toBe('zh-TW');expect(localStorage.getItem('aislots-language')).toBe('zh-TW');
 });
 
-it('defaults to Indonesian without a saved preference and preserves supported choices', async()=>{
+it('defaults to Traditional Chinese without a saved preference and preserves supported choices', async()=>{
  localStorage.removeItem('aislots-language');vi.resetModules();
  const fresh=await import('./index');
- expect(fresh.getLocale()).toBe('id-ID');
- expect(fresh.t('copy.home')).toBe('Beranda');
- expect(resolveLocale(null)).toBe('id-ID');expect(resolveLocale('unknown')).toBe('id-ID');
+ expect(fresh.getLocale()).toBe('zh-TW');
+ expect(fresh.t('copy.home')).toBe('首頁');
+ expect(resolveLocale(null)).toBe('zh-TW');expect(resolveLocale('unknown')).toBe('zh-TW');
  for(const locale of ['zh-TW','en-US','id-ID'] as const)expect(resolveLocale(locale)).toBe(locale);
 });
