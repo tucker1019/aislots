@@ -14,6 +14,18 @@ it('RTP浮窗直接展示三個窗口並按理論值顯示方向',async()=>{vi.m
 it('5分鐘無數據時回退一小時',async()=>{vi.mocked(fetchGameRtp).mockImplementation(async window=>({percent:window==='1h'?'98.00':'90.00',rounds:3,hasData:window!=='5m',from:'2026-11-03T00:00:00Z',to:'2026-11-03T01:00:00Z',updatedAt:'2026-11-03T01:00:00Z',statisticsSince:'2026-11-03T00:00:00Z'}));setup('rtp');expect(await screen.findByText('98.00%')).toHaveClass('rtp-up');});
 it('排行榜显示完整公开身份并遮挡未参加用户身份',async()=>{vi.mocked(fetchLeaderboard).mockResolvedValue({items:[{rank:1,platformOrderId:'1',userId:'123456789',nickname:'Full Player Name',anonymous:false,avatarId:2,betId:'a',betAmount:'100',winAmount:'500',multiplier:'5.00',occurredAt:'2026-11-03T01:00:00Z'},{rank:2,platformOrderId:'2',userId:'******',nickname:'匿名',anonymous:true,avatarId:3,betId:'b',betAmount:'100',winAmount:'300',multiplier:'3.00',occurredAt:'2026-11-03T01:01:00Z'}],updatedAt:'2026-11-03T00:00:00Z',statisticsSince:'2026-11-03T00:00:00Z',timezone:'UTC'});setup('ranking');expect(await screen.findByText('Full Player Name')).toBeInTheDocument();expect(screen.getByText('UID 123456789')).toBeInTheDocument();expect(screen.getByText('匿名')).toBeInTheDocument();expect(screen.getByText('UID ******')).toBeInTheDocument();expect(screen.getByText('+Rp5')).toHaveClass('game-rank-primary');expect(screen.getByText('5.00×')).not.toHaveClass('game-rank-primary');expect(fetchLeaderboard).toHaveBeenCalledWith('wins','all',expect.any(AbortSignal),'AG1');fireEvent.click(screen.getByRole('tab',{name:t('gamePreview.highestMultiplier')}));expect(await screen.findByText('5.00×')).toHaveClass('game-rank-primary');await waitFor(()=>expect(fetchLeaderboard).toHaveBeenCalledWith('multiplier','all',expect.any(AbortSignal),'AG1'));fireEvent.click(screen.getByRole('button',{name:/Full Player Name/}));expect(await screen.findByRole('dialog',{name:t('gamePreview.betSlip')})).toBeInTheDocument();expect(screen.getAllByText('UID 123456789')).toHaveLength(2);expect(screen.getByText('a')).toBeInTheDocument();fireEvent.click(screen.getByRole('button',{name:t('gamePreview.playNow')}));await waitFor(()=>expect(screen.queryByRole('dialog')).not.toBeInTheDocument());expect(fetchGameRtp).not.toHaveBeenCalled();});
 
+it('关闭排行榜奖励明细后仍可再次打开',async()=>{
+ vi.mocked(fetchLeaderboard).mockResolvedValue({items:[{rank:1,platformOrderId:'1',userId:'123456789',nickname:'Full Player Name',anonymous:false,avatarId:2,betId:'a',betAmount:'100',winAmount:'500',multiplier:'5.00',occurredAt:'2026-11-03T01:00:00Z'}],updatedAt:'2026-11-03T00:00:00Z',statisticsSince:'2026-11-03T00:00:00Z',timezone:'UTC'});
+ setup('ranking');
+ const row=await screen.findByRole('button',{name:/Full Player Name/});
+ fireEvent.click(row);
+ expect(await screen.findByRole('dialog',{name:t('gamePreview.betSlip')})).toBeInTheDocument();
+ fireEvent.keyDown(document,{key:'Escape'});
+ await waitFor(()=>expect(screen.queryByRole('dialog',{name:t('gamePreview.betSlip')})).not.toBeInTheDocument());
+ fireEvent.click(row);
+ expect(await screen.findByRole('dialog',{name:t('gamePreview.betSlip')})).toBeInTheDocument();
+});
+
 it('停留頁面不輪詢刷新RTP',async()=>{vi.mocked(fetchGameRtp).mockResolvedValue({percent:'97.00',rounds:3,hasData:true,from:'2026-11-03T00:00:00Z',to:'2026-11-03T01:00:00Z',updatedAt:'2026-11-03T01:00:00Z',statisticsSince:'2026-11-03T00:00:00Z'});setup('rtp');await waitFor(()=>expect(document.querySelector('.rtp-headline')).toHaveTextContent('97.00%'));vi.useFakeTimers();try{await act(async()=>{await vi.advanceTimersByTimeAsync(90000);});expect(fetchGameRtp).toHaveBeenCalledTimes(3);}finally{vi.useRealTimers();}});
 
 it('顯示完整暱稱與排名',async()=>{
