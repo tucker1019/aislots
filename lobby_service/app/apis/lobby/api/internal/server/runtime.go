@@ -71,7 +71,7 @@ func startWorkers(ctx context.Context, db *gorm.DB, d *svc.ServiceContext) func(
 			d.RecentWins.Run(worker)
 		}
 	}()
-	done := []<-chan struct{}{recentDone, StartPayments(worker, d.Repo.Recharge), StartVIP(worker, d.Repo.VIP), StartAgent(worker, d.Repo.Agent), StartExperience(worker, d.Config, db), StartLeaderboardSettlement(worker, db, d.Config), StartRecommendations(worker, d.Repo.Recommendations)}
+	done := []<-chan struct{}{recentDone, StartPayments(worker, d.Repo.Recharge), StartVIP(worker, d.Repo.VIP), StartAgent(worker, d.Repo.Agent), StartExperience(worker, d.Config, db), StartLeaderboardSettlement(worker, db, d.Config), StartRewardNotifications(worker, d.Repo.RewardNotifications, d.Config), StartRecommendations(worker, d.Repo.Recommendations)}
 	return func() {
 		cancel()
 		for _, v := range done {

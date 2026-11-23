@@ -13,4 +13,6 @@ func (a *API) Register(m *http.ServeMux, auth *adminauth.Auth) {
 	m.HandleFunc("GET /admin/api/orders", auth.Protect("orders.read", a.orders))
 	m.HandleFunc("POST /admin/api/orders/review", auth.Protect("orders.review", a.review))
 	m.HandleFunc("GET /admin/api/audit", auth.Protect("audit.read", a.audit))
+	m.HandleFunc("GET /admin/api/redeem-codes", auth.Protect("redeem-codes.read", a.redeemCodes))
+	m.HandleFunc("POST /admin/api/redeem-codes", auth.Protect("redeem-codes.write", a.generateRedeemCode))
 }

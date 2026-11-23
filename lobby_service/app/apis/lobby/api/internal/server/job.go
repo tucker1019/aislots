@@ -41,6 +41,30 @@ func StartLeaderboardSettlement(ctx context.Context, db *gorm.DB, c config.Confi
 	return done
 }
 
+func StartRewardNotifications(ctx context.Context, store *model.RewardNotificationModel, c config.Config) <-chan struct{} {
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		process := func() {
+			if err := store.Process(ctx, c, time.Now().UTC()); err != nil && ctx.Err() == nil {
+				xlog.Error(ctx, "reward notifications processing failed", "error", err)
+			}
+		}
+		process()
+		ticker := time.NewTicker(time.Minute)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+				process()
+			}
+		}
+	}()
+	return done
+}
+
 // StartPayments runs the MVP payment simulator against durable pending orders.
 func StartPayments(ctx context.Context, store repository.RechargeStore) <-chan struct{} {
 	done := make(chan struct{})

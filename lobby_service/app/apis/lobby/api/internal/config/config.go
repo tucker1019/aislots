@@ -10,22 +10,23 @@ import (
 )
 
 type Config struct {
-	Content            ContentConfig
-	Turnover           TurnoverConfig
-	Agent              AgentConfig
-	Game               GameConfig
-	Address            string
-	DatabaseURL        string
-	SessionDays        int
-	RechargeTiers      []RechargeTier
-	WithdrawalTiers    []RechargeTier
-	WithdrawalTestMode bool
-	Checkin            CheckinConfig
-	Returns            ReturnConfig
-	VIP                VIPConfig
-	Invite             InviteConfig
-	Leaderboard        LeaderboardConfig
-	Newbie             NewbieConfig
+	Content             ContentConfig
+	Turnover            TurnoverConfig
+	Agent               AgentConfig
+	Game                GameConfig
+	Address             string
+	DatabaseURL         string
+	SessionDays         int
+	RechargeTiers       []RechargeTier
+	WithdrawalTiers     []RechargeTier
+	WithdrawalTestMode  bool
+	Checkin             CheckinConfig
+	Returns             ReturnConfig
+	VIP                 VIPConfig
+	Invite              InviteConfig
+	Leaderboard         LeaderboardConfig
+	RewardNotifications RewardNotificationsConfig
+	Newbie              NewbieConfig
 }
 
 func (c Config) SessionTTL() time.Duration { return time.Duration(c.SessionDays) * 24 * time.Hour }
@@ -100,6 +101,14 @@ func Load() (Config, error) {
 		return c, err
 	}
 	c.Leaderboard, err = LoadLeaderboard(os.Getenv("LOBBY_LEADERBOARD_CONFIG"))
+	if err != nil {
+		return c, err
+	}
+	rewardNotificationPath := os.Getenv("LOBBY_REWARD_NOTIFICATIONS_CONFIG")
+	if rewardNotificationPath == "" {
+		rewardNotificationPath = "etc/reward-notifications.json"
+	}
+	c.RewardNotifications, err = LoadRewardNotifications(rewardNotificationPath)
 	if err != nil {
 		return c, err
 	}

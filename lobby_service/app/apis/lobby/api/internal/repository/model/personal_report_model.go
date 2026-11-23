@@ -76,6 +76,7 @@ func (m *GameModel) PersonalReport(ctx context.Context, uid int64, period string
 		out.Amounts["gameProfit"] = profit.Int64()
 		mappings := map[string][]coinsource.Source{
 			"withdrawalBonus":   {coinsource.SourceWithdrawalBonus},
+			"adjustment":        {coinsource.SourceRedeemCodeReward},
 			"leaderboardReward": {coinsource.SourceLeaderboardReward},
 			"commission":        {coinsource.SourceAgentCommission},
 			"inviteReward":      {coinsource.SourceInviteReward},

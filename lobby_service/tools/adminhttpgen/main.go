@@ -57,6 +57,12 @@ func(a *API) Register(m *http.ServeMux,auth *adminauth.Auth){
 				case "Audit":
 					permission = "audit.read"
 					handler = "audit"
+				case "RedeemCodes":
+					permission = "redeem-codes.read"
+					handler = "redeemCodes"
+				case "GenerateRedeemCode":
+					permission = "redeem-codes.write"
+					handler = "generateRedeemCode"
 				default:
 					continue
 				}

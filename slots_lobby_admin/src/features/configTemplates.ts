@@ -13,6 +13,7 @@ const templates: Record<string, Json> = {
  'content.banners': { id: '', enabled: false, imageZhTw: '', imageEnUs: '', altZhTw: '', altEnUs: '', route: '/' },
 };
 export function arrayTemplate(path: string): Json | undefined {
+ if (/^reward-notifications\.(rebate|leaderboard|lossReturn)\.reminderHours$/.test(path)) return 12;
  if (/^agent\.providers\.[A-Za-z][A-Za-z0-9_-]{0,63}$/.test(path)) return { threshold: 0, rate: 0 };
  return templates[path];
 }

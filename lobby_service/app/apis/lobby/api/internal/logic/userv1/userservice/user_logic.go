@@ -11,6 +11,7 @@ import (
 
 	"apps/app/apis/lobby/api/internal/config"
 	"apps/app/apis/lobby/api/internal/repository"
+	"apps/app/apis/lobby/api/internal/repository/model"
 	"apps/app/apis/lobby/api/internal/svc"
 	"apps/pkg/xerr"
 
@@ -28,11 +29,12 @@ type Service struct {
 	WithdrawalTestMode bool
 	Wallet             repository.WalletStore
 	Store              repository.UserStore
+	RedeemCodes        *model.RedeemCodeModel
 	TTL                time.Duration
 }
 
 func NewUserLogic(ctx *svc.ServiceContext) *Service {
-	return &Service{Withdrawal: ctx.Repo.Withdrawal, WithdrawalTiers: ctx.Config.WithdrawalTiers, WithdrawalTestMode: ctx.Config.WithdrawalTestMode, Wallet: ctx.Repo.Wallet, Store: ctx.Repo.Users, TTL: ctx.Config.SessionTTL()}
+	return &Service{Withdrawal: ctx.Repo.Withdrawal, WithdrawalTiers: ctx.Config.WithdrawalTiers, WithdrawalTestMode: ctx.Config.WithdrawalTestMode, Wallet: ctx.Repo.Wallet, Store: ctx.Repo.Users, RedeemCodes: ctx.Repo.RedeemCodes, TTL: ctx.Config.SessionTTL()}
 }
 
 func Hash(s string) string { h := sha256.Sum256([]byte(s)); return hex.EncodeToString(h[:]) }

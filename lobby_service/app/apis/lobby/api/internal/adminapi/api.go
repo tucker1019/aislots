@@ -17,6 +17,7 @@ type API struct {
 	DB          *gorm.DB
 	Location    *time.Location
 	Recharge    *model.RechargeModel
+	RedeemCodes *model.RedeemCodeModel
 	ReviewModel func(*http.Request) (*model.RechargeModel, error)
 }
 
@@ -214,4 +215,96 @@ func (a *API) audit(w http.ResponseWriter, r *http.Request) {
 		next = cursor(id)
 	}
 	ok(w, map[string]any{"items": rows, "nextCursor": next})
+}
+
+func (a *API) generateRedeemCode(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		UID      string `json:"uid"`
+		Amount   string `json:"amount"`
+		Turnover bool   `json:"turnover"`
+		Reason   string `json:"reason"`
+	}
+	if json.NewDecoder(http.MaxBytesReader(w, r.Body, 8192)).Decode(&body) != nil {
+		adminauth.Reply(w, 400, "INVALID", nil)
+		return
+	}
+	uid, err := strconv.ParseInt(body.UID, 10, 64)
+	if err != nil || uid < 1 {
+		adminauth.Reply(w, 400, "INVALID", nil)
+		return
+	}
+	amount, err := strconv.ParseInt(body.Amount, 10, 64)
+	if err != nil || amount < 1 || body.Amount != strconv.FormatInt(amount, 10) {
+		adminauth.Reply(w, 400, "INVALID", nil)
+		return
+	}
+	reason := strings.TrimSpace(body.Reason)
+	if len(reason) < 1 || len(reason) > 1000 {
+		adminauth.Reply(w, 400, "INVALID", nil)
+		return
+	}
+	code, row, err := a.RedeemCodes.Create(r.Context(), uid, amount, body.Turnover, adminauth.Actor(r), reason)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			adminauth.Reply(w, 404, "NOT_FOUND", nil)
+		} else if err == gorm.ErrForeignKeyViolated {
+			adminauth.Reply(w, 404, "NOT_FOUND", nil)
+		} else {
+			fail(w, err)
+		}
+		return
+	}
+	ok(w, map[string]any{"code": code, "uid": strconv.FormatInt(row.UID, 10), "amount": strconv.FormatInt(row.Amount, 10), "turnover": row.TurnoverMultiplier > 0, "createdAt": row.CreatedAt.UTC().Format(time.RFC3339Nano)})
+}
+
+func (a *API) redeemCodes(w http.ResponseWriter, r *http.Request) {
+	limit := 20
+	if value := r.URL.Query().Get("limit"); value != "" {
+		parsed, err := strconv.Atoi(value)
+		if err != nil || parsed < 1 || parsed > 100 {
+			adminauth.Reply(w, 400, "INVALID", nil)
+			return
+		}
+		limit = parsed
+	}
+	var before time.Time
+	var beforeID string
+	if value := r.URL.Query().Get("cursor"); value != "" {
+		decoded, err := base64.RawURLEncoding.DecodeString(value)
+		if err != nil {
+			adminauth.Reply(w, 400, "INVALID", nil)
+			return
+		}
+		parts := strings.SplitN(string(decoded), "|", 2)
+		if len(parts) != 2 {
+			adminauth.Reply(w, 400, "INVALID", nil)
+			return
+		}
+		before, err = time.Parse(time.RFC3339Nano, parts[0])
+		if err != nil {
+			adminauth.Reply(w, 400, "INVALID", nil)
+			return
+		}
+		beforeID = parts[1]
+	}
+	rows, err := a.RedeemCodes.List(r.Context(), strings.TrimSpace(r.URL.Query().Get("q")), before, beforeID, limit)
+	if err != nil {
+		fail(w, err)
+		return
+	}
+	next := ""
+	if len(rows) > limit {
+		rows = rows[:limit]
+		last := rows[limit-1]
+		next = base64.RawURLEncoding.EncodeToString([]byte(last.CreatedAt.UTC().Format(time.RFC3339Nano) + "|" + last.ID))
+	}
+	items := make([]map[string]any, 0, len(rows))
+	for _, row := range rows {
+		item := map[string]any{"id": row.ID, "uid": strconv.FormatInt(row.UID, 10), "amount": strconv.FormatInt(row.Amount, 10), "turnover": row.Turnover, "status": row.Status, "createdBy": row.CreatedBy, "createdAt": row.CreatedAt.UTC().Format(time.RFC3339Nano)}
+		if row.RedeemedAt != nil {
+			item["redeemedAt"] = row.RedeemedAt.UTC().Format(time.RFC3339Nano)
+		}
+		items = append(items, item)
+	}
+	ok(w, map[string]any{"items": items, "nextCursor": next})
 }

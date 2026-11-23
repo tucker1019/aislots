@@ -1,0 +1,17 @@
+{
+  "rebate": {
+    "sendOnSettlement": true,
+    "reminderHours": [12, 6],
+    "sendOnExpired": true
+  },
+  "leaderboard": {
+    "sendOnSettlement": true,
+    "reminderHours": [12, 6],
+    "sendOnExpired": true
+  },
+  "lossReturn": {
+    "sendOnSettlement": true,
+    "reminderHours": [12, 6],
+    "sendOnExpired": true
+  }
+}

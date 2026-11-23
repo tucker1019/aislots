@@ -4,6 +4,7 @@ option go_package = "apps/pb/apis/lobby/api/v1;v1";
 import "google/api/annotations.proto";
 // @Desc: 大厅用户账号
 service UserService {
+ rpc RedeemCode(RedeemCodeRequest) returns (RedeemCodeReply) { option (google.api.http) = { post: "/api/user/redeem-code" body: "*" }; }
  rpc PasswordUpdate(SecurityRequest) returns (SecurityReply) { option (google.api.http) = { post: "/api/user/account/password/update" body: "*" }; }
  rpc SessionLogout(SecurityRequest) returns (SecurityReply) { option (google.api.http) = { post: "/api/user/account/logout" body: "*" }; }
 
@@ -33,6 +34,8 @@ service UserService {
  // @Desc: 修改当前用户资料
  rpc ProfileUpdate(UserRequest) returns (ProfileReply) { option (google.api.http) = { post: "/api/user/user/update" body: "*" }; }
 }
+message RedeemCodeRequest { optional int64 uid = 1; optional string sid = 2; string code = 3; }
+message RedeemCodeReply { int64 amount = 1; int64 coins = 2; }
 message UserRequest {
  string invite_code=8 [json_name="inviteCode"];
  optional int64 uid = 1;

@@ -1,0 +1,49 @@
+syntax = "proto3";
+package apis.lobby.api.v1;
+option go_package = "apps/pb/apis/lobby/api/v1;v1";
+import "google/api/annotations.proto";
+
+// @Desc: 大厅邮件
+service MailService {
+  // @Desc: 查询当前用户的邮件
+  rpc MailList(MailListRequest) returns (MailListReply) { option (google.api.http) = { get: "/api/mail/list" }; }
+  // @Desc: 标记一封邮件为已读
+  rpc MailRead(MailMutationRequest) returns (MailMutationReply) { option (google.api.http) = { post: "/api/mail/read" body: "*" }; }
+  // @Desc: 标记当前用户的邮件为已读
+  rpc MailReadAll(MailListRequest) returns (MailMutationReply) { option (google.api.http) = { post: "/api/mail/read-all" body: "*" }; }
+  // @Desc: 删除当前用户的一封邮件
+  rpc MailDelete(MailMutationRequest) returns (MailMutationReply) { option (google.api.http) = { post: "/api/mail/delete" body: "*" }; }
+}
+
+message MailListRequest {
+  optional int64 uid = 1;
+  optional string sid = 2;
+  string cursor = 3;
+  int32 limit = 4;
+}
+
+message MailMutationRequest {
+  optional int64 uid = 1;
+  optional string sid = 2;
+  int64 mail_id = 3 [json_name = "mailId"];
+}
+
+message MailListReply {
+  repeated MailMessage items = 1;
+  string next_cursor = 2 [json_name = "nextCursor"];
+  bool has_more = 3 [json_name = "hasMore"];
+}
+
+message MailMessage {
+  int64 mail_id = 1 [json_name = "mailId"];
+  string reward_type = 2 [json_name = "rewardType"];
+  string notice_type = 3 [json_name = "noticeType"];
+  string business_date = 4 [json_name = "businessDate"];
+  string deadline = 5;
+  string action_path = 6 [json_name = "actionPath"];
+  string sent_at = 7 [json_name = "sentAt"];
+  bool unread = 8;
+  int32 reminder_hours = 9 [json_name = "reminderHours"];
+}
+
+message MailMutationReply { bool success = 1; }

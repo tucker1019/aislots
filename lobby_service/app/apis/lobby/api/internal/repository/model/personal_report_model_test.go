@@ -25,7 +25,7 @@ func TestPersonalReportPrincipalRewardsAndBoundaries(t *testing.T) {
 	entries := []struct {
 		source string
 		value  int64
-	}{{"rch_001", 10000}, {"rch_002", 200}, {"rch_003", -200}, {"act_001", 10}, {"vip_001", 30}, {"vip_002", 40}, {"vip_003", 50}, {"act_005", 60}, {"act_002", 100}, {"act_003", 200}, {"act_004", 300}, {"act_006", 70}, {"act_007", 80}, {"game_001", -1000}, {"game_002", 500}}
+	}{{"rch_001", 10000}, {"rch_002", 200}, {"rch_003", -200}, {"act_001", 10}, {"vip_001", 30}, {"vip_002", 40}, {"vip_003", 50}, {"act_005", 60}, {"act_002", 100}, {"act_003", 200}, {"act_004", 300}, {"act_006", 70}, {"act_007", 80}, {"act_009", 90}, {"game_001", -1000}, {"game_002", 500}}
 	add := func(owner int64, at time.Time, id, source string, value int64) {
 		t.Helper()
 		if err := db.Create(&LobbyCoinLedger{UID: owner, OrderID: id, Source: source, Delta: value, BalanceBefore: 10000, BalanceAfter: 10000 + value, CreatedAt: at}).Error; err != nil {
@@ -54,7 +54,7 @@ func TestPersonalReportPrincipalRewardsAndBoundaries(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	for key, want := range map[string]int64{"recharge": 10000, "betAmount": 1000, "validBet": 500, "gameProfit": -500, "rebate": 600, "checkin": 10, "vipUpgrade": 30, "vipWeekly": 40, "vipMonthly": 50, "loserReturn": 60, "rechargeBonus": 200, "newbieReward": 70, "inviteReward": 80, "netProfit": 640} {
+	for key, want := range map[string]int64{"recharge": 10000, "betAmount": 1000, "validBet": 500, "gameProfit": -500, "rebate": 600, "checkin": 10, "vipUpgrade": 30, "vipWeekly": 40, "vipMonthly": 50, "loserReturn": 60, "rechargeBonus": 200, "newbieReward": 70, "inviteReward": 80, "adjustment": 90, "netProfit": 730} {
 		if report.Amounts[key] != want {
 			t.Fatalf("%s = %d, want %d", key, report.Amounts[key], want)
 		}

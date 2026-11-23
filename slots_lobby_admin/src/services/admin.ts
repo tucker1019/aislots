@@ -41,3 +41,7 @@ export const getOverview = () => request('/overview', v => {
 export const getAudit = (q: string, cursor?: string) => request(`/audit${params({ q, cursor, limit: 20 })}`, v => page(v, entry => {
  const d = object(entry); return { id: string(d.id), username: string(d.username), action: string(d.action), target: string(d.target), reason: optionalString(d.reason), createdAt: string(d.createdAt) };
 }));
+export interface RedeemCode {id:string;uid:string;amount:string;turnover:boolean;status:'unused'|'redeemed';createdBy:string;createdAt:string;redeemedAt?:string}
+const parseRedeemCode=(value:unknown):RedeemCode=>{const d=object(value);const status=string(d.status);if(status!=='unused'&&status!=='redeemed')throw new Error('未知兑换码状态');return {id:string(d.id),uid:string(d.uid),amount:amount(d.amount),turnover:d.turnover===true,status,createdBy:string(d.createdBy),createdAt:string(d.createdAt),redeemedAt:optionalString(d.redeemedAt)};};
+export const getRedeemCodes=(q:string,cursor?:string)=>request(`/redeem-codes${params({q,cursor,limit:20})}`,v=>page(v,parseRedeemCode));
+export const createRedeemCode=(input:{uid:string;amount:string;turnover:boolean;reason:string})=>request('/redeem-codes',v=>{const d=object(v);return {code:string(d.code),uid:string(d.uid),amount:amount(d.amount),turnover:d.turnover===true,createdAt:string(d.createdAt)};},input);

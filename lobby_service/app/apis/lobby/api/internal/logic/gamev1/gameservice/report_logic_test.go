@@ -18,7 +18,7 @@ type reportFake struct {
 }
 
 func (f *reportFake) PersonalReport(context.Context, int64, string, time.Time) (*model.PersonalReportView, error) {
-	return &model.PersonalReportView{Amounts: map[string]int64{"recharge": 10000, "netProfit": -30}, From: time.Now(), To: time.Now().Add(time.Hour), Timezone: "Asia/Jakarta"}, f.err
+	return &model.PersonalReportView{Amounts: map[string]int64{"recharge": 10000, "adjustment": 25, "netProfit": -30}, From: time.Now(), To: time.Now().Add(time.Hour), Timezone: "Asia/Jakarta"}, f.err
 }
 
 func TestPersonalReportAuthorizationAndFields(t *testing.T) {
@@ -32,6 +32,9 @@ func TestPersonalReportAuthorizationAndFields(t *testing.T) {
 		v, e := l.PersonalReport(ctx, r)
 		if e != nil || len(v.Items) != 19 || v.Items[0].Amount != 10000 || !v.Items[1].Supported || v.Items[len(v.Items)-1].Amount != -30 {
 			t.Fatal(v, e)
+		}
+		if !v.Items[16].Supported || v.Items[16].Key != "adjustment" || v.Items[16].Amount != 25 {
+			t.Fatal(v.Items[16])
 		}
 	}
 	r.Period = "invalid"

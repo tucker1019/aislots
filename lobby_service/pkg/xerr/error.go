@@ -48,6 +48,7 @@ var (
 	ErrOrderNotFound      = New(codes.UserError_USER_ERROR_ORDER_NOT_FOUND, "充值订单不存在", 404)
 	ErrRechargeTier       = New(codes.UserError_USER_ERROR_RECHARGE_TIER, "充值档位不存在或已下架", 400)
 	ErrRequestConflict    = New(codes.UserError_USER_ERROR_REQUEST_CONFLICT, "请求号已用于其他充值档位", 409)
+	ErrRedeemCode         = New(codes.UserError_USER_ERROR_REDEEM_CODE, "兑换码无效、已使用或不属于当前账号", 400)
 	ErrBalanceLimit       = New(codes.UserError_USER_ERROR_BALANCE_LIMIT, "余额超出允许范围", 400)
 	ErrInvalid            = New(codes.UserError_USER_ERROR_INVALID_ARGUMENT, "参数无效", 400)
 	ErrSession            = New(codes.UserError_USER_ERROR_INVALID_SESSION, "会话无效或已过期", 401)

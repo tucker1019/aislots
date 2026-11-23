@@ -474,6 +474,362 @@ func (x *ReviewResponse) GetStatus() string {
 	return ""
 }
 
+type RedeemCodeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Uid           string                 `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	Amount        string                 `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Turnover      bool                   `protobuf:"varint,3,opt,name=turnover,proto3" json:"turnover,omitempty"`
+	Reason        string                 `protobuf:"bytes,4,opt,name=reason,proto3" json:"reason,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RedeemCodeRequest) Reset() {
+	*x = RedeemCodeRequest{}
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RedeemCodeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RedeemCodeRequest) ProtoMessage() {}
+
+func (x *RedeemCodeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RedeemCodeRequest.ProtoReflect.Descriptor instead.
+func (*RedeemCodeRequest) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *RedeemCodeRequest) GetUid() string {
+	if x != nil {
+		return x.Uid
+	}
+	return ""
+}
+
+func (x *RedeemCodeRequest) GetAmount() string {
+	if x != nil {
+		return x.Amount
+	}
+	return ""
+}
+
+func (x *RedeemCodeRequest) GetTurnover() bool {
+	if x != nil {
+		return x.Turnover
+	}
+	return false
+}
+
+func (x *RedeemCodeRequest) GetReason() string {
+	if x != nil {
+		return x.Reason
+	}
+	return ""
+}
+
+type RedeemCodeResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	Uid           string                 `protobuf:"bytes,2,opt,name=uid,proto3" json:"uid,omitempty"`
+	Amount        string                 `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	Turnover      bool                   `protobuf:"varint,4,opt,name=turnover,proto3" json:"turnover,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RedeemCodeResponse) Reset() {
+	*x = RedeemCodeResponse{}
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RedeemCodeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RedeemCodeResponse) ProtoMessage() {}
+
+func (x *RedeemCodeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RedeemCodeResponse.ProtoReflect.Descriptor instead.
+func (*RedeemCodeResponse) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *RedeemCodeResponse) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *RedeemCodeResponse) GetUid() string {
+	if x != nil {
+		return x.Uid
+	}
+	return ""
+}
+
+func (x *RedeemCodeResponse) GetAmount() string {
+	if x != nil {
+		return x.Amount
+	}
+	return ""
+}
+
+func (x *RedeemCodeResponse) GetTurnover() bool {
+	if x != nil {
+		return x.Turnover
+	}
+	return false
+}
+
+func (x *RedeemCodeResponse) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+type RedeemCodesQuery struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Q             string                 `protobuf:"bytes,1,opt,name=q,proto3" json:"q,omitempty"`
+	Cursor        string                 `protobuf:"bytes,2,opt,name=cursor,proto3" json:"cursor,omitempty"`
+	Limit         int32                  `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RedeemCodesQuery) Reset() {
+	*x = RedeemCodesQuery{}
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RedeemCodesQuery) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RedeemCodesQuery) ProtoMessage() {}
+
+func (x *RedeemCodesQuery) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RedeemCodesQuery.ProtoReflect.Descriptor instead.
+func (*RedeemCodesQuery) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *RedeemCodesQuery) GetQ() string {
+	if x != nil {
+		return x.Q
+	}
+	return ""
+}
+
+func (x *RedeemCodesQuery) GetCursor() string {
+	if x != nil {
+		return x.Cursor
+	}
+	return ""
+}
+
+func (x *RedeemCodesQuery) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type RedeemCodeRecord struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Uid           string                 `protobuf:"bytes,2,opt,name=uid,proto3" json:"uid,omitempty"`
+	Amount        string                 `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	Turnover      bool                   `protobuf:"varint,4,opt,name=turnover,proto3" json:"turnover,omitempty"`
+	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	CreatedBy     string                 `protobuf:"bytes,6,opt,name=created_by,json=createdBy,proto3" json:"created_by,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	RedeemedAt    *string                `protobuf:"bytes,8,opt,name=redeemed_at,json=redeemedAt,proto3,oneof" json:"redeemed_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RedeemCodeRecord) Reset() {
+	*x = RedeemCodeRecord{}
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RedeemCodeRecord) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RedeemCodeRecord) ProtoMessage() {}
+
+func (x *RedeemCodeRecord) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RedeemCodeRecord.ProtoReflect.Descriptor instead.
+func (*RedeemCodeRecord) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *RedeemCodeRecord) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *RedeemCodeRecord) GetUid() string {
+	if x != nil {
+		return x.Uid
+	}
+	return ""
+}
+
+func (x *RedeemCodeRecord) GetAmount() string {
+	if x != nil {
+		return x.Amount
+	}
+	return ""
+}
+
+func (x *RedeemCodeRecord) GetTurnover() bool {
+	if x != nil {
+		return x.Turnover
+	}
+	return false
+}
+
+func (x *RedeemCodeRecord) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *RedeemCodeRecord) GetCreatedBy() string {
+	if x != nil {
+		return x.CreatedBy
+	}
+	return ""
+}
+
+func (x *RedeemCodeRecord) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *RedeemCodeRecord) GetRedeemedAt() string {
+	if x != nil && x.RedeemedAt != nil {
+		return *x.RedeemedAt
+	}
+	return ""
+}
+
+type RedeemCodesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*RedeemCodeRecord    `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	NextCursor    string                 `protobuf:"bytes,2,opt,name=next_cursor,json=nextCursor,proto3" json:"next_cursor,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RedeemCodesResponse) Reset() {
+	*x = RedeemCodesResponse{}
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RedeemCodesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RedeemCodesResponse) ProtoMessage() {}
+
+func (x *RedeemCodesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RedeemCodesResponse.ProtoReflect.Descriptor instead.
+func (*RedeemCodesResponse) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *RedeemCodesResponse) GetItems() []*RedeemCodeRecord {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+func (x *RedeemCodesResponse) GetNextCursor() string {
+	if x != nil {
+		return x.NextCursor
+	}
+	return ""
+}
+
 type OverviewResponse struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
 	Members            int64                  `protobuf:"varint,1,opt,name=members,proto3" json:"members,omitempty"`
@@ -493,7 +849,7 @@ type OverviewResponse struct {
 
 func (x *OverviewResponse) Reset() {
 	*x = OverviewResponse{}
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[7]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -505,7 +861,7 @@ func (x *OverviewResponse) String() string {
 func (*OverviewResponse) ProtoMessage() {}
 
 func (x *OverviewResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[7]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -518,7 +874,7 @@ func (x *OverviewResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OverviewResponse.ProtoReflect.Descriptor instead.
 func (*OverviewResponse) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{7}
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *OverviewResponse) GetMembers() int64 {
@@ -614,7 +970,7 @@ type Member struct {
 
 func (x *Member) Reset() {
 	*x = Member{}
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[8]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -626,7 +982,7 @@ func (x *Member) String() string {
 func (*Member) ProtoMessage() {}
 
 func (x *Member) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[8]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -639,7 +995,7 @@ func (x *Member) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Member.ProtoReflect.Descriptor instead.
 func (*Member) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{8}
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *Member) GetUid() string {
@@ -708,7 +1064,7 @@ type MembersResponse struct {
 
 func (x *MembersResponse) Reset() {
 	*x = MembersResponse{}
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[9]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -720,7 +1076,7 @@ func (x *MembersResponse) String() string {
 func (*MembersResponse) ProtoMessage() {}
 
 func (x *MembersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[9]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -733,7 +1089,7 @@ func (x *MembersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MembersResponse.ProtoReflect.Descriptor instead.
 func (*MembersResponse) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{9}
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *MembersResponse) GetItems() []*Member {
@@ -760,7 +1116,7 @@ type Wallet struct {
 
 func (x *Wallet) Reset() {
 	*x = Wallet{}
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[10]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -772,7 +1128,7 @@ func (x *Wallet) String() string {
 func (*Wallet) ProtoMessage() {}
 
 func (x *Wallet) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[10]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -785,7 +1141,7 @@ func (x *Wallet) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Wallet.ProtoReflect.Descriptor instead.
 func (*Wallet) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{10}
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *Wallet) GetCoins() string {
@@ -813,7 +1169,7 @@ type Account struct {
 
 func (x *Account) Reset() {
 	*x = Account{}
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[11]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -825,7 +1181,7 @@ func (x *Account) String() string {
 func (*Account) ProtoMessage() {}
 
 func (x *Account) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[11]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -838,7 +1194,7 @@ func (x *Account) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Account.ProtoReflect.Descriptor instead.
 func (*Account) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{11}
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *Account) GetChannel() string {
@@ -875,7 +1231,7 @@ type Ledger struct {
 
 func (x *Ledger) Reset() {
 	*x = Ledger{}
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[12]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -887,7 +1243,7 @@ func (x *Ledger) String() string {
 func (*Ledger) ProtoMessage() {}
 
 func (x *Ledger) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[12]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -900,7 +1256,7 @@ func (x *Ledger) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Ledger.ProtoReflect.Descriptor instead.
 func (*Ledger) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{12}
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *Ledger) GetId() string {
@@ -950,7 +1306,7 @@ type MemberResponse struct {
 
 func (x *MemberResponse) Reset() {
 	*x = MemberResponse{}
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[13]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -962,7 +1318,7 @@ func (x *MemberResponse) String() string {
 func (*MemberResponse) ProtoMessage() {}
 
 func (x *MemberResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[13]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -975,7 +1331,7 @@ func (x *MemberResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MemberResponse.ProtoReflect.Descriptor instead.
 func (*MemberResponse) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{13}
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *MemberResponse) GetMember() *Member {
@@ -1027,7 +1383,7 @@ type Order struct {
 
 func (x *Order) Reset() {
 	*x = Order{}
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[14]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1039,7 +1395,7 @@ func (x *Order) String() string {
 func (*Order) ProtoMessage() {}
 
 func (x *Order) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[14]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1052,7 +1408,7 @@ func (x *Order) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Order.ProtoReflect.Descriptor instead.
 func (*Order) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{14}
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *Order) GetOrderId() string {
@@ -1156,7 +1512,7 @@ type OrdersResponse struct {
 
 func (x *OrdersResponse) Reset() {
 	*x = OrdersResponse{}
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[15]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1168,7 +1524,7 @@ func (x *OrdersResponse) String() string {
 func (*OrdersResponse) ProtoMessage() {}
 
 func (x *OrdersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[15]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1181,7 +1537,7 @@ func (x *OrdersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OrdersResponse.ProtoReflect.Descriptor instead.
 func (*OrdersResponse) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{15}
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *OrdersResponse) GetItems() []*Order {
@@ -1212,7 +1568,7 @@ type AuditEntry struct {
 
 func (x *AuditEntry) Reset() {
 	*x = AuditEntry{}
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[16]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1224,7 +1580,7 @@ func (x *AuditEntry) String() string {
 func (*AuditEntry) ProtoMessage() {}
 
 func (x *AuditEntry) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[16]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1237,7 +1593,7 @@ func (x *AuditEntry) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuditEntry.ProtoReflect.Descriptor instead.
 func (*AuditEntry) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{16}
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *AuditEntry) GetId() string {
@@ -1292,7 +1648,7 @@ type AuditResponse struct {
 
 func (x *AuditResponse) Reset() {
 	*x = AuditResponse{}
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[17]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1304,7 +1660,7 @@ func (x *AuditResponse) String() string {
 func (*AuditResponse) ProtoMessage() {}
 
 func (x *AuditResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[17]
+	mi := &file_apis_lobby_admin_v1_admin_api_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1317,7 +1673,7 @@ func (x *AuditResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuditResponse.ProtoReflect.Descriptor instead.
 func (*AuditResponse) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{17}
+	return file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *AuditResponse) GetItems() []*AuditEntry {
@@ -1363,7 +1719,40 @@ const file_apis_lobby_admin_v1_admin_api_proto_rawDesc = "" +
 	"request_id\x18\x05 \x01(\tR\trequestId\"C\n" +
 	"\x0eReviewResponse\x12\x19\n" +
 	"\border_id\x18\x01 \x01(\tR\aorderId\x12\x16\n" +
-	"\x06status\x18\x02 \x01(\tR\x06status\"\xb2\x03\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\"q\n" +
+	"\x11RedeemCodeRequest\x12\x10\n" +
+	"\x03uid\x18\x01 \x01(\tR\x03uid\x12\x16\n" +
+	"\x06amount\x18\x02 \x01(\tR\x06amount\x12\x1a\n" +
+	"\bturnover\x18\x03 \x01(\bR\bturnover\x12\x16\n" +
+	"\x06reason\x18\x04 \x01(\tR\x06reason\"\x8d\x01\n" +
+	"\x12RedeemCodeResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\tR\x04code\x12\x10\n" +
+	"\x03uid\x18\x02 \x01(\tR\x03uid\x12\x16\n" +
+	"\x06amount\x18\x03 \x01(\tR\x06amount\x12\x1a\n" +
+	"\bturnover\x18\x04 \x01(\bR\bturnover\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x05 \x01(\tR\tcreatedAt\"N\n" +
+	"\x10RedeemCodesQuery\x12\f\n" +
+	"\x01q\x18\x01 \x01(\tR\x01q\x12\x16\n" +
+	"\x06cursor\x18\x02 \x01(\tR\x06cursor\x12\x14\n" +
+	"\x05limit\x18\x03 \x01(\x05R\x05limit\"\xf4\x01\n" +
+	"\x10RedeemCodeRecord\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x10\n" +
+	"\x03uid\x18\x02 \x01(\tR\x03uid\x12\x16\n" +
+	"\x06amount\x18\x03 \x01(\tR\x06amount\x12\x1a\n" +
+	"\bturnover\x18\x04 \x01(\bR\bturnover\x12\x16\n" +
+	"\x06status\x18\x05 \x01(\tR\x06status\x12\x1d\n" +
+	"\n" +
+	"created_by\x18\x06 \x01(\tR\tcreatedBy\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\a \x01(\tR\tcreatedAt\x12$\n" +
+	"\vredeemed_at\x18\b \x01(\tH\x00R\n" +
+	"redeemedAt\x88\x01\x01B\x0e\n" +
+	"\f_redeemed_at\"s\n" +
+	"\x13RedeemCodesResponse\x12;\n" +
+	"\x05items\x18\x01 \x03(\v2%.apis.lobby.admin.v1.RedeemCodeRecordR\x05items\x12\x1f\n" +
+	"\vnext_cursor\x18\x02 \x01(\tR\n" +
+	"nextCursor\"\xb2\x03\n" +
 	"\x10OverviewResponse\x12\x18\n" +
 	"\amembers\x18\x01 \x01(\x03R\amembers\x12)\n" +
 	"\x10pending_deposits\x18\x02 \x01(\x03R\x0fpendingDeposits\x12/\n" +
@@ -1454,7 +1843,7 @@ const file_apis_lobby_admin_v1_admin_api_proto_rawDesc = "" +
 	"\bCONFLICT\x10\x04\x12\x10\n" +
 	"\fRATE_LIMITED\x10\x05\x12\f\n" +
 	"\bINTERNAL\x10\x06\x12\r\n" +
-	"\tNOT_FOUND\x10\a2\xb9\a\n" +
+	"\tNOT_FOUND\x10\a2\xc6\t\n" +
 	"\fAdminService\x12f\n" +
 	"\x05Login\x12!.apis.lobby.admin.v1.LoginRequest\x1a\x1d.apis.lobby.admin.v1.Identity\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/admin/api/login\x12V\n" +
 	"\x02Me\x12\x1a.apis.lobby.admin.v1.Empty\x1a\x1d.apis.lobby.admin.v1.Identity\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/admin/api/me\x12^\n" +
@@ -1464,7 +1853,9 @@ const file_apis_lobby_admin_v1_admin_api_proto_rawDesc = "" +
 	"\x06Member\x12\".apis.lobby.admin.v1.MemberRequest\x1a#.apis.lobby.admin.v1.MemberResponse\" \x82\xd3\xe4\x93\x02\x1a\x12\x18/admin/api/members/{uid}\x12d\n" +
 	"\x06Orders\x12\x1a.apis.lobby.admin.v1.Query\x1a#.apis.lobby.admin.v1.OrdersResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/admin/api/orders\x12v\n" +
 	"\x06Review\x12\".apis.lobby.admin.v1.ReviewRequest\x1a#.apis.lobby.admin.v1.ReviewResponse\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/admin/api/orders/review\x12a\n" +
-	"\x05Audit\x12\x1a.apis.lobby.admin.v1.Query\x1a\".apis.lobby.admin.v1.AuditResponse\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/admin/api/auditB%Z#apps/pb/apis/lobby/admin/v1;adminv1b\x06proto3"
+	"\x05Audit\x12\x1a.apis.lobby.admin.v1.Query\x1a\".apis.lobby.admin.v1.AuditResponse\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/admin/api/audit\x12\x7f\n" +
+	"\vRedeemCodes\x12%.apis.lobby.admin.v1.RedeemCodesQuery\x1a(.apis.lobby.admin.v1.RedeemCodesResponse\"\x1f\x82\xd3\xe4\x93\x02\x19\x12\x17/admin/api/redeem-codes\x12\x89\x01\n" +
+	"\x12GenerateRedeemCode\x12&.apis.lobby.admin.v1.RedeemCodeRequest\x1a'.apis.lobby.admin.v1.RedeemCodeResponse\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/admin/api/redeem-codesB%Z#apps/pb/apis/lobby/admin/v1;adminv1b\x06proto3"
 
 var (
 	file_apis_lobby_admin_v1_admin_api_proto_rawDescOnce sync.Once
@@ -1479,59 +1870,69 @@ func file_apis_lobby_admin_v1_admin_api_proto_rawDescGZIP() []byte {
 }
 
 var file_apis_lobby_admin_v1_admin_api_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_apis_lobby_admin_v1_admin_api_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_apis_lobby_admin_v1_admin_api_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
 var file_apis_lobby_admin_v1_admin_api_proto_goTypes = []any{
-	(ErrorCode)(0),           // 0: apis.lobby.admin.v1.ErrorCode
-	(*LoginRequest)(nil),     // 1: apis.lobby.admin.v1.LoginRequest
-	(*Identity)(nil),         // 2: apis.lobby.admin.v1.Identity
-	(*Empty)(nil),            // 3: apis.lobby.admin.v1.Empty
-	(*Query)(nil),            // 4: apis.lobby.admin.v1.Query
-	(*MemberRequest)(nil),    // 5: apis.lobby.admin.v1.MemberRequest
-	(*ReviewRequest)(nil),    // 6: apis.lobby.admin.v1.ReviewRequest
-	(*ReviewResponse)(nil),   // 7: apis.lobby.admin.v1.ReviewResponse
-	(*OverviewResponse)(nil), // 8: apis.lobby.admin.v1.OverviewResponse
-	(*Member)(nil),           // 9: apis.lobby.admin.v1.Member
-	(*MembersResponse)(nil),  // 10: apis.lobby.admin.v1.MembersResponse
-	(*Wallet)(nil),           // 11: apis.lobby.admin.v1.Wallet
-	(*Account)(nil),          // 12: apis.lobby.admin.v1.Account
-	(*Ledger)(nil),           // 13: apis.lobby.admin.v1.Ledger
-	(*MemberResponse)(nil),   // 14: apis.lobby.admin.v1.MemberResponse
-	(*Order)(nil),            // 15: apis.lobby.admin.v1.Order
-	(*OrdersResponse)(nil),   // 16: apis.lobby.admin.v1.OrdersResponse
-	(*AuditEntry)(nil),       // 17: apis.lobby.admin.v1.AuditEntry
-	(*AuditResponse)(nil),    // 18: apis.lobby.admin.v1.AuditResponse
+	(ErrorCode)(0),              // 0: apis.lobby.admin.v1.ErrorCode
+	(*LoginRequest)(nil),        // 1: apis.lobby.admin.v1.LoginRequest
+	(*Identity)(nil),            // 2: apis.lobby.admin.v1.Identity
+	(*Empty)(nil),               // 3: apis.lobby.admin.v1.Empty
+	(*Query)(nil),               // 4: apis.lobby.admin.v1.Query
+	(*MemberRequest)(nil),       // 5: apis.lobby.admin.v1.MemberRequest
+	(*ReviewRequest)(nil),       // 6: apis.lobby.admin.v1.ReviewRequest
+	(*ReviewResponse)(nil),      // 7: apis.lobby.admin.v1.ReviewResponse
+	(*RedeemCodeRequest)(nil),   // 8: apis.lobby.admin.v1.RedeemCodeRequest
+	(*RedeemCodeResponse)(nil),  // 9: apis.lobby.admin.v1.RedeemCodeResponse
+	(*RedeemCodesQuery)(nil),    // 10: apis.lobby.admin.v1.RedeemCodesQuery
+	(*RedeemCodeRecord)(nil),    // 11: apis.lobby.admin.v1.RedeemCodeRecord
+	(*RedeemCodesResponse)(nil), // 12: apis.lobby.admin.v1.RedeemCodesResponse
+	(*OverviewResponse)(nil),    // 13: apis.lobby.admin.v1.OverviewResponse
+	(*Member)(nil),              // 14: apis.lobby.admin.v1.Member
+	(*MembersResponse)(nil),     // 15: apis.lobby.admin.v1.MembersResponse
+	(*Wallet)(nil),              // 16: apis.lobby.admin.v1.Wallet
+	(*Account)(nil),             // 17: apis.lobby.admin.v1.Account
+	(*Ledger)(nil),              // 18: apis.lobby.admin.v1.Ledger
+	(*MemberResponse)(nil),      // 19: apis.lobby.admin.v1.MemberResponse
+	(*Order)(nil),               // 20: apis.lobby.admin.v1.Order
+	(*OrdersResponse)(nil),      // 21: apis.lobby.admin.v1.OrdersResponse
+	(*AuditEntry)(nil),          // 22: apis.lobby.admin.v1.AuditEntry
+	(*AuditResponse)(nil),       // 23: apis.lobby.admin.v1.AuditResponse
 }
 var file_apis_lobby_admin_v1_admin_api_proto_depIdxs = []int32{
-	9,  // 0: apis.lobby.admin.v1.MembersResponse.items:type_name -> apis.lobby.admin.v1.Member
-	9,  // 1: apis.lobby.admin.v1.MemberResponse.member:type_name -> apis.lobby.admin.v1.Member
-	11, // 2: apis.lobby.admin.v1.MemberResponse.wallet:type_name -> apis.lobby.admin.v1.Wallet
-	12, // 3: apis.lobby.admin.v1.MemberResponse.accounts:type_name -> apis.lobby.admin.v1.Account
-	13, // 4: apis.lobby.admin.v1.MemberResponse.ledger:type_name -> apis.lobby.admin.v1.Ledger
-	15, // 5: apis.lobby.admin.v1.OrdersResponse.items:type_name -> apis.lobby.admin.v1.Order
-	17, // 6: apis.lobby.admin.v1.AuditResponse.items:type_name -> apis.lobby.admin.v1.AuditEntry
-	1,  // 7: apis.lobby.admin.v1.AdminService.Login:input_type -> apis.lobby.admin.v1.LoginRequest
-	3,  // 8: apis.lobby.admin.v1.AdminService.Me:input_type -> apis.lobby.admin.v1.Empty
-	3,  // 9: apis.lobby.admin.v1.AdminService.Logout:input_type -> apis.lobby.admin.v1.Empty
-	3,  // 10: apis.lobby.admin.v1.AdminService.Overview:input_type -> apis.lobby.admin.v1.Empty
-	4,  // 11: apis.lobby.admin.v1.AdminService.Members:input_type -> apis.lobby.admin.v1.Query
-	5,  // 12: apis.lobby.admin.v1.AdminService.Member:input_type -> apis.lobby.admin.v1.MemberRequest
-	4,  // 13: apis.lobby.admin.v1.AdminService.Orders:input_type -> apis.lobby.admin.v1.Query
-	6,  // 14: apis.lobby.admin.v1.AdminService.Review:input_type -> apis.lobby.admin.v1.ReviewRequest
-	4,  // 15: apis.lobby.admin.v1.AdminService.Audit:input_type -> apis.lobby.admin.v1.Query
-	2,  // 16: apis.lobby.admin.v1.AdminService.Login:output_type -> apis.lobby.admin.v1.Identity
-	2,  // 17: apis.lobby.admin.v1.AdminService.Me:output_type -> apis.lobby.admin.v1.Identity
-	3,  // 18: apis.lobby.admin.v1.AdminService.Logout:output_type -> apis.lobby.admin.v1.Empty
-	8,  // 19: apis.lobby.admin.v1.AdminService.Overview:output_type -> apis.lobby.admin.v1.OverviewResponse
-	10, // 20: apis.lobby.admin.v1.AdminService.Members:output_type -> apis.lobby.admin.v1.MembersResponse
-	14, // 21: apis.lobby.admin.v1.AdminService.Member:output_type -> apis.lobby.admin.v1.MemberResponse
-	16, // 22: apis.lobby.admin.v1.AdminService.Orders:output_type -> apis.lobby.admin.v1.OrdersResponse
-	7,  // 23: apis.lobby.admin.v1.AdminService.Review:output_type -> apis.lobby.admin.v1.ReviewResponse
-	18, // 24: apis.lobby.admin.v1.AdminService.Audit:output_type -> apis.lobby.admin.v1.AuditResponse
-	16, // [16:25] is the sub-list for method output_type
-	7,  // [7:16] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	11, // 0: apis.lobby.admin.v1.RedeemCodesResponse.items:type_name -> apis.lobby.admin.v1.RedeemCodeRecord
+	14, // 1: apis.lobby.admin.v1.MembersResponse.items:type_name -> apis.lobby.admin.v1.Member
+	14, // 2: apis.lobby.admin.v1.MemberResponse.member:type_name -> apis.lobby.admin.v1.Member
+	16, // 3: apis.lobby.admin.v1.MemberResponse.wallet:type_name -> apis.lobby.admin.v1.Wallet
+	17, // 4: apis.lobby.admin.v1.MemberResponse.accounts:type_name -> apis.lobby.admin.v1.Account
+	18, // 5: apis.lobby.admin.v1.MemberResponse.ledger:type_name -> apis.lobby.admin.v1.Ledger
+	20, // 6: apis.lobby.admin.v1.OrdersResponse.items:type_name -> apis.lobby.admin.v1.Order
+	22, // 7: apis.lobby.admin.v1.AuditResponse.items:type_name -> apis.lobby.admin.v1.AuditEntry
+	1,  // 8: apis.lobby.admin.v1.AdminService.Login:input_type -> apis.lobby.admin.v1.LoginRequest
+	3,  // 9: apis.lobby.admin.v1.AdminService.Me:input_type -> apis.lobby.admin.v1.Empty
+	3,  // 10: apis.lobby.admin.v1.AdminService.Logout:input_type -> apis.lobby.admin.v1.Empty
+	3,  // 11: apis.lobby.admin.v1.AdminService.Overview:input_type -> apis.lobby.admin.v1.Empty
+	4,  // 12: apis.lobby.admin.v1.AdminService.Members:input_type -> apis.lobby.admin.v1.Query
+	5,  // 13: apis.lobby.admin.v1.AdminService.Member:input_type -> apis.lobby.admin.v1.MemberRequest
+	4,  // 14: apis.lobby.admin.v1.AdminService.Orders:input_type -> apis.lobby.admin.v1.Query
+	6,  // 15: apis.lobby.admin.v1.AdminService.Review:input_type -> apis.lobby.admin.v1.ReviewRequest
+	4,  // 16: apis.lobby.admin.v1.AdminService.Audit:input_type -> apis.lobby.admin.v1.Query
+	10, // 17: apis.lobby.admin.v1.AdminService.RedeemCodes:input_type -> apis.lobby.admin.v1.RedeemCodesQuery
+	8,  // 18: apis.lobby.admin.v1.AdminService.GenerateRedeemCode:input_type -> apis.lobby.admin.v1.RedeemCodeRequest
+	2,  // 19: apis.lobby.admin.v1.AdminService.Login:output_type -> apis.lobby.admin.v1.Identity
+	2,  // 20: apis.lobby.admin.v1.AdminService.Me:output_type -> apis.lobby.admin.v1.Identity
+	3,  // 21: apis.lobby.admin.v1.AdminService.Logout:output_type -> apis.lobby.admin.v1.Empty
+	13, // 22: apis.lobby.admin.v1.AdminService.Overview:output_type -> apis.lobby.admin.v1.OverviewResponse
+	15, // 23: apis.lobby.admin.v1.AdminService.Members:output_type -> apis.lobby.admin.v1.MembersResponse
+	19, // 24: apis.lobby.admin.v1.AdminService.Member:output_type -> apis.lobby.admin.v1.MemberResponse
+	21, // 25: apis.lobby.admin.v1.AdminService.Orders:output_type -> apis.lobby.admin.v1.OrdersResponse
+	7,  // 26: apis.lobby.admin.v1.AdminService.Review:output_type -> apis.lobby.admin.v1.ReviewResponse
+	23, // 27: apis.lobby.admin.v1.AdminService.Audit:output_type -> apis.lobby.admin.v1.AuditResponse
+	12, // 28: apis.lobby.admin.v1.AdminService.RedeemCodes:output_type -> apis.lobby.admin.v1.RedeemCodesResponse
+	9,  // 29: apis.lobby.admin.v1.AdminService.GenerateRedeemCode:output_type -> apis.lobby.admin.v1.RedeemCodeResponse
+	19, // [19:30] is the sub-list for method output_type
+	8,  // [8:19] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_apis_lobby_admin_v1_admin_api_proto_init() }
@@ -1539,15 +1940,16 @@ func file_apis_lobby_admin_v1_admin_api_proto_init() {
 	if File_apis_lobby_admin_v1_admin_api_proto != nil {
 		return
 	}
-	file_apis_lobby_admin_v1_admin_api_proto_msgTypes[8].OneofWrappers = []any{}
-	file_apis_lobby_admin_v1_admin_api_proto_msgTypes[14].OneofWrappers = []any{}
+	file_apis_lobby_admin_v1_admin_api_proto_msgTypes[10].OneofWrappers = []any{}
+	file_apis_lobby_admin_v1_admin_api_proto_msgTypes[13].OneofWrappers = []any{}
+	file_apis_lobby_admin_v1_admin_api_proto_msgTypes[19].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_apis_lobby_admin_v1_admin_api_proto_rawDesc), len(file_apis_lobby_admin_v1_admin_api_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   18,
+			NumMessages:   23,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

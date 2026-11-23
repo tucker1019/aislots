@@ -1,0 +1,35 @@
+.mail-page .records-page-body { padding: 10px 12px 24px; }
+.mail-filters { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px 10px; }
+.mail-filters nav { display: flex; flex: 1; min-width: 0; gap: 4px; padding: 3px; border: 1px solid var(--theme-border,#dce2eb); border-radius: 11px; background: var(--theme-canvas,#f4f6f9); }
+.mail-filters nav button { flex: 1; min-width: 0; height: 29px; border: 0; border-radius: 8px; background: transparent; color: var(--theme-muted,#687385); font-size: 11px; }
+.mail-filters nav button[aria-pressed="true"] { background: var(--theme-action,#087a41); color: var(--theme-on-action,#fff); font-weight: 800; }
+.mail-mark-all { flex: 0 0 auto; border: 0; background: transparent; color: var(--theme-action,#087a41); font-size: 10px; padding: 6px 0 6px 4px; }
+.mail-mark-all:disabled { opacity: .45; }
+.mail-list { display: grid; gap: 7px; }
+.mail-row { display: grid; grid-template-columns: minmax(0,1fr) auto; grid-template-rows: auto auto; align-items: center; gap: 5px 9px; padding: 10px 11px; border: 1px solid var(--theme-border,#e0e3e8); border-radius: 11px; background: var(--theme-panel,#fff); }
+.mail-row.unread { border-color: var(--theme-action,#087a41); }
+.mail-row-title { grid-column: 1; grid-row: 1; min-width: 0; padding: 0; border: 0; background: transparent; color: var(--theme-ink,#242832); text-align: left; font-size: 12px; line-height: 1.45; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mail-row-actions { grid-column: 2; grid-row: 1; display: flex; align-items: center; gap: 8px; color: var(--theme-muted,#737d8b); white-space: nowrap; font-size: 10px; }
+.mail-row-actions button, .mail-detail-delete { padding: 2px 0; border: 0; background: transparent; color: var(--theme-muted,#737d8b); font-size: 10px; }
+.mail-row-actions button:hover, .mail-detail-delete:hover { color: var(--theme-action,#087a41); }
+.mail-row > time { grid-column: 1 / 3; grid-row: 2; color: var(--theme-muted,#838c98); font-size: 10px; line-height: 1.3; }
+.mail-empty { padding: 38px 12px; color: var(--theme-muted,#737d8b); text-align: center; font-size: 12px; }
+.mail-load-more, .mail-retry-more { width: 100%; min-height: 36px; margin-top: 10px; border: 1px solid var(--theme-border,#dce2eb); border-radius: 10px; background: var(--theme-panel,#fff); color: var(--theme-action,#087a41); font-size: 11px; }
+.mail-detail { padding: 8px 4px 20px; color: var(--theme-ink,#242832); }
+.mail-detail h2 { margin: 0 0 18px; font-size: 16px; line-height: 1.5; font-weight: 850; }
+.mail-greeting { margin: 0 0 8px; font-size: 12px; font-weight: 750; }
+.mail-detail-copy { margin: 0 0 19px; color: var(--theme-ink,#343944); font-size: 12px; line-height: 1.8; }
+.mail-deadline { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 11px; border-radius: 9px; background: var(--theme-soft,#f2f4f7); color: var(--theme-muted,#687385); font-size: 10px; }
+.mail-deadline time { color: var(--theme-accent,#a5662b); font-weight: 800; text-align: right; }
+.mail-signature { display: flex; justify-content: space-between; gap: 8px; margin-top: 18px; color: var(--theme-muted,#737d8b); font-size: 10px; }
+.mail-signature strong { color: var(--theme-ink,#4e5662); font-weight: 650; }
+.mail-signature time { text-align: right; }
+.mail-go-claim { width: 100%; min-height: 40px; margin-top: 20px; border: 0; border-radius: 10px; background: var(--theme-action,#087a41); color: var(--theme-on-action,#fff); font-size: 12px; font-weight: 850; }
+.mail-detail-delete { padding: 6px 2px; }
+.mail-modal-cancel, .mail-modal-delete { min-width: 66px; min-height: 32px; margin-left: 7px; border: 1px solid var(--theme-border,#dce2eb); border-radius: 8px; background: transparent; color: var(--theme-ink,#242832); font-size: 11px; }
+.mail-modal-delete { border-color: var(--theme-action,#087a41); background: var(--theme-action,#087a41); color: var(--theme-on-action,#fff); }
+:root[data-theme="dark"] .mail-row { background: var(--theme-panel,#252039); }
+:root[data-theme="dark"] .mail-row-title, :root[data-theme="dark"] .mail-detail { color: var(--theme-ink,#fff6ed); }
+:root[data-theme="dark"] .mail-detail-copy { color: var(--theme-muted,#c0b9d0); }
+:root[data-theme="dark"] .mail-deadline { background: var(--theme-soft,#342d4b); }
+:root[data-theme="dark"] .mail-signature strong { color: var(--theme-ink,#fff6ed); }

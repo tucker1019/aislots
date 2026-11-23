@@ -34,6 +34,7 @@ import (
  viplogic "apps/app/apis/lobby/api/internal/logic/vipv1/vipservice"
  returnlogic "apps/app/apis/lobby/api/internal/logic/returnv1/returnservice"
  checkinlogic "apps/app/apis/lobby/api/internal/logic/checkinv1/checkinservice"
+ maillogic "apps/app/apis/lobby/api/internal/logic/mailv1/mailservice"
  rechargelogic "apps/app/apis/lobby/api/internal/logic/rechargev1/rechargeservice"
  "apps/app/apis/lobby/api/internal/svc"
  pb "apps/pb/apis/lobby/api/v1"
@@ -49,6 +50,7 @@ func New(ctx *svc.ServiceContext) http.Handler {
  content:=contentlogic.New(ctx)
  agent:=agentlogic.New(ctx)
  game:=gamelogic.New(ctx)
+ mail:=maillogic.New(ctx)
 `)
 
 	for _, file := range set.File {
@@ -92,6 +94,9 @@ func New(ctx *svc.ServiceContext) http.Handler {
 				}
 				if service.GetName() == "NewbieRechargeService" {
 					receiver = "newbie"
+				}
+				if service.GetName() == "MailService" {
+					receiver = "mail"
 				}
 				parts := strings.Split(method.GetInputType(), ".")
 				input := parts[len(parts)-1]

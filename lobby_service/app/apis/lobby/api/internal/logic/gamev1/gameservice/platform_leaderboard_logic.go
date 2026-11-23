@@ -13,7 +13,7 @@ import (
 type platformRankStore interface {
 	ReadPlatformLeaderboard(context.Context, string, string, time.Time) ([]model.PlatformLeaderboardView, error)
 	EnsurePlatformLeaderboardRewards(context.Context, time.Time, string, []int64) error
-	ReadPlatformRewardStatuses(context.Context, time.Time, string) (map[int]string, error)
+	ReadPlatformRewardStatuses(context.Context, time.Time, string, time.Time) (map[int]string, error)
 	ClaimPlatformLeaderboardReward(context.Context, int64, time.Time, string, int, bool, time.Time) (*model.PlatformRewardReceipt, error)
 }
 type participationStore interface {
@@ -53,7 +53,7 @@ func (l *Logic) PlatformLeaderboard(ctx context.Context, r *pb.PlatformLeaderboa
 		if e = store.EnsurePlatformLeaderboardRewards(ctx, day, r.Board, l.leaderboardConfig.Rewards); e != nil {
 			return nil, e
 		}
-		statuses, e = store.ReadPlatformRewardStatuses(ctx, day, r.Board)
+		statuses, e = store.ReadPlatformRewardStatuses(ctx, day, r.Board, time.Now().UTC())
 		if e != nil {
 			return nil, e
 		}

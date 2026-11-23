@@ -68,7 +68,7 @@ func run() error {
 	mux := http.NewServeMux()
 	auth.Register(mux)
 	recharge := &model.RechargeModel{DB: db, ActivityLocation: c.Checkin.Location(), VIP: &model.VIPModel{DB: db, Config: c.VIP, Location: c.Checkin.Location()}}
-	(&adminapi.API{DB: db, Location: c.Checkin.Location(), Recharge: recharge, ReviewModel: func(r *http.Request) (*model.RechargeModel, error) {
+	(&adminapi.API{DB: db, Location: c.Checkin.Location(), Recharge: recharge, RedeemCodes: &model.RedeemCodeModel{DB: db}, ReviewModel: func(r *http.Request) (*model.RechargeModel, error) {
 		snapshot, err := adminconfig.LoadPublished(r.Context(), db, c)
 		if err != nil {
 			return nil, err

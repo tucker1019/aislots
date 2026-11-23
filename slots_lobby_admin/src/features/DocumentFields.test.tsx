@@ -36,10 +36,18 @@ describe('section-aware structured configuration', () => {
   expect(validMapKey('PG-2', {})).toBe(true);
  });
  it('supports empty provider tiers and every declared empty section array', () => {
-  for (const path of ['recharge', 'withdrawal', 'checkin.days', 'vip.levels', 'newbie-recharge.tiers', 'agent.providers.AG', 'content.announcements.zh-TW', 'content.announcements.en-US', 'content.banners']) expect(arrayTemplate(path)).not.toBeUndefined();
+  for (const path of ['recharge', 'withdrawal', 'checkin.days', 'vip.levels', 'newbie-recharge.tiers', 'agent.providers.AG', 'content.announcements.zh-TW', 'content.announcements.en-US', 'content.banners','reward-notifications.rebate.reminderHours']) expect(arrayTemplate(path)).not.toBeUndefined();
   render(<Fixture initial={[]} path="agent.providers.AG" />);
   fireEvent.click(screen.getByRole('button', { name: '添加项目' }));
   expect(screen.getByTestId('document').textContent).toBe('[{"threshold":0,"rate":0}]');
+ });
+ it('provides a twelve hour starter reminder value and exposes notification controls', () => {
+  render(<Fixture initial={{ rebate: { sendOnSettlement: true, reminderHours: [], sendOnExpired: true }, leaderboard: { sendOnSettlement: true, reminderHours: [12,6], sendOnExpired: true }, lossReturn: { sendOnSettlement: false, reminderHours: [], sendOnExpired: false } }} path="reward-notifications" />);
+  expect(arrayTemplate('reward-notifications.rebate.reminderHours')).toBe(12);
+  expect(screen.getByLabelText('reward-notifications.rebate.sendOnSettlement')).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: '项目 1' }));
+  expect(screen.getByLabelText('reward-notifications.leaderboard.reminderHours[0]')).toBeTruthy();
+  expect(screen.getByLabelText('reward-notifications.lossReturn.sendOnExpired')).toBeTruthy();
  });
  it('limits banner routes and rejects unsafe image references', () => {
   for (const value of ['//cdn.example/a.png', 'javascript:alert(1)', 'http://cdn.example/a.png', '/assets/../secret']) expect(validImagePath(value)).toBe(false);

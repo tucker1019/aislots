@@ -7,6 +7,7 @@ import (
 	checkinlogic "apps/app/apis/lobby/api/internal/logic/checkinv1/checkinservice"
 	contentlogic "apps/app/apis/lobby/api/internal/logic/contentv1/contentservice"
 	gamelogic "apps/app/apis/lobby/api/internal/logic/gamev1/gameservice"
+	maillogic "apps/app/apis/lobby/api/internal/logic/mailv1/mailservice"
 	newbielogic "apps/app/apis/lobby/api/internal/logic/newbiev1/newbieservice"
 	rechargelogic "apps/app/apis/lobby/api/internal/logic/rechargev1/rechargeservice"
 	returnlogic "apps/app/apis/lobby/api/internal/logic/returnv1/returnservice"
@@ -30,6 +31,7 @@ func New(ctx *svc.ServiceContext) http.Handler {
 	content := contentlogic.New(ctx)
 	agent := agentlogic.New(ctx)
 	game := gamelogic.New(ctx)
+	mail := maillogic.New(ctx)
 	mux.HandleFunc("GET /api/lobby/games", handler.API(func() *pb.LobbyGamesRequest { return new(pb.LobbyGamesRequest) }, content.Games))
 	mux.HandleFunc("GET /api/lobby/content", handler.API(func() *pb.LobbyContentRequest { return new(pb.LobbyContentRequest) }, content.Content))
 	mux.HandleFunc("POST /api/agent/info", handler.API(func() *pb.AgentRequest { return new(pb.AgentRequest) }, agent.AgentCenter))
@@ -68,6 +70,7 @@ func New(ctx *svc.ServiceContext) http.Handler {
 	mux.HandleFunc("POST /internal/game/exchange", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameExchangeRequest { return new(pb.GameExchangeRequest) }, game.GameExchange)))
 	mux.HandleFunc("POST /internal/game/balance", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameBalanceRequest { return new(pb.GameBalanceRequest) }, game.GameBalance)))
 	mux.HandleFunc("POST /internal/game/settle", handler.ServiceOnly(ctx.Config.Game.ServiceToken, handler.API(func() *pb.GameSettleRequest { return new(pb.GameSettleRequest) }, game.GameSettle)))
+	mux.HandleFunc("POST /api/user/redeem-code", handler.API(func() *pb.RedeemCodeRequest { return new(pb.RedeemCodeRequest) }, logic.RedeemCode))
 	mux.HandleFunc("POST /api/user/account/password/update", handler.API(func() *pb.SecurityRequest { return new(pb.SecurityRequest) }, logic.PasswordUpdate))
 	mux.HandleFunc("POST /api/user/account/logout", handler.API(func() *pb.SecurityRequest { return new(pb.SecurityRequest) }, logic.SessionLogout))
 	mux.HandleFunc("POST /api/user/withdrawal/turnover", handler.API(func() *pb.UserRequest { return new(pb.UserRequest) }, logic.WithdrawalTurnover))
@@ -101,6 +104,10 @@ func New(ctx *svc.ServiceContext) http.Handler {
 	mux.HandleFunc("POST /api/vip/monthly/claim", handler.API(func() *pb.VipRequest { return new(pb.VipRequest) }, vip.VipMonthlyClaim))
 	mux.HandleFunc("GET /api/activity/newbie-recharge/info", handler.API(func() *pb.NewbieRechargeRequest { return new(pb.NewbieRechargeRequest) }, newbie.NewbieRechargeInfo))
 	mux.HandleFunc("POST /api/activity/newbie-recharge/claim", handler.API(func() *pb.NewbieRechargeRequest { return new(pb.NewbieRechargeRequest) }, newbie.NewbieRechargeClaim))
+	mux.HandleFunc("GET /api/mail/list", handler.API(func() *pb.MailListRequest { return new(pb.MailListRequest) }, mail.MailList))
+	mux.HandleFunc("POST /api/mail/read", handler.API(func() *pb.MailMutationRequest { return new(pb.MailMutationRequest) }, mail.MailRead))
+	mux.HandleFunc("POST /api/mail/read-all", handler.API(func() *pb.MailListRequest { return new(pb.MailListRequest) }, mail.MailReadAll))
+	mux.HandleFunc("POST /api/mail/delete", handler.API(func() *pb.MailMutationRequest { return new(pb.MailMutationRequest) }, mail.MailDelete))
 	mux.HandleFunc("GET /health", handler.Health)
 	return trace.Middleware(mux, slog.Default())
 }

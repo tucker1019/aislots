@@ -25,4 +25,5 @@ const (
 	SourceRechargeBonus     Source = "rch_002"  // 充值赠送加币
 	SourceRechargeFee       Source = "rch_003"  // 充值手续费减币
 	SourceLeaderboardReward Source = "act_008"  // 排行榜奖励领取
+	SourceRedeemCodeReward  Source = "act_009"  // 兑换码奖励
 )

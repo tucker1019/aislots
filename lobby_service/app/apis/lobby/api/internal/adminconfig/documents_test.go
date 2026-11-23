@@ -28,11 +28,41 @@ func TestDocumentsRejectUnknownOrUnsafeValues(t *testing.T) {
 		{"recharge", `[{"id":"x","amount":9007199254740992,"bonus":0,"fee":0}]`},
 		{"experience", `{"enabled":true,"createMinSeconds":0,"createMaxSeconds":1,"playMinSeconds":1,"playMaxSeconds":2}`},
 		{"games", `{"appname":"a","appkey":"b","country":"ID","currency":"IDR","games":{},"serviceToken":"secret"}`},
+		{"reward-notifications", `{"rebate":{"sendOnSettlement":true,"reminderHours":[12,12],"sendOnExpired":true},"leaderboard":{"sendOnSettlement":true,"reminderHours":[],"sendOnExpired":true},"lossReturn":{"sendOnSettlement":true,"reminderHours":[],"sendOnExpired":true}}`},
 		{"not-a-section", `{}`},
 	} {
 		if e := ValidateDocument(tc.key, []byte(tc.document)); e == nil {
 			t.Errorf("accepted invalid %s", tc.key)
 		}
+	}
+}
+
+func TestRewardNotificationConfigValidatesReminderWindows(t *testing.T) {
+	for _, document := range []string{
+		`{"rebate":{"sendOnSettlement":true,"reminderHours":[12,6],"sendOnExpired":true},"leaderboard":{"sendOnSettlement":false,"reminderHours":[],"sendOnExpired":false},"lossReturn":{"sendOnSettlement":true,"reminderHours":[23],"sendOnExpired":true}}`,
+	} {
+		if err := ValidateDocument("reward-notifications", []byte(document)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for _, hours := range [][]int32{{0}, {24}, {12, 12}} {
+		if err := (config.RewardNotificationRule{ReminderHours: hours}).Validate(); err == nil {
+			t.Fatalf("accepted invalid reminder hours %v", hours)
+		}
+	}
+}
+
+func TestRewardNotificationDocumentPublicationUpdatesRuntime(t *testing.T) {
+	c := config.Config{RewardNotifications: config.DefaultRewardNotifications()}
+	document := []byte(`{"rebate":{"sendOnSettlement":false,"reminderHours":[8],"sendOnExpired":true},"leaderboard":{"sendOnSettlement":true,"reminderHours":[12,6],"sendOnExpired":false},"lossReturn":{"sendOnSettlement":false,"reminderHours":[],"sendOnExpired":false}}`)
+	if err := applyDocument(&c, "reward-notifications", document); err != nil {
+		t.Fatal(err)
+	}
+	if c.RewardNotifications.Rebate.SendOnSettlement || len(c.RewardNotifications.Rebate.ReminderHours) != 1 || c.RewardNotifications.Rebate.ReminderHours[0] != 8 || !c.RewardNotifications.Rebate.SendOnExpired {
+		t.Fatal(c.RewardNotifications)
+	}
+	if len(c.RewardNotifications.Leaderboard.ReminderHours) != 2 || c.RewardNotifications.Leaderboard.SendOnExpired {
+		t.Fatal(c.RewardNotifications)
 	}
 }
 

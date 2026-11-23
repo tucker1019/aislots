@@ -25,3 +25,4 @@
 | `SourceRechargeBonus` | `rch_002` | 充值赠送加币 |
 | `SourceRechargeFee` | `rch_003` | 充值手续费减币 |
 | `SourceLeaderboardReward` | `act_008` | 排行榜奖励领取 |
+| `SourceRedeemCodeReward` | `act_009` | 兑换码奖励 |

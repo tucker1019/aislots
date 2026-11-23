@@ -22,6 +22,118 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type RedeemCodeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Uid           *int64                 `protobuf:"varint,1,opt,name=uid,proto3,oneof" json:"uid,omitempty"`
+	Sid           *string                `protobuf:"bytes,2,opt,name=sid,proto3,oneof" json:"sid,omitempty"`
+	Code          string                 `protobuf:"bytes,3,opt,name=code,proto3" json:"code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RedeemCodeRequest) Reset() {
+	*x = RedeemCodeRequest{}
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RedeemCodeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RedeemCodeRequest) ProtoMessage() {}
+
+func (x *RedeemCodeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RedeemCodeRequest.ProtoReflect.Descriptor instead.
+func (*RedeemCodeRequest) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *RedeemCodeRequest) GetUid() int64 {
+	if x != nil && x.Uid != nil {
+		return *x.Uid
+	}
+	return 0
+}
+
+func (x *RedeemCodeRequest) GetSid() string {
+	if x != nil && x.Sid != nil {
+		return *x.Sid
+	}
+	return ""
+}
+
+func (x *RedeemCodeRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+type RedeemCodeReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Amount        int64                  `protobuf:"varint,1,opt,name=amount,proto3" json:"amount,omitempty"`
+	Coins         int64                  `protobuf:"varint,2,opt,name=coins,proto3" json:"coins,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RedeemCodeReply) Reset() {
+	*x = RedeemCodeReply{}
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RedeemCodeReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RedeemCodeReply) ProtoMessage() {}
+
+func (x *RedeemCodeReply) ProtoReflect() protoreflect.Message {
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RedeemCodeReply.ProtoReflect.Descriptor instead.
+func (*RedeemCodeReply) Descriptor() ([]byte, []int) {
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *RedeemCodeReply) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *RedeemCodeReply) GetCoins() int64 {
+	if x != nil {
+		return x.Coins
+	}
+	return 0
+}
+
 type UserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	InviteCode    string                 `protobuf:"bytes,8,opt,name=invite_code,json=inviteCode,proto3" json:"invite_code,omitempty"`
@@ -37,7 +149,7 @@ type UserRequest struct {
 
 func (x *UserRequest) Reset() {
 	*x = UserRequest{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[0]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -49,7 +161,7 @@ func (x *UserRequest) String() string {
 func (*UserRequest) ProtoMessage() {}
 
 func (x *UserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[0]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -62,7 +174,7 @@ func (x *UserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserRequest.ProtoReflect.Descriptor instead.
 func (*UserRequest) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{0}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *UserRequest) GetInviteCode() string {
@@ -125,7 +237,7 @@ type IdentityReply struct {
 
 func (x *IdentityReply) Reset() {
 	*x = IdentityReply{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[1]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -137,7 +249,7 @@ func (x *IdentityReply) String() string {
 func (*IdentityReply) ProtoMessage() {}
 
 func (x *IdentityReply) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[1]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -150,7 +262,7 @@ func (x *IdentityReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IdentityReply.ProtoReflect.Descriptor instead.
 func (*IdentityReply) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{1}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *IdentityReply) GetUid() int64 {
@@ -187,7 +299,7 @@ type ProfileReply struct {
 
 func (x *ProfileReply) Reset() {
 	*x = ProfileReply{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[2]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -199,7 +311,7 @@ func (x *ProfileReply) String() string {
 func (*ProfileReply) ProtoMessage() {}
 
 func (x *ProfileReply) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[2]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -212,7 +324,7 @@ func (x *ProfileReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProfileReply.ProtoReflect.Descriptor instead.
 func (*ProfileReply) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{2}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ProfileReply) GetAccount() string {
@@ -263,7 +375,7 @@ type WalletAccountSaveRequest struct {
 
 func (x *WalletAccountSaveRequest) Reset() {
 	*x = WalletAccountSaveRequest{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[3]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -275,7 +387,7 @@ func (x *WalletAccountSaveRequest) String() string {
 func (*WalletAccountSaveRequest) ProtoMessage() {}
 
 func (x *WalletAccountSaveRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[3]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -288,7 +400,7 @@ func (x *WalletAccountSaveRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WalletAccountSaveRequest.ProtoReflect.Descriptor instead.
 func (*WalletAccountSaveRequest) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{3}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *WalletAccountSaveRequest) GetUid() int64 {
@@ -339,7 +451,7 @@ type WalletAccountReply struct {
 
 func (x *WalletAccountReply) Reset() {
 	*x = WalletAccountReply{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[4]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -351,7 +463,7 @@ func (x *WalletAccountReply) String() string {
 func (*WalletAccountReply) ProtoMessage() {}
 
 func (x *WalletAccountReply) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[4]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -364,7 +476,7 @@ func (x *WalletAccountReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WalletAccountReply.ProtoReflect.Descriptor instead.
 func (*WalletAccountReply) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{4}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *WalletAccountReply) GetChannel() string {
@@ -411,7 +523,7 @@ type WalletAccountsReply struct {
 
 func (x *WalletAccountsReply) Reset() {
 	*x = WalletAccountsReply{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[5]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -423,7 +535,7 @@ func (x *WalletAccountsReply) String() string {
 func (*WalletAccountsReply) ProtoMessage() {}
 
 func (x *WalletAccountsReply) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[5]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -436,7 +548,7 @@ func (x *WalletAccountsReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WalletAccountsReply.ProtoReflect.Descriptor instead.
 func (*WalletAccountsReply) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{5}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *WalletAccountsReply) GetChannels() []*WalletAccountReply {
@@ -465,7 +577,7 @@ type WithdrawalRequest struct {
 
 func (x *WithdrawalRequest) Reset() {
 	*x = WithdrawalRequest{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[6]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -477,7 +589,7 @@ func (x *WithdrawalRequest) String() string {
 func (*WithdrawalRequest) ProtoMessage() {}
 
 func (x *WithdrawalRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[6]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -490,7 +602,7 @@ func (x *WithdrawalRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WithdrawalRequest.ProtoReflect.Descriptor instead.
 func (*WithdrawalRequest) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{6}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *WithdrawalRequest) GetUid() int64 {
@@ -583,7 +695,7 @@ type WithdrawalTier struct {
 
 func (x *WithdrawalTier) Reset() {
 	*x = WithdrawalTier{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[7]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -595,7 +707,7 @@ func (x *WithdrawalTier) String() string {
 func (*WithdrawalTier) ProtoMessage() {}
 
 func (x *WithdrawalTier) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[7]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -608,7 +720,7 @@ func (x *WithdrawalTier) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WithdrawalTier.ProtoReflect.Descriptor instead.
 func (*WithdrawalTier) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{7}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *WithdrawalTier) GetId() string {
@@ -656,7 +768,7 @@ type WithdrawalTiersReply struct {
 
 func (x *WithdrawalTiersReply) Reset() {
 	*x = WithdrawalTiersReply{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[8]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -668,7 +780,7 @@ func (x *WithdrawalTiersReply) String() string {
 func (*WithdrawalTiersReply) ProtoMessage() {}
 
 func (x *WithdrawalTiersReply) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[8]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -681,7 +793,7 @@ func (x *WithdrawalTiersReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WithdrawalTiersReply.ProtoReflect.Descriptor instead.
 func (*WithdrawalTiersReply) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{8}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *WithdrawalTiersReply) GetItems() []*WithdrawalTier {
@@ -722,7 +834,7 @@ type WithdrawalOrder struct {
 
 func (x *WithdrawalOrder) Reset() {
 	*x = WithdrawalOrder{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[9]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -734,7 +846,7 @@ func (x *WithdrawalOrder) String() string {
 func (*WithdrawalOrder) ProtoMessage() {}
 
 func (x *WithdrawalOrder) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[9]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -747,7 +859,7 @@ func (x *WithdrawalOrder) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WithdrawalOrder.ProtoReflect.Descriptor instead.
 func (*WithdrawalOrder) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{9}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *WithdrawalOrder) GetOrderId() string {
@@ -872,7 +984,7 @@ type CashOrdersReply struct {
 
 func (x *CashOrdersReply) Reset() {
 	*x = CashOrdersReply{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[10]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -884,7 +996,7 @@ func (x *CashOrdersReply) String() string {
 func (*CashOrdersReply) ProtoMessage() {}
 
 func (x *CashOrdersReply) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[10]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -897,7 +1009,7 @@ func (x *CashOrdersReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CashOrdersReply.ProtoReflect.Descriptor instead.
 func (*CashOrdersReply) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{10}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *CashOrdersReply) GetItems() []*WithdrawalOrder {
@@ -924,7 +1036,7 @@ type WithdrawalTurnoverReply struct {
 
 func (x *WithdrawalTurnoverReply) Reset() {
 	*x = WithdrawalTurnoverReply{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[11]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -936,7 +1048,7 @@ func (x *WithdrawalTurnoverReply) String() string {
 func (*WithdrawalTurnoverReply) ProtoMessage() {}
 
 func (x *WithdrawalTurnoverReply) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[11]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -949,7 +1061,7 @@ func (x *WithdrawalTurnoverReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WithdrawalTurnoverReply.ProtoReflect.Descriptor instead.
 func (*WithdrawalTurnoverReply) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{11}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *WithdrawalTurnoverReply) GetRemaining() int64 {
@@ -978,7 +1090,7 @@ type SecurityRequest struct {
 
 func (x *SecurityRequest) Reset() {
 	*x = SecurityRequest{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[12]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -990,7 +1102,7 @@ func (x *SecurityRequest) String() string {
 func (*SecurityRequest) ProtoMessage() {}
 
 func (x *SecurityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[12]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1003,7 +1115,7 @@ func (x *SecurityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SecurityRequest.ProtoReflect.Descriptor instead.
 func (*SecurityRequest) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{12}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *SecurityRequest) GetUid() int64 {
@@ -1043,7 +1155,7 @@ type SecurityReply struct {
 
 func (x *SecurityReply) Reset() {
 	*x = SecurityReply{}
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[13]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1055,7 +1167,7 @@ func (x *SecurityReply) String() string {
 func (*SecurityReply) ProtoMessage() {}
 
 func (x *SecurityReply) ProtoReflect() protoreflect.Message {
-	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[13]
+	mi := &file_apis_lobby_api_v1_user_api_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1068,7 +1180,7 @@ func (x *SecurityReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SecurityReply.ProtoReflect.Descriptor instead.
 func (*SecurityReply) Descriptor() ([]byte, []int) {
-	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{13}
+	return file_apis_lobby_api_v1_user_api_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *SecurityReply) GetSuccess() bool {
@@ -1082,7 +1194,16 @@ var File_apis_lobby_api_v1_user_api_proto protoreflect.FileDescriptor
 
 const file_apis_lobby_api_v1_user_api_proto_rawDesc = "" +
 	"\n" +
-	" apis/lobby/api/v1/user_api.proto\x12\x11apis.lobby.api.v1\x1a\x1cgoogle/api/annotations.proto\"\x80\x02\n" +
+	" apis/lobby/api/v1/user_api.proto\x12\x11apis.lobby.api.v1\x1a\x1cgoogle/api/annotations.proto\"e\n" +
+	"\x11RedeemCodeRequest\x12\x15\n" +
+	"\x03uid\x18\x01 \x01(\x03H\x00R\x03uid\x88\x01\x01\x12\x15\n" +
+	"\x03sid\x18\x02 \x01(\tH\x01R\x03sid\x88\x01\x01\x12\x12\n" +
+	"\x04code\x18\x03 \x01(\tR\x04codeB\x06\n" +
+	"\x04_uidB\x06\n" +
+	"\x04_sid\"?\n" +
+	"\x0fRedeemCodeReply\x12\x16\n" +
+	"\x06amount\x18\x01 \x01(\x03R\x06amount\x12\x14\n" +
+	"\x05coins\x18\x02 \x01(\x03R\x05coins\"\x80\x02\n" +
 	"\vUserRequest\x12\x1f\n" +
 	"\vinvite_code\x18\b \x01(\tR\n" +
 	"inviteCode\x12\x15\n" +
@@ -1186,8 +1307,10 @@ const file_apis_lobby_api_v1_user_api_proto_rawDesc = "" +
 	"\x04_uidB\x06\n" +
 	"\x04_sid\")\n" +
 	"\rSecurityReply\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\xb9\x11\n" +
-	"\vUserService\x12\x84\x01\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess2\xb3\x12\n" +
+	"\vUserService\x12x\n" +
+	"\n" +
+	"RedeemCode\x12$.apis.lobby.api.v1.RedeemCodeRequest\x1a\".apis.lobby.api.v1.RedeemCodeReply\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/user/redeem-code\x12\x84\x01\n" +
 	"\x0ePasswordUpdate\x12\".apis.lobby.api.v1.SecurityRequest\x1a .apis.lobby.api.v1.SecurityReply\",\x82\xd3\xe4\x93\x02&:\x01*\"!/api/user/account/password/update\x12z\n" +
 	"\rSessionLogout\x12\".apis.lobby.api.v1.SecurityRequest\x1a .apis.lobby.api.v1.SecurityReply\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/api/user/account/logout\x12\x8a\x01\n" +
 	"\x12WithdrawalTurnover\x12\x1e.apis.lobby.api.v1.UserRequest\x1a*.apis.lobby.api.v1.WithdrawalTurnoverReply\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/api/user/withdrawal/turnover\x12\x80\x01\n" +
@@ -1219,63 +1342,67 @@ func file_apis_lobby_api_v1_user_api_proto_rawDescGZIP() []byte {
 	return file_apis_lobby_api_v1_user_api_proto_rawDescData
 }
 
-var file_apis_lobby_api_v1_user_api_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_apis_lobby_api_v1_user_api_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_apis_lobby_api_v1_user_api_proto_goTypes = []any{
-	(*UserRequest)(nil),              // 0: apis.lobby.api.v1.UserRequest
-	(*IdentityReply)(nil),            // 1: apis.lobby.api.v1.IdentityReply
-	(*ProfileReply)(nil),             // 2: apis.lobby.api.v1.ProfileReply
-	(*WalletAccountSaveRequest)(nil), // 3: apis.lobby.api.v1.WalletAccountSaveRequest
-	(*WalletAccountReply)(nil),       // 4: apis.lobby.api.v1.WalletAccountReply
-	(*WalletAccountsReply)(nil),      // 5: apis.lobby.api.v1.WalletAccountsReply
-	(*WithdrawalRequest)(nil),        // 6: apis.lobby.api.v1.WithdrawalRequest
-	(*WithdrawalTier)(nil),           // 7: apis.lobby.api.v1.WithdrawalTier
-	(*WithdrawalTiersReply)(nil),     // 8: apis.lobby.api.v1.WithdrawalTiersReply
-	(*WithdrawalOrder)(nil),          // 9: apis.lobby.api.v1.WithdrawalOrder
-	(*CashOrdersReply)(nil),          // 10: apis.lobby.api.v1.CashOrdersReply
-	(*WithdrawalTurnoverReply)(nil),  // 11: apis.lobby.api.v1.WithdrawalTurnoverReply
-	(*SecurityRequest)(nil),          // 12: apis.lobby.api.v1.SecurityRequest
-	(*SecurityReply)(nil),            // 13: apis.lobby.api.v1.SecurityReply
+	(*RedeemCodeRequest)(nil),        // 0: apis.lobby.api.v1.RedeemCodeRequest
+	(*RedeemCodeReply)(nil),          // 1: apis.lobby.api.v1.RedeemCodeReply
+	(*UserRequest)(nil),              // 2: apis.lobby.api.v1.UserRequest
+	(*IdentityReply)(nil),            // 3: apis.lobby.api.v1.IdentityReply
+	(*ProfileReply)(nil),             // 4: apis.lobby.api.v1.ProfileReply
+	(*WalletAccountSaveRequest)(nil), // 5: apis.lobby.api.v1.WalletAccountSaveRequest
+	(*WalletAccountReply)(nil),       // 6: apis.lobby.api.v1.WalletAccountReply
+	(*WalletAccountsReply)(nil),      // 7: apis.lobby.api.v1.WalletAccountsReply
+	(*WithdrawalRequest)(nil),        // 8: apis.lobby.api.v1.WithdrawalRequest
+	(*WithdrawalTier)(nil),           // 9: apis.lobby.api.v1.WithdrawalTier
+	(*WithdrawalTiersReply)(nil),     // 10: apis.lobby.api.v1.WithdrawalTiersReply
+	(*WithdrawalOrder)(nil),          // 11: apis.lobby.api.v1.WithdrawalOrder
+	(*CashOrdersReply)(nil),          // 12: apis.lobby.api.v1.CashOrdersReply
+	(*WithdrawalTurnoverReply)(nil),  // 13: apis.lobby.api.v1.WithdrawalTurnoverReply
+	(*SecurityRequest)(nil),          // 14: apis.lobby.api.v1.SecurityRequest
+	(*SecurityReply)(nil),            // 15: apis.lobby.api.v1.SecurityReply
 }
 var file_apis_lobby_api_v1_user_api_proto_depIdxs = []int32{
-	4,  // 0: apis.lobby.api.v1.WalletAccountsReply.channels:type_name -> apis.lobby.api.v1.WalletAccountReply
-	7,  // 1: apis.lobby.api.v1.WithdrawalTiersReply.items:type_name -> apis.lobby.api.v1.WithdrawalTier
-	9,  // 2: apis.lobby.api.v1.CashOrdersReply.items:type_name -> apis.lobby.api.v1.WithdrawalOrder
-	12, // 3: apis.lobby.api.v1.UserService.PasswordUpdate:input_type -> apis.lobby.api.v1.SecurityRequest
-	12, // 4: apis.lobby.api.v1.UserService.SessionLogout:input_type -> apis.lobby.api.v1.SecurityRequest
-	0,  // 5: apis.lobby.api.v1.UserService.WithdrawalTurnover:input_type -> apis.lobby.api.v1.UserRequest
-	0,  // 6: apis.lobby.api.v1.UserService.WithdrawalList:input_type -> apis.lobby.api.v1.UserRequest
-	6,  // 7: apis.lobby.api.v1.UserService.WithdrawalCreate:input_type -> apis.lobby.api.v1.WithdrawalRequest
-	6,  // 8: apis.lobby.api.v1.UserService.WithdrawalReview:input_type -> apis.lobby.api.v1.WithdrawalRequest
-	6,  // 9: apis.lobby.api.v1.UserService.WithdrawalInfo:input_type -> apis.lobby.api.v1.WithdrawalRequest
-	6,  // 10: apis.lobby.api.v1.UserService.CashOrders:input_type -> apis.lobby.api.v1.WithdrawalRequest
-	0,  // 11: apis.lobby.api.v1.UserService.WalletAccounts:input_type -> apis.lobby.api.v1.UserRequest
-	3,  // 12: apis.lobby.api.v1.UserService.WalletAccountSave:input_type -> apis.lobby.api.v1.WalletAccountSaveRequest
-	0,  // 13: apis.lobby.api.v1.UserService.VisitorLogin:input_type -> apis.lobby.api.v1.UserRequest
-	0,  // 14: apis.lobby.api.v1.UserService.SessionRenewal:input_type -> apis.lobby.api.v1.UserRequest
-	0,  // 15: apis.lobby.api.v1.UserService.UniqueCodeRegister:input_type -> apis.lobby.api.v1.UserRequest
-	0,  // 16: apis.lobby.api.v1.UserService.UniqueCodeLogin:input_type -> apis.lobby.api.v1.UserRequest
-	0,  // 17: apis.lobby.api.v1.UserService.UniqueCodeBind:input_type -> apis.lobby.api.v1.UserRequest
-	0,  // 18: apis.lobby.api.v1.UserService.ProfileInfo:input_type -> apis.lobby.api.v1.UserRequest
-	0,  // 19: apis.lobby.api.v1.UserService.ProfileUpdate:input_type -> apis.lobby.api.v1.UserRequest
-	13, // 20: apis.lobby.api.v1.UserService.PasswordUpdate:output_type -> apis.lobby.api.v1.SecurityReply
-	13, // 21: apis.lobby.api.v1.UserService.SessionLogout:output_type -> apis.lobby.api.v1.SecurityReply
-	11, // 22: apis.lobby.api.v1.UserService.WithdrawalTurnover:output_type -> apis.lobby.api.v1.WithdrawalTurnoverReply
-	8,  // 23: apis.lobby.api.v1.UserService.WithdrawalList:output_type -> apis.lobby.api.v1.WithdrawalTiersReply
-	9,  // 24: apis.lobby.api.v1.UserService.WithdrawalCreate:output_type -> apis.lobby.api.v1.WithdrawalOrder
-	9,  // 25: apis.lobby.api.v1.UserService.WithdrawalReview:output_type -> apis.lobby.api.v1.WithdrawalOrder
-	9,  // 26: apis.lobby.api.v1.UserService.WithdrawalInfo:output_type -> apis.lobby.api.v1.WithdrawalOrder
-	10, // 27: apis.lobby.api.v1.UserService.CashOrders:output_type -> apis.lobby.api.v1.CashOrdersReply
-	5,  // 28: apis.lobby.api.v1.UserService.WalletAccounts:output_type -> apis.lobby.api.v1.WalletAccountsReply
-	4,  // 29: apis.lobby.api.v1.UserService.WalletAccountSave:output_type -> apis.lobby.api.v1.WalletAccountReply
-	1,  // 30: apis.lobby.api.v1.UserService.VisitorLogin:output_type -> apis.lobby.api.v1.IdentityReply
-	1,  // 31: apis.lobby.api.v1.UserService.SessionRenewal:output_type -> apis.lobby.api.v1.IdentityReply
-	1,  // 32: apis.lobby.api.v1.UserService.UniqueCodeRegister:output_type -> apis.lobby.api.v1.IdentityReply
-	1,  // 33: apis.lobby.api.v1.UserService.UniqueCodeLogin:output_type -> apis.lobby.api.v1.IdentityReply
-	1,  // 34: apis.lobby.api.v1.UserService.UniqueCodeBind:output_type -> apis.lobby.api.v1.IdentityReply
-	2,  // 35: apis.lobby.api.v1.UserService.ProfileInfo:output_type -> apis.lobby.api.v1.ProfileReply
-	2,  // 36: apis.lobby.api.v1.UserService.ProfileUpdate:output_type -> apis.lobby.api.v1.ProfileReply
-	20, // [20:37] is the sub-list for method output_type
-	3,  // [3:20] is the sub-list for method input_type
+	6,  // 0: apis.lobby.api.v1.WalletAccountsReply.channels:type_name -> apis.lobby.api.v1.WalletAccountReply
+	9,  // 1: apis.lobby.api.v1.WithdrawalTiersReply.items:type_name -> apis.lobby.api.v1.WithdrawalTier
+	11, // 2: apis.lobby.api.v1.CashOrdersReply.items:type_name -> apis.lobby.api.v1.WithdrawalOrder
+	0,  // 3: apis.lobby.api.v1.UserService.RedeemCode:input_type -> apis.lobby.api.v1.RedeemCodeRequest
+	14, // 4: apis.lobby.api.v1.UserService.PasswordUpdate:input_type -> apis.lobby.api.v1.SecurityRequest
+	14, // 5: apis.lobby.api.v1.UserService.SessionLogout:input_type -> apis.lobby.api.v1.SecurityRequest
+	2,  // 6: apis.lobby.api.v1.UserService.WithdrawalTurnover:input_type -> apis.lobby.api.v1.UserRequest
+	2,  // 7: apis.lobby.api.v1.UserService.WithdrawalList:input_type -> apis.lobby.api.v1.UserRequest
+	8,  // 8: apis.lobby.api.v1.UserService.WithdrawalCreate:input_type -> apis.lobby.api.v1.WithdrawalRequest
+	8,  // 9: apis.lobby.api.v1.UserService.WithdrawalReview:input_type -> apis.lobby.api.v1.WithdrawalRequest
+	8,  // 10: apis.lobby.api.v1.UserService.WithdrawalInfo:input_type -> apis.lobby.api.v1.WithdrawalRequest
+	8,  // 11: apis.lobby.api.v1.UserService.CashOrders:input_type -> apis.lobby.api.v1.WithdrawalRequest
+	2,  // 12: apis.lobby.api.v1.UserService.WalletAccounts:input_type -> apis.lobby.api.v1.UserRequest
+	5,  // 13: apis.lobby.api.v1.UserService.WalletAccountSave:input_type -> apis.lobby.api.v1.WalletAccountSaveRequest
+	2,  // 14: apis.lobby.api.v1.UserService.VisitorLogin:input_type -> apis.lobby.api.v1.UserRequest
+	2,  // 15: apis.lobby.api.v1.UserService.SessionRenewal:input_type -> apis.lobby.api.v1.UserRequest
+	2,  // 16: apis.lobby.api.v1.UserService.UniqueCodeRegister:input_type -> apis.lobby.api.v1.UserRequest
+	2,  // 17: apis.lobby.api.v1.UserService.UniqueCodeLogin:input_type -> apis.lobby.api.v1.UserRequest
+	2,  // 18: apis.lobby.api.v1.UserService.UniqueCodeBind:input_type -> apis.lobby.api.v1.UserRequest
+	2,  // 19: apis.lobby.api.v1.UserService.ProfileInfo:input_type -> apis.lobby.api.v1.UserRequest
+	2,  // 20: apis.lobby.api.v1.UserService.ProfileUpdate:input_type -> apis.lobby.api.v1.UserRequest
+	1,  // 21: apis.lobby.api.v1.UserService.RedeemCode:output_type -> apis.lobby.api.v1.RedeemCodeReply
+	15, // 22: apis.lobby.api.v1.UserService.PasswordUpdate:output_type -> apis.lobby.api.v1.SecurityReply
+	15, // 23: apis.lobby.api.v1.UserService.SessionLogout:output_type -> apis.lobby.api.v1.SecurityReply
+	13, // 24: apis.lobby.api.v1.UserService.WithdrawalTurnover:output_type -> apis.lobby.api.v1.WithdrawalTurnoverReply
+	10, // 25: apis.lobby.api.v1.UserService.WithdrawalList:output_type -> apis.lobby.api.v1.WithdrawalTiersReply
+	11, // 26: apis.lobby.api.v1.UserService.WithdrawalCreate:output_type -> apis.lobby.api.v1.WithdrawalOrder
+	11, // 27: apis.lobby.api.v1.UserService.WithdrawalReview:output_type -> apis.lobby.api.v1.WithdrawalOrder
+	11, // 28: apis.lobby.api.v1.UserService.WithdrawalInfo:output_type -> apis.lobby.api.v1.WithdrawalOrder
+	12, // 29: apis.lobby.api.v1.UserService.CashOrders:output_type -> apis.lobby.api.v1.CashOrdersReply
+	7,  // 30: apis.lobby.api.v1.UserService.WalletAccounts:output_type -> apis.lobby.api.v1.WalletAccountsReply
+	6,  // 31: apis.lobby.api.v1.UserService.WalletAccountSave:output_type -> apis.lobby.api.v1.WalletAccountReply
+	3,  // 32: apis.lobby.api.v1.UserService.VisitorLogin:output_type -> apis.lobby.api.v1.IdentityReply
+	3,  // 33: apis.lobby.api.v1.UserService.SessionRenewal:output_type -> apis.lobby.api.v1.IdentityReply
+	3,  // 34: apis.lobby.api.v1.UserService.UniqueCodeRegister:output_type -> apis.lobby.api.v1.IdentityReply
+	3,  // 35: apis.lobby.api.v1.UserService.UniqueCodeLogin:output_type -> apis.lobby.api.v1.IdentityReply
+	3,  // 36: apis.lobby.api.v1.UserService.UniqueCodeBind:output_type -> apis.lobby.api.v1.IdentityReply
+	4,  // 37: apis.lobby.api.v1.UserService.ProfileInfo:output_type -> apis.lobby.api.v1.ProfileReply
+	4,  // 38: apis.lobby.api.v1.UserService.ProfileUpdate:output_type -> apis.lobby.api.v1.ProfileReply
+	21, // [21:39] is the sub-list for method output_type
+	3,  // [3:21] is the sub-list for method input_type
 	3,  // [3:3] is the sub-list for extension type_name
 	3,  // [3:3] is the sub-list for extension extendee
 	0,  // [0:3] is the sub-list for field type_name
@@ -1287,16 +1414,17 @@ func file_apis_lobby_api_v1_user_api_proto_init() {
 		return
 	}
 	file_apis_lobby_api_v1_user_api_proto_msgTypes[0].OneofWrappers = []any{}
-	file_apis_lobby_api_v1_user_api_proto_msgTypes[3].OneofWrappers = []any{}
-	file_apis_lobby_api_v1_user_api_proto_msgTypes[6].OneofWrappers = []any{}
-	file_apis_lobby_api_v1_user_api_proto_msgTypes[12].OneofWrappers = []any{}
+	file_apis_lobby_api_v1_user_api_proto_msgTypes[2].OneofWrappers = []any{}
+	file_apis_lobby_api_v1_user_api_proto_msgTypes[5].OneofWrappers = []any{}
+	file_apis_lobby_api_v1_user_api_proto_msgTypes[8].OneofWrappers = []any{}
+	file_apis_lobby_api_v1_user_api_proto_msgTypes[14].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_apis_lobby_api_v1_user_api_proto_rawDesc), len(file_apis_lobby_api_v1_user_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

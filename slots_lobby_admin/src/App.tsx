@@ -15,9 +15,10 @@ import { ConfigNavigation } from './features/ConfigNavigation';
 import { Configs } from './pages/Configs';
 import { GamePreview } from './pages/GamePreview';
 import { Audit } from './pages/Audit';
+import { RedeemCodes } from './pages/RedeemCodes';
 const navigation = [
  { key: 'overview', label: '运营总览', icon: '◈' }, { key: 'members', label: '会员查询', icon: '◎' },
- { key: 'orders', label: '资金订单', icon: '⇄' }, { key: 'configs', label: '大厅配置', icon: '▦' }, { key: 'audit', label: '审计日志', icon: '≡' },
+ { key: 'orders', label: '资金订单', icon: '⇄' }, { key: 'redeemCodes', label: '兑换码', icon: '⌑' }, { key: 'configs', label: '大厅配置', icon: '▦' }, { key: 'audit', label: '审计日志', icon: '≡' },
  { key: 'gamePreview', label: 'Cocos 调试', icon: '▷' },
 ] as const;
 export function App() {
@@ -37,7 +38,7 @@ export function App() {
   if (me.error && !(me.error instanceof ApiError && me.error.status === 401)) return <div className="session-loading"><QueryState pending={false} error={me.error} retry={() => void me.refetch()} /></div>;
   return <Login />;
  }
- const content = { overview: <Overview />, members: <Members />, orders: <Orders />, configs: <Configs />, audit: <Audit />, gamePreview: <GamePreview /> };
+ const content = { overview: <Overview />, members: <Members />, orders: <Orders />, redeemCodes: <RedeemCodes />, configs: <Configs />, audit: <Audit />, gamePreview: <GamePreview /> };
  return <div className="console"><aside className="sidebar"><div className="brand">AI<span>SLOTS</span><small>OPERATIONS</small></div><div className="sidebar-label">大厅运营</div><nav aria-label="主导航">{navigation.map(item => <Fragment key={item.key}><button aria-current={screen === item.key && item.key !== 'configs' ? 'page' : undefined} aria-expanded={item.key === 'configs' ? showConfigs : undefined} aria-controls={item.key === 'configs' ? 'config-submenu' : undefined} className={screen === item.key ? 'active' : ''} onClick={() => {
   if (item.key === 'configs') { setConfigsExpanded(!showConfigs); if (!showConfigs) navigate('configs'); }
   else { setConfigsExpanded(null); navigate(item.key); }

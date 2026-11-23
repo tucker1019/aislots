@@ -11,7 +11,7 @@ const ledgerKeys:Record<string,MessageKey>={
  withdrawal:'server.withdrawalDebit','withdrawal-refund':'server.withdrawalRefund','withdrawal-bonus':'server.withdrawalBonus',
  commission:'server.commission',invite:'server.inviteReward',recharge:'server.memberDeposit',bonus:'server.depositBonus',
  fee:'server.depositFee',checkin:'server.checkin',weekly:'copy.weeklyGift',monthly:'copy.monthlyGift',upgrade:'copy.levelUpReward',
- rebate:'server.rebateReward',loss:'server.lossReturn',newbie:'server.newPlayerDeposit',leaderboard:'server.leaderboardReward',other:'server.other',
+ rebate:'server.rebateReward',loss:'server.lossReturn',newbie:'server.newPlayerDeposit',leaderboard:'server.leaderboardReward','redeem-code':'server.redeemCodeReward',other:'server.other',
 };
 export function reportLabel(id:string,fallback:string):string{const key=reportKeys[id];return typeof key==='string'?t(key):fallback;}
 export function ledgerLabel(id:string|undefined,fallback:string):string {

@@ -1,13 +1,13 @@
 package model
 
 import (
-	"context"
-	"crypto/rand"
-	"math"
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 	"apps/pkg/coinsource"
 	"apps/pkg/xerr"
+	"context"
+	"crypto/rand"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+	"math"
 	"time"
 )
 
@@ -22,48 +22,134 @@ type PlatformLeaderboardView struct {
 	RewardStatus                                    string
 }
 
-type PlatformRewardReceipt struct { ClaimID string; Amount, Coins int64; Status string }
+type PlatformRewardReceipt struct {
+	ClaimID       string
+	Amount, Coins int64
+	Status        string
+}
 
 func (m *GameModel) EnsurePlatformLeaderboardRewards(ctx context.Context, date time.Time, board string, rewards []int64) error {
-	if board != "wins" && board != "multiplier" || len(rewards) != 10 { return xerr.ErrInvalid }
-	loc := m.Location; if loc == nil { loc = time.UTC }
-	day := date.In(loc); start := time.Date(day.Year(), day.Month(), day.Day(), 0, 0, 0, 0, loc); end := start.AddDate(0,0,1)
+	if board != "wins" && board != "multiplier" || len(rewards) != 10 {
+		return xerr.ErrInvalid
+	}
+	loc := m.Location
+	if loc == nil {
+		loc = time.UTC
+	}
+	day := date.In(loc)
+	start := time.Date(day.Year(), day.Month(), day.Day(), 0, 0, 0, 0, loc)
+	end := start.AddDate(0, 0, 1)
+	availableAt := end
+	expiresAt := availableAt.AddDate(0, 0, 1)
 	return m.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		var count int64
-		if err := tx.Table("lobby_platform_leaderboard_rewards").Where("business_date=? AND board=?", start.Format(time.DateOnly), board).Count(&count).Error; err != nil { return err }
-		if count == 10 { return nil }
-		score := "win_amount::numeric"; if board == "multiplier" { score = "win_amount::numeric/NULLIF(bet_amount,0)" }
-		var rows []struct { UID int64; PlatformOrderID string; GameID, BetID string; Anonymous bool }
+		if err := tx.Table("lobby_platform_leaderboard_rewards").Where("business_date=? AND board=?", start.Format(time.DateOnly), board).Count(&count).Error; err != nil {
+			return err
+		}
+		if count == 10 {
+			return nil
+		}
+		score := "win_amount::numeric"
+		if board == "multiplier" {
+			score = "win_amount::numeric/NULLIF(bet_amount,0)"
+		}
+		var rows []struct {
+			UID             int64
+			PlatformOrderID string
+			GameID, BetID   string
+			Anonymous       bool
+		}
 		q := `SELECT c.uid,c.platform_order_id::text AS platform_order_id,c.game_id,c.bet_id,(NOT c.leaderboard_participating OR c.leaderboard_anonymous) AS anonymous
  FROM (SELECT DISTINCT ON (uid,game_id,bet_id) uid,platform_order_id,game_id,bet_id,bet_amount,win_amount,leaderboard_participating,leaderboard_anonymous,ended_at FROM lobby_game_completions WHERE included AND ended_at>=? AND ended_at<? ORDER BY uid,game_id,bet_id,ended_at DESC) c
  ORDER BY ` + score + ` DESC,c.ended_at ASC,c.bet_id ASC LIMIT 10`
-		if err := tx.Raw(q, start.UTC(), end.UTC()).Scan(&rows).Error; err != nil { return err }
-		for i, row := range rows { status := "claimable"; amount := rewards[i]; if row.Anonymous { status, amount = "ineligible", 0 }; if err := tx.Exec(`INSERT INTO lobby_platform_leaderboard_rewards(business_date,board,rank,uid,platform_order_id,amount,anonymous,status) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(business_date,board,rank) DO NOTHING`, start.Format(time.DateOnly), board, i+1, row.UID, row.PlatformOrderID, amount, row.Anonymous, status).Error; err != nil { return err } }
+		if err := tx.Raw(q, start.UTC(), end.UTC()).Scan(&rows).Error; err != nil {
+			return err
+		}
+		for i, row := range rows {
+			status := "claimable"
+			amount := rewards[i]
+			if row.Anonymous {
+				status, amount = "ineligible", 0
+			}
+			if err := tx.Exec(`INSERT INTO lobby_platform_leaderboard_rewards(business_date,board,rank,uid,platform_order_id,amount,anonymous,status,available_at,expires_at) VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(business_date,board,rank) DO NOTHING`, start.Format(time.DateOnly), board, i+1, row.UID, row.PlatformOrderID, amount, row.Anonymous, status, availableAt, expiresAt).Error; err != nil {
+				return err
+			}
+		}
 		return nil
 	})
 }
 
 func (m *GameModel) ClaimPlatformLeaderboardReward(ctx context.Context, uid int64, date time.Time, board string, rank int, turnover bool, now time.Time) (*PlatformRewardReceipt, error) {
-	if uid <= 0 || (board != "wins" && board != "multiplier") || rank < 1 || rank > 10 { return nil, xerr.ErrInvalid }
+	if uid <= 0 || (board != "wins" && board != "multiplier") || rank < 1 || rank > 10 {
+		return nil, xerr.ErrInvalid
+	}
 	var receipt PlatformRewardReceipt
 	err := m.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		var row struct { ClaimID *string; Amount int64; Status string; UID int64; Anonymous bool }
-		if err := tx.Clauses(clause.Locking{Strength:"UPDATE"}).Table("lobby_platform_leaderboard_rewards").Select("claim_id,amount,status,uid,anonymous").Where("business_date=? AND board=? AND rank=?", date.Format(time.DateOnly), board, rank).Take(&row).Error; err != nil { return xerr.ErrInvalid }
-		if row.UID != uid || row.Anonymous || row.Status == "ineligible" { return xerr.ErrInvalid }
-		if row.Status == "claimed" { receipt.ClaimID = valueOrEmpty(row.ClaimID); receipt.Amount = row.Amount; receipt.Status = row.Status; var wallet LobbyWalletBalance; if err:=tx.Where("uid=?",uid).Take(&wallet).Error; err!=nil{return err}; receipt.Coins=wallet.Coins; return nil }
-		var wallet LobbyWalletBalance; if err:=tx.Clauses(clause.Locking{Strength:"UPDATE"}).Where("uid=?",uid).Take(&wallet).Error; err!=nil{return err}
-		if wallet.Coins > math.MaxInt64-row.Amount { return xerr.ErrBalanceLimit }
-		claimID := "lbr_" + rand.Text(); coins := wallet.Coins + row.Amount
-		if err:=tx.Create(&LobbyCoinLedger{UID:uid,OrderID:claimID,Source:string(coinsource.SourceLeaderboardReward),Delta:row.Amount,BalanceBefore:wallet.Coins,BalanceAfter:coins}).Error; err!=nil{return err}
-		if err:=tx.Model(&wallet).Update("coins",coins).Error; err!=nil{return err}
-		if err:=tx.Table("lobby_platform_leaderboard_rewards").Where("business_date=? AND board=? AND rank=?",date.Format(time.DateOnly),board,rank).Updates(map[string]any{"status":"claimed","claim_id":claimID,"claimed_at":now}).Error; err!=nil{return err}
-		receipt = PlatformRewardReceipt{ClaimID:claimID,Amount:row.Amount,Coins:coins,Status:"claimed"}; _ = turnover
+		var row struct {
+			ClaimID   *string
+			Amount    int64
+			Status    string
+			UID       int64
+			Anonymous bool
+			ExpiresAt time.Time
+		}
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Table("lobby_platform_leaderboard_rewards").Select("claim_id,amount,status,uid,anonymous,expires_at").Where("business_date=? AND board=? AND rank=?", date.Format(time.DateOnly), board, rank).Take(&row).Error; err != nil {
+			return xerr.ErrInvalid
+		}
+		if row.UID != uid || row.Anonymous || row.Status == "ineligible" || row.Status == "expired" {
+			return xerr.ErrInvalid
+		}
+		if row.Status == "claimed" {
+			receipt.ClaimID = valueOrEmpty(row.ClaimID)
+			receipt.Amount = row.Amount
+			receipt.Status = row.Status
+			var wallet LobbyWalletBalance
+			if err := tx.Where("uid=?", uid).Take(&wallet).Error; err != nil {
+				return err
+			}
+			receipt.Coins = wallet.Coins
+			return nil
+		}
+		if !now.Before(row.ExpiresAt) {
+			if err := tx.Table("lobby_platform_leaderboard_rewards").Where("business_date=? AND board=? AND rank=? AND status='claimable'", date.Format(time.DateOnly), board, rank).Update("status", "expired").Error; err != nil {
+				return err
+			}
+			return xerr.ErrInvalid
+		}
+		var wallet LobbyWalletBalance
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Where("uid=?", uid).Take(&wallet).Error; err != nil {
+			return err
+		}
+		if wallet.Coins > math.MaxInt64-row.Amount {
+			return xerr.ErrBalanceLimit
+		}
+		claimID := "lbr_" + rand.Text()
+		coins := wallet.Coins + row.Amount
+		if err := tx.Create(&LobbyCoinLedger{UID: uid, OrderID: claimID, Source: string(coinsource.SourceLeaderboardReward), Delta: row.Amount, BalanceBefore: wallet.Coins, BalanceAfter: coins}).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&wallet).Update("coins", coins).Error; err != nil {
+			return err
+		}
+		if err := tx.Table("lobby_platform_leaderboard_rewards").Where("business_date=? AND board=? AND rank=?", date.Format(time.DateOnly), board, rank).Updates(map[string]any{"status": "claimed", "claim_id": claimID, "claimed_at": now}).Error; err != nil {
+			return err
+		}
+		receipt = PlatformRewardReceipt{ClaimID: claimID, Amount: row.Amount, Coins: coins, Status: "claimed"}
+		_ = turnover
 		return nil
 	})
-	if err != nil { return nil, err }; return &receipt,nil
+	if err != nil {
+		return nil, err
+	}
+	return &receipt, nil
 }
 
-func valueOrEmpty(v *string) string { if v == nil { return "" }; return *v }
+func valueOrEmpty(v *string) string {
+	if v == nil {
+		return ""
+	}
+	return *v
+}
 
 func (m *GameModel) ReadPlatformLeaderboard(ctx context.Context, board, period string, now time.Time) ([]PlatformLeaderboardView, error) {
 	if board != "wins" && board != "multiplier" {
@@ -88,8 +174,17 @@ func (m *GameModel) ReadPlatformLeaderboard(ctx context.Context, board, period s
 	return rows, err
 }
 
-func (m *GameModel) ReadPlatformRewardStatuses(ctx context.Context, date time.Time, board string) (map[int]string, error) {
-	rows := []struct{ Rank int; Status string }{}
-	if err := m.DB.WithContext(ctx).Table("lobby_platform_leaderboard_rewards").Select("rank,status").Where("business_date=? AND board=?", date.Format(time.DateOnly), board).Scan(&rows).Error; err != nil { return nil, err }
-	out := map[int]string{}; for _, row := range rows { out[row.Rank] = row.Status }; return out,nil
+func (m *GameModel) ReadPlatformRewardStatuses(ctx context.Context, date time.Time, board string, now time.Time) (map[int]string, error) {
+	rows := []struct {
+		Rank   int
+		Status string
+	}{}
+	if err := m.DB.WithContext(ctx).Table("lobby_platform_leaderboard_rewards").Select("rank, CASE WHEN status='claimable' AND expires_at<=? THEN 'expired' ELSE status END AS status", now).Where("business_date=? AND board=?", date.Format(time.DateOnly), board).Scan(&rows).Error; err != nil {
+		return nil, err
+	}
+	out := map[int]string{}
+	for _, row := range rows {
+		out[row.Rank] = row.Status
+	}
+	return out, nil
 }

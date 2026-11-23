@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AISlots 邮件页预览</title>
+  <style>
+    @font-face{font-family:NunitoLobby;src:url('/fonts/nunito-variable.woff2') format('woff2');font-weight:200 1000;font-display:swap}
+    @font-face{font-family:HuninnLobby;src:url('/fonts/huninn.woff2') format('woff2');font-display:swap}
+    @font-face{font-family:NotoLobby;src:url('/fonts/noto-sans-tc-lobby.woff2') format('woff2');font-weight:400 900;font-display:swap}
+    :root{font-family:NunitoLobby,HuninnLobby,NotoLobby,-apple-system,BlinkMacSystemFont,"PingFang TC",sans-serif;color:#fff6ed;background:#17152a;font-synthesis:weight;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;--panel:#252039;--paper:#342d4b;--line:#4a405e;--ink:#fff6ed;--muted:#c0b9d0;--action:#ff9179}
+    *{box-sizing:border-box}body{margin:0;min-width:320px;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#503354 0,transparent 52%),#10101b;color:var(--ink);display:flex;justify-content:center;padding:22px 12px}
+    button{font:inherit;color:inherit;cursor:pointer}.preview{width:420px;max-width:100%;min-height:820px;height:calc(100vh - 44px);max-height:960px;border:1px solid #514766;border-radius:28px;background:#17152a;box-shadow:0 28px 90px #0008;overflow:hidden;display:flex;flex-direction:column;position:relative}
+    .statusbar{height:27px;flex:0 0 27px;display:flex;align-items:center;justify-content:space-between;padding:0 23px;color:#c0b9d0;font-size:11px;letter-spacing:.2px}
+    .header{height:62px;flex:0 0 62px;display:grid;grid-template-columns:38px 1fr 38px;align-items:center;gap:12px;padding:0 17px;border-bottom:1px solid #332c47}.back{height:36px;width:36px;border:1px solid var(--line);border-radius:11px;background:#252039;display:grid;place-items:center;font-size:23px;line-height:1;color:#eadff2}h1{font-size:18px;margin:0;font-weight:850;letter-spacing:.2px}.header-spacer{width:36px}
+    .toolbar{display:flex;justify-content:space-between;align-items:center;padding:14px 18px 9px}.toolbar strong{font-size:13px;font-weight:800}.read-all{padding:6px 0 6px 10px;border:0;background:none;color:var(--action);font-size:11px;font-weight:750}
+    .tabs{display:flex;gap:4px;padding:4px;margin:0 16px 11px;background:#13111f;border:1px solid #39324b;border-radius:13px}.tab{border:0;background:transparent;color:#b5adc4;border-radius:9px;flex:1;height:32px;font-size:12px}.tab.active{background:#ff9179;color:#291a22;font-weight:900;box-shadow:0 3px 12px #ff917933}
+    .list{padding:0 13px 22px;display:grid;align-content:start;gap:7px;overflow:auto;scrollbar-width:none}.list::-webkit-scrollbar{display:none}.mail{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:10px;row-gap:5px;padding:11px 12px;background:linear-gradient(135deg,#2b2541,#231e36);border:1px solid #413852;border-radius:12px;transition:background .15s,border-color .15s}.mail:hover{border-color:#756284;background:#302844}.mail.unread{border-color:#65506a}.subject{grid-column:1;grid-row:1;margin:0;font-size:13px;line-height:1.4;font-weight:820;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mail-actions{grid-column:2;grid-row:1;display:flex;align-items:center;gap:9px}.read-state{font-size:10px;color:#b7afc5;white-space:nowrap}.unread-mark{display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff9179;margin-right:4px;vertical-align:1px}.delete{border:0;background:none;color:#9b91aa;padding:2px;font-size:10px}.delete:hover{color:#ffb4a1}.sent-time{grid-column:1/3;grid-row:2;font-size:10px;color:#9f96b0;line-height:1.3}.empty{display:none;text-align:center;color:#c0b9d0;padding:55px 15px;font-size:13px}
+    .detail-view{display:none;flex:1;min-height:0;flex-direction:column}.detail-top{height:48px;flex:0 0 48px;display:flex;align-items:center;padding:0 18px;border-bottom:1px solid #332c47}.detail-back{border:0;background:none;color:var(--action);padding:6px 10px 6px 0;font-size:12px}.detail-actions{margin-left:auto}.detail-actions button{border:0;background:none;color:#aaa2b5;font-size:11px}.detail-content{padding:20px 20px;overflow:auto}.detail-title{font-size:18px;line-height:1.45;font-weight:900;margin:0 0 20px}.greeting{font-size:13px;font-weight:750;margin:0 0 8px}.detail-copy{font-size:13px;line-height:1.8;color:#e0d9e6;margin:0 0 20px}.deadline{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;border-radius:10px;background:#29233d;color:#c0b9d0;font-size:11px}.deadline strong{color:#f4d49a;font-size:11px}.signature{display:flex;justify-content:space-between;gap:12px;margin-top:20px;font-size:11px;color:#a9a0b4}.goto{height:42px;width:100%;margin-top:21px;border:0;border-radius:11px;background:linear-gradient(180deg,#ffa18b,#ff8068);color:#301b25;font-size:13px;font-weight:950;letter-spacing:.15px;box-shadow:0 5px 15px #ff80682b}
+    .toast{position:absolute;left:50%;bottom:21px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#342d4b;border:1px solid #655875;color:#fff6ed;border-radius:12px;padding:10px 14px;font-size:12px;white-space:nowrap;transition:.2s;box-shadow:0 8px 28px #0006}.toast.show{opacity:1;transform:translate(-50%,0)}
+    .confirm-layer{position:absolute;inset:0;background:#070610b8;display:none;align-items:center;justify-content:center;padding:24px}.confirm-layer.show{display:flex}.confirm{width:100%;padding:20px;border:1px solid #5b4f68;border-radius:17px;background:#29233d;box-shadow:0 15px 45px #0008}.confirm h2{font-size:16px;margin:0 0 8px}.confirm p{font-size:12px;color:#c0b9d0;margin:0 0 19px}.confirm-actions{display:flex;justify-content:flex-end;gap:9px}.confirm-actions button{height:34px;padding:0 14px;border-radius:9px;font-size:11px}.cancel-delete{border:1px solid #584e66;background:transparent}.confirm-delete{border:0;background:#ff9179;color:#291a22;font-weight:850}
+    @media(max-width:460px){body{padding:0;background:#17152a}.preview{width:100%;height:100dvh;min-height:600px;max-height:none;border:0;border-radius:0;box-shadow:none}.statusbar{padding-top:env(safe-area-inset-top,0);height:calc(27px + env(safe-area-inset-top,0));flex-basis:calc(27px + env(safe-area-inset-top,0))}.detail-content{padding-bottom:calc(20px + env(safe-area-inset-bottom,0))}}
+  </style>
+</head>
+<body>
+  <main class="preview" aria-label="邮件页效果预览">
+    <div class="statusbar"><span>9:41</span><span>● ● ●　▮▮　100%</span></div>
+    <header class="header"><button class="back" aria-label="返回" onclick="showToast('返回大厅')">‹</button><h1>邮件</h1><span class="header-spacer"></span></header>
+    <div id="listView" style="display:flex;flex:1;min-height:0;flex-direction:column">
+      <div class="toolbar"><strong>邮件</strong><button class="read-all" id="readAll">全部已读</button></div>
+      <nav class="tabs" aria-label="邮件筛选"><button class="tab active" data-filter="all">全部 <span id="allCount">4</span></button><button class="tab" data-filter="unread">未读 <span id="unreadCount">3</span></button><button class="tab" data-filter="read">已读 <span id="readCount">1</span></button></nav>
+      <section class="list" id="mailList" aria-label="邮件列表"></section>
+      <div class="empty" id="emptyState">暂无邮件</div>
+    </div>
+    <section class="detail-view" id="detailView" aria-label="邮件详情">
+      <div class="detail-top"><button class="detail-back" id="detailBack">‹　返回邮件</button><div class="detail-actions"><button id="detailDelete">删除</button></div></div>
+      <div class="detail-content" id="detailContent"></div>
+    </section>
+    <div class="toast" id="toast" role="status"></div>
+    <div class="confirm-layer" id="confirmLayer" role="dialog" aria-modal="true" aria-labelledby="confirmTitle"><div class="confirm"><h2 id="confirmTitle">删除这封邮件？</h2><p>删除后将从收件箱移除。</p><div class="confirm-actions"><button class="cancel-delete" id="cancelDelete">取消</button><button class="confirm-delete" id="confirmDelete">删除</button></div></div></div>
+  </main>
+<script>
+  const messages = [
+    {id:1,title:'11月23日 反水奖励 已结算',body:'您有一笔反水奖励可以领取，请在奖励截止日期前点击下方按钮前往反水页面领取。',deadline:'2026年11月25日 23:59',target:'/earn',sent:'2026年11月24日 09:12',unread:true},
+    {id:2,title:'11月23日 排行榜奖励 已结算',body:'您的排行榜奖励已经结算，请在奖励截止日期前点击下方按钮前往排行榜页面领取。',deadline:'2026年11月25日 23:59',target:'/platform-leaderboard',sent:'2026年11月24日 08:30',unread:true},
+    {id:3,title:'11月23日 亏损返还奖励 已结算',body:'您的亏损返还奖励已经结算，请在奖励截止日期前点击下方按钮前往亏损返还页面领取。',deadline:'2026年11月25日 23:59',target:'/earn',sent:'2026年11月24日 07:45',unread:true},
+    {id:4,title:'11月22日 反水奖励 已过期',body:'您在11月22日的反水奖励已超过领取时间。',deadline:'2026年11月24日 23:59',target:'/earn',sent:'2026年11月24日 06:26',unread:false}
+  ];
+  let filter='all'; let selectedId=null; let pendingDeleteId=null; let toastTimer;
+  const mailList=document.getElementById('mailList');
+  const listView=document.getElementById('listView');
+  const detailView=document.getElementById('detailView');
+  const escapeText=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  function renderList(){
+    const visible=messages.filter(item=>!item.deleted&&(filter==='all'||(filter==='unread'?item.unread:!item.unread)));
+    const unread=messages.filter(item=>!item.deleted&&item.unread).length;
+    const total=messages.filter(item=>!item.deleted).length;
+    document.getElementById('allCount').textContent=total;
+    document.getElementById('unreadCount').textContent=unread;
+    document.getElementById('readCount').textContent=total-unread;
+    mailList.innerHTML=visible.map(item=>`<article class="mail ${item.unread?'unread':''}" data-open="${item.id}" tabindex="0" role="button" aria-label="${escapeText(item.title)}，${item.unread?'未读':'已读'}"><h2 class="subject">${escapeText(item.title)}</h2><div class="mail-actions"><span class="read-state">${item.unread?'<i class="unread-mark"></i>未读':'已读'}</span><button class="delete" data-delete="${item.id}" aria-label="删除邮件：${escapeText(item.title)}">删除</button></div><time class="sent-time">${escapeText(item.sent)}</time></article>`).join('');
+    document.getElementById('emptyState').style.display=visible.length?'none':'block';
+  }
+  function openMessage(id){
+    const item=messages.find(entry=>entry.id===id&&!entry.deleted); if(!item)return;
+    item.unread=false; selectedId=id; renderList();
+    document.getElementById('detailContent').innerHTML=`<h2 class="detail-title">${escapeText(item.title)}</h2><p class="greeting">亲爱的玩家：</p><p class="detail-copy">${escapeText(item.body)}</p><div class="deadline"><span>奖励截止日期</span><strong>${escapeText(item.deadline)}</strong></div><div class="signature"><span>AISlots运营团队</span><time>${escapeText(item.sent)}</time></div><button class="goto" data-target="${item.target}">去领取</button>`;
+    listView.style.display='none'; detailView.style.display='flex'; document.getElementById('detailDelete').dataset.delete=String(id);
+  }
+  function backToList(){selectedId=null;detailView.style.display='none';listView.style.display='flex';renderList()}
+  function requestDelete(id){pendingDeleteId=id;document.getElementById('confirmLayer').classList.add('show')}
+  function cancelDelete(){pendingDeleteId=null;document.getElementById('confirmLayer').classList.remove('show')}
+  function confirmDelete(){const item=messages.find(entry=>entry.id===pendingDeleteId);if(item)item.deleted=true;cancelDelete();if(selectedId===pendingDeleteId)backToList();else renderList();showToast('邮件已删除')}
+  function showToast(text){const node=document.getElementById('toast');node.textContent=text;node.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>node.classList.remove('show'),1800)}
+  document.querySelectorAll('.tab').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;document.querySelectorAll('.tab').forEach(tab=>tab.classList.toggle('active',tab===button));renderList()}));
+  document.getElementById('readAll').addEventListener('click',()=>{messages.forEach(item=>{if(!item.deleted)item.unread=false});renderList();showToast('所有邮件已读')});
+  mailList.addEventListener('click',event=>{const deleteButton=event.target.closest('[data-delete]');if(deleteButton){event.stopPropagation();requestDelete(Number(deleteButton.dataset.delete));return}const mail=event.target.closest('[data-open]');if(mail)openMessage(Number(mail.dataset.open))});
+  mailList.addEventListener('keydown',event=>{const mail=event.target.closest('[data-open]');if(mail&&(event.key==='Enter'||event.key===' ')){event.preventDefault();openMessage(Number(mail.dataset.open))}});
+  document.getElementById('detailBack').addEventListener('click',backToList);
+  document.getElementById('detailDelete').addEventListener('click',event=>requestDelete(Number(event.currentTarget.dataset.delete)));
+  document.getElementById('cancelDelete').addEventListener('click',cancelDelete);
+  document.getElementById('confirmDelete').addEventListener('click',confirmDelete);
+  document.getElementById('confirmLayer').addEventListener('click',event=>{if(event.target===event.currentTarget)cancelDelete()});
+  document.getElementById('detailContent').addEventListener('click',event=>{const button=event.target.closest('[data-target]');if(!button)return;window.location.href=button.dataset.target});
+  renderList();
+</script>
+</body>
+</html>

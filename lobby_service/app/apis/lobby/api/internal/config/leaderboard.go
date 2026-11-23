@@ -7,8 +7,8 @@ import (
 )
 
 type LeaderboardConfig struct {
-	Rewards []int64 `json:"rewards"`
-	Turnover bool `json:"turnover"`
+	Rewards  []int64 `json:"rewards"`
+	Turnover bool    `json:"turnover"`
 }
 
 func LoadLeaderboard(path string) (LeaderboardConfig, error) {

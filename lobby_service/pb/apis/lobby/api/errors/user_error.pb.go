@@ -50,6 +50,7 @@ const (
 	UserError_USER_ERROR_VIP_EMPTY                UserError = 10010016
 	UserError_USER_ERROR_VIP_REQUEST_CONFLICT     UserError = 10010017
 	UserError_USER_ERROR_NEWBIE_EMPTY             UserError = 10010018
+	UserError_USER_ERROR_REDEEM_CODE              UserError = 10010026
 )
 
 // Enum value maps for UserError.
@@ -81,6 +82,7 @@ var (
 		10010016: "USER_ERROR_VIP_EMPTY",
 		10010017: "USER_ERROR_VIP_REQUEST_CONFLICT",
 		10010018: "USER_ERROR_NEWBIE_EMPTY",
+		10010026: "USER_ERROR_REDEEM_CODE",
 	}
 	UserError_value = map[string]int32{
 		"USER_ERROR_UNSPECIFIED":              0,
@@ -109,6 +111,7 @@ var (
 		"USER_ERROR_VIP_EMPTY":                10010016,
 		"USER_ERROR_VIP_REQUEST_CONFLICT":     10010017,
 		"USER_ERROR_NEWBIE_EMPTY":             10010018,
+		"USER_ERROR_REDEEM_CODE":              10010026,
 	}
 )
 
@@ -143,7 +146,7 @@ var File_apis_lobby_api_errors_user_error_proto protoreflect.FileDescriptor
 
 const file_apis_lobby_api_errors_user_error_proto_rawDesc = "" +
 	"\n" +
-	"&apis/lobby/api/errors/user_error.proto\x12\x15apis.lobby.api.errors*\x87\a\n" +
+	"&apis/lobby/api/errors/user_error.proto\x12\x15apis.lobby.api.errors*\xa6\a\n" +
 	"\tUserError\x12\x1a\n" +
 	"\x16USER_ERROR_UNSPECIFIED\x10\x00\x12%\n" +
 	"\x1eUSER_ERROR_WITHDRAWAL_TURNOVER\x10\xa9\xfb\xe2\x04\x12\"\n" +
@@ -170,7 +173,8 @@ const file_apis_lobby_api_errors_user_error_proto_rawDesc = "" +
 	"\x17USER_ERROR_RETURN_EMPTY\x10\x9f\xfb\xe2\x04\x12\x1b\n" +
 	"\x14USER_ERROR_VIP_EMPTY\x10\xa0\xfb\xe2\x04\x12&\n" +
 	"\x1fUSER_ERROR_VIP_REQUEST_CONFLICT\x10\xa1\xfb\xe2\x04\x12\x1e\n" +
-	"\x17USER_ERROR_NEWBIE_EMPTY\x10\xa2\xfb\xe2\x04B&Z$apps/pb/apis/lobby/api/errors;errorsb\x06proto3"
+	"\x17USER_ERROR_NEWBIE_EMPTY\x10\xa2\xfb\xe2\x04\x12\x1d\n" +
+	"\x16USER_ERROR_REDEEM_CODE\x10\xaa\xfb\xe2\x04B&Z$apps/pb/apis/lobby/api/errors;errorsb\x06proto3"
 
 var (
 	file_apis_lobby_api_errors_user_error_proto_rawDescOnce sync.Once

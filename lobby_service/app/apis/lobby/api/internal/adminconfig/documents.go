@@ -34,6 +34,7 @@ var Sections = []Section{
 	{"games", "游戏入口", "游戏封面、排序、是否显示与上线；隐藏不返回，未上线敬请期待"},
 	{"experience", "体验账号", "体验账号生成与游戏间隔"},
 	{"leaderboard", "排行榜奖励", "排行榜前十名奖励金额"},
+	{"reward-notifications", "领奖邮件通知", "分别配置结算通知、截止前提醒小时数和过期通知"},
 }
 
 func known(key string) bool {
@@ -152,6 +153,8 @@ func ValidateDocument(key string, doc []byte) error {
 			_, e = config.LoadExperience(path)
 		case "leaderboard":
 			_, e = config.LoadLeaderboard(path)
+		case "reward-notifications":
+			_, e = config.LoadRewardNotifications(path)
 		case "games":
 			if e = strict[config.GameConfig](doc); e == nil {
 				_, e = config.LoadGames(path)
@@ -234,6 +237,8 @@ func applyDocument(c *config.Config, key string, doc []byte) error {
 					}
 				}
 			}
+		case "reward-notifications":
+			c.RewardNotifications, e = config.LoadRewardNotifications(path)
 		case "games":
 			token := c.Game.ServiceToken
 			c.Game, e = config.LoadGames(path)

@@ -9,6 +9,11 @@ message Query {string q=1;string cursor=2;int32 limit=3;string kind=4;string sta
 message MemberRequest {string uid=1;}
 message ReviewRequest {string kind=1;string order_id=2;string decision=3;string reason=4;string request_id=5;}
 message ReviewResponse {string order_id=1;string status=2;}
+message RedeemCodeRequest {string uid=1;string amount=2;bool turnover=3;string reason=4;}
+message RedeemCodeResponse {string code=1;string uid=2;string amount=3;bool turnover=4;string created_at=5;}
+message RedeemCodesQuery {string q=1;string cursor=2;int32 limit=3;}
+message RedeemCodeRecord {string id=1;string uid=2;string amount=3;bool turnover=4;string status=5;string created_by=6;string created_at=7;optional string redeemed_at=8;}
+message RedeemCodesResponse {repeated RedeemCodeRecord items=1;string next_cursor=2;}
 message OverviewResponse {int64 members=1;int64 pending_deposits=2;int64 pending_withdrawals=3;string today_deposits=4;string today_withdrawals=5;int64 real_members=6;int64 experience_members=7;string real_bet=8;string real_win=9;string experience_bet=10;string experience_win=11;}
 message Member {string uid=1;string account=2;string nickname=3;int32 avatar_id=4;int32 vip_level=5;string coins=6;string created_at=7;optional string last_login_at=8;}
 message MembersResponse {repeated Member items=1;string next_cursor=2;}
@@ -31,4 +36,6 @@ rpc Member(MemberRequest)returns(MemberResponse){option(google.api.http)={get:"/
 rpc Orders(Query)returns(OrdersResponse){option(google.api.http)={get:"/admin/api/orders"};}
 rpc Review(ReviewRequest)returns(ReviewResponse){option(google.api.http)={post:"/admin/api/orders/review" body:"*"};}
 rpc Audit(Query)returns(AuditResponse){option(google.api.http)={get:"/admin/api/audit"};}
+rpc RedeemCodes(RedeemCodesQuery)returns(RedeemCodesResponse){option(google.api.http)={get:"/admin/api/redeem-codes"};}
+rpc GenerateRedeemCode(RedeemCodeRequest)returns(RedeemCodeResponse){option(google.api.http)={post:"/admin/api/redeem-codes" body:"*"};}
 }
