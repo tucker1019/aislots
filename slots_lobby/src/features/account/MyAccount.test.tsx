@@ -1,5 +1,5 @@
 import {beforeEach,expect,it,vi} from 'vitest';
-import {fireEvent,render,screen} from '@testing-library/react';
+import {fireEvent,render,screen,waitFor} from '@testing-library/react';
 import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
 import {MyAccount} from './MyAccount';
 import {loadAccountProfile} from '../../services/account';
@@ -23,4 +23,10 @@ it('资料加载失败仍可使用入口，局部重试成功后填入资料',as
  const records=setup();await screen.findByRole('button',{name:'重試'});
  fireEvent.click(screen.getByRole('button',{name:'存取記錄'}));expect(records).toHaveBeenCalledOnce();
  fireEvent.click(screen.getByRole('button',{name:'重試'}));expect(await screen.findByRole('heading',{name:'Tester'})).toBeVisible();expect(screen.getByText('Rp123')).toBeVisible();
+});
+it('UID 字号行显示复制按钮并复制账号 UID',async()=>{
+ vi.mocked(loadAccountProfile).mockResolvedValue({uid:7,nickname:'Tester',avatarId:3,coins:12345});
+ const writeText=vi.fn().mockResolvedValue(undefined);Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText}});
+ setup();await screen.findByRole('heading',{name:'Tester'});fireEvent.click(screen.getByRole('button',{name:'複製'}));
+ await waitFor(()=>expect(writeText).toHaveBeenCalledWith('7'));expect(await screen.findByText('已複製')).toBeInTheDocument();
 });

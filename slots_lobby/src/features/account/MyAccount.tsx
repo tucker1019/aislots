@@ -1,4 +1,6 @@
 import {useState} from 'react';
+import {message} from 'antd';
+import {overlayContainer} from '../../app/designViewport';
 import {AvatarPicker} from '../profile/AvatarPicker';
 import {ClaimBadge} from '../rewards/ClaimBadge';
 import {useClaimIndicators} from '../rewards/useClaimIndicators';
@@ -41,13 +43,17 @@ function ActionGrid({items,onAction,label}:{items:AccountAction[];onAction:(id:s
 export function MyAccount({ onAction, onDeposit, onRecords, onBetRecords, onBenefits, onLedger, onReport, onInvite, onAgent, onWallet, onWithdraw, onSettings, onLeaderboard, onMessages }: { onAction: () => void; onDeposit: () => void; onRecords: () => void; onBetRecords?: () => void; onBenefits?: () => void; onLedger?: () => void; onReport?: () => void; onInvite?: () => void; onAgent?: () => void; onWallet?: () => void; onWithdraw?: () => void; onSettings?: () => void; onLeaderboard?: () => void; onMessages?: () => void }) {
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [redeemOpen,setRedeemOpen]=useState(false);
+  const [uidCopying,setUidCopying]=useState(false);
+  const [toast,toastHolder]=message.useMessage({getContainer:overlayContainer});
   const { data, isPending, isError, isFetching, refetch } = useAccountProfile();
   const uid = useSessionStore(state => state.session?.uid);
+  const accountUid=data?.uid??uid;
+  async function copyUid(){if(accountUid===undefined||uidCopying)return;setUidCopying(true);try{await navigator.clipboard.writeText(String(accountUid));void toast.success(t('copy.copied'));}catch{void toast.error(t('copy.copyFailedPressAndHoldTheOrder'));}finally{setUidCopying(false);}}
   const vip = useQuery({ queryKey: ['lobby', 'benefits', 'vip', uid], queryFn: ({ signal }) => loadVipOverview(signal), enabled: Boolean(uid), retry: false, staleTime: 15000 });
-  return <section className="my-account" aria-label={t('copy.myAccountDetails')}>
+  return <>{toastHolder}<section className="my-account" aria-label={t('copy.myAccountDetails')}>
     <div className="account-identity">
       {data ? <button type="button" className="account-avatar-button" aria-label={t('profile.changeAvatar')} onClick={()=>setAvatarOpen(true)}><img src={`/assets/profile/avatar/${data.avatarId}.png`} alt={t('copy.valueSAvatar', {p0: data.nickname})} width={52} height={52} /></button> : <span className="account-avatar-placeholder" aria-hidden="true"><Icon name="user" size={28}/></span>}
-      <div className="account-identity-text"><div className="account-vip-row">{vip.data ? <span className="account-vip-badge" aria-label={t('copy.vipLevelValue', {p0: vip.data.level})}><Icon name="crown" size={12} />VIP{vip.data.level}</span> : <AsyncButton loading={vip.isFetching} type="button" className="account-vip-badge" disabled={vip.isPending || vip.isFetching} onClick={() => void vip.refetch()} aria-label={t('copy.reloadVipLevel')}>{vip.isError ? t('copy.retryVip') : 'VIP…'}</AsyncButton>}</div><h1 title={data?.nickname}>{data?.nickname??<span className="account-data-placeholder account-name-placeholder" aria-label={t('copy.loadingProfile')}/>}</h1><p>{t('common.idLabel')}{data?.uid??uid??'—'}</p></div>
+      <div className="account-identity-text"><div className="account-vip-row">{vip.data ? <span className="account-vip-badge" aria-label={t('copy.vipLevelValue', {p0: vip.data.level})}><Icon name="crown" size={12} />VIP{vip.data.level}</span> : <AsyncButton loading={vip.isFetching} type="button" className="account-vip-badge" disabled={vip.isPending || vip.isFetching} onClick={() => void vip.refetch()} aria-label={t('copy.reloadVipLevel')}>{vip.isError ? t('copy.retryVip') : 'VIP…'}</AsyncButton>}</div><h1 title={data?.nickname}>{data?.nickname??<span className="account-data-placeholder account-name-placeholder" aria-label={t('copy.loadingProfile')}/>}</h1><div className="account-uid-row"><p>{t('common.idLabel')}{accountUid??'—'}</p><button type="button" className="account-uid-copy" aria-label={t('copy.copy')} title={t('copy.copy')} disabled={accountUid===undefined||uidCopying} onClick={()=>void copyUid()}><Icon name="copy" size={15}/></button></div></div>
       <button type="button" className="account-settings" aria-label={t('copy.settings')} onClick={onSettings??onAction}><Icon name="settings" size={21} /></button>
       <button type="button" className="account-settings" aria-label={t('mail.title')} onClick={onMessages ?? onAction}><Icon name="mail" size={21} /></button>
     </div>
@@ -61,5 +67,5 @@ export function MyAccount({ onAction, onDeposit, onRecords, onBetRecords, onBene
     <section className="account-card account-help" aria-label={t('copy.helpAndSecurity')}><button type="button" onClick={()=>setRedeemOpen(true)}><span className="account-help-icon" aria-hidden="true"><Icon name="gift" size={17}/></span><span>{t('redeem.title')}</span><span aria-hidden="true"><Icon name="chevron" size={16}/></span></button><button type="button" onClick={()=>navigateLobby('security')}><span className="account-help-icon" aria-hidden="true"><Icon name="shield" size={17}/></span><span>{t('copy.securityCenter')}</span><span aria-hidden="true"><Icon name="chevron" size={16}/></span></button><LanguageSelector /></section>
     {avatarOpen && data && <AvatarPicker uid={data.uid} current={data.avatarId} onClose={()=>setAvatarOpen(false)}/>}
     {redeemOpen&&<RedeemCodeDialog onClose={()=>setRedeemOpen(false)}/>}
-  </section>;
+  </section></>;
 }
