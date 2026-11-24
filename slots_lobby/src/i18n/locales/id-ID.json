@@ -81,6 +81,7 @@
   "redeem.pasteFailed": "Tidak dapat membaca papan klip. Periksa izin browser.",
   "redeem.failed": "Kode tidak valid atau sudah digunakan. Periksa lalu coba lagi.",
   "redeem.success": "Berhasil ditukar. Anda menerima {amount} koin.",
+  "redeem.alreadyRedeemed": "Kode ini sudah pernah ditukar.",
   "copy.aboutUs": "Tentang kami",
   "copy.faq": "Pertanyaan umum",
   "copy.loadingUserProfile": "Memuat profil pengguna",

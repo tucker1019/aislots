@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http/httptest"
 	"strings"
 	"testing"
@@ -30,5 +31,19 @@ func TestOrderQueryBinding(t *testing.T) {
 		if tc.valid && (req.GetUid() != 7 || req.OrderId != "order" || req.Limit != 5 || req.Status != "pending" || req.Cursor != "abc") {
 			t.Fatal(req)
 		}
+	}
+}
+
+func TestMessageJSONIncludesFalseAlreadyRedeemed(t *testing.T) {
+	data, err := json.Marshal(messageJSON((&pb.RedeemCodeReply{}).ProtoReflect()))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var reply map[string]any
+	if err = json.Unmarshal(data, &reply); err != nil {
+		t.Fatal(err)
+	}
+	if alreadyRedeemed, ok := reply["alreadyRedeemed"].(bool); !ok || alreadyRedeemed {
+		t.Fatalf("expected alreadyRedeemed=false in response, got %s", data)
 	}
 }

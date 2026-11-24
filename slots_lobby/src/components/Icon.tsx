@@ -20,6 +20,7 @@ const paths = {
   help: <><circle cx="12" cy="12" r="9" /><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 5M12 17h.01" /></>,
   settings: <><path d="m9 3-1 3-3 1-2 5 2 5 3 1 1 3h6l1-3 3-1 2-5-2-5-3-1-1-3H9Z" /><circle cx="12" cy="12" r="3" /></>,
   mail: <><rect x="3" y="5" width="18" height="14" rx="3" /><path d="m3 7 9 7 9-7" /></>,
+  copy: <><rect x="8" y="8" width="12" height="12" rx="2" /><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" /></>,
   refresh: <><path d="M20 8a8 8 0 1 0 0 8M20 3v5h-5" /></>,
   chevron: <path d="m9 5 7 7-7 7" />,
 
