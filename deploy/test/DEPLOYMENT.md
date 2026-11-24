@@ -167,6 +167,6 @@ AG9 发布（2026-11-17）：`20261117-ag9`。新增 Fortune Leopard 客户端�
 
 大厅启动执行迁移 `035_redeem_codes.sql` 与 `036_reward_notifications.sql`；只读核实兑换码、奖励通知目标和玩家邮件表已存在。保留 `.env`、HTTPS 证书、数据库容器/卷、`math-data`、服务器已发布的游戏参数和盘面配置；发布前的 payload、Compose、Dockerfile、Nginx 与版本标记保存在 `releases/20261124-bd27a95/before`。测试环境按约定不做数据库备份。新兑换码奖励来源要求流水配置包含 `act_009`，因此在保留原有值的服务器 `turnover.json` 中仅补入仓库默认值 `1`。
 
-验证：大厅、后台、游戏、数值工具及两个 PostgreSQL 容器均 healthy；Nginx 配置检查和 reload 成功。公网首页、`/ops/`、大厅游戏/内容 API、`/healthz`、`/math/`、AG1/AG10 入口返回 200，未登录 `/admin/api/me` 返回 401，`/internal/` 返回 404；首页和后台 HTML SHA256 与候选构建一致。ID 测试环境按发布规则免 CDN 刷新。未执行兑换码兑换、充值、提现、领奖或投注。
+验证：大厅、后台、游戏、数值工具及两个 PostgreSQL 容器均 healthy；Nginx 配置检查和 reload 成功。发现后台首轮构建的 HTML 使用 `/assets/` 根路径，资源 404；使用 `vite build --base=/ops/` 重建后台入口后，再次重建 Web 容器。公网首页、`/ops/` 及后台 JS/CSS、大厅游戏/内容 API、`/healthz`、`/math/`、AG1/AG10 入口返回 200；后台 HTML/JS/CSS SHA256 均与修正后的发布清单一致。未登录 `/admin/api/me` 返回 401，`/internal/` 返回 404。ID 测试环境按发布规则免 CDN 刷新。未执行兑换码兑换、充值、提现、领奖或投注。
 
 发布检查仍观察到体验账号调度对游戏服务的部分 `/internal/auto-round` 请求返回 HTTP 400，任务保留重试；三个容器健康，失败请求未收到完成回执。该调度代码不在 `c7f5e4d..bd27a95` 差异内，需后续单独排查。前端全量测试 248/251（`RecentWins` 的 `recent-win-self` 断言及 `ClaimIndicatorsSync` 两项请求次数断言失败）；数值工具全量测试 248/249（AG11 骨架测试失败）。大厅服务端测试/lint、运营后台 35 项测试及构建检查通过；失败项已记录，不能据此宣称全量测试通过。
