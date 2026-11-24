@@ -145,7 +145,7 @@ AG9 发布（2026-11-17）：`20261117-ag9`。新增 Fortune Leopard 客户端�
 
 发布验证：三个后端健康，HTTPS 大厅、后台和两款游戏的 HTML/游戏脚本与发布包哈希一致，目录接口 81 项；公网 internal 路由 404，未登录后台 API 401。未执行充值、提现、领取或人工投注。当前标识记录于服务器 `CURRENT_RELEASE`，构建清单位于 `payload/release.json`。
 
-- 测试网址： https://43.160.234.135/
+- 测试网址： https://aggames.buzz/ (原 IP https://43.160.234.135/)
 - 腾讯云轻量实例：`lhins-hoyqxi2v`，新加坡，Ubuntu 24.04 x86_64，2核/4GB/60GB。
 - 服务器目录：`/opt/aislots-test`。
 - 两个独立数据库，全新数据；模拟充值、模拟提现开启，机台使用大厅钱包，禁止独立测试钱包回退。

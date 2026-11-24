@@ -69,7 +69,7 @@ services:
     working_dir: /app/lobby_service
     environment:
       LOBBY_ADMIN_ADDRESS: 0.0.0.0:8082
-      LOBBY_ADMIN_ORIGINS: ${PUBLIC_ORIGIN:-https://43.160.234.135}
+      LOBBY_ADMIN_ORIGINS: ${PUBLIC_ORIGIN:-https://aggames.buzz}
       LOBBY_ADMIN_COOKIE_SECURE: 'true'
       LOBBY_DATABASE_URL: postgres://lobby:${LOBBY_DB_PASSWORD}@lobby-db:5432/aislots_lobby?sslmode=disable
       LOBBY_GAME_SERVICE_TOKEN: ${LOBBY_GAME_SERVICE_TOKEN}
