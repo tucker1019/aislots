@@ -21,5 +21,5 @@ func (s *Service) RedeemCode(ctx context.Context, r *pb.RedeemCodeRequest) (*pb.
 	if err != nil {
 		return nil, xerr.Public(err)
 	}
-	return &pb.RedeemCodeReply{Amount: receipt.Amount, Coins: receipt.Coins}, nil
+	return &pb.RedeemCodeReply{Amount: receipt.Amount, Coins: receipt.Coins, AlreadyRedeemed: receipt.AlreadyRedeemed}, nil
 }
