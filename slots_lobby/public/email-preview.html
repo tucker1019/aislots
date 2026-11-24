@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AISlots 邮件页预览</title>
+  <title>aggames 邮件页预览</title>
   <style>
     @font-face{font-family:NunitoLobby;src:url('/fonts/nunito-variable.woff2') format('woff2');font-weight:200 1000;font-display:swap}
     @font-face{font-family:HuninnLobby;src:url('/fonts/huninn.woff2') format('woff2');font-display:swap}
@@ -64,7 +64,7 @@
   function openMessage(id){
     const item=messages.find(entry=>entry.id===id&&!entry.deleted); if(!item)return;
     item.unread=false; selectedId=id; renderList();
-    document.getElementById('detailContent').innerHTML=`<h2 class="detail-title">${escapeText(item.title)}</h2><p class="greeting">亲爱的玩家：</p><p class="detail-copy">${escapeText(item.body)}</p><div class="deadline"><span>奖励截止日期</span><strong>${escapeText(item.deadline)}</strong></div><div class="signature"><span>AISlots运营团队</span><time>${escapeText(item.sent)}</time></div><button class="goto" data-target="${item.target}">去领取</button>`;
+    document.getElementById('detailContent').innerHTML=`<h2 class="detail-title">${escapeText(item.title)}</h2><p class="greeting">亲爱的玩家：</p><p class="detail-copy">${escapeText(item.body)}</p><div class="deadline"><span>奖励截止日期</span><strong>${escapeText(item.deadline)}</strong></div><div class="signature"><span>aggames 运营团队</span><time>${escapeText(item.sent)}</time></div><button class="goto" data-target="${item.target}">去领取</button>`;
     listView.style.display='none'; detailView.style.display='flex'; document.getElementById('detailDelete').dataset.delete=String(id);
   }
   function backToList(){selectedId=null;detailView.style.display='none';listView.style.display='flex';renderList()}

@@ -59,27 +59,66 @@
   font-size: 22px;
   font-weight: var(--weight-key);
   letter-spacing: -.9px;
+  white-space: nowrap;
 }
 
-.brand-dot {
-  color: var(--blue);
+.brand-wordmark {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  isolation: isolate;
+  line-height: 1.5;
+  animation: brand-arrive .65s cubic-bezier(.22, 1, .36, 1) both;
 }
 
-.brand-symbol {
-  width: 27px;
-  height: 27px;
-  border-radius: 9px;
-  background: var(--ink);
-  padding: 7px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3px;
+.brand-domain {
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: var(--weight-strong);
+  letter-spacing: 0;
 }
 
-.brand-symbol i {
-  display: block;
-  border-radius: 2px;
-  background: var(--theme-surface,#fff);
+.brand-name { position: relative; color: var(--theme-gold-text, var(--blue)); }
+
+.brand-letter {
+  position: relative;
+  display: inline-block;
+  animation: brand-letter-bounce 6s ease-in-out infinite;
+}
+
+.brand-shine {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  overflow: hidden;
+  color: transparent;
+  background: linear-gradient(105deg, transparent 40%, rgb(255 255 255 / 85%) 50%, transparent 60%) 160% 0 / 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  pointer-events: none;
+  animation: brand-shine 6s ease-in-out 1s infinite;
+}
+
+@keyframes brand-arrive {
+  from { opacity: .5; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes brand-shine {
+  0% { background-position: 160% 0; }
+  25%, 100% { background-position: -60% 0; }
+}
+
+@keyframes brand-letter-bounce {
+  0%, 14%, 100% { transform: translateY(0); }
+  4% { transform: translateY(-3px); }
+  8% { transform: translateY(1px); }
+  11% { transform: translateY(-1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-wordmark, .brand-letter { animation: none; }
+  .brand-shine { display: none; animation: none; }
 }
 
 .header-account {
@@ -88,7 +127,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 7px;
 }
 
 .header-wallet {

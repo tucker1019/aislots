@@ -3,9 +3,8 @@
 :root[data-theme="dark"] { --header-height: calc(74px + var(--lobby-safe-top, 0px)); }
 :root[data-theme="dark"] .site-header,
 :root[data-theme="dark"] .bottom-navigation { background: #211c33; border-color: #44374e; }
-:root[data-theme="dark"] .brand-dot { color: var(--theme-gold-text); }
 :root[data-theme="dark"] .site-header .header-wallet { background: transparent; box-shadow: none; height: auto; min-height: 34px; }
-:root[data-theme="dark"] .site-header .header-wallet output { white-space: normal; overflow: visible; overflow-wrap: anywhere; text-overflow: clip; }
+:root[data-theme="dark"] .site-header .header-wallet output { white-space: nowrap; overflow: visible; overflow-wrap: normal; text-overflow: clip; }
 :root[data-theme="dark"] .header-deposit { min-width: 60px; height: 32px; border-radius: 9px; }
 :root[data-theme="dark"] .bottom-navigation button[aria-current="page"]::before { top: auto; bottom: -5px; width: 14px; border-radius: 4px; }
 .home-shortcuts { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0; margin: 8px 0 18px; padding: 9px 0; border-radius: 12px; background: var(--theme-panel); }
