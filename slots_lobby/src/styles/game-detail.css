@@ -180,7 +180,13 @@ button.game-rank-row::after {
   white-space: nowrap;
   cursor: pointer;
 }
-.game-rank-sheet-game img { width: 36px; border-radius: 5px; }
+.game-rank-sheet-game img {
+  flex: none;
+  width: 36px;
+  height: 45px;
+  border-radius: 5px;
+  object-fit: contain;
+}
 
 
 .game-rank-replay { display: grid; gap: 6px; font-size: 12px; }

@@ -124,7 +124,21 @@ img {
   border-radius: 5px;
 }
 
+.navigation-indicator {
+  position: absolute;
+  left: 0;
+  visibility: hidden;
+  border-radius: 4px;
+  background: var(--theme-active);
+  pointer-events: none;
+}
+
+.navigation-indicator[data-animate] {
+  transition: transform 140ms cubic-bezier(.2, .75, .25, 1);
+}
+
 @media(prefers-reduced-motion:reduce) {
+  .navigation-indicator[data-animate] { transition: none; }
   *,*::before,*::after {
     animation-duration: .01ms!important;
     transition-duration: .01ms!important;

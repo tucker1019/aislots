@@ -81,6 +81,7 @@
   "redeem.pasteFailed": "無法讀取剪貼板，請檢查瀏覽器權限",
   "redeem.failed": "兌換碼無效或已使用，請檢查後重試",
   "redeem.success": "兌換成功，獲得 {amount} 金幣",
+  "redeem.alreadyRedeemed": "此兌換碼已兌換過。",
   "copy.aboutUs": "關於我們",
   "copy.faq": "常見問題",
   "copy.loadingUserProfile": "正在加載用戶資料",

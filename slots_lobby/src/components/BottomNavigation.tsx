@@ -4,6 +4,7 @@ import {ClaimBadge} from '../features/rewards/ClaimBadge';
 import {useClaimIndicators} from '../features/rewards/useClaimIndicators';
 import { t } from '../i18n';
 import { Icon } from './Icon';
+import { NavigationIndicator } from './NavigationIndicator';
 type BottomView = 'home' | 'deposit' | 'earn' | 'my';
 const items = () => ([
   { view: 'home', label: t('copy.home'), icon: 'home' },
@@ -23,5 +24,6 @@ export function BottomNavigation({ view, onNavigate }: { view: BottomView; onNav
         {item.view === 'deposit' && bonusLabel && <span className="header-deposit-bonus bottom-deposit-bonus">{bonusLabel}</span>}
       </span><span className="bottom-navigation-label">{item.label}</span>
     </button>)}
+    <NavigationIndicator selected={view} />
   </nav>;
 }

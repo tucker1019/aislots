@@ -26,23 +26,16 @@
 :root[data-theme="dark"] .header-auth button { min-height: 44px; border-color: var(--theme-border); color: var(--ink); }
 :root[data-theme="dark"] .header-auth button:last-child { border-color: transparent; color: var(--theme-on-action); }
 :root[data-theme="dark"] .home-notice > svg { color: var(--theme-gold-text); }
-:root[data-theme="dark"] .provider-tab { font-size: 13px; font-weight: var(--weight-strong); }
-:root[data-theme="dark"] .provider-hot .provider-mark { display: none; }
 :root[data-theme="dark"] .provider-AG .provider-mark { display: none; }
 :root[data-theme="dark"] .bottom-navigation {
   padding-top: 10px;
   padding-bottom: calc(10px + var(--lobby-safe-bottom, 0px));
   border-color: var(--theme-border);
 }
-:root[data-theme="dark"] .bottom-navigation button { position: relative; }
-:root[data-theme="dark"] .bottom-navigation button[aria-current="page"]::before {
-  position: absolute;
-  top: -10px;
-  width: 26px;
+:root[data-theme="dark"] .bottom-navigation > .navigation-indicator {
+  bottom: calc(5px + var(--lobby-safe-bottom, 0px));
+  width: 14px;
   height: 3px;
-  border-radius: 0 0 3px 3px;
-  background: var(--theme-active);
-  content: '';
 }
 :root[data-theme="dark"] .bottom-navigation button[aria-current="page"] .bottom-navigation-icon { background: transparent; }
 :root[data-theme="dark"] .my-account .account-balance { color: var(--ink); }
@@ -66,6 +59,5 @@
 :root[data-theme="dark"] .deposit-promotion-card { border: 1px solid var(--theme-border); background: var(--theme-panel); box-shadow: 0 16px 48px #0004; }
 :root[data-theme="dark"] .deposit-promotion-decoration { background: none; }
 :root[data-theme="dark"] .deposit-promotion-decoration i { background: var(--theme-gold-text); box-shadow: none; }
-:root[data-theme="dark"] .deposit-promotion-percent { color: var(--theme-gold-text); -webkit-text-stroke: 0; text-shadow: none; }
+:root[data-theme="dark"] .deposit-promotion-percent { color: var(--theme-gold-text); -webkit-text-stroke: 0; text-shadow: none; animation: none; }
 :root[data-theme="dark"] .deposit-promotion-cta { background: var(--theme-action); color: var(--theme-on-action); border: 0; border-radius: 12px; box-shadow: none; animation: none; }
-:root[data-theme="dark"] :is(.deposit-promotion-shine, .deposit-promotion-percent) { animation: none; }

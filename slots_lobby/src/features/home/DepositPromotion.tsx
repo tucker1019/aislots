@@ -15,7 +15,7 @@ export function DepositPromotion({ open, onClose, afterClose }: { open: boolean;
 
   return <Modal open={open} onCancel={onClose} afterClose={afterClose} title={<span className="deposit-promotion-sr">{heading}</span>}
     closable={false} footer={null} centered width={344} getContainer={overlayContainer}
-    className="deposit-promotion-modal" destroyOnHidden>
+    className="deposit-promotion-modal" transitionName="ant-fade" destroyOnHidden>
     <div className="deposit-promotion-card">
       <div className="deposit-promotion-decoration" aria-hidden="true">
         <i /><i /><i />

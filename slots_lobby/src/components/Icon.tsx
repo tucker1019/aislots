@@ -4,6 +4,7 @@ const paths = {
   chest: <><path d="M3 11V8a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v3M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8ZM7 4v7m10-7v7"/><rect x="10" y="10" width="4" height="6" rx="1"/></>,
   home: <><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2v-9Z" /></>,
   gift: <><rect x="3" y="8" width="18" height="4" rx="1" /><path d="M5 12v9h14v-9M12 8v13" /><path d="M12 8H8a3 3 0 1 1 3-3l1 3Zm0 0h4a3 3 0 1 0-3-3l-1 3Z" /></>,
+  flame: <path d="M12 21c4.4 0 8-3 8-7.2 0-2.5-1.3-4.7-3.5-6.3.2 2-1 3.4-2.5 3.8C13.8 7.2 11.6 4.7 9 3c0 2.4-.9 4-2.5 5.9C5 10.6 4 12.2 4 13.8 4 18 7.6 21 12 21Z" />,
   wallet: <><path d="M20 8V5a2 2 0 0 0-2-2L5 6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2H5" /><path d="M21 12h-5v5h5M17 14.5h.01" /></>,
   growth: <><path d="M3 20h18M5 16v-4M10 16V9M15 16v-5M20 16V6M4 8l6-5 5 3 5-4M17 2h3v3" /></>,
   leaderboard: <><path d="M4 19h16M6 16v-4h3v4m3 0V7h3v9m3 0v-6h3v6" /><path d="m5 7 4-3 4 2 5-4" /></>,
@@ -20,6 +21,7 @@ const paths = {
   help: <><circle cx="12" cy="12" r="9" /><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 5M12 17h.01" /></>,
   settings: <><path d="m9 3-1 3-3 1-2 5 2 5 3 1 1 3h6l1-3 3-1 2-5-2-5-3-1-1-3H9Z" /><circle cx="12" cy="12" r="3" /></>,
   mail: <><rect x="3" y="5" width="18" height="14" rx="3" /><path d="m3 7 9 7 9-7" /></>,
+  copy: <><rect x="8" y="8" width="12" height="12" rx="2" /><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" /></>,
   refresh: <><path d="M20 8a8 8 0 1 0 0 8M20 3v5h-5" /></>,
   chevron: <path d="m9 5 7 7-7 7" />,
 

@@ -43,8 +43,11 @@ it('AG與熱門切換顯示現有遊戲，隱藏未接入廠商', async () => {
     expect(screen.queryByRole('button', { name: provider })).not.toBeInTheDocument();
   }
   expect(screen.getByRole('button', { name: '進入麻將胡了' })).toBeInTheDocument();
-  await user.click(screen.getByRole('button', { name: '熱門' }));
-  expect(screen.getByRole('button', { name: '熱門' })).toHaveAttribute('aria-pressed', 'true');
+  const hot = screen.getByRole('button', { name: '熱門' });
+  const icon = hot.querySelector('svg');
+  expect(icon).toBeInTheDocument();
+  await user.click(icon!);
+  expect(hot).toHaveAttribute('aria-pressed', 'true');
 });
 
 it('底欄僅保留首頁、存款、賺錢、我的', () => {

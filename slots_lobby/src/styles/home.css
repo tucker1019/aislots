@@ -91,7 +91,7 @@
   display: flex;
   overflow-x: auto;
   gap: 8px;
-  padding: 8px 20px 6px;
+  padding: 4px 20px 5px;
   margin: 0 -20px;
   background: var(--theme-canvas);
 }
@@ -99,19 +99,19 @@
 .provider-tab {
   position: relative;
   flex: 0 0 auto;
-  min-width: 54px;
+  min-width: 56px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 5px;
   min-height: 44px;
-  padding: 5px 10px 9px;
+  padding: 5px 12px;
   border: 0;
-  border-radius: 0;
   background: transparent;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: var(--weight-strong);
 }
 
 .provider-tab:hover {
@@ -120,21 +120,15 @@
 
 .provider-tab[aria-pressed="true"] {
   color: var(--theme-active);
-  background: transparent;
-  box-shadow: none;
 }
 
-.provider-tab[aria-pressed="true"]::after {
-  position: absolute;
-  bottom: 3px;
-  left: 50%;
+.provider-tabs > .navigation-indicator {
+  bottom: 8px;
   width: 18px;
-  height: 3px;
-  border-radius: 2px;
-  background: currentColor;
-  transform: translateX(-50%);
-  content: '';
+  height: 2px;
 }
+
+.provider-tab:focus-visible { outline-offset: -3px; }
 
 .provider-tab[aria-pressed="true"] .provider-mark { color: inherit; }
 
@@ -149,8 +143,17 @@
   line-height: 1;
 }
 
-.provider-hot .provider-mark { font-size: 23px; font-style: normal; }
 .provider-AG .provider-mark { color: var(--theme-gold-text,#d66c30); }
+
+.provider-mark svg {
+  width: 16px;
+  height: 16px;
+  translate: 0 -2px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
 
 .home-game-grid {
   display: grid;
@@ -302,8 +305,6 @@
   .promotion-link::after,
   .game-tile::after { animation: none; opacity: .35; transform: translateX(0); }
 }
-
-.provider-favorites .provider-mark svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
 
 .home-favorites-empty { min-height: 120px; align-content: center; gap: 6px; color: var(--muted); }
 .home-favorites-empty svg { width: 54px; height: 54px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; opacity: .8; }

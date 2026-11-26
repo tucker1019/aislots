@@ -6,7 +6,6 @@
 :root[data-theme="dark"] .site-header .header-wallet { background: transparent; box-shadow: none; height: auto; min-height: 34px; }
 :root[data-theme="dark"] .site-header .header-wallet output { white-space: nowrap; overflow: visible; overflow-wrap: normal; text-overflow: clip; }
 :root[data-theme="dark"] .header-deposit { min-width: 60px; height: 32px; border-radius: 9px; }
-:root[data-theme="dark"] .bottom-navigation button[aria-current="page"]::before { top: auto; bottom: -5px; width: 14px; border-radius: 4px; }
 .home-shortcuts { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0; margin: 8px 0 18px; padding: 9px 0; border-radius: 12px; background: var(--theme-panel); }
 .home-shortcuts button { display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 0; min-height: 34px; padding: 5px 8px; border: 0; background: transparent; color: var(--ink); font-size: 12px; line-height: 1.5; font-weight: var(--weight-strong); }
 .home-shortcuts button + button { border-left: 1px solid var(--line); }

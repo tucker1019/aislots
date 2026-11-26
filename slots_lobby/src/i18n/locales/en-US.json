@@ -81,6 +81,7 @@
   "redeem.pasteFailed": "Unable to read the clipboard. Check browser permissions.",
   "redeem.failed": "The code is invalid or already used. Check it and try again.",
   "redeem.success": "Redeemed successfully. You received {amount} coins.",
+  "redeem.alreadyRedeemed": "This code has already been redeemed.",
   "copy.aboutUs": "About us",
   "copy.faq": "FAQ",
   "copy.loadingUserProfile": "Loading user profile",
