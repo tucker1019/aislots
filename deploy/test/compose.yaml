@@ -48,6 +48,12 @@ services:
       LOBBY_DATABASE_URL: postgres://lobby:${LOBBY_DB_PASSWORD}@lobby-db:5432/aislots_lobby?sslmode=disable
       LOBBY_GAME_SERVICE_TOKEN: ${LOBBY_GAME_SERVICE_TOKEN:?Set service token}
       LOBBY_WITHDRAWAL_TEST_MODE: 'true'
+      J7_APP_ID: ${J7_APP_ID:-}
+      J7_APP_SECRET: ${J7_APP_SECRET:-}
+      J7_GAME_API_URL: ${J7_GAME_API_URL:-https://api.j7slot.com}
+      J7_GAME_LIST_URL: ${J7_GAME_LIST_URL:-https://api.ag777api.com/api/homeGameCategory}
+      J7_LANGUAGE: ${J7_LANGUAGE:-en}
+      J7_CURRENCY: ${J7_CURRENCY:-$}
     volumes:
       - ./payload/lobby-etc:/app/lobby_service/etc:ro
     depends_on:
@@ -74,6 +80,9 @@ services:
       LOBBY_DATABASE_URL: postgres://lobby:${LOBBY_DB_PASSWORD}@lobby-db:5432/aislots_lobby?sslmode=disable
       LOBBY_GAME_SERVICE_TOKEN: ${LOBBY_GAME_SERVICE_TOKEN}
       LOBBY_WITHDRAWAL_TEST_MODE: 'true'
+      J7_APP_ID: ${J7_APP_ID:-}
+      J7_APP_SECRET: ${J7_APP_SECRET:-}
+      J7_GAME_LIST_URL: ${J7_GAME_LIST_URL:-https://api.ag777api.com/api/homeGameCategory}
     volumes:
       - ./payload/lobby-etc:/app/lobby_service/etc:ro
     depends_on:
