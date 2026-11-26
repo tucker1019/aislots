@@ -83,11 +83,12 @@ func (x *RedeemCodeRequest) GetCode() string {
 }
 
 type RedeemCodeReply struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Amount        int64                  `protobuf:"varint,1,opt,name=amount,proto3" json:"amount,omitempty"`
-	Coins         int64                  `protobuf:"varint,2,opt,name=coins,proto3" json:"coins,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Amount          int64                  `protobuf:"varint,1,opt,name=amount,proto3" json:"amount,omitempty"`
+	Coins           int64                  `protobuf:"varint,2,opt,name=coins,proto3" json:"coins,omitempty"`
+	AlreadyRedeemed bool                   `protobuf:"varint,3,opt,name=already_redeemed,json=alreadyRedeemed,proto3" json:"already_redeemed,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *RedeemCodeReply) Reset() {
@@ -132,6 +133,13 @@ func (x *RedeemCodeReply) GetCoins() int64 {
 		return x.Coins
 	}
 	return 0
+}
+
+func (x *RedeemCodeReply) GetAlreadyRedeemed() bool {
+	if x != nil {
+		return x.AlreadyRedeemed
+	}
+	return false
 }
 
 type UserRequest struct {
@@ -1200,10 +1208,11 @@ const file_apis_lobby_api_v1_user_api_proto_rawDesc = "" +
 	"\x03sid\x18\x02 \x01(\tH\x01R\x03sid\x88\x01\x01\x12\x12\n" +
 	"\x04code\x18\x03 \x01(\tR\x04codeB\x06\n" +
 	"\x04_uidB\x06\n" +
-	"\x04_sid\"?\n" +
+	"\x04_sid\"j\n" +
 	"\x0fRedeemCodeReply\x12\x16\n" +
 	"\x06amount\x18\x01 \x01(\x03R\x06amount\x12\x14\n" +
-	"\x05coins\x18\x02 \x01(\x03R\x05coins\"\x80\x02\n" +
+	"\x05coins\x18\x02 \x01(\x03R\x05coins\x12)\n" +
+	"\x10already_redeemed\x18\x03 \x01(\bR\x0falreadyRedeemed\"\x80\x02\n" +
 	"\vUserRequest\x12\x1f\n" +
 	"\vinvite_code\x18\b \x01(\tR\n" +
 	"inviteCode\x12\x15\n" +

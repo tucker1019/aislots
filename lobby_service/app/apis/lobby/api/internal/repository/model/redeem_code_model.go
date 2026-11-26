@@ -32,7 +32,11 @@ type RedeemCode struct {
 
 func (*RedeemCode) TableName() string { return "lobby_redeem_codes" }
 
-type RedeemReceipt struct{ Amount, Coins int64 }
+type RedeemReceipt struct {
+	Amount          int64
+	Coins           int64
+	AlreadyRedeemed bool
+}
 
 type RedeemCodeModel struct{ DB *gorm.DB }
 
@@ -107,7 +111,7 @@ func (m *RedeemCodeModel) Redeem(ctx context.Context, uid int64, token, rawCode 
 			if err := tx.Where("uid = ? AND order_id = ? AND source = ?", uid, *record.ClaimID, string(coinsource.SourceRedeemCodeReward)).Take(&entry).Error; err != nil {
 				return err
 			}
-			receipt = RedeemReceipt{Amount: record.Amount, Coins: entry.BalanceAfter}
+			receipt = RedeemReceipt{Amount: record.Amount, Coins: entry.BalanceAfter, AlreadyRedeemed: true}
 			return nil
 		}
 		if wallet.Coins > math.MaxInt64-record.Amount {

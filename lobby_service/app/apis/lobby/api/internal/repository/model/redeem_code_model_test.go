@@ -34,11 +34,11 @@ func TestRedeemCodeAssignsAtomicCreditAndSupportsSingleUseRetries(t *testing.T) 
 		t.Fatalf("wrong owner: %v", err)
 	}
 	receipt, err := codes.Redeem(ctx, uid, "redeem-token", code, now)
-	if err != nil || receipt.Amount != 2500 || receipt.Coins != 2500 {
+	if err != nil || receipt.Amount != 2500 || receipt.Coins != 2500 || receipt.AlreadyRedeemed {
 		t.Fatal(receipt, err)
 	}
 	retried, err := codes.Redeem(ctx, uid, "redeem-token", code, now.Add(time.Minute))
-	if err != nil || *retried != *receipt {
+	if err != nil || retried.Amount != receipt.Amount || retried.Coins != receipt.Coins || !retried.AlreadyRedeemed {
 		t.Fatal(retried, err)
 	}
 	var count int64
