@@ -26,7 +26,7 @@
 :root[data-theme="dark"] .header-auth button { min-height: 44px; border-color: var(--theme-border); color: var(--ink); }
 :root[data-theme="dark"] .header-auth button:last-child { border-color: transparent; color: var(--theme-on-action); }
 :root[data-theme="dark"] .home-notice > svg { color: var(--theme-gold-text); }
-:root[data-theme="dark"] .provider-tab { font-size: 14px; font-weight: var(--weight-key); }
+:root[data-theme="dark"] .provider-tab { font-size: 13px; font-weight: var(--weight-strong); }
 :root[data-theme="dark"] .provider-hot .provider-mark { display: none; }
 :root[data-theme="dark"] .provider-AG .provider-mark { display: none; }
 :root[data-theme="dark"] .bottom-navigation {

@@ -1,13 +1,14 @@
 import { Modal, message } from 'antd';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { InfiniteData } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { navigateLobby } from '../app/useLobbyRoute';
 import { overlayContainer } from '../app/designViewport';
 import { AsyncButton } from '../components/buttons/AsyncButton';
 import { RecordsLayout } from '../components/records/RecordsLayout';
 import { LoadingState } from '../components/feedback/LoadingState';
 import { NetworkError } from '../components/feedback/NetworkError';
+import { indicatorKey } from '../features/rewards/claimIndicators';
 import { t, useLanguageStore } from '../i18n';
 import { deleteMail, loadMail, markAllMailRead, markMailRead, type MailItem, type MailPage as MailResult } from '../services/mail';
 import { useSessionStore } from '../stores/session';
@@ -60,11 +61,16 @@ export function MailPage({ onBack }: { onBack: () => void }) {
   const key = ['lobby', 'mail', uid] as const;
   const query = useInfiniteQuery({ queryKey: key, initialPageParam: '', queryFn: ({ pageParam, signal }) => loadMail(pageParam, signal, uid), getNextPageParam: last => last.hasMore ? last.nextCursor : undefined, enabled: Boolean(uid), retry: false, staleTime: 0 });
   const items = useMemo(() => query.data?.pages.flatMap(page => page.items) ?? [], [query.data]);
+  const unreadCount = useMemo(() => items.filter(item => item.unread).length, [items]);
+  useEffect(() => {
+    if (uid && query.isSuccess) client.setQueryData(indicatorKey(uid, 'mail'), { mail: unreadCount });
+  }, [client, uid, query.isSuccess, unreadCount]);
+  const syncMailIndicator = () => { if (uid) void client.invalidateQueries({ queryKey: indicatorKey(uid, 'mail') }); };
   const selected = items.find(item => item.mailId === selectedId);
   const visible = items.filter(item => filter === 'all' || (filter === 'unread' ? item.unread : !item.unread));
-  const markRead = useMutation({ mutationFn: (id: number) => markMailRead(id, uid), retry: false, onSuccess: (_data, id) => { client.setQueryData<InfiniteData<MailResult, string>>(key, data => updateMailPages(data, item => item.mailId === id ? { ...item, unread: false } : item)); }, onError: error => { void toast.error(error instanceof Error ? error.message : t('mail.actionFailed')); } });
-  const readAll = useMutation({ mutationFn: () => markAllMailRead(uid), retry: false, onSuccess: () => { client.setQueryData<InfiniteData<MailResult, string>>(key, data => updateMailPages(data, item => ({ ...item, unread: false }))); }, onError: error => { void toast.error(error instanceof Error ? error.message : t('mail.actionFailed')); } });
-  const remove = useMutation({ mutationFn: (id: number) => deleteMail(id, uid), retry: false, onSuccess: (_data, id) => { client.setQueryData<InfiniteData<MailResult, string>>(key, data => updateMailPages(data, item => item.mailId === id ? null : item)); if (selectedId === id) setSelectedId(null); setDeleteId(null); void toast.success(t('mail.deleted')); }, onError: error => { setDeleteId(null); void toast.error(error instanceof Error ? error.message : t('mail.actionFailed')); } });
+  const markRead = useMutation({ mutationFn: (id: number) => markMailRead(id, uid), retry: false, onSuccess: (_data, id) => { client.setQueryData<InfiniteData<MailResult, string>>(key, data => updateMailPages(data, item => item.mailId === id ? { ...item, unread: false } : item)); syncMailIndicator(); }, onError: error => { void toast.error(error instanceof Error ? error.message : t('mail.actionFailed')); } });
+  const readAll = useMutation({ mutationFn: () => markAllMailRead(uid), retry: false, onSuccess: () => { client.setQueryData<InfiniteData<MailResult, string>>(key, data => updateMailPages(data, item => ({ ...item, unread: false }))); if (uid) client.setQueryData(indicatorKey(uid, 'mail'), { mail: 0 }); syncMailIndicator(); }, onError: error => { void toast.error(error instanceof Error ? error.message : t('mail.actionFailed')); } });
+  const remove = useMutation({ mutationFn: (id: number) => deleteMail(id, uid), retry: false, onSuccess: (_data, id) => { client.setQueryData<InfiniteData<MailResult, string>>(key, data => updateMailPages(data, item => item.mailId === id ? null : item)); syncMailIndicator(); if (selectedId === id) setSelectedId(null); setDeleteId(null); void toast.success(t('mail.deleted')); }, onError: error => { setDeleteId(null); void toast.error(error instanceof Error ? error.message : t('mail.actionFailed')); } });
 
   function openMail(item: MailItem) {
     setSelectedId(item.mailId);

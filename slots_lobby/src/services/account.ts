@@ -4,14 +4,16 @@ import { t, getLocale } from '../i18n';
 import { isRecord, isSession } from '../features/account/types';
 import type { Session, UserProfile } from '../features/account/types';
 import { useSessionStore } from '../stores/session';
+import { appendAtomicParams } from './atomic-params';
 
 function apiUrl(path: string): string {
   const base = import.meta.env.VITE_LOBBY_API_URL;
-  if (!base) return path;
+  const fullPath = appendAtomicParams(path);
+  if (!base) return fullPath;
   const url = new URL(base);
   if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash)
     throw new Error(t('copy.invalidLobbyApiUrlConfiguration'));
-  return base.replace(/\/$/, '') + path;
+  return base.replace(/\/$/, '') + fullPath;
 }
 
 export async function request(path: string, init: RequestInit = {}, failureMessage = t('copy.unableToReadYourProfilePleaseRetry')): Promise<unknown> {
@@ -98,6 +100,37 @@ export async function bindCustomAccount(account:string,password:string){
 export async function authenticateAccount(mode:'login'|'register',account:string,password:string){
  const inviteCode=mode==='register'?pendingInviteCode(false):undefined;
  const data=await request('/api/user/account/uniquecode/'+mode,{method:'POST',body:JSON.stringify({account,password,...(inviteCode?{inviteCode}:{})})},t('auth.failed'));
+ if(!isSession(data))throw new Error(t('copy.invalidSignInResponsePleaseRetry'));
+ confirmed=data;useSessionStore.getState().setSession(data);clearInviteCode();return data;
+}
+
+export async function authenticateWithGoogle(idToken:string){
+ const inviteCode=pendingInviteCode(false);
+ const data=await request('/api/user/account/google/login',{method:'POST',body:JSON.stringify({idToken,...(inviteCode?{inviteCode}:{})})},t('auth.failed'));
+ if(!isSession(data))throw new Error(t('copy.invalidSignInResponsePleaseRetry'));
+ confirmed=data;useSessionStore.getState().setSession(data);clearInviteCode();return data;
+}
+
+export interface TelegramAuthData {
+ id: number;
+ first_name?: string;
+ last_name?: string;
+ username?: string;
+ photo_url?: string;
+ auth_date: number;
+ hash: string;
+}
+
+export async function authenticateWithTelegram(payload:TelegramAuthData){
+ const inviteCode=pendingInviteCode(false);
+ const data=await request('/api/user/account/telegram/login',{method:'POST',body:JSON.stringify({...payload,...(inviteCode?{inviteCode}:{})})},t('auth.failed'));
+ if(!isSession(data))throw new Error(t('copy.invalidSignInResponsePleaseRetry'));
+ confirmed=data;useSessionStore.getState().setSession(data);clearInviteCode();return data;
+}
+
+export async function authenticateWithTelegramOidc(code:string,redirectUri:string,codeVerifier:string){
+ const inviteCode=pendingInviteCode(false);
+ const data=await request('/api/user/account/telegram/oidc',{method:'POST',body:JSON.stringify({code,redirectUri,codeVerifier,...(inviteCode?{inviteCode}:{})})},t('auth.failed'));
  if(!isSession(data))throw new Error(t('copy.invalidSignInResponsePleaseRetry'));
  confirmed=data;useSessionStore.getState().setSession(data);clearInviteCode();return data;
 }

@@ -39,6 +39,8 @@ export function HomeContent({ onComingSoon, active=true }: { onComingSoon: () =>
   const favorites = useGameFavorites();
   const [toast,holder]=message.useMessage({getContainer:overlayContainer,maxCount:1,classNames:{list:'lobby-toast-list'}});
   const uid = useSessionStore(state=>state.session?.uid);
+  const providerNames = Array.from(new Set((catalog.data ?? []).map(game => game.provider).filter(Boolean)));
+  const activeProviders = providerNames.length > 0 ? providerNames : ['AG'];
   const games = (catalog.data ?? []).filter(game => selected === 'hot' || (selected === 'favorites' ? Boolean(uid)&&Boolean(favorites.data?.includes(game.id)) : game.provider === selected));
   const hasMore = visibleCount < games.length;
 
@@ -85,7 +87,7 @@ export function HomeContent({ onComingSoon, active=true }: { onComingSoon: () =>
     <NoticeBar />
     <PromotionBanner />
     <RecentWins active={active}/>
-    <ProviderTabs selected={selected} onSelect={provider => { if(provider==='favorites'&&!uid){useAuthStore.getState().show('login',()=>setSelected('favorites'));return;} if (provider !== selected) { setSelected(provider); setVisibleCount(GAMES_PER_BATCH); setLoadingMore(false); } }} />
+    <ProviderTabs selected={selected} providers={activeProviders} onSelect={provider => { if(provider==='favorites'&&!uid){useAuthStore.getState().show('login',()=>setSelected('favorites'));return;} if (provider !== selected) { setSelected(provider); setVisibleCount(GAMES_PER_BATCH); setLoadingMore(false); } }} />
     <section className="home-game-list" aria-label={t('copy.gameList')}>
       <div className="home-game-grid">
         {visibleGames.map((game, index) => (

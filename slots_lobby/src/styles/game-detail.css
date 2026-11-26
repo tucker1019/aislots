@@ -47,7 +47,7 @@
 
 .game-floating-controls {
   position: absolute;
-  z-index: 6;
+  z-index: 40;
   top: calc(10px + var(--lobby-safe-top, 0px));
   right: max(10px, env(safe-area-inset-right));
   display: flex;

@@ -13,7 +13,11 @@ export function useGameCardTransition(gameId: string, shellRef: RefObject<HTMLEl
     shell.inert = true;
     const animation = shell.animate(gamePageFrames(shell, gameCardOrigin(gameId), shrinking), gamePageMotionOptions);
     running.current = animation;
-    animation.onfinish = () => {
+    let finished = false;
+    const settle = () => {
+      if (finished) return;
+      finished = true;
+      window.clearTimeout(timer);
       running.current = null;
       // Keep the last exit frame applied until React removes the page.
       if (!shrinking) {
@@ -23,6 +27,9 @@ export function useGameCardTransition(gameId: string, shellRef: RefObject<HTMLEl
       }
       done();
     };
+    const timer = window.setTimeout(settle, 450);
+    animation.onfinish = settle;
+    animation.oncancel = () => { window.clearTimeout(timer); };
   }, [gameId, shellRef]);
   useLayoutEffect(() => {
     const shell = shellRef.current;
@@ -30,7 +37,10 @@ export function useGameCardTransition(gameId: string, shellRef: RefObject<HTMLEl
     return () => {
       running.current?.cancel();
       running.current = null;
-      shell?.classList.remove('game-detail-docking');
+      if (shell) {
+        shell.classList.remove('game-detail-docking');
+        shell.inert = false;
+      }
     };
   }, [animate, shellRef]);
   const closeToCard = useCallback((done: () => void) => {

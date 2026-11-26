@@ -1,3 +1,11 @@
+:root:has(.app-download-bar) {
+  --header-height: calc(108px + var(--lobby-safe-top, 0px));
+}
+
+:root[data-theme="dark"]:has(.app-download-bar) {
+  --header-height: calc(120px + var(--lobby-safe-top, 0px));
+}
+
 .site-header {
   height: var(--header-height);
   padding-top: var(--lobby-safe-top, 0px);
@@ -7,8 +15,87 @@
   width: min(100%, var(--content));
   transform: translateX(-50%);
   z-index: 30;
+  display: flex;
+  flex-direction: column;
   background: var(--theme-glass,rgb(255 255 255 / 90%));
   border-bottom: 1px solid var(--line);
+}
+
+.app-download-bar {
+  height: 46px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  background: linear-gradient(90deg, #251d3f 0%, #312553 60%, #261e41 100%);
+  border-bottom: 1px solid rgb(255 255 255 / 10%);
+  color: var(--ink, #fff6ed);
+}
+
+.app-download-close {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 16%);
+  color: #fff;
+  cursor: pointer;
+}
+
+.app-download-close svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.app-download-icon {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 35%);
+}
+
+.app-download-copy {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-download-amount {
+  color: var(--theme-gold-text, #f4d49a);
+  font-weight: 800;
+}
+
+.app-download-cta {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: var(--theme-action, #ff9179);
+  color: var(--theme-on-action, #251624);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .bottom-navigation {
@@ -43,7 +130,9 @@
 
 .header-inner {
   max-width: var(--content);
-  height: 100%;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
   margin: auto;
   display: flex;
   align-items: center;
@@ -68,7 +157,6 @@
   overflow: hidden;
   isolation: isolate;
   line-height: 1.5;
-  animation: brand-arrive .65s cubic-bezier(.22, 1, .36, 1) both;
 }
 
 .brand-domain {
@@ -79,12 +167,6 @@
 }
 
 .brand-name { position: relative; color: var(--theme-gold-text, var(--blue)); }
-
-.brand-letter {
-  position: relative;
-  display: inline-block;
-  animation: brand-letter-bounce 6s ease-in-out infinite;
-}
 
 .brand-shine {
   position: absolute;
@@ -99,25 +181,12 @@
   animation: brand-shine 6s ease-in-out 1s infinite;
 }
 
-@keyframes brand-arrive {
-  from { opacity: .5; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 @keyframes brand-shine {
   0% { background-position: 160% 0; }
   25%, 100% { background-position: -60% 0; }
 }
 
-@keyframes brand-letter-bounce {
-  0%, 14%, 100% { transform: translateY(0); }
-  4% { transform: translateY(-3px); }
-  8% { transform: translateY(1px); }
-  11% { transform: translateY(-1px); }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .brand-wordmark, .brand-letter { animation: none; }
   .brand-shine { display: none; animation: none; }
 }
 

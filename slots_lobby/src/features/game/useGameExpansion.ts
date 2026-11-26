@@ -36,12 +36,24 @@ export function useGameExpansion() {
       { transform: 'translate(0, 0) scale(1, 1)' },
     ], { duration: 300, easing: 'cubic-bezier(.22, 1, .36, 1)', transformOrigin: 'top left' } as KeyframeAnimationOptions);
     animation.current = running;
-    running.onfinish = () => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timer);
       animation.current = null;
       locked.current = false;
       setTransitioning(false);
     };
-    return () => { running.cancel(); animation.current = null; };
+    const timer = window.setTimeout(finish, 400);
+    running.onfinish = finish;
+    return () => {
+      window.clearTimeout(timer);
+      running.cancel();
+      animation.current = null;
+      locked.current = false;
+      setTransitioning(false);
+    };
   }, [expanded]);
 
   return { expanded, transitioning, surfaceRef, changeExpanded };

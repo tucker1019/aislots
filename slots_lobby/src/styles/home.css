@@ -97,30 +97,43 @@
 }
 
 .provider-tab {
+  position: relative;
   flex: 0 0 auto;
-  min-width: 70px;
+  min-width: 54px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 5px;
   min-height: 44px;
-  padding: 5px 14px;
+  padding: 5px 10px 9px;
   border: 0;
-  border-radius: 12px;
-  background: var(--theme-panel);
+  border-radius: 0;
+  background: transparent;
   color: var(--muted);
   font-size: 12px;
 }
 
 .provider-tab:hover {
-  background: var(--theme-soft,#f5f5f7);
+  color: var(--ink);
 }
 
 .provider-tab[aria-pressed="true"] {
-  color: var(--theme-on-action);
-  background: var(--theme-action);
+  color: var(--theme-active);
+  background: transparent;
   box-shadow: none;
+}
+
+.provider-tab[aria-pressed="true"]::after {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: translateX(-50%);
+  content: '';
 }
 
 .provider-tab[aria-pressed="true"] .provider-mark { color: inherit; }
@@ -290,8 +303,7 @@
   .game-tile::after { animation: none; opacity: .35; transform: translateX(0); }
 }
 
-.provider-hot { min-width: 105px; }
-.provider-favorites .provider-mark svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
+.provider-favorites .provider-mark svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
 
 .home-favorites-empty { min-height: 120px; align-content: center; gap: 6px; color: var(--muted); }
 .home-favorites-empty svg { width: 54px; height: 54px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; opacity: .8; }

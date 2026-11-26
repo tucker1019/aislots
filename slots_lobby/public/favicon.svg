@@ -1,1 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="12" fill="#1d1d1f"/><g fill="white"><rect x="10" y="10" width="8" height="8" rx="3"/><rect x="22" y="10" width="8" height="8" rx="3"/><rect x="10" y="22" width="8" height="8" rx="3"/><rect x="22" y="22" width="8" height="8" rx="3"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bgA" cx="35%" cy="28%" r="78%">
+      <stop offset="0%" stop-color="#2B2444"/>
+      <stop offset="55%" stop-color="#1D1933"/>
+      <stop offset="100%" stop-color="#141126"/>
+    </radialGradient>
+    <linearGradient id="agGrad" x1="15%" y1="15%" x2="85%" y2="85%">
+      <stop offset="0%" stop-color="#FFE4B5"/>
+      <stop offset="45%" stop-color="#F4D49A"/>
+      <stop offset="100%" stop-color="#FF9179"/>
+    </linearGradient>
+    <linearGradient id="sparkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF6ED"/>
+      <stop offset="100%" stop-color="#FF9179"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Full-bleed background for Android Adaptive & PWA maskable -->
+  <rect width="512" height="512" fill="url(#bgA)"/>
+
+  <!-- Subtle inner ambient ring (stays well inside safe zone) -->
+  <circle cx="256" cy="256" r="144" fill="#252039" fill-opacity="0.72" stroke="#4A405E" stroke-opacity="0.55" stroke-width="2"/>
+
+  <!-- Compact centered AG monogram (~52% canvas width) -->
+  <g transform="translate(256 262)">
+    <!-- Letter A -->
+    <path d="M-92 48 L-52 -56 C-49 -64 -43 -68 -36 -68 C-29 -68 -23 -64 -20 -56 L20 48 C23 55 18 62 10 62 C5 62 0 59 -2 54 L-11 30 L-61 30 L-70 54 C-72 59 -77 62 -82 62 C-90 62 -95 55 -92 48 Z M-53 9 L-19 9 L-36 -36 Z"
+          fill="url(#agGrad)"/>
+    <!-- Letter G -->
+    <path d="M96 -26 C87 -41 72 -49 54 -49 C28 -49 10 -29 10 -2 C10 26 28 45 55 45 C71 45 84 37 90 25 L90 12 L62 12 C56 12 51 7 51 1 C51 -5 56 -10 62 -10 L100 -10 C107 -10 112 -5 112 2 L112 24 C112 29 111 34 108 38 C98 55 78 66 54 66 C15 66 -13 38 -13 -2 C-13 -42 15 -70 55 -70 C79 -70 100 -59 112 -40 C116 -34 114 -26 108 -22 C103 -19 99 -21 96 -26 Z"
+          fill="url(#agGrad)"/>
+    <!-- Accent 4-point spark above A -->
+    <path d="M-36 -94 C-34 -83 -31 -80 -20 -78 C-31 -76 -34 -73 -36 -62 C-38 -73 -41 -76 -52 -78 C-41 -80 -38 -83 -36 -94 Z"
+          fill="url(#sparkGrad)"/>
+  </g>
+</svg>

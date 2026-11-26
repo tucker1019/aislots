@@ -21,7 +21,7 @@ export async function launchGame(gameId: string): Promise<string> {
   if (!isRecord(data) || typeof data.launchUrl !== 'string' || typeof data.expiresAt !== 'string')
     throw new Error(t('copy.invalidGameLaunchResponse'));
   const url = resolveGameEntry(data.launchUrl, false);
-  if (!url || new URL(url).searchParams.get('launchTicket')?.length !== 52 || !Number.isFinite(Date.parse(data.expiresAt)))
+  if (!url || !Number.isFinite(Date.parse(data.expiresAt)))
     throw new Error(t('copy.gameEntryIsInvalidOrExpiredPlease'));
   return url;
 }

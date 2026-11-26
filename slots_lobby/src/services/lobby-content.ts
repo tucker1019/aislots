@@ -5,7 +5,7 @@ import {isLocale} from '../i18n/config';
 import type {Locale} from '../i18n';
 export type ContentRoute='/'|'/earn'|'/deposit';
 export interface ContentBanner{id:string;enabled:boolean;imageZhTw:string;imageEnUs:string;altZhTw:string;altEnUs:string;route:ContentRoute}
-export interface LobbyContent{announcements:Record<'zh-TW'|'en-US',string[]>&Partial<Record<Locale,string[]>>;banners:ContentBanner[]}
+export interface LobbyContent{announcements:Record<'zh-TW'|'en-US',string[]>&Partial<Record<Locale,string[]>>;banners:ContentBanner[];newbieMaxReward?:number}
 function image(v:unknown):v is string{
  if(typeof v!=='string')return false;
  if(v.startsWith('/assets/'))return !/[\\%?#\r\n]/.test(v)&&new URL(v,'https://local.example').pathname===v;
@@ -22,6 +22,7 @@ export function parseLobbyContent(value:unknown):LobbyContent{
   if(!isRecord(b)||typeof b.id!=='string'||!b.id||b.id.length>64||ids.has(b.id)||typeof b.enabled!=='boolean'||!image(b.imageZhTw)||!image(b.imageEnUs)||typeof b.altZhTw!=='string'||!b.altZhTw.trim()||b.altZhTw.length>400||typeof b.altEnUs!=='string'||!b.altEnUs.trim()||b.altEnUs.length>400||typeof b.route!=='string'||!routes.includes(b.route))throw bad();ids.add(b.id);
   return{id:b.id,enabled:b.enabled,imageZhTw:b.imageZhTw,imageEnUs:b.imageEnUs,altZhTw:b.altZhTw,altEnUs:b.altEnUs,route:b.route==='/offers'?'/':b.route as ContentRoute};
  });
- return{announcements,banners};
+ const newbieMaxReward=Number.isSafeInteger(value.newbieMaxReward)&&Number(value.newbieMaxReward)>=0?Number(value.newbieMaxReward):0;
+ return{announcements,banners,newbieMaxReward};
 }
 export async function fetchLobbyContent(signal?:AbortSignal){return parseLobbyContent(await request('/api/lobby/content',{signal},t('copy.unableToConnectToTheLobbyPlease')));}

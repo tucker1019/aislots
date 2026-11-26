@@ -14,7 +14,7 @@ describe('大廳身份與資料', () => {
     vi.stubGlobal('fetch', request);
     const result = await Promise.all([loadAccountProfile(), loadAccountProfile()]);
     expect(result).toEqual([profile, profile]);
-    expect(request.mock.calls.filter(([url]) => String(url).endsWith('/session/renewal'))).toHaveLength(1);
+    expect(request.mock.calls.filter(([url]) => new URL(String(url), 'https://aggames.buzz').pathname.endsWith('/session/renewal'))).toHaveLength(1);
     expect(useSessionStore.getState().session).toEqual(session);
     const saved = localStorage.getItem('aislots-lobby-session');
     expect(saved).toContain(session.sid);
@@ -26,7 +26,7 @@ describe('大廳身份與資料', () => {
     vi.stubGlobal('fetch', request);
     await expect(loadAccountProfile()).rejects.toThrow(/會話/);
     expect(request).toHaveBeenCalledTimes(1);
-    expect(request.mock.calls[0][0]).toBe('/api/user/account/session/renewal');
+    expect(new URL(String(request.mock.calls[0][0]), 'https://aggames.buzz').pathname).toBe('/api/user/account/session/renewal');
     expect(useSessionStore.getState().session).toBeNull();
   });
   it('續期成功後資料匹配當前用戶；拒絕錯誤金額與頭像', async () => {
@@ -51,7 +51,7 @@ describe('大廳身份與資料', () => {
 
 it('綁定通過現有接口保留當前UID，密碼不會持久化',async()=>{
  const current={...session,sid:'b'.repeat(52)};useSessionStore.setState({session:current});const send=vi.fn().mockResolvedValueOnce(ok(current)).mockResolvedValueOnce(ok(current));vi.stubGlobal('fetch',send);
- await bindCustomAccount('custom_user','test_password_123');const [url,init]=send.mock.calls[1];expect(url).toBe('/api/user/account/uniquecode/bind');expect(JSON.parse(init.body)).toEqual({uid:7,sid:current.sid,account:'custom_user',password:'test_password_123'});expect(localStorage.getItem('aislots-lobby-session')).not.toContain('test_password_123');expect(useSessionStore.getState().session?.uid).toBe(7);
+ await bindCustomAccount('custom_user','test_password_123');const [url,init]=send.mock.calls[1];expect(new URL(String(url),'https://aggames.buzz').pathname).toBe('/api/user/account/uniquecode/bind');expect(JSON.parse(init.body)).toEqual({uid:7,sid:current.sid,account:'custom_user',password:'test_password_123'});expect(localStorage.getItem('aislots-lobby-session')).not.toContain('test_password_123');expect(useSessionStore.getState().session?.uid).toBe(7);
 });
 it('頭像更新只提交頭像ID並拒絕其他用戶的資料響應',async()=>{
  const current={...session,sid:'a'.repeat(52)};useSessionStore.setState({session:current});const send=vi.fn().mockResolvedValueOnce(ok(current)).mockResolvedValueOnce(ok({...profile,uid:8}));vi.stubGlobal('fetch',send);

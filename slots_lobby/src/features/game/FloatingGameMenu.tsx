@@ -10,9 +10,10 @@ export function FloatingGameMenu({open,onToggle,onExit,onShrink}:{
  const [position,setPosition]=useState<Point>();
  const drag=useRef<Drag>(null);
  const activePointer=useRef<number>(null);
+ const toggledByPointer=useRef(false);
 
  function startDrag(event: PointerEvent<HTMLButtonElement>) {
-  if (!event.isPrimary || event.button !== 0) return;
+  if (!event.isPrimary || (event.pointerType !== 'touch' && event.button !== 0)) return;
   const button=event.currentTarget;
   const shell=button.closest('.game-detail-shell');
   if (!shell) return;
@@ -21,6 +22,7 @@ export function FloatingGameMenu({open,onToggle,onExit,onShrink}:{
   drag.current={pointer:{x:event.clientX,y:event.clientY},
    origin:{x:rect.left-bounds.left,y:rect.top-bounds.top},moved:false,bounds};
   activePointer.current=event.pointerId;
+  toggledByPointer.current=false;
   button.setPointerCapture?.(event.pointerId);
  }
 
@@ -37,7 +39,13 @@ export function FloatingGameMenu({open,onToggle,onExit,onShrink}:{
  }
 
  function endDrag(event: PointerEvent<HTMLButtonElement>) {
-  if (activePointer.current === event.pointerId) activePointer.current=null;
+  if (activePointer.current !== event.pointerId) return;
+  activePointer.current=null;
+  event.currentTarget.releasePointerCapture?.(event.pointerId);
+  if (event.type === 'pointerup' && drag.current && !drag.current.moved) {
+   toggledByPointer.current=true;
+   onToggle();
+  }
  }
 
  return <div className={`game-floating-controls${position && position.x < 114 ? ' game-floating-controls-right' : ''}`}
@@ -52,7 +60,7 @@ export function FloatingGameMenu({open,onToggle,onExit,onShrink}:{
     </button>
    </div>}
    <button className="game-floating-toggle" type="button" aria-expanded={open} aria-label={t(open?'gamePreview.closeMenu':'gamePreview.openMenu')} onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}
-    onLostPointerCapture={endDrag} onClick={event=>{if (event.detail === 0 || !drag.current?.moved) onToggle();}}>
+    onLostPointerCapture={endDrag} onClick={event=>{if (toggledByPointer.current) { toggledByPointer.current = false; return; } if (event.detail === 0 || !drag.current?.moved) onToggle();}}>
     {open?<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>:<span aria-hidden="true"/>}
    </button>
   </div>;

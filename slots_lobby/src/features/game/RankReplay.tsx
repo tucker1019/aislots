@@ -18,9 +18,17 @@ export function RankReplay({orderId,betId,board,period,shareTarget,onShare,gameI
   onSuccess:(url,action)=>{if(action==='share'&&onShare)onShare(url);else setPanel(action);},
   onError:()=>{void toast.error(t('gamePreview.replayUnavailable'));},
  });
+ const thirdParty = gameId.startsWith('J7_');
+ const trigger = (action: 'replay' | 'share') => {
+  if (thirdParty) {
+   void toast.info(t('gamePreview.replayUnsupportedByProvider'));
+   return;
+  }
+  query.mutate(action);
+ };
  const shareButton=<AsyncButton className="game-rank-share-trigger" aria-label={t('gamePreview.share')}
    loading={query.isPending&&query.variables==='share'} type="button"
-   disabled={query.isPending} onClick={()=>query.mutate('share')}>
+   disabled={query.isPending} onClick={()=>trigger('share')}>
    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M14 3v5C8 8 4 12 2 19c4-4 7-5 12-5v5l8-8-8-8Z"/>
    </svg>
@@ -29,7 +37,7 @@ export function RankReplay({orderId,betId,board,period,shareTarget,onShare,gameI
   {holder}
   {!hideOrder && <RankOrderNumber betId={betId}/>}
   <div className="game-rank-actions">
-   <AsyncButton className="recent-win-detail-replay-button" loading={query.isPending&&query.variables==='replay'} type="button" disabled={query.isPending} onClick={()=>query.mutate('replay')}>
+   <AsyncButton className="recent-win-detail-replay-button" loading={query.isPending&&query.variables==='replay'} type="button" disabled={query.isPending} onClick={()=>trigger('replay')}>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
     {t('gamePreview.replay')}
    </AsyncButton>

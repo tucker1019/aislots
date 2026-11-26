@@ -43,13 +43,14 @@ export function MyAccount({ onAction, onDeposit, onRecords, onBetRecords, onBene
   const [redeemOpen,setRedeemOpen]=useState(false);
   const { data, isPending, isError, isFetching, refetch } = useAccountProfile();
   const uid = useSessionStore(state => state.session?.uid);
+  const rewards = useClaimIndicators();
   const vip = useQuery({ queryKey: ['lobby', 'benefits', 'vip', uid], queryFn: ({ signal }) => loadVipOverview(signal), enabled: Boolean(uid), retry: false, staleTime: 15000 });
   return <section className="my-account" aria-label={t('copy.myAccountDetails')}>
     <div className="account-identity">
       {data ? <button type="button" className="account-avatar-button" aria-label={t('profile.changeAvatar')} onClick={()=>setAvatarOpen(true)}><img src={`/assets/profile/avatar/${data.avatarId}.png`} alt={t('copy.valueSAvatar', {p0: data.nickname})} width={52} height={52} /></button> : <span className="account-avatar-placeholder" aria-hidden="true"><Icon name="user" size={28}/></span>}
       <div className="account-identity-text"><div className="account-vip-row">{vip.data ? <span className="account-vip-badge" aria-label={t('copy.vipLevelValue', {p0: vip.data.level})}><Icon name="crown" size={12} />VIP{vip.data.level}</span> : <AsyncButton loading={vip.isFetching} type="button" className="account-vip-badge" disabled={vip.isPending || vip.isFetching} onClick={() => void vip.refetch()} aria-label={t('copy.reloadVipLevel')}>{vip.isError ? t('copy.retryVip') : 'VIP…'}</AsyncButton>}</div><h1 title={data?.nickname}>{data?.nickname??<span className="account-data-placeholder account-name-placeholder" aria-label={t('copy.loadingProfile')}/>}</h1><p>{t('common.idLabel')}{data?.uid??uid??'—'}</p></div>
       <button type="button" className="account-settings" aria-label={t('copy.settings')} onClick={onSettings??onAction}><Icon name="settings" size={21} /></button>
-      <button type="button" className="account-settings" aria-label={t('mail.title')} onClick={onMessages ?? onAction}><Icon name="mail" size={21} /></button>
+      <button type="button" className="account-settings claim-badge-anchor" aria-label={t('mail.title')} onClick={onMessages ?? onAction}><Icon name="mail" size={21} /><ClaimBadge active={rewards.active('mail')} /></button>
     </div>
     <div className="account-balance-card">
       <div><span className="account-caption">{t('copy.walletBalance')}</span>{data ? <WalletBalance coins={data.coins} isFetching={isFetching} onRefresh={refetch} /> : <div className="account-balance" aria-busy={isPending}>{isPending?<span className="account-data-placeholder account-balance-placeholder" aria-label={t('copy.refreshingWalletBalance')}/>:<span className="wallet-amount">—</span>}</div>}</div>

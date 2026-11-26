@@ -19,6 +19,8 @@ import './styles/personal-report.css';
 import './styles/earn.css';
 import { App } from './app/App';
 import { guardLobbyEntry } from './app/useLobbyRoute';
+import { consumeTelegramOidcCallbackIfPresent } from './services/telegram-auth';
+void consumeTelegramOidcCallbackIfPresent();
 guardLobbyEntry();
 const disposeViewport=installDesignViewport();
 installLayoutDiagnostics();
