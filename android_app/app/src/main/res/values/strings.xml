@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">aggames.buzz</string>
+    <string name="splash_brand_title">aggames.buzz</string>
+    <string name="splash_brand_subtitle">Instant Slots &amp; Arcade Lobby</string>
+    <string name="splash_loading_hint">Memuat lobi…</string>
+    <string name="webview_error_title">Koneksi terputus</string>
+    <string name="webview_error_desc">Periksa jaringan Anda lalu coba muat ulang lobi.</string>
+    <string name="webview_retry">Coba Lagi</string>
+    <string name="webview_back_exit_hint">Tekan sekali lagi untuk keluar</string>
+</resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AISlots Lobby Dark Theme (Indonesia V2) -->
+    <color name="lobby_canvas">#17152A</color>
+    <color name="lobby_panel">#252039</color>
+    <color name="lobby_bar">#211C33</color>
+    <color name="lobby_soft">#342D4B</color>
+    <color name="lobby_border">#4A405E</color>
+
+    <color name="lobby_ink">#FFF6ED</color>
+    <color name="lobby_muted">#C0B9D0</color>
+
+    <color name="lobby_action">#FF9179</color>
+    <color name="lobby_action_pressed">#ED7C65</color>
+    <color name="lobby_on_action">#251624</color>
+
+    <color name="lobby_gold">#F4D49A</color>
+    <color name="lobby_gold_tint">#433446</color>
+</resources>

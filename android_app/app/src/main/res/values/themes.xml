@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AggamesLobby" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/lobby_canvas</item>
+        <item name="android:statusBarColor">@color/lobby_canvas</item>
+        <item name="android:navigationBarColor">@color/lobby_canvas</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="colorPrimary">@color/lobby_action</item>
+        <item name="colorPrimaryDark">@color/lobby_canvas</item>
+        <item name="colorAccent">@color/lobby_action</item>
+    </style>
+
+    <style name="Theme.AggamesLobby.Splash" parent="Theme.AggamesLobby">
+        <item name="android:windowBackground">@drawable/bg_splash_window</item>
+        <item name="android:windowFullscreen">false</item>
+    </style>
+</resources>
