@@ -21,3 +21,7 @@ export const validateConfig = (key: string, document: Json) => request(`${path(k
 }, { document });
 export const publishConfig = (key: string, expectedVersion: number, reason: string, requestId: string) => request(`${path(key)}/publish`, parseConfig, { expectedVersion, reason, requestId });
 export const rollbackConfig = (key: string, version: number, expectedVersion: number, reason: string, requestId: string) => request(`${path(key)}/rollback`, parseConfig, { version, expectedVersion, reason, requestId });
+export const syncJ7Games = () => request('/configs/games/sync-j7', v => {
+ const d = object(v);
+ return { document: object(d.document) as Record<string, Json>, added: integer(d.added), updated: integer(d.updated), total: integer(d.total) };
+}, {});
