@@ -12,6 +12,7 @@ const (
 	SourceInviteReward      Source = "act_007"  // 邀请好友奖励加币
 	SourceGameBet           Source = "game_001" // 游戏投注扣币
 	SourceGameWin           Source = "game_002" // 游戏逐轮派彩
+	SourceGameRollback      Source = "game_003" // 游戏撤单退款
 	SourceNewbieRecharge    Source = "act_006"  // 新手累计充值奖励
 	SourceVIPUpgrade        Source = "vip_001"  // VIP升级礼金
 	SourceVIPWeekly         Source = "vip_002"  // VIP周工资

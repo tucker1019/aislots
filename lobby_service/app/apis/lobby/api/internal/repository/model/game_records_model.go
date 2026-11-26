@@ -26,17 +26,24 @@ func (m *GameModel) Records(ctx context.Context, uid int64, from, to time.Time, 
 	var rows []GameRecordRow
 	var summary GameRecordSummary
 	err := m.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		grouped := func() *gorm.DB {
-			query := tx.Model(&LobbyGameSettlement{})
-			if gameIDs != nil {
-				query = query.Where("game_id IN ?", gameIDs)
-			}
-			return query.Select("game_id, bet_id, MIN(created_at) AS created_at, SUM(debit) AS bet_amount, SUM(credit) - SUM(debit) AS profit").Where("uid = ? AND status = ?", uid, "confirmed").Group("game_id, bet_id").Having("SUM(debit) > 0 AND MIN(created_at) >= ? AND MIN(created_at) < ?", from, to)
+		localQuery := tx.Model(&LobbyGameSettlement{}).
+			Select("game_id, bet_id, MIN(created_at) AS created_at, SUM(debit) AS bet_amount, SUM(credit) - SUM(debit) AS profit").
+			Where("uid = ? AND status = ?", uid, "confirmed")
+		tpQuery := tx.Model(&LobbyThirdPartyTransaction{}).
+			Select("game_id, provider || ':' || COALESCE(NULLIF(round_id, ''), transaction_id) AS bet_id, MIN(created_at) AS created_at, SUM(CASE WHEN reason = 'bet' THEN -amount_minor ELSE 0 END) AS bet_amount, SUM(amount_minor) AS profit").
+			Where("uid = ? AND status = ?", uid, "confirmed")
+		if gameIDs != nil {
+			localQuery = localQuery.Where("game_id IN ?", gameIDs)
+			tpQuery = tpQuery.Where("game_id IN ?", gameIDs)
 		}
-		if e := tx.Table("(?) AS bets", grouped()).Select("COUNT(*) AS count, COALESCE(SUM(bet_amount),0) AS bet_amount, COALESCE(SUM(profit),0) AS profit").Scan(&summary).Error; e != nil {
+		localQuery = localQuery.Group("game_id, bet_id").Having("SUM(debit) > 0 AND MIN(created_at) >= ? AND MIN(created_at) < ?", from, to)
+		tpQuery = tpQuery.Group("game_id, provider || ':' || COALESCE(NULLIF(round_id, ''), transaction_id)").Having("SUM(CASE WHEN reason = 'bet' THEN -amount_minor ELSE 0 END) > 0 AND MIN(created_at) >= ? AND MIN(created_at) < ?", from, to)
+
+		combined := tx.Raw("SELECT * FROM (?) AS local_bets UNION ALL SELECT * FROM (?) AS tp_bets", localQuery, tpQuery)
+		if e := tx.Table("(?) AS bets", combined).Select("COUNT(*) AS count, COALESCE(SUM(bet_amount),0) AS bet_amount, COALESCE(SUM(profit),0) AS profit").Scan(&summary).Error; e != nil {
 			return e
 		}
-		return tx.Table("(?) AS bets", grouped()).Order("created_at DESC, game_id DESC, bet_id DESC").Limit(21).Offset((page - 1) * 20).Scan(&rows).Error
+		return tx.Table("(?) AS bets", combined).Order("created_at DESC, game_id DESC, bet_id DESC").Limit(21).Offset((page - 1) * 20).Scan(&rows).Error
 	}, &sql.TxOptions{Isolation: sql.LevelRepeatableRead, ReadOnly: true})
 	return rows, summary, err
 }

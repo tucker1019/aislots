@@ -13,6 +13,7 @@ import (
 	"apps/app/apis/lobby/api/internal/repository"
 	"apps/app/apis/lobby/api/internal/repository/model"
 	"apps/app/apis/lobby/api/internal/svc"
+	"apps/app/apis/lobby/api/internal/thirdparty/j7"
 	pb "apps/pb/apis/lobby/api/v1"
 	"apps/pkg/xerr"
 )
@@ -98,11 +99,26 @@ func (l *Logic) GameRecommendations(ctx context.Context, r *pb.GameRecommendatio
 
 func (l *Logic) GameLaunch(ctx context.Context, r *pb.GameLaunchRequest) (*pb.GameLaunchReply, error) {
 	g, ok := l.config.Games[r.GameId]
-	if !ok || !g.Enabled || !g.IsVisible() || len(l.config.ServiceToken) < 32 {
+	if !ok || !g.Enabled || !g.IsVisible() {
 		return nil, xerr.ErrInvalid
 	}
 	if r.GetUid() <= 0 || len(r.GetSid()) != 52 {
 		return nil, xerr.ErrSession
+	}
+	if g.IsThirdPartyJ7() {
+		if e := l.users.Check(ctx, r.GetUid(), user.Hash(r.GetSid()), time.Now().UTC()); e != nil {
+			return nil, xerr.Public(e)
+		}
+		client := j7.NewClient(j7.LoadConfigFromEnv())
+		launchURL, e := client.LaunchGame(ctx, strconv.FormatInt(r.GetUid(), 10), g.ExternalGameID, "", "")
+		if e != nil {
+			return nil, xerr.ErrGameTicket
+		}
+		expires := time.Now().UTC().Add(launchTicketLifetime)
+		return &pb.GameLaunchReply{LaunchUrl: launchURL, ExpiresAt: expires.Format(time.RFC3339Nano)}, nil
+	}
+	if len(l.config.ServiceToken) < 32 {
+		return nil, xerr.ErrInvalid
 	}
 	ticket := rand.Text() + rand.Text()
 	expires := time.Now().UTC().Add(launchTicketLifetime)

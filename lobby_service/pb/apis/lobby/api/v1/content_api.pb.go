@@ -203,11 +203,12 @@ func (x *LobbyBanner) GetRoute() string {
 }
 
 type LobbyContentReply struct {
-	state         protoimpl.MessageState   `protogen:"open.v1"`
-	Announcements []*LocalizedAnnouncement `protobuf:"bytes,1,rep,name=announcements,proto3" json:"announcements,omitempty"`
-	Banners       []*LobbyBanner           `protobuf:"bytes,2,rep,name=banners,proto3" json:"banners,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState   `protogen:"open.v1"`
+	Announcements   []*LocalizedAnnouncement `protobuf:"bytes,1,rep,name=announcements,proto3" json:"announcements,omitempty"`
+	Banners         []*LobbyBanner           `protobuf:"bytes,2,rep,name=banners,proto3" json:"banners,omitempty"`
+	NewbieMaxReward int64                    `protobuf:"varint,3,opt,name=newbie_max_reward,json=newbieMaxReward,proto3" json:"newbie_max_reward,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *LobbyContentReply) Reset() {
@@ -252,6 +253,13 @@ func (x *LobbyContentReply) GetBanners() []*LobbyBanner {
 		return x.Banners
 	}
 	return nil
+}
+
+func (x *LobbyContentReply) GetNewbieMaxReward() int64 {
+	if x != nil {
+		return x.NewbieMaxReward
+	}
+	return 0
 }
 
 type LobbyGamesRequest struct {
@@ -466,10 +474,11 @@ const file_apis_lobby_api_v1_content_api_proto_rawDesc = "" +
 	"\vimage_en_us\x18\x04 \x01(\tR\timageEnUs\x12\x1a\n" +
 	"\talt_zh_tw\x18\x05 \x01(\tR\aaltZhTw\x12\x1a\n" +
 	"\talt_en_us\x18\x06 \x01(\tR\aaltEnUs\x12\x14\n" +
-	"\x05route\x18\a \x01(\tR\x05route\"\x9d\x01\n" +
+	"\x05route\x18\a \x01(\tR\x05route\"\xc9\x01\n" +
 	"\x11LobbyContentReply\x12N\n" +
 	"\rannouncements\x18\x01 \x03(\v2(.apis.lobby.api.v1.LocalizedAnnouncementR\rannouncements\x128\n" +
-	"\abanners\x18\x02 \x03(\v2\x1e.apis.lobby.api.v1.LobbyBannerR\abanners\"\x13\n" +
+	"\abanners\x18\x02 \x03(\v2\x1e.apis.lobby.api.v1.LobbyBannerR\abanners\x12*\n" +
+	"\x11newbie_max_reward\x18\x03 \x01(\x03R\x0fnewbieMaxReward\"\x13\n" +
 	"\x11LobbyGamesRequest\"\x8a\x02\n" +
 	"\tLobbyGame\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +

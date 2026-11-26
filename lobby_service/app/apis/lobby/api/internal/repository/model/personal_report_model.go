@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"math/big"
+	"strings"
 	"time"
 
 	"apps/pkg/coinsource"
@@ -65,11 +66,22 @@ func (m *GameModel) PersonalReport(ctx context.Context, uid int64, period string
 		}
 		out.Amounts["withdrawal"] = withdrawn
 		out.Amounts["recharge"] = read(coinsource.SourceRechargeCredit)
-		out.Amounts["betAmount"] = -read(coinsource.SourceGameBet)
-		if out.Amounts["betAmount"] < 0 {
+		betDelta := big.NewInt(read(coinsource.SourceGameBet))
+		winDelta := big.NewInt(read(coinsource.SourceGameWin))
+		betDelta.Add(betDelta, big.NewInt(read(coinsource.SourceGameRollback)))
+		for src, amt := range sources {
+			if strings.HasPrefix(src, "game_bet:") || strings.HasPrefix(src, "game_rb:") {
+				betDelta.Add(betDelta, big.NewInt(amt))
+			} else if strings.HasPrefix(src, "game_win:") {
+				winDelta.Add(winDelta, big.NewInt(amt))
+			}
+		}
+		betAmount := new(big.Int).Neg(betDelta)
+		if !betAmount.IsInt64() || betAmount.Sign() < 0 {
 			return xerr.ErrBalanceLimit
 		}
-		profit := new(big.Int).Add(big.NewInt(read(coinsource.SourceGameWin)), big.NewInt(read(coinsource.SourceGameBet)))
+		out.Amounts["betAmount"] = betAmount.Int64()
+		profit := new(big.Int).Add(winDelta, betDelta)
 		if !profit.IsInt64() {
 			return xerr.ErrBalanceLimit
 		}

@@ -9,7 +9,7 @@ service LobbyContentService {
 message LobbyContentRequest {}
 message LocalizedAnnouncement {string locale=1;repeated string items=2;}
 message LobbyBanner {string id=1;bool enabled=2;string image_zh_tw=3 [json_name="imageZhTw"];string image_en_us=4 [json_name="imageEnUs"];string alt_zh_tw=5 [json_name="altZhTw"];string alt_en_us=6 [json_name="altEnUs"];string route=7;}
-message LobbyContentReply {repeated LocalizedAnnouncement announcements=1;repeated LobbyBanner banners=2;}
+message LobbyContentReply {repeated LocalizedAnnouncement announcements=1;repeated LobbyBanner banners=2;int64 newbie_max_reward=3 [json_name="newbieMaxReward"];}
 
 message LobbyGamesRequest {}
 message LobbyGame {string id=1;string name=2;string name_en=3 [json_name="nameEn"];string provider=4;string cover=5;bool enabled=6;int32 sort=7;double theoretical_rtp=8 [json_name="theoreticalRtp"];string volatility=9;int64 max_win=10 [json_name="maxWin"];}

@@ -107,5 +107,11 @@ var redeemCodesSchema string
 //go:embed 036_reward_notifications.sql
 var rewardNotificationsSchema string
 
+//go:embed 037_thirdparty_transactions.sql
+var thirdpartyTransactionsSchema string
+
+//go:embed 038_per_game_source.sql
+var perGameSourceSchema string
+
 // Schema applies initial schema and backward-compatible upgrades in order.
-var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema + "\n" + gameSchema + "\n" + uidSchema + "\n" + gameStatisticsSchema + "\n" + inviteSchema + "\n" + inviteChestSchema + "\n" + rankReplaySchema + "\n" + agentSchema + "\n" + payoutSchema + "\n" + withdrawalSchema + "\n" + turnoverSchema + "\n" + accountNicknameSchema + "\n" + experienceSchema + "\n" + experiencePoolSchema + "\n" + adminSchema + "\n" + adminConfigSchema + "\n" + returnRateSchema + "\n" + experienceGamesSchema + "\n" + gameSettlementLookupSchema + "\n" + adminOverviewTotalsSchema + "\n" + lossReturnPolicySchema + "\n" + gameFavoritesSchema + "\n" + recentWinsSchema + "\n" + platformLeaderboardSchema + "\n" + recommendationsSchema + "\n" + platformLeaderboardRewardsSchema + "\n" + redeemCodesSchema + "\n" + rewardNotificationsSchema
+var Schema = usersSchema + "\n" + profilesSchema + "\n" + rechargeSchema + "\n" + paymentsSchema + "\n" + checkinSchema + "\n" + returnsSchema + "\n" + vipSchema + "\n" + newbieSchema + "\n" + gameSchema + "\n" + uidSchema + "\n" + gameStatisticsSchema + "\n" + inviteSchema + "\n" + inviteChestSchema + "\n" + rankReplaySchema + "\n" + agentSchema + "\n" + payoutSchema + "\n" + withdrawalSchema + "\n" + turnoverSchema + "\n" + accountNicknameSchema + "\n" + experienceSchema + "\n" + experiencePoolSchema + "\n" + adminSchema + "\n" + adminConfigSchema + "\n" + returnRateSchema + "\n" + experienceGamesSchema + "\n" + gameSettlementLookupSchema + "\n" + adminOverviewTotalsSchema + "\n" + lossReturnPolicySchema + "\n" + gameFavoritesSchema + "\n" + recentWinsSchema + "\n" + platformLeaderboardSchema + "\n" + recommendationsSchema + "\n" + platformLeaderboardRewardsSchema + "\n" + redeemCodesSchema + "\n" + rewardNotificationsSchema + "\n" + thirdpartyTransactionsSchema + "\n" + perGameSourceSchema

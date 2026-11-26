@@ -15,8 +15,11 @@ import (
 	"apps/app/apis/lobby/api/internal/repository/model"
 	"apps/app/apis/lobby/api/internal/router"
 	"apps/app/apis/lobby/api/internal/svc"
+	"apps/app/apis/lobby/api/internal/thirdparty/j7"
 	"apps/pkg/coinsource"
+	"apps/pkg/trace"
 	"apps/pkg/xlog"
+	"log/slog"
 
 	"gorm.io/gorm"
 )
@@ -80,6 +83,23 @@ func startWorkers(ctx context.Context, db *gorm.DB, d *svc.ServiceContext) func(
 	}
 }
 
+func buildHandler(db *gorm.DB, d *svc.ServiceContext) http.Handler {
+	base := router.New(d)
+	mux := http.NewServeMux()
+	j7Handler := &j7.Handler{
+		Config: j7.LoadConfigFromEnv(),
+		Games:  d.Config.Game.Games,
+		Store: &model.ThirdPartyModel{
+			DB:       db,
+			Location: d.Config.Checkin.Location(),
+			VIP:      &model.VIPModel{DB: db, Config: d.Config.VIP, Location: d.Config.Checkin.Location()},
+		},
+	}
+	j7Handler.Register(mux, "/api/thirdparty/j7")
+	mux.Handle("/", base)
+	return trace.Middleware(mux, slog.Default())
+}
+
 // NewRuntime owns the listener's immutable configuration snapshot and version watcher.
 func NewRuntime(parent context.Context, db *gorm.DB, base config.Config) (*Runtime, error) {
 	if e := adminconfig.Seed(parent, db, base); e != nil {
@@ -95,7 +115,7 @@ func NewRuntime(parent context.Context, db *gorm.DB, base config.Config) (*Runti
 	}
 	ctx, cancel := context.WithCancel(parent)
 	r := &Runtime{cancel: cancel, done: make(chan struct{})}
-	r.Store(router.New(d))
+	r.Store(buildHandler(db, d))
 	host, _ := os.Hostname()
 	instance := fmt.Sprintf("%s:%d", host, os.Getpid())
 	store := model.AdminConfigStore{DB: db}
@@ -147,7 +167,7 @@ func NewRuntime(parent context.Context, db *gorm.DB, base config.Config) (*Runti
 					return
 				}
 				stopWorkers()
-				r.Store(router.New(updated))
+				r.Store(buildHandler(db, updated))
 				stopWorkers = startWorkers(ctx, db, updated)
 				revision = next
 				if er = store.RecordRuntime(ctx, instance, revision, ""); er != nil && ctx.Err() == nil {

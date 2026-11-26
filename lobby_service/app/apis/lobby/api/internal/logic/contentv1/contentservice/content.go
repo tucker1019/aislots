@@ -21,5 +21,12 @@ func (l *Logic) Content(_ context.Context, _ *pb.LobbyContentRequest) (*pb.Lobby
 		}
 		reply.Banners = append(reply.Banners, &pb.LobbyBanner{Id: b.ID, Enabled: b.Enabled, ImageZhTw: b.ImageZhTw, ImageEnUs: b.ImageEnUs, AltZhTw: b.AltZhTw, AltEnUs: b.AltEnUs, Route: b.Route})
 	}
+	var maxReward int64
+	for _, tier := range l.ctx.Config.Newbie.Tiers {
+		if tier.Reward > maxReward {
+			maxReward = tier.Reward
+		}
+	}
+	reply.NewbieMaxReward = maxReward
 	return reply, nil
 }

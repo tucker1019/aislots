@@ -26,6 +26,12 @@ type GameEntry struct {
 	Name           string   `json:"name"`
 	Enabled        bool     `json:"enabled"`
 	URL            string   `json:"url"`
+	Source         string   `json:"source,omitempty"`
+	ExternalGameID string   `json:"externalGameId,omitempty"`
+}
+
+func (g GameEntry) IsThirdPartyJ7() bool {
+	return g.Source == "j7"
 }
 
 // Defaults apply only when fields are absent, including legacy published documents.
@@ -117,13 +123,22 @@ func LoadGames(path string) (GameConfig, error) {
 		if g.Visible != nil && *g.Visible && (strings.TrimSpace(g.Name) == "" || strings.TrimSpace(g.Provider) == "" || g.Cover == "") {
 			return c, fmt.Errorf("visible game %s requires name, provider and cover", id)
 		}
+		if g.Source != "" && g.Source != "local" && g.Source != "j7" {
+			return c, fmt.Errorf("invalid game source %s", id)
+		}
+		if g.IsThirdPartyJ7() {
+			extID := strings.TrimSpace(g.ExternalGameID)
+			if extID == "" || len(extID) > 64 {
+				return c, fmt.Errorf("j7 game %s requires externalGameId", id)
+			}
+		}
 		if g.APIURL != "" {
 			a, e := url.Parse(g.APIURL)
 			if e != nil || a.Host == "" || (a.Scheme != "http" && a.Scheme != "https") || a.User != nil || a.RawQuery != "" || a.Fragment != "" {
 				return c, fmt.Errorf("invalid game API entry %s", id)
 			}
 		}
-		if !g.Enabled && g.URL == "" {
+		if (!g.Enabled || g.IsThirdPartyJ7()) && g.URL == "" {
 			continue
 		}
 		u, e := url.Parse(g.URL)

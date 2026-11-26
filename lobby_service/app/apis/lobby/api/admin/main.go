@@ -76,6 +76,7 @@ func run() error {
 		return &model.RechargeModel{DB: db, ActivityLocation: snapshot.Checkin.Location(), VIP: &model.VIPModel{DB: db, Config: snapshot.VIP, Location: snapshot.Checkin.Location()}}, nil
 	}}).Register(mux, auth)
 	adminconfig.Register(mux, db, auth.Protect, auth.Actor)
+	adminconfig.RegisterSync(mux, db, auth.Protect)
 	addr := os.Getenv("LOBBY_ADMIN_ADDRESS")
 	if addr == "" {
 		addr = "127.0.0.1:8082"

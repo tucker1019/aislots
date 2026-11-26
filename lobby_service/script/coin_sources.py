@@ -12,6 +12,7 @@ SOURCES = [
     ('SourceInviteReward', 'act_007', '邀请好友奖励加币'),
     ('SourceGameBet', 'game_001', '游戏投注扣币'),
     ('SourceGameWin', 'game_002', '游戏逐轮派彩'),
+    ('SourceGameRollback', 'game_003', '游戏撤单退款'),
     ('SourceNewbieRecharge', 'act_006', '新手累计充值奖励'),
     ('SourceVIPUpgrade', 'vip_001', 'VIP升级礼金'),
     ('SourceVIPWeekly', 'vip_002', 'VIP周工资'),

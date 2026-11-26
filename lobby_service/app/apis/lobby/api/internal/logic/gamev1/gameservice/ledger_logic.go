@@ -5,6 +5,7 @@ import (
 	"errors"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	user "apps/app/apis/lobby/api/internal/logic/userv1/userservice"
@@ -64,23 +65,42 @@ func (l *Logic) ledgerCategories() []ledgerCategory {
 
 func (l *Logic) ledgerItem(r model.WalletLedgerRow) *pb.WalletLedgerItem {
 	name, categoryID := "其他账变", "other"
-	for _, c := range l.ledgerCategories() {
-		for _, s := range c.sources {
-			if s != r.Source {
-				continue
-			}
-			if c.gameIDs != nil {
-				matched := false
-				for _, id := range c.gameIDs {
-					if id == r.GameID {
-						matched = true
-					}
-				}
-				if !matched {
+	if strings.HasPrefix(r.Source, "game_bet:") {
+		gid := strings.TrimPrefix(r.Source, "game_bet:")
+		if g, ok := l.config.Games[gid]; ok && g.Provider != "" {
+			name, categoryID = g.Provider+" 投注", "bet:"+g.Provider
+		} else {
+			name, categoryID = gid+" 投注", "bet:"+gid
+		}
+	} else if strings.HasPrefix(r.Source, "game_win:") {
+		gid := strings.TrimPrefix(r.Source, "game_win:")
+		if g, ok := l.config.Games[gid]; ok && g.Provider != "" {
+			name, categoryID = g.Provider+" 派彩", "win:"+g.Provider
+		} else {
+			name, categoryID = gid+" 派彩", "win:"+gid
+		}
+	} else if strings.HasPrefix(r.Source, "game_rb:") {
+		gid := strings.TrimPrefix(r.Source, "game_rb:")
+		name, categoryID = gid+" 撤单退款", "rollback:"+gid
+	} else {
+		for _, c := range l.ledgerCategories() {
+			for _, s := range c.sources {
+				if s != r.Source {
 					continue
 				}
+				if c.gameIDs != nil {
+					matched := false
+					for _, id := range c.gameIDs {
+						if id == r.GameID {
+							matched = true
+						}
+					}
+					if !matched {
+						continue
+					}
+				}
+				name, categoryID = c.name, c.id
 			}
-			name, categoryID = c.name, c.id
 		}
 	}
 	return &pb.WalletLedgerItem{Id: strconv.FormatInt(r.ID, 10), OrderId: r.OrderID, Type: name, Currency: l.config.Currency, Amount: r.Delta, Balance: r.BalanceAfter, CreatedAt: r.CreatedAt.UTC().Format(time.RFC3339Nano), Remark: name, CategoryId: categoryID}

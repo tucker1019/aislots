@@ -38,9 +38,9 @@ type rewardNotificationTarget struct {
 	ActionPath     string
 	AvailableAt    time.Time
 	ExpiresAt      time.Time
-	SendSettlement bool
-	ReminderHours  []byte
-	SendExpired    bool
+	SendSettlement bool   `gorm:"column:send_on_settlement"`
+	ReminderHours  []byte `gorm:"column:reminder_hours"`
+	SendExpired    bool   `gorm:"column:send_on_expired"`
 }
 
 // Process runs settlement discovery and due mail stages. The period and stage
